@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/dashboard/dashboard.dart';
+import 'package:rakhsa/features/pages/dashboard/dashboard.dart';
 
 void main() {
   runApp(const MyApp());

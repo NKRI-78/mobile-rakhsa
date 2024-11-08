@@ -17,7 +17,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   List<Map<String, dynamic>> pages = [
     {
       'page': const SizedBox(),
-      'title': 'Categories',
+      'title': 'Home',
     },
     {
       'page': Container(),
