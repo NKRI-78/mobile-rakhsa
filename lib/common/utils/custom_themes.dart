@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/utils/dimensions.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 const poppinsRegular = TextStyle(
   fontFamily: 'Poppins',

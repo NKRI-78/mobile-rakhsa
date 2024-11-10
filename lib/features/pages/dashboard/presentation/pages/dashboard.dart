@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/pages/dashboard/presentation/pages/home.dart';
 
-import 'package:rakhsa/basewidgets/dashboard/bottom_navybar.dart';
-import 'package:rakhsa/utils/color_resources.dart';
-import 'package:rakhsa/utils/custom_themes.dart';
-import 'package:rakhsa/utils/dimensions.dart';
+import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -16,12 +17,16 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   List<Map<String, dynamic>> pages = [
     {
-      'page': const SizedBox(),
+      'page': const HomePage(),
       'title': 'Home',
     },
     {
-      'page': Container(),
-      'title': 'Favorites',
+      'page': const SizedBox(),
+      'title': 'Profile',
+    },
+    {
+      'page': const SizedBox(),
+      'title': 'Profile',
     },
     {
       'page': const SizedBox(),
@@ -78,6 +83,19 @@ class DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             activeColor: Colors.yellow.shade700
+          ),
+          BottomNavyBarItem(
+            icon: const Icon(
+              Icons.account_circle,
+              size: 20.0,
+            ),
+            title: Text('Profile',
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black
+              ),
+            ),
+            activeColor: Colors.blue.shade700,
           ),
           BottomNavyBarItem(
             icon: const Icon(

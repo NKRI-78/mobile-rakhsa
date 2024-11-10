@@ -12,7 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  # C
+  cached_network_image: ^3.2.3
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
@@ -24,6 +25,10 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+  - assets/
+  - assets/images/
 
   fonts:
     - family: Roboto
