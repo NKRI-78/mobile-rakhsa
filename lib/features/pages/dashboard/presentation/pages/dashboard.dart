@@ -44,9 +44,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   void selectPage(int index) {
-    setState(() {
-      selectedPageIndex = index;
-    });
+    setState(() => selectedPageIndex = index);
   }
   
   @override

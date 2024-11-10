@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/features/pages/dashboard/presentation/pages/dashboard.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:provider/provider.dart';
+
+import 'package:rakhsa/injection.dart' as di;
+
+import 'package:rakhsa/common/helpers/storage.dart';
+
+import 'package:rakhsa/features/pages/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/providers.dart';
+
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await StorageHelper.init();
+
+  di.init();
+
+  runApp(MultiProvider(
+    providers: providers,
+    child: const MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -13,7 +31,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Home',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,

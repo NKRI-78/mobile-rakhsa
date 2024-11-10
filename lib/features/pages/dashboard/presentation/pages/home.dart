@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/websockets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +23,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+
+  late WebSocketsService webSocketsService;
 
   String currentAddress = "";
   bool loadingCurrentAddress = true;
@@ -89,6 +94,8 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
+    webSocketsService = context.read<WebSocketsService>();
+
     checkAndGetLocation();
   }
 
@@ -99,6 +106,9 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    Provider.of<WebSocketsService>(context);
+
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator.adaptive(
@@ -220,7 +230,9 @@ class HomePageState extends State<HomePage> {
                     margin: const EdgeInsets.only(
                       top: 55.0
                     ),
-                    child: const SosButton()
+                    child: SosButton(
+                      location: currentAddress
+                    )
                   ),
 
                   Container(
@@ -311,7 +323,11 @@ class HomePageState extends State<HomePage> {
 }
 
 class SosButton extends StatefulWidget {
-  const SosButton({super.key});
+  final String location;
+  const SosButton({
+    required this.location,
+    super.key
+  });
 
   @override
   SosButtonState createState() => SosButtonState();
@@ -347,6 +363,12 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   void startTimer() {
+
+    context.read<WebSocketsService>().sos(
+      title: "Emergency", 
+      location: widget.location
+    );
+
     setState(() {
       isPressed = true;
       countdownTime = 60; 
