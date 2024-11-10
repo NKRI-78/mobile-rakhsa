@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -16,6 +20,82 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+
+  String currentAddress = "";
+  bool loadingCurrentAddress = true;
+
+  Future<void> checkAndGetLocation() async {
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!isLocationServiceEnabled) {
+      if(mounted) {
+        showDialog(
+        context: context,
+        barrierDismissible: false,  
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Location Services Disabled'),
+            content: Text('Please enable location services to continue.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();  
+                  Geolocator.openLocationSettings();  
+                },
+                child: Text('Open Settings'),
+              ),
+            ],
+          );
+        },
+      );
+      }
+    } else {
+      getCurrentLocation();
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Future.delayed(const Duration(seconds: 1), () {
+          checkAndGetLocation();
+        });
+        return;
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+      forceAndroidLocationManager: true
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    String country = placemarks[0].country ?? "-";
+    String street = placemarks[0].street ?? "-";
+    String administrativeArea = placemarks[0].administrativeArea ?? "-";
+    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+
+    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
+
+    setState(() {
+      currentAddress = address;
+      loadingCurrentAddress = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    checkAndGetLocation();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +218,86 @@ class HomePageState extends State<HomePage> {
 
                   Container(
                     margin: const EdgeInsets.only(
-                      top: 80.0
+                      top: 55.0
                     ),
                     child: const SosButton()
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 45.0
+                    ),
+                    child: Card(
+                      color: ColorResources.white,
+                      surfaceTintColor: ColorResources.white,
+                      elevation: 1.0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+
+                                CachedNetworkImage(
+                                  imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                    return CircleAvatar(
+                                      backgroundImage: imageProvider,
+                                    );
+                                  },
+                                  placeholder: (BuildContext context, String url) {
+                                    return const CircleAvatar(
+                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context, String url, Object error) {
+                                    return const CircleAvatar(
+                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    );
+                                  },
+                                ),
+
+                                const SizedBox(width: 15.0),
+
+                                Flexible(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+
+                                      Text("Posisi Anda saat ini",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 4.0),
+                                  
+                                      Text(loadingCurrentAddress 
+                                        ? "Mohon tunggu..." 
+                                        : currentAddress,
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall,
+                                          color: ColorResources.black
+                                        ),
+                                      )
+                                  
+                                    ],
+                                  ),
+                                )
+
+                              ],
+                            )
+
+                          ],
+                        ),
+                      )
+                    )
                   )
               
                 ],
@@ -229,8 +386,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                 return Transform.scale(
                   scale: pulseAnimation.value * scaleFactor,
                   child: Container(
-                    width: 60, 
-                    height: 60,
+                    width: 55, 
+                    height: 55,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor),

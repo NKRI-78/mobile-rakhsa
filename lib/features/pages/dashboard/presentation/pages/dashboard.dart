@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:rakhsa/features/pages/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -22,15 +24,15 @@ class DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'page': const SizedBox(),
-      'title': 'Profile',
+      'title': 'Menu 1',
     },
     {
       'page': const SizedBox(),
-      'title': 'Profile',
+      'title': 'Menu 2',
     },
     {
       'page': const SizedBox(),
-      'title': 'Profile',
+      'title': 'Menu 3',
     },
   ];
 
@@ -59,56 +61,56 @@ class DashboardScreenState extends State<DashboardScreen> {
         }),
         items: [
           BottomNavyBarItem(
-          icon: const Icon(
-            Icons.fastfood,
-            size: 20.0,
-          ),
-          title: Text('Categories',
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeSmall,
-              color: ColorResources.black
+            icon: const Icon(
+              Icons.home,
+              size: 20.0,
             ),
-          ),
-          activeColor: Colors.red.shade700,
+            title: Text('Home',
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeSmall,
+                color: ColorResources.white
+              ),
+            ),
+            activeColor: const Color(0xFFFE1717),
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.star,
+              Icons.list,
               size: 20.0,
             ),
-            title: Text('Favorites',
+            title: Text('Menu 1',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black
+                color: ColorResources.white
               ),
             ),
-            activeColor: Colors.yellow.shade700
+            activeColor: const Color(0xFFFE1717)
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.account_circle,
+              Icons.list,
               size: 20.0,
             ),
-            title: Text('Profile',
+            title: Text('Menu 2',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black
+                color: ColorResources.white
               ),
             ),
-            activeColor: Colors.blue.shade700,
+            activeColor: const Color(0xFFFE1717),
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.account_circle,
+              Icons.list,
               size: 20.0,
             ),
-            title: Text('Profile',
+            title: Text('Menu 3',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black
+                color: ColorResources.white
               ),
             ),
-            activeColor: Colors.blue.shade700,
+            activeColor: const Color(0xFFFE1717),
           ),
         ],
       ),

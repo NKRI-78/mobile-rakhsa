@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 
 class BottomNavyBar extends StatelessWidget {
   final int selectedIndex;
@@ -19,7 +20,7 @@ class BottomNavyBar extends StatelessWidget {
     this.showElevation = true,
     this.iconSize = 24.0,
     this.backgroundColor = Colors.white,
-    this.itemCornerRadius = 50.0,
+    this.itemCornerRadius = 10.0,
     this.containerHeight = 70.0,
     this.animationDuration = const Duration(milliseconds: 270),
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
@@ -78,7 +79,7 @@ class ItemWidget extends StatelessWidget {
   final Curve curve;
 
   const ItemWidget({
-    Key? key,
+    super.key,
     required this.item,
     required this.isSelected,
     required this.backgroundColor,
@@ -86,52 +87,51 @@ class ItemWidget extends StatelessWidget {
     required this.itemCornerRadius,
     required this.iconSize,
     this.curve = Curves.linear,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      width: isSelected ? 130 : 50,
+      width: isSelected ? 115 : 50,
       height: double.maxFinite,
       duration: animationDuration,
       curve: curve,
       decoration: BoxDecoration(
-        color: isSelected ? item.activeColor.withOpacity(0.2) : backgroundColor,
+        color: isSelected ? item.activeColor : backgroundColor,
         borderRadius: BorderRadius.circular(itemCornerRadius),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
-          width: isSelected ? 130 : 50,
+          width: isSelected ? 115 : 50,
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: [
               IconTheme(
                 data: IconThemeData(
                   size: iconSize,
                   color: isSelected
-                      ? item.activeColor.withOpacity(1)
-                      : item.inactiveColor,
+                  ? ColorResources.white
+                  : ColorResources.black,
                 ),
                 child: item.icon,
               ),
+              const SizedBox(width: 6.0),
               if (isSelected)
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    child: DefaultTextStyle.merge(
-                      style: TextStyle(
-                        color: item.activeColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      textAlign: item.textAlign,
-                      child: item.title,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      color: item.activeColor,
+                      fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    textAlign: item.textAlign,
+                    child: item.title,
                   ),
                 ),
             ],
