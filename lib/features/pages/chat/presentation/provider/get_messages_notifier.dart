@@ -87,7 +87,6 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void appendMessage({required Map<String, dynamic> data}) {
-    // bool isMe = data["data"]["user"]["is_me"];
     bool isRead = data["data"]["is_read"];
 
     _messages.insert(0, MessageData(
@@ -104,42 +103,6 @@ class GetMessagesNotifier with ChangeNotifier {
       text: data["data"]["text"], 
       createdAt: DateTime.now()
     ));
-
-    // if(isMe == false) {
-
-    //   if(!isRead) {
-    //     AwesomeNotifications().createNotification(
-    //       content: NotificationContent(
-    //         id: Random().nextInt(100),
-    //         channelKey: 'notification',
-    //         title: data["data"]["user"]["name"],
-    //         body:  data["data"]["text"],
-    //         largeIcon: data["data"]["user"]["avatar"],
-    //         payload: {
-    //           "type": "message",
-    //           "chat_id": data["data"]["chat_id"],
-    //           "sender": data["data"]["user"]["id"],
-    //           "recipient": data["data"]["sender"]["id"],
-    //         }
-    //       ),
-    //       actionButtons: [
-    //         NotificationActionButton(
-    //           key: 'REPLY',
-    //           label: 'Reply',
-    //           requireInputText: true,
-    //           actionType: ActionType.SilentAction,
-    //         ),
-    //         NotificationActionButton(
-    //           key: 'DISMISS',
-    //           label: 'Dismiss',
-    //           actionType: ActionType.DismissAction,
-    //           isDangerousOption: true
-    //         )
-    //       ]
-    //     );
-    //   }
-
-    // }
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {

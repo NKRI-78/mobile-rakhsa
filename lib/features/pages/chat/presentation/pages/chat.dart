@@ -39,7 +39,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   
   Future<void> getData() async {
     if(!mounted) return;
-      await messageNotifier.getMessages(chatId: widget.chatId);
+      messageNotifier.getMessages(chatId: widget.chatId);
   }
 
   @override 
@@ -248,16 +248,16 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                       
-                                  // CupertinoButton(
-                                  //   color: Colors.transparent,
-                                  //   padding: EdgeInsets.zero,
-                                  //   onPressed: () {
-
-                                  //   },
-                                  //   child: const Icon(Icons.chevron_left,
-                                  //     color: Colors.black,
-                                  //   ),
-                                  // ),
+                                  CupertinoButton(
+                                    color: Colors.transparent,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {
+                                      
+                                    },
+                                    child: const Icon(Icons.chevron_left,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                 
                                   CachedNetworkImage(
                                     imageUrl: notifier.recipient.avatar?.toString() ?? '-',

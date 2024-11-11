@@ -1,13 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+
 import 'package:rakhsa/features/pages/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_notifier.dart';
+
 import 'package:rakhsa/global.dart';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
+
+  final GetMessagesNotifier messageNotifier;
+
   int maxReconnectAttempts = 5;
   int reconnectAttempts = 0;
 
@@ -16,7 +23,9 @@ class WebSocketsService extends ChangeNotifier {
   Timer? reconnectTimer;
   ValueNotifier<bool> isConnected = ValueNotifier(false); 
 
-  WebSocketsService() {
+  WebSocketsService({
+    required this.messageNotifier
+  }) {
     connect();
   }
 
@@ -57,12 +66,23 @@ class WebSocketsService extends ChangeNotifier {
     required String location,
     required String country
   }) {
-
     channel?.sink.add(jsonEncode({
       "type": "sos",
       "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
       "location": location,
       "country": country
+    }));
+  }
+
+  void sendMessage({
+    required String recipientId, 
+    required String message
+  }) {
+    channel?.sink.add(jsonEncode({
+      "type": "message",
+      "sender": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
+      "recipient": recipientId,
+      "text": message
     }));
   }
 
@@ -72,12 +92,14 @@ class WebSocketsService extends ChangeNotifier {
       
       case "confirm-sos":
         String chatId = message["chat_id"];
-        
-        debugPrint("chat id : $chatId");
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(chatId: chatId);
         }));
+      break;
+
+      case "message":
+        messageNotifier.appendMessage(data: message);
       break;
 
       default:

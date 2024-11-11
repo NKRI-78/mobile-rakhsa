@@ -24,12 +24,13 @@ void init() {
   // USE CASE
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
   
-  // NOTIFIER
+  // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
+  // NOTIFIER 
   locator.registerLazySingleton(() => GetMessagesNotifier(getMessagesUseCase: locator()));
 
-  // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
-
-  locator.registerFactory(() => WebSocketsService());
+  locator.registerFactory(() => WebSocketsService(
+    messageNotifier: locator()
+  ));
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();
