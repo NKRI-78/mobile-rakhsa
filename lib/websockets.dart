@@ -68,7 +68,7 @@ class WebSocketsService extends ChangeNotifier {
 
     switch (message["type"]) {
       
-      case "sos":
+      case "confirm-sos":
         debugPrint(message.toString());
       break;
 
