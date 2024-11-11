@@ -18,6 +18,10 @@ dependencies:
 
   # D
   dio: ^5.4.1
+  dartz: ^0.10.1
+
+  # E
+  equatable: ^2.0.5
 
   # F
   flutter_secure_storage: ^9.2.2
@@ -28,7 +32,11 @@ dependencies:
   google_maps_place_picker_mb: ^3.1.2
   geocoding: ^2.0.5
   geolocator: ^10.1.0
+  grouped_list: ^6.0.0
   get_it: ^7.6.7
+
+  # I 
+  intl: ^0.19.0
 
   # S
   shared_preferences: ^2.2.2
