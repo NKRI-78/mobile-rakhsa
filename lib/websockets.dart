@@ -52,15 +52,15 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void sos({
-    required String title, 
-    required String location
+    required String location,
+    required String country
   }) {
 
     channel?.sink.add(jsonEncode({
       "type": "sos",
       "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
-      "title": title,
-      "location": location
+      "location": location,
+      "country": country
     }));
   }
 

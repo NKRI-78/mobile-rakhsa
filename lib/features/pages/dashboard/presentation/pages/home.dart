@@ -27,6 +27,8 @@ class HomePageState extends State<HomePage> {
   late WebSocketsService webSocketsService;
 
   String currentAddress = "";
+  String country = "";
+
   bool loadingCurrentAddress = true;
 
   Future<void> checkAndGetLocation() async {
@@ -231,7 +233,8 @@ class HomePageState extends State<HomePage> {
                       top: 55.0
                     ),
                     child: SosButton(
-                      location: currentAddress
+                      location: currentAddress,
+                      country: country,
                     )
                   ),
 
@@ -324,8 +327,10 @@ class HomePageState extends State<HomePage> {
 
 class SosButton extends StatefulWidget {
   final String location;
+  final String country;
   const SosButton({
     required this.location,
+    required this.country,
     super.key
   });
 
@@ -365,8 +370,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   void startTimer() {
 
     context.read<WebSocketsService>().sos(
-      title: "Emergency", 
-      location: widget.location
+      location: widget.location,
+      country: widget.country
     );
 
     setState(() {
