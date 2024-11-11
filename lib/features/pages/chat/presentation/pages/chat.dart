@@ -16,13 +16,9 @@ import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_no
 import 'package:rakhsa/websockets.dart';
 
 class ChatPage extends StatefulWidget {
-  final String senderId;
-  final String recipientId;
   final String chatId;
   
   const ChatPage({
-    required this.senderId,
-    required this.recipientId,
     required this.chatId,
     super.key
   });
@@ -43,7 +39,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   
   Future<void> getData() async {
     if(!mounted) return;
-      messageNotifier.getMessages(chatId: widget.chatId);
+      await messageNotifier.getMessages(chatId: widget.chatId);
   }
 
   @override 
@@ -252,16 +248,16 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                       
-                                  CupertinoButton(
-                                    color: Colors.transparent,
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Icon(Icons.chevron_left,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                  // CupertinoButton(
+                                  //   color: Colors.transparent,
+                                  //   padding: EdgeInsets.zero,
+                                  //   onPressed: () {
+
+                                  //   },
+                                  //   child: const Icon(Icons.chevron_left,
+                                  //     color: Colors.black,
+                                  //   ),
+                                  // ),
                 
                                   CachedNetworkImage(
                                     imageUrl: notifier.recipient.avatar?.toString() ?? '-',
@@ -306,19 +302,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       
                                 ],
                               ),
-                      
-                              ValueListenableBuilder<bool>(
-                                valueListenable: webSocketService.isConnected,
-                                builder: (BuildContext context, bool isConnected, Widget? child) {
-                                  return Icon(
-                                    Icons.circle,
-                                    size: 10.0,
-                                    color: isConnected 
-                                    ? Colors.green 
-                                    : Colors.red,
-                                  );
-                                },
-                              )
                       
                             ],
                           ),

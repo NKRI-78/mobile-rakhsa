@@ -19,13 +19,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override 
   Future<MessageModel> getMessages({required String chatId}) async {
     try {
-      final response = await client.post("${RemoteDataSourceConsts.baseUrl}/messages",
+      final response = await client.post("${RemoteDataSourceConsts.baseUrl}/api/v1/chat/messages",
         data: {
           "sender_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
           "chat_id": chatId
         }
       );
       Map<String, dynamic> data = response.data;
+      debugPrint(data.toString());
       MessageModel messageModel = MessageModel.fromJson(data);
       return messageModel;
     } on DioException catch(e) {

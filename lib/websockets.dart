@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/features/pages/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/global.dart';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -69,7 +71,13 @@ class WebSocketsService extends ChangeNotifier {
     switch (message["type"]) {
       
       case "confirm-sos":
-        debugPrint(message.toString());
+        String chatId = message["chat_id"];
+        
+        debugPrint("chat id : $chatId");
+
+        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
+          return ChatPage(chatId: chatId);
+        }));
       break;
 
       default:

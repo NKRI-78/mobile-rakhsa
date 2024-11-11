@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/pages/chat/presentation/pages/chat.dart';
 
 import 'package:rakhsa/features/pages/dashboard/presentation/pages/home.dart';
 
@@ -23,7 +24,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       'title': 'Home',
     },
     {
-      'page': const SizedBox(),
+      'page': const ChatPage(chatId: "11542e3f-6695-4705-b0bf-b8b927fa415f"),
       'title': 'Menu 1',
     },
     {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/global.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldKey,
+      navigatorKey: navigatorKey,
       title: 'Home',
       theme: ThemeData(
         useMaterial3: true,
