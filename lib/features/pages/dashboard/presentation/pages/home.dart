@@ -27,7 +27,7 @@ class HomePageState extends State<HomePage> {
   late WebSocketsService webSocketsService;
 
   String currentAddress = "";
-  String country = "";
+  String currentCountry = "";
 
   bool loadingCurrentAddress = true;
 
@@ -88,6 +88,8 @@ class HomePageState extends State<HomePage> {
 
     setState(() {
       currentAddress = address;
+      currentCountry = country;
+      
       loadingCurrentAddress = false;
     });
   }
@@ -234,7 +236,7 @@ class HomePageState extends State<HomePage> {
                     ),
                     child: SosButton(
                       location: currentAddress,
-                      country: country,
+                      country: currentCountry,
                     )
                   ),
 
@@ -343,11 +345,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   late AnimationController pulseController;
   late Animation<double> pulseAnimation;
 
-  late AnimationController timerController;
+  late AnimationController timerController;  
+  late int countdownTime;
 
   bool isPressed = false;
-  
-  late int countdownTime;
 
   @override
   void initState() {
