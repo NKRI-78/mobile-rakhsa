@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:grouped_list/grouped_list.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/pages/chat/data/models/messages.dart';
 import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_notifier.dart';
 
@@ -340,6 +341,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           itemBuilder: (BuildContext context, MessageData item) => ListTile(
                             title: ChatBubble(
                               text: item.text, 
+                              time: item.sentTime,
                               isMe: item.user.isMe!,
                               isRead: item.isRead
                             )
@@ -359,12 +361,14 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
 class ChatBubble extends StatelessWidget {
   final String text;
+  final String time;
   final bool isMe;
   final bool isRead;
 
   const ChatBubble({
     super.key, 
     required this.text, 
+    required this.time,
     required this.isMe,
     required this.isRead
   });
@@ -398,20 +402,39 @@ class ChatBubble extends StatelessWidget {
                 color: isMe 
                 ? Colors.white 
                 : Colors.black,
-                fontSize: 14.0,
+                fontSize: Dimensions.fontSizeDefault,
               ),
             ),
 
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 5.0),
 
-            isMe 
-            ? Icon(Icons.mark_email_read,
-              size: 18.0,
-              color: isRead 
-                ? Colors.blue[800]
-                : Colors.black,
-              ) 
-            : const SizedBox()
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+
+                Text(time,
+                  style: TextStyle(
+                    color: isMe 
+                    ? Colors.white 
+                    : Colors.black,
+                    fontSize: Dimensions.fontSizeSmall,
+                  ),
+                ),
+
+                const SizedBox(width: 5.0),
+
+                isMe 
+                ? Icon(Icons.mark_email_read,
+                  size: 18.0,
+                  color: isRead 
+                    ? Colors.blue[800]
+                    : Colors.black,
+                  ) 
+                : const SizedBox(),
+
+              ],
+            )
+
 
           ],
         ) 
