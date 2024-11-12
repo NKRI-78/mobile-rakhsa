@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/features/pages/event/persentation/pages/list.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
@@ -10,17 +11,13 @@ import 'package:rakhsa/features/pages/dashboard/presentation/pages/dashboard.dar
 import 'package:rakhsa/providers.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await StorageHelper.init();
 
   di.init();
 
-  runApp(MultiProvider(
-    providers: providers,
-    child: const MyApp()
-  ));
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,8 +31,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const DashboardScreen(),
+      home: const EventListPage(),
     );
   }
 }
-
