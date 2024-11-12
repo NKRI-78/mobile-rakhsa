@@ -8,10 +8,6 @@ class EventDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
-        leading: const Icon(
-          Icons.arrow_back_ios_new,
-          size: 30,
-        ),
         bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: Container(
