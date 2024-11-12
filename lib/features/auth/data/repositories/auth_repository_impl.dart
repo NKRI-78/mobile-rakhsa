@@ -8,7 +8,6 @@ import 'package:rakhsa/features/auth/data/models/auth.dart';
 
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
 
-
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 

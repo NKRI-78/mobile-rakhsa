@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,8 +19,14 @@ class LoginPageState extends State<LoginPage> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  bool isObscure = false;
+
   late TextEditingController emailC; 
   late TextEditingController passwordC; 
+
+  void setStateObscure() {
+    setState(() => isObscure = !isObscure);
+  }
 
   @override 
   void initState() {
@@ -181,16 +189,30 @@ class LoginPageState extends State<LoginPage> {
                             fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.white
                           ),
-                          decoration: const InputDecoration(
+                          obscureText: isObscure,
+                          decoration: InputDecoration(
                             filled: true,
                             fillColor: ColorResources.transparent,
-                            contentPadding: EdgeInsets.only(
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setStateObscure();
+                              },
+                              child: isObscure 
+                            ? const Icon(
+                                Icons.visibility,
+                                color: ColorResources.white,
+                              ) 
+                            : const Icon(Icons.visibility_off,
+                                color: ColorResources.white,
+                              )
+                            ),
+                            contentPadding: const EdgeInsets.only(
                               top: 16.0,
                               left: 12.0,
                               right: 12.0,
                               bottom: 48.0
                             ),
-                            enabledBorder: OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0)
                               ),
@@ -198,7 +220,7 @@ class LoginPageState extends State<LoginPage> {
                                 color: ColorResources.white,
                               )
                             ),
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0)
                               ),
@@ -206,7 +228,7 @@ class LoginPageState extends State<LoginPage> {
                                 color: ColorResources.white
                               )
                             ),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0)
                               ),

@@ -1,14 +1,14 @@
 class AuthModel {
-  int status;
-  bool error;
-  String message;
-  AuthData data;
+  int? status;
+  bool? error;
+  String? message;
+  AuthData? data;
 
   AuthModel({
-    required this.status,
-    required this.error,
-    required this.message,
-    required this.data,
+    this.status,
+    this.error,
+    this.message,
+    this.data,
   });
 
   factory AuthModel.fromJson(Map<String, dynamic> json) => AuthModel(
