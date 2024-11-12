@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-
 import 'package:rakhsa/global.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/common/helpers/storage.dart';
 
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/providers.dart';
 
 Future<void> main() async {
@@ -39,7 +37,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: const DashboardScreen(),
     );
   }
 }

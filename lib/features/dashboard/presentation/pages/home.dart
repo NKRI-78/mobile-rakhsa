@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
+  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
   late WebSocketsService webSocketsService;
 
   String currentAddress = "";
@@ -42,15 +45,15 @@ class HomePageState extends State<HomePage> {
         barrierDismissible: false,  
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Location Services Disabled'),
-            content: Text('Please enable location services to continue.'),
+            title: const Text('Location Services Disabled'),
+            content: const Text('Please enable location services to continue.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();  
                   Geolocator.openLocationSettings();  
                 },
-                child: Text('Open Settings'),
+                child: const Text('Open Settings'),
               ),
             ],
           );
@@ -118,11 +121,12 @@ class HomePageState extends State<HomePage> {
     Provider.of<WebSocketsService>(context);
 
     return Scaffold(
+      key: globalKey,
       body: SafeArea(
         child: RefreshIndicator.adaptive(
           onRefresh: () {
             return Future.sync(() {
-
+              
             });
           },
           child: SingleChildScrollView(
@@ -152,14 +156,14 @@ class HomePageState extends State<HomePage> {
                         children: [
                           Text("Selamat datang",
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                              fontSize: Dimensions.fontSizeLarge,
                               color: ColorResources.hintColor
                             ),
                           ), 
                           Text("Reihan Agam",
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
-                              fontSize: Dimensions.fontSizeLarge
+                              fontSize: Dimensions.fontSizeExtraLarge
                             ),
                           )
                         ],

@@ -102,9 +102,6 @@ class WebSocketsService extends ChangeNotifier {
         String chatId = message["chat_id"];
         String recipientId = message["recipient_id"];
 
-        debugPrint(chatId);
-        debugPrint(recipientId);
-
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(
             chatId: chatId, 
