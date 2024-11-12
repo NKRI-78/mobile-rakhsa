@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/pages/event/persentation/pages/list.dart';
-import 'package:rakhsa/features/pages/news/persentation/pages/list.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
@@ -32,7 +30,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const NewsListPage(),
+      home: const DashboardScreen(),
     );
   }
 }
