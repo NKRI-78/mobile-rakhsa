@@ -27,7 +27,7 @@ void init() {
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
   locator.registerLazySingleton(() => GetMessagesNotifier(getMessagesUseCase: locator()));
-
+  
   locator.registerFactory(() => WebSocketsService(
     messageNotifier: locator()
   ));

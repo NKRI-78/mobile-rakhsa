@@ -17,9 +17,11 @@ import 'package:rakhsa/websockets.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatId;
+  final String recipientId;
   
   const ChatPage({
     required this.chatId,
+    required this.recipientId,
     super.key
   });
 
@@ -165,35 +167,35 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       
                 const SizedBox(width: 15.0),
           
-               Flexible(
-                child: IconButton(
-                  onPressed: () async {
-                    if (messageC.text.isEmpty) {
-                      return;
-                    }
+                Flexible(
+                  child: IconButton(
+                    onPressed: () async {
+                      if (messageC.text.isEmpty) {
+                        return;
+                      }
 
-                    // webSocketService.stopTyping(
-                    //   recipientId: widget.recipientId,
-                    //   chatId: widget.chatId 
-                    // );
-      
-                    // webSocketService.sendMessage(
-                    //   recipientId: widget.recipientId, 
-                    //   message: messageC.text,
-                    // );
-                
-                    setState(() {
-                      messageC.clear();
-                    });
-                  }, 
-                  icon: const Icon(
-                    Icons.send,
-                    color: Colors.black,
+                      // webSocketService.stopTyping(
+                      //   recipientId: widget.recipientId,
+                      //   chatId: widget.chatId 
+                      // );
+        
+                      webSocketService.sendMessage(
+                        chatId: widget.chatId,
+                        recipientId: widget.recipientId, 
+                        message: messageC.text,
+                      );
+                  
+                      setState(() {
+                        messageC.clear();
+                      });
+                    }, 
+                    icon: const Icon(
+                      Icons.send,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-              )
+                )
       
-          
               ],
             ),
           
@@ -229,7 +231,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     if(notifier.state == ProviderState.loaded)
                       SliverAppBar(
                         pinned: true,
-                        backgroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFC82927),
                         automaticallyImplyLeading: false,
                         forceElevated: true,
                         elevation: 1.0,
@@ -255,7 +257,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                       
                                     },
                                     child: const Icon(Icons.chevron_left,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
                 
@@ -292,7 +294,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                         notifier.recipient.name?.toString() ?? 'User',
                                         style: const TextStyle(
                                           fontSize: 16.0,
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

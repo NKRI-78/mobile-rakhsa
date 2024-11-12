@@ -64,23 +64,31 @@ class WebSocketsService extends ChangeNotifier {
 
   void sos({
     required String location,
-    required String country
+    required String country,
+    required String lat, 
+    required String lng,
+    required String time
   }) {
     channel?.sink.add(jsonEncode({
       "type": "sos",
       "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
       "location": location,
-      "country": country
+      "lat": lat, 
+      "lng": lng,
+      "country": country,
+      "time": time,
     }));
   }
 
   void sendMessage({
+    required String chatId,
     required String recipientId, 
     required String message
   }) {
     channel?.sink.add(jsonEncode({
       "type": "message",
       "sender": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
+      "chat_id": chatId,
       "recipient": recipientId,
       "text": message
     }));
@@ -92,9 +100,10 @@ class WebSocketsService extends ChangeNotifier {
       
       case "confirm-sos":
         String chatId = message["chat_id"];
+        String recipientId = message["recipient_id"];
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
-          return ChatPage(chatId: chatId);
+          return ChatPage(chatId: chatId, recipientId: recipientId);
         }));
       break;
 

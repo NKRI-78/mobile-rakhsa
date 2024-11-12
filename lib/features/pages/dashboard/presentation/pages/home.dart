@@ -28,6 +28,8 @@ class HomePageState extends State<HomePage> {
 
   String currentAddress = "";
   String currentCountry = "";
+  String currentLat = "";
+  String currentLng = "";
 
   bool loadingCurrentAddress = true;
 
@@ -89,6 +91,9 @@ class HomePageState extends State<HomePage> {
     setState(() {
       currentAddress = address;
       currentCountry = country;
+
+      currentLat = position.latitude.toString();
+      currentLng = position.longitude.toString();
       
       loadingCurrentAddress = false;
     });
@@ -237,6 +242,8 @@ class HomePageState extends State<HomePage> {
                     child: SosButton(
                       location: currentAddress,
                       country: currentCountry,
+                      lat: currentLat,
+                      lng: currentLng,
                     )
                   ),
 
@@ -330,9 +337,14 @@ class HomePageState extends State<HomePage> {
 class SosButton extends StatefulWidget {
   final String location;
   final String country;
+  final String lat;
+  final String lng;
+
   const SosButton({
     required this.location,
     required this.country,
+    required this.lat, 
+    required this.lng,
     super.key
   });
 
@@ -392,10 +404,16 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   void startTimer() {
+    DateTime now = DateTime.now();
+
+    String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
     context.read<WebSocketsService>().sos(
       location: widget.location,
-      country: widget.country
+      country: widget.country,
+      lat: widget.lat,
+      lng: widget.lng,
+      time: time
     );
 
     setState(() {
