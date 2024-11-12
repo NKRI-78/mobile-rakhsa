@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  late WebSocketsService webSocketsService;
+  // late WebSocketsService webSocketsService;
 
   String currentAddress = "";
   String currentCountry = "";
@@ -98,7 +98,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    webSocketsService = context.read<WebSocketsService>();
+    // webSocketsService = context.read<WebSocketsService>();
 
     checkAndGetLocation();
   }
@@ -111,7 +111,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    Provider.of<WebSocketsService>(context);
+    // Provider.of<WebSocketsService>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -343,12 +343,14 @@ class SosButton extends StatefulWidget {
 class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   late AnimationController pulseController;
+  late AnimationController timerController;  
+
   late Animation<double> pulseAnimation;
 
-  late AnimationController timerController;  
   late int countdownTime;
 
   bool isPressed = false;
+  Timer? holdTimer;
 
   @override
   void initState() {
@@ -357,7 +359,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     pulseController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat();
+    );
+
+    // ..repeat();
+
     pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
       CurvedAnimation(parent: pulseController, curve: Curves.easeOut),
     );
@@ -368,12 +373,32 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     );
   }
 
+  void handleLongPressStart() {
+    pulseController.forward();
+
+    holdTimer = Timer(const Duration(milliseconds: 2000), () {
+      pulseController.reverse();
+      if (mounted) {
+        startTimer();
+      }
+    });
+  }
+
+  void handleLongPressEnd() {
+    if (holdTimer?.isActive ?? false) {
+      holdTimer?.cancel();
+      pulseController.reverse();
+    } else if (!isPressed) {
+      setState(() => isPressed = false);
+    }
+  }
+
   void startTimer() {
 
-    context.read<WebSocketsService>().sos(
-      location: widget.location,
-      country: widget.country
-    );
+    // context.read<WebSocketsService>().sos(
+    //   location: widget.location,
+    //   country: widget.country
+    // );
 
     setState(() {
       isPressed = true;
@@ -384,7 +409,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
       ..reset()
       ..forward().whenComplete(() {
         setState(() => isPressed = false);
-        // Add action after timer completes, e.g., send SOS alert
+        pulseController.reverse();
       });
 
     timerController.addListener(() {
@@ -392,12 +417,16 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         countdownTime = (60 - (timerController.value * 60)).round();
       });
     });
+
   }
 
   @override
   void dispose() {
     pulseController.dispose();
     timerController.dispose();
+    
+    holdTimer?.cancel();
+
     super.dispose();
   }
 
@@ -407,7 +436,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          for (double scaleFactor in [0.8, 1.2, 1.6])
+          for (double scaleFactor in [0.8, 1.2, 1.4])
             AnimatedBuilder(
               animation: pulseAnimation,
               builder: (BuildContext context, Widget? child) {
@@ -436,9 +465,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
               ),
             ),
           GestureDetector(
-            onLongPress: () {
-              if (!isPressed) startTimer();
-            },
+            onLongPressStart: (_) => handleLongPressStart(),
+            onLongPressEnd: (_) => handleLongPressEnd(),
             child: AnimatedBuilder(
               animation: timerController,
               builder: (BuildContext context, Widget? child) {
