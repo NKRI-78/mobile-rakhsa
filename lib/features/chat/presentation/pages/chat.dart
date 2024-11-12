@@ -11,8 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/features/pages/chat/data/models/messages.dart';
-import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/chat/data/models/messages.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
 

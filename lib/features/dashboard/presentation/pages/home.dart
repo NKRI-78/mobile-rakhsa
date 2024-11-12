@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';

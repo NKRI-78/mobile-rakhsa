@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 
-import 'package:rakhsa/features/pages/chat/presentation/pages/chat.dart';
-import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 
 import 'package:rakhsa/global.dart';
 

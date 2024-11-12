@@ -7,7 +7,7 @@ import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/common/helpers/storage.dart';
 
-import 'package:rakhsa/features/pages/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/providers.dart';
 
 Future<void> main() async {

@@ -3,11 +3,11 @@ import 'package:get_it/get_it.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
 
-import 'package:rakhsa/features/pages/chat/data/datasources/chat_remote_data_source.dart';
-import 'package:rakhsa/features/pages/chat/data/repositories/chat_repository_impl.dart';
-import 'package:rakhsa/features/pages/chat/domain/repositories/chat_repository.dart';
-import 'package:rakhsa/features/pages/chat/domain/usecases/get_messages.dart';
-import 'package:rakhsa/features/pages/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:rakhsa/features/chat/data/repositories/chat_repository_impl.dart';
+import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
+import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
 

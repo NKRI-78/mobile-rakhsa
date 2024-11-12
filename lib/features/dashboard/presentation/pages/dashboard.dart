@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/features/pages/dashboard/presentation/pages/home.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 

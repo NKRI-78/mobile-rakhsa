@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
 
-import 'package:rakhsa/features/pages/chat/data/models/messages.dart';
+import 'package:rakhsa/features/chat/data/models/messages.dart';
 
 abstract class ChatRemoteDataSource {
   Future<MessageModel> getMessages({required String chatId});

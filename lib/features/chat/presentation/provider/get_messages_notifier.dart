@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
-import 'package:rakhsa/features/pages/chat/data/models/messages.dart';
-import 'package:rakhsa/features/pages/chat/domain/usecases/get_messages.dart';
+import 'package:rakhsa/features/chat/data/models/messages.dart';
+import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
 
 class GetMessagesNotifier with ChangeNotifier {
   final GetMessagesUseCase getMessagesUseCase;
