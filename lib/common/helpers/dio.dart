@@ -18,7 +18,7 @@ class DioHelper {
     });
     // dio.options.connectTimeout = const Duration(seconds: 5);
     // dio.options.receiveTimeout = const Duration(seconds: 5);
-    dio.options.baseUrl = RemoteDataSourceConsts.baseUrl;
+    dio.options.baseUrl = RemoteDataSourceConsts.baseUrlProd;
     dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
         String? token = await StorageHelper.getToken();

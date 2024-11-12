@@ -19,7 +19,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override 
   Future<MessageModel> getMessages({required String chatId}) async {
     try {
-      final response = await client.post("${RemoteDataSourceConsts.baseUrl}/api/v1/chat/messages",
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
         data: {
           "sender_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
           "chat_id": chatId
