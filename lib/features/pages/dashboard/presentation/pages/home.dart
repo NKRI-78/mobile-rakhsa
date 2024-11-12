@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  // late WebSocketsService webSocketsService;
+  late WebSocketsService webSocketsService;
 
   String currentAddress = "";
   String currentCountry = "";
@@ -98,7 +98,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    // webSocketsService = context.read<WebSocketsService>();
+    webSocketsService = context.read<WebSocketsService>();
 
     checkAndGetLocation();
   }
@@ -111,7 +111,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    // Provider.of<WebSocketsService>(context);
+    Provider.of<WebSocketsService>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -361,8 +361,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    // ..repeat();
-
     pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
       CurvedAnimation(parent: pulseController, curve: Curves.easeOut),
     );
@@ -395,10 +393,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   void startTimer() {
 
-    // context.read<WebSocketsService>().sos(
-    //   location: widget.location,
-    //   country: widget.country
-    // );
+    context.read<WebSocketsService>().sos(
+      location: widget.location,
+      country: widget.country
+    );
 
     setState(() {
       isPressed = true;

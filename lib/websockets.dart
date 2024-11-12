@@ -33,7 +33,7 @@ class WebSocketsService extends ChangeNotifier {
     try {
       disposeChannel();
 
-      channel = WebSocketChannel.connect(Uri.parse(RemoteDataSourceConsts.websocketUrl));
+      channel = WebSocketChannel.connect(Uri.parse(RemoteDataSourceConsts.websocketUrlDev));
 
       channelSubscription = channel!.stream.listen(
         (message) async {
