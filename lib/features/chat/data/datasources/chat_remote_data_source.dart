@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/chat/data/models/chats.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
@@ -21,7 +22,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<ChatsModel> getChats() async {
     try { 
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list");
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list",
+        data: {
+          "user_id": await StorageHelper.getUserId()
+        }
+      );
       Map<String, dynamic> data = response.data;
       ChatsModel chatsModel = ChatsModel.fromJson(data);
       return chatsModel;
@@ -39,7 +44,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
         data: {
-          "sender_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
+          "sender_id": await StorageHelper.getUserId(),
           "chat_id": chatId
         }
       );

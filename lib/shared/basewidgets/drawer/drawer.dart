@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
@@ -30,7 +31,9 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
             CustomButton(
               onTap: () async {
-            
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                  return const ChatsPage();
+                }));
               },
               isBorder: true,
               isBorderRadius: true,

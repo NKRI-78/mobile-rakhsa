@@ -1,9 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
@@ -57,10 +62,22 @@ class ChatsPageState extends State<ChatsPage> {
               slivers: [
             
                 SliverAppBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  backgroundColor: primaryColor,
                   centerTitle: true,
                   automaticallyImplyLeading: false,
-                  title: const SizedBox(),
+                  title: Text("Notification",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.bold,
+                      color: ColorResources.white
+                    ),
+                  ),
+                  leading: CupertinoNavigationBarBackButton(
+                    color: ColorResources.white,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
 
                 if(notifier.state == ProviderState.loading)
@@ -69,11 +86,26 @@ class ChatsPageState extends State<ChatsPage> {
                       child: CircularProgressIndicator()
                     )
                   ),
+                
+                if(notifier.chats.isEmpty) 
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Text("Belum ada notifikasi",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                        ),
+                      )
+                    )
+                  ),
 
                 if(notifier.state == ProviderState.error)
                   SliverFillRemaining(
                     child: Center(
-                      child: Text(notifier.message)
+                      child: Text(notifier.message,
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
+                      )
                     ),
                   ),
 
