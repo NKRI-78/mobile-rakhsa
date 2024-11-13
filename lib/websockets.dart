@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -29,7 +30,7 @@ class WebSocketsService extends ChangeNotifier {
     connect();
   }
 
-  void connect() {
+  Future<void> connect() async {
     try {
       disposeChannel();
 
@@ -44,7 +45,7 @@ class WebSocketsService extends ChangeNotifier {
         onError: (error) => handleError(error),
       );
 
-      join();
+      await join();
 
       isConnected.value = true; 
       reconnectAttempts = 0; 
@@ -55,14 +56,16 @@ class WebSocketsService extends ChangeNotifier {
     }
   }
 
-  void join() {
+  Future<void> join() async {
+    final userId = await StorageHelper.getUserId();
+
     channel?.sink.add(jsonEncode({
       "type": "join",
-      "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251"
+      "user_id": userId
     }));
   }
 
-  void sos({
+  Future<void> sos({
     required String location,
     required String country,
     required String media,
@@ -70,10 +73,12 @@ class WebSocketsService extends ChangeNotifier {
     required String lat, 
     required String lng,
     required String time
-  }) {
+  }) async {
+    final userId = await StorageHelper.getUserId();
+    
     channel?.sink.add(jsonEncode({
       "type": "sos",
-      "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
+      "user_id": userId,
       "location": location,
       "media": media,
       "ext": ext,
@@ -84,14 +89,16 @@ class WebSocketsService extends ChangeNotifier {
     }));
   }
 
-  void sendMessage({
+  Future<void> sendMessage({
     required String chatId,
     required String recipientId, 
     required String message
-  }) {
+  }) async {
+    final userId = await StorageHelper.getUserId();
+
     channel?.sink.add(jsonEncode({
       "type": "message",
-      "sender": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
+      "sender": userId,
       "chat_id": chatId,
       "recipient": recipientId,
       "text": message

@@ -121,22 +121,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     style: const TextStyle(
                       fontSize: 12.0
                     ),
-                    onChanged: (String val) {
-                      // if (debounce?.isActive ?? false) debounce?.cancel();
-                      //   debounce = Timer(const Duration(milliseconds: 500), () {
-                      //     if(val.isNotEmpty) {
-                      //       webSocketService.typing(
-                      //         recipientId: widget.recipientId, 
-                      //         chatId: widget.chatId,
-                      //       );
-                      //     } else {
-                      //       webSocketService.stopTyping(
-                      //         recipientId: widget.recipientId, 
-                      //         chatId: widget.chatId
-                      //       );
-                      //     }
-                      //   });
-                    },
                     decoration: InputDecoration(
                       isDense: true,
                       hintText: "Message",
@@ -175,12 +159,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         return;
                       }
 
-                      // webSocketService.stopTyping(
-                      //   recipientId: widget.recipientId,
-                      //   chatId: widget.chatId 
-                      // );
-        
-                      webSocketService.sendMessage(
+                      await webSocketService.sendMessage(
                         chatId: widget.chatId,
                         recipientId: widget.recipientId, 
                         message: messageC.text,
@@ -205,7 +184,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         body: SafeArea(
           child: Consumer<GetMessagesNotifier>(
             builder: (__, notifier, _) {
-              
               return RefreshIndicator(
                 onRefresh: () {
                   return Future.sync(() {

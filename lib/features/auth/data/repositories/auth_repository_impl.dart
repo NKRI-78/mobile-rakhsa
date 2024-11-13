@@ -5,6 +5,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
+import 'package:rakhsa/features/auth/data/models/profile.dart';
 
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
 
@@ -23,6 +24,18 @@ class AuthRepositoryImpl implements AuthRepository {
         value: value,
         password: password
       );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override 
+  Future<Either<Failure, ProfileModel>> getProfile() async {
+    try {
+      var result = await remoteDataSource.getProfile();
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

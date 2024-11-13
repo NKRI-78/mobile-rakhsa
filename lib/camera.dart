@@ -8,11 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:camera/camera.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
 
+import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/media/presentation/providers/upload_media_notifier.dart';
+
 import 'package:rakhsa/websockets.dart';
 
 class CameraPage extends StatefulWidget {
@@ -89,7 +91,7 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
 
-      webSocketsService.sos(
+      await webSocketsService.sos(
         location: widget.location,
         country: widget.country, 
         media: media,
@@ -149,7 +151,7 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
       
-      webSocketsService.sos(
+      await webSocketsService.sos(
         location: widget.location,
         country: widget.country,
         media: media,

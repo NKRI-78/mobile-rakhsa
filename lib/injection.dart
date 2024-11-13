@@ -8,7 +8,9 @@ import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart
 
 import 'package:rakhsa/features/auth/domain/usecases/login.dart';
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
+import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
@@ -43,6 +45,7 @@ void init() {
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
 
   // USE CASE
+  locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
@@ -50,6 +53,7 @@ void init() {
   
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
+  locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
