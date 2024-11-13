@@ -4,6 +4,8 @@ import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register/register_state.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class LoginPage extends StatefulWidget {
@@ -263,10 +265,15 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20.0),
 
                       Center(
-                        child: Text("BUAT AKUN BARU",
-                          style: robotoRegular.copyWith(
-                            color: const Color(0XFFFEE717),
-                            fontWeight: FontWeight.bold
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                          },
+                          child: Text("BUAT AKUN BARU",
+                            style: robotoRegular.copyWith(
+                              color: const Color(0XFFFEE717),
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                       )

@@ -1,4 +1,4 @@
-part of '../../pages/register.dart';
+part of '../../pages/register/register.dart';
 
 class InputNumber extends StatelessWidget {
   const InputNumber({super.key});

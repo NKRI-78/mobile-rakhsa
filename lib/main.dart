@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register.dart';
+import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/global.dart';
 

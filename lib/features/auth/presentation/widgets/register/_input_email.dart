@@ -1,4 +1,4 @@
-part of '../../pages/register.dart';
+part of '../../pages/register/register.dart';
 
 class InputEmail extends StatelessWidget {
   const InputEmail({super.key});

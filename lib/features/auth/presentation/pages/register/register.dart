@@ -5,46 +5,20 @@ import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register/register_state.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
-part '../widgets/register/_input_fullname.dart';
-part '../widgets/register/_input_email.dart';
-part '../widgets/register/_input_number.dart';
-part '../widgets/register/_input_passport.dart';
-part '../widgets/register/_input_number_urgent.dart';
-part '../widgets/register/_field_confirm_password.dart';
-part '../widgets/register/_field_password.dart';
+part '../../widgets/register/_input_fullname.dart';
+part '../../widgets/register/_input_email.dart';
+part '../../widgets/register/_input_number.dart';
+part '../../widgets/register/_input_passport.dart';
+part '../../widgets/register/_input_number_urgent.dart';
+part '../../widgets/register/_field_confirm_password.dart';
+part '../../widgets/register/_field_password.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
-
-  @override
-  State<RegisterPage> createState() => RegisterPageState();
-}
-
-class RegisterPageState extends State<RegisterPage> {
-
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  late TextEditingController emailC; 
-  late TextEditingController passwordC; 
-
-  @override 
-  void initState() {
-    super.initState();
-
-    emailC = TextEditingController();
-    passwordC = TextEditingController();
-  }
-
-  @override 
-  void dispose() {
-    emailC.dispose();
-    passwordC.dispose();
-
-    super.dispose();
-  }
+class RegisterScreeState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +84,6 @@ class RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 10.0),
                 Form(
-                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -147,7 +120,9 @@ class RegisterPageState extends State<RegisterPage> {
                         height: 8,
                       ),
                       CustomButton(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterOtp()));
+                        },
                         isBorder: false,
                         isBorderRadius: true,
                         isBoxShadow: false,
