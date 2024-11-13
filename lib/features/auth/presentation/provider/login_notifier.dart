@@ -5,7 +5,7 @@ import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/login.dart';
 
 class LoginNotifier with ChangeNotifier {
-  final LoginUseCase loginUseCase;
+  final LoginUseCase useCase;
 
   AuthModel _authModel = AuthModel();
   AuthModel get authModel => _authModel;
@@ -17,7 +17,7 @@ class LoginNotifier with ChangeNotifier {
   ProviderState get providerState => _providerState;
 
   LoginNotifier({
-    required this.loginUseCase
+    required this.useCase
   });
 
   void setStateProviderState(ProviderState param) {
@@ -32,7 +32,7 @@ class LoginNotifier with ChangeNotifier {
   }) async {
     setStateProviderState(ProviderState.loading);
 
-    final login = await loginUseCase.execute(
+    final login = await useCase.execute(
       value: value, 
       password: password
     );

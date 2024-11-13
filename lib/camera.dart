@@ -3,10 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:camera/camera.dart';
 
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/media/presentation/providers/upload_media_notifier.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -19,6 +22,8 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
+  late UploadMediaNotifier uploadMediaNotifier;
+
   bool isRecording = false;
   bool isVideoMode = false;
   int recordTimeLeft = 10; 
@@ -26,6 +31,8 @@ class CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
+
+    uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     initializeCamera();
   }
@@ -50,6 +57,10 @@ class CameraPageState extends State<CameraPage> {
     try {
       final image = await controller!.takePicture();
       File file = File(image.path);
+
+      await uploadMediaNotifier.send(file: file, folderName: "pictures");
+
+      String media = uploadMediaNotifier.entity!.path;
 
     } catch (e) {
       debugPrint('Error taking picture: $e');
@@ -88,6 +99,10 @@ class CameraPageState extends State<CameraPage> {
       final video = await controller!.stopVideoRecording();
       File file = File(video.path);
       
+      await uploadMediaNotifier.send(file: file, folderName: "videos");
+
+      String media = uploadMediaNotifier.entity!.path;
+
       setState(() => isRecording = false);
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
