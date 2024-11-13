@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/camera.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -408,33 +409,46 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   void startTimer() {
     DateTime now = DateTime.now();
-
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    context.read<WebSocketsService>().sos(
-      location: widget.location,
-      country: widget.country,
-      lat: widget.lat,
-      lng: widget.lng,
-      time: time
-    );
+    // context.read<WebSocketsService>().sos(
+    //   location: widget.location,
+    //   country: widget.country,
+    //   lat: widget.lat,
+    //   lng: widget.lng,
+    //   time: time
+    // );
 
-    setState(() {
-      isPressed = true;
-      countdownTime = 60; 
-    });
+    Navigator.push(context, 
+      MaterialPageRoute(builder: (context) {
+        return CameraPage(
+          location: widget.location, 
+          country: widget.country, 
+          lat: widget.lat, 
+          lng: widget.lng, 
+          time: time
+        ); 
+      })
+    ).then((_) {
 
-    timerController
+      setState(() {
+        isPressed = true;
+        countdownTime = 60; 
+      });
+
+      timerController
       ..reset()
       ..forward().whenComplete(() {
         setState(() => isPressed = false);
         pulseController.reverse();
       });
 
-    timerController.addListener(() {
-      setState(() {
-        countdownTime = (60 - (timerController.value * 60)).round();
+      timerController.addListener(() {
+        setState(() {
+          countdownTime = (60 - (timerController.value * 60)).round();
+        });
       });
+
     });
 
   }

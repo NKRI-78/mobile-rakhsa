@@ -10,9 +10,22 @@ import 'package:camera/camera.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/media/presentation/providers/upload_media_notifier.dart';
+import 'package:rakhsa/websockets.dart';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  final String location;
+  final String country;
+  final String lat;
+  final String lng;
+  final String time;
+  const CameraPage({
+    required this.location,
+    required this.country,
+    required this.lat,
+    required this.lng,
+    required this.time,
+    super.key
+  });
 
   @override
   CameraPageState createState() => CameraPageState();
@@ -22,6 +35,7 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
+  late WebSocketsService webSocketsService;
   late UploadMediaNotifier uploadMediaNotifier;
 
   bool isRecording = false;
@@ -32,6 +46,7 @@ class CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
 
+    webSocketsService = context.read<WebSocketsService>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     initializeCamera();
@@ -62,6 +77,18 @@ class CameraPageState extends State<CameraPage> {
 
       String media = uploadMediaNotifier.entity!.path;
 
+      webSocketsService.sos(
+        location: widget.location,
+        country: widget.country, 
+        media: media,
+        lat: widget.lat, lng: widget.lng, 
+        time: widget.time
+      );
+      
+      if(mounted) {
+        Navigator.pop(context, "start");
+      }
+
     } catch (e) {
       debugPrint('Error taking picture: $e');
     }
@@ -72,6 +99,7 @@ class CameraPageState extends State<CameraPage> {
 
     try {
       await controller!.startVideoRecording();
+
       setState(() {
         isRecording = true;
         recordTimeLeft = 10;
@@ -102,6 +130,18 @@ class CameraPageState extends State<CameraPage> {
       await uploadMediaNotifier.send(file: file, folderName: "videos");
 
       String media = uploadMediaNotifier.entity!.path;
+
+      webSocketsService.sos(
+        location: widget.location,
+        country: widget.country,
+        media: media,
+        lat: widget.lat, lng: widget.lng, 
+        time: widget.time
+      );
+
+      if(mounted) {
+        Navigator.pop(context, "start");
+      }
 
       setState(() => isRecording = false);
     } catch (e) {

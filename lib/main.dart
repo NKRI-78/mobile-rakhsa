@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
-import 'package:rakhsa/camera.dart';
+
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/global.dart';
 
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const CameraPage(),
+      home: const DashboardScreen(),
     );
   }
 }

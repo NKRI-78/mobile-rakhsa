@@ -65,6 +65,7 @@ class WebSocketsService extends ChangeNotifier {
   void sos({
     required String location,
     required String country,
+    required String media,
     required String lat, 
     required String lng,
     required String time
@@ -73,6 +74,7 @@ class WebSocketsService extends ChangeNotifier {
       "type": "sos",
       "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
       "location": location,
+      "media": media,
       "lat": lat, 
       "lng": lng,
       "country": country,
