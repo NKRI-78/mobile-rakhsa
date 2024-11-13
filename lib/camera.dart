@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
 import 'package:camera/camera.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -34,12 +37,16 @@ class CameraPage extends StatefulWidget {
 class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
+  
 
   late WebSocketsService webSocketsService;
   late UploadMediaNotifier uploadMediaNotifier;
 
+  bool loading = false;
+
   bool isRecording = false;
-  bool isVideoMode = false;
+  bool isVideoMode = false;  
+
   int recordTimeLeft = 10; 
 
   @override
@@ -73,14 +80,20 @@ class CameraPageState extends State<CameraPage> {
       final image = await controller!.takePicture();
       File file = File(image.path);
 
+      setState(() => loading = true);
+
       await uploadMediaNotifier.send(file: file, folderName: "pictures");
 
+      setState(() => loading = false);
+
       String media = uploadMediaNotifier.entity!.path;
+      String ext = media.split('/').last.split('.').last;
 
       webSocketsService.sos(
         location: widget.location,
         country: widget.country, 
         media: media,
+        ext: ext,
         lat: widget.lat, lng: widget.lng, 
         time: widget.time
       );
@@ -126,15 +139,21 @@ class CameraPageState extends State<CameraPage> {
     try {
       final video = await controller!.stopVideoRecording();
       File file = File(video.path);
+
+      setState(() => loading = true);
       
       await uploadMediaNotifier.send(file: file, folderName: "videos");
 
-      String media = uploadMediaNotifier.entity!.path;
+      setState(() => loading = false);
 
+      String media = uploadMediaNotifier.entity!.path;
+      String ext = media.split('/').last.split('.').last;
+      
       webSocketsService.sos(
         location: widget.location,
         country: widget.country,
         media: media,
+        ext: ext,
         lat: widget.lat, lng: widget.lng, 
         time: widget.time
       );
@@ -157,85 +176,96 @@ class CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: controller == null || !controller!.value.isInitialized
-      ? const Center(
-          child: CircularProgressIndicator()
-        )
-      : Stack(
-          clipBehavior: Clip.none,
-          children: [
-
-          CameraPreview(controller!),
-
-          Positioned(
-            bottom: 20,
-            left: 0.0,
-            right: 0.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                isVideoMode 
-                ? IconButton(
+    return ModalProgressHUD(
+      inAsyncCall: loading,
+      progressIndicator: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: ColorResources.white,
+          borderRadius: BorderRadius.circular(50.0)
+        ),
+        child: const CircularProgressIndicator()
+      ),
+      child: Scaffold(
+        body: controller == null || !controller!.value.isInitialized
+        ? const Center(
+            child: CircularProgressIndicator()
+          )
+        : Stack(
+            clipBehavior: Clip.none,
+            children: [
+      
+            CameraPreview(controller!),
+      
+            Positioned(
+              bottom: 20,
+              left: 0.0,
+              right: 0.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+      
+                  isVideoMode 
+                  ? IconButton(
+                      icon: Icon(
+                      isRecording 
+                      ? Icons.stop 
+                      : Icons.fiber_manual_record,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      onPressed: isVideoMode
+                      ? (isRecording ? stopVideoRecording : startVideoRecording)
+                      : null,
+                    ) 
+                  : IconButton(
                     icon: Icon(
-                    isRecording 
-                    ? Icons.stop 
-                    : Icons.fiber_manual_record,
-                      color: Colors.red,
+                      Icons.camera_alt,
+                      color: isVideoMode ? Colors.white : Colors.blueAccent,
                       size: 30,
                     ),
-                    onPressed: isVideoMode
-                    ? (isRecording ? stopVideoRecording : startVideoRecording)
-                    : null,
-                  ) 
-                : IconButton(
-                  icon: Icon(
-                    Icons.camera_alt,
-                    color: isVideoMode ? Colors.white : Colors.blueAccent,
-                    size: 30,
+                    onPressed: !isVideoMode ? takePicture : null,
                   ),
-                  onPressed: !isVideoMode ? takePicture : null,
-                ),
-
-                if (isRecording)
-                  Text('$recordTimeLeft s',
-                    style: robotoRegular.copyWith(
-                      color: Colors.white, 
-                      fontSize: Dimensions.fontSizeLarge
+      
+                  if (isRecording)
+                    Text('$recordTimeLeft s',
+                      style: robotoRegular.copyWith(
+                        color: Colors.white, 
+                        fontSize: Dimensions.fontSizeLarge
+                      ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-
-          Positioned(
-            top: 50,
-            right: 20,
-            child: IconButton(
-              icon: Icon(
-                isVideoMode ? Icons.camera : Icons.videocam,
-                color: Colors.white,
-                size: 30,
-              ),
-              onPressed: toggleMode,
-            ),
-          ),
-
-          Positioned(
-            top: 50,
-            left: 20,
-            child: Text(
-              isVideoMode ? "Video Mode" : "Photo Mode",
-              style: robotoRegular.copyWith(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                ],
               ),
             ),
-          ),
-
-        ],
+      
+            Positioned(
+              top: 50,
+              right: 20,
+              child: IconButton(
+                icon: Icon(
+                  isVideoMode ? Icons.camera : Icons.videocam,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: toggleMode,
+              ),
+            ),
+      
+            Positioned(
+              top: 50,
+              left: 20,
+              child: Text(
+                isVideoMode ? "Video Mode" : "Photo Mode",
+                style: robotoRegular.copyWith(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+      
+          ],
+        ),
       ),
     );
   }

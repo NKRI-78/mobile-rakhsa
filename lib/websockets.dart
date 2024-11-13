@@ -66,6 +66,7 @@ class WebSocketsService extends ChangeNotifier {
     required String location,
     required String country,
     required String media,
+    required String ext,
     required String lat, 
     required String lng,
     required String time
@@ -75,6 +76,7 @@ class WebSocketsService extends ChangeNotifier {
       "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251",
       "location": location,
       "media": media,
+      "ext": ext,
       "lat": lat, 
       "lng": lng,
       "country": country,
