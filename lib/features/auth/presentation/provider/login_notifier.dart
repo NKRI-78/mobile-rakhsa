@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 
 import 'package:rakhsa/features/auth/domain/usecases/login.dart';
@@ -42,7 +43,12 @@ class LoginNotifier with ChangeNotifier {
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
+
         _authModel = r;
+
+        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
         setStateProviderState(ProviderState.loaded);
       }
     );

@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
+import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
@@ -21,24 +28,46 @@ class LoginPageState extends State<LoginPage> {
 
   bool isObscure = false;
 
-  late TextEditingController emailC; 
+  late LoginNotifier loginNotifier;
+
+  late TextEditingController valC; 
   late TextEditingController passwordC; 
 
   void setStateObscure() {
     setState(() => isObscure = !isObscure);
   }
 
+  Future<void> submitLogin() async {
+    String val = valC.text;
+    String pass = valC.text;
+
+    if(val.isEmpty) return;
+    if(pass.isEmpty) return;
+
+    await loginNotifier.login(
+      value: val, 
+      password: pass
+    );
+
+    if(loginNotifier.message != "") {
+      ShowSnackbar.snackbarErr(loginNotifier.message);
+      return;
+    }
+  }
+
   @override 
   void initState() {
     super.initState();
 
-    emailC = TextEditingController();
+    valC = TextEditingController();
     passwordC = TextEditingController();
+
+    loginNotifier = context.read<LoginNotifier>();
   }
 
   @override 
   void dispose() {
-    emailC.dispose();
+    valC.dispose();
     passwordC.dispose();
 
     super.dispose();
@@ -121,7 +150,7 @@ class LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 40.0,
                         child: TextField(
-                          controller: emailC,
+                          controller: valC,
                           cursorColor: ColorResources.white,
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
@@ -243,12 +272,16 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20.0),
 
                       CustomButton(
-                        onTap: () {},
+                        onTap: submitLogin,
+                        isLoading: context.watch<LoginNotifier>().providerState == ProviderState.loading 
+                        ? true 
+                        : false,
                         isBorder: false,
                         isBorderRadius: true,
                         isBoxShadow: false,
-                        btnColor: ColorResources.white,
                         btnTxt: "Masuk",
+                        loadingColor: primaryColor,
+                        btnColor: ColorResources.white,
                         btnTextColor: ColorResources.black,
                       ),
 

@@ -5,7 +5,7 @@ class StorageHelper {
 
   static late SharedPreferences sharedPreferences;
 
-  static Future init() async {
+  static Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
@@ -34,7 +34,20 @@ class StorageHelper {
     return token;
   } 
 
-  static void removeToken() async {
+  static Future<String?> getUserId() async {
+    String? userId = await storage.read(key: 'user_id');
+
+    return userId;
+  }
+
+  static Future<void> saveUserId({required String userId}) async {
+    await storage.write(
+      key: "user_id", 
+      value: userId
+    );
+  }
+
+  static Future<void> removeToken() async {
     await storage.delete(key: 'token');
   }
 
