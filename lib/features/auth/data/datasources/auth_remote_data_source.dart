@@ -24,6 +24,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String value,
     required String password
   }) async {
+    debugPrint(value);
+    debugPrint(password);
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/login",
         data: {

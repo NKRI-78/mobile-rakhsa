@@ -4,6 +4,8 @@ import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 
 import 'package:rakhsa/features/auth/domain/usecases/login.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/global.dart';
 
 class LoginNotifier with ChangeNotifier {
   final LoginUseCase useCase;
@@ -48,6 +50,13 @@ class LoginNotifier with ChangeNotifier {
 
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+        Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
+          MaterialPageRoute(builder: (context) {
+            return const DashboardScreen();
+          }),
+          (route) => false,
+        );
 
         setStateProviderState(ProviderState.loaded);
       }

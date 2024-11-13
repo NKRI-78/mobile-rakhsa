@@ -39,7 +39,7 @@ class LoginPageState extends State<LoginPage> {
 
   Future<void> submitLogin() async {
     String val = valC.text;
-    String pass = valC.text;
+    String pass = passwordC.text;
 
     if(val.isEmpty) return;
     if(pass.isEmpty) return;
