@@ -229,7 +229,7 @@ class HomePageState extends State<HomePage> {
                         Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
                           textAlign: TextAlign.center,
                           style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
+                            fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.hintColor
                           ),
                         )
