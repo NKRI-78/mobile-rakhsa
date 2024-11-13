@@ -1,12 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
@@ -29,8 +29,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
           children: [
 
             CustomButton(
-              onTap: () {
-              
+              onTap: () async {
+            
               },
               isBorder: true,
               isBorderRadius: true,
@@ -40,10 +40,16 @@ class DrawerWidgetState extends State<DrawerWidget> {
               btnTxt: "Notification",
             ),
 
-            Image.asset(logoutTitle,
-              width: 110.0,
-              height: 110.0,
+            Bouncing(
+              child: Image.asset(logoutTitle,
+                width: 110.0,
+                height: 110.0,
+              ), 
+              onPress: () async {
+                await GeneralModal.logout();
+              }
             )
+            
 
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/global.dart';
 
@@ -26,8 +27,52 @@ Future<void> main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+
+  Widget home = const SizedBox();
+
+  Future<void> getData() async {
+    bool? isLoggedIn = await StorageHelper.isLoggedIn();
+    
+    if(isLoggedIn != null) {
+
+      if(isLoggedIn) {
+        if(mounted) {
+          setState(() => home = const DashboardScreen()); 
+        }
+      } else {
+        if(mounted) {
+          setState(() => home = const LoginPage()); 
+        }
+      }
+
+    } else {
+
+      if(mounted) {
+        setState(() => home = const LoginPage()); 
+      }
+
+    }
+  }
+
+  @override 
+  void initState() {
+    super.initState();
+
+    Future.microtask(() => getData());
+  }
+
+  @override 
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +84,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: home,
     );
   }
 }
