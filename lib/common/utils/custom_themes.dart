@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-const poppinsRegular = TextStyle(
-  fontFamily: 'Poppins',
+const gilroyRegular = TextStyle(
+  fontFamily: 'Gilroy',
   fontSize: Dimensions.fontSizeDefault,
 );
 
@@ -12,7 +12,3 @@ const robotoRegular = TextStyle(
   fontSize: Dimensions.fontSizeDefault,
 );
 
-const interRegular = TextStyle(
-  fontFamily: 'Inter',
-  fontSize: Dimensions.fontSizeDefault,
-);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
+import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -17,9 +18,11 @@ class DashboardScreen extends StatefulWidget {
 
 class DashboardScreenState extends State<DashboardScreen> {
 
+  static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
   List<Map<String, dynamic>> pages = [
     {
-      'page': const HomePage(),
+      'page': HomePage(globalKey: globalKey),
       'title': 'Home',
     },
     {
@@ -50,6 +53,10 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
+      drawer: const SafeArea(
+        child: DrawerWidget()
+      ),
       body: pages[selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavyBar( 
         selectedIndex: selectedPageIndex,

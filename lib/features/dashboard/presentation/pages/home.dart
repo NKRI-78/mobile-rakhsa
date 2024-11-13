@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -14,18 +15,21 @@ import 'package:rakhsa/camera.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/websockets.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final GlobalKey<ScaffoldState> globalKey;
+  const HomePage({
+    required this.globalKey,
+    super.key
+  });
 
   @override
   State<HomePage> createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
-
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   late WebSocketsService webSocketsService;
 
@@ -122,7 +126,6 @@ class HomePageState extends State<HomePage> {
     Provider.of<WebSocketsService>(context);
 
     return Scaffold(
-      key: globalKey,
       body: SafeArea(
         child: RefreshIndicator.adaptive(
           onRefresh: () {
@@ -170,31 +173,36 @@ class HomePageState extends State<HomePage> {
                         ],
                       ),
 
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          
-                          CachedNetworkImage(
-                            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
-                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                              );
-                            },
-                            placeholder: (BuildContext context, String url) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                            errorWidget: (BuildContext context, String url, Object error) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                          )
-
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          widget.globalKey.currentState?.openDrawer();
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            
+                            CachedNetworkImage(
+                              imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return CircleAvatar(
+                                  backgroundImage: imageProvider,
+                                );
+                              },
+                              placeholder: (BuildContext context, String url) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url, Object error) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                            )
+                        
+                          ],
+                        ),
                       )
               
                     ],

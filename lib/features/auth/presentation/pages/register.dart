@@ -72,7 +72,7 @@ class RegisterPageState extends State<RegisterPage> {
                       decoration: const BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.fill,
-                          image: AssetImage(loginOrnamen)
+                          image: AssetImage(loginOrnament)
                         )
                       ),
                     ),

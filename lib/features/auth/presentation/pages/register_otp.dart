@@ -26,7 +26,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(loginOrnamen)
+                        image: AssetImage(loginOrnament)
                       )
                     ),
                   ),
