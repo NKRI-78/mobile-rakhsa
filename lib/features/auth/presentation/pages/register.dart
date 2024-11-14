@@ -87,10 +87,15 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50),
-                        child: Image.asset(
-                          "assets/images/forward.png"
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: Image.asset(
+                            "assets/images/forward.png"
+                          ),
                         ),
                       ),
                     )

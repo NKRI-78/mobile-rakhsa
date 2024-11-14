@@ -113,7 +113,6 @@ class WebSocketsService extends ChangeNotifier {
     switch (message["type"]) {
       
       case "confirm-sos":
-
         String chatId = message["chat_id"];
         String recipientId = message["recipient_id"];
 
@@ -125,13 +124,10 @@ class WebSocketsService extends ChangeNotifier {
         })).then((_) {
           chatsNotifier.getChats();
         });
-
       break;
 
       case "message":
-
         messageNotifier.appendMessage(data: message);
-      
       break;
 
       default:

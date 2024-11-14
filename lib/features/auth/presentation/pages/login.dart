@@ -10,6 +10,7 @@ import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 
@@ -327,10 +328,19 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20.0),
 
                       Center(
-                        child: Text("BUAT AKUN BARU",
-                          style: robotoRegular.copyWith(
-                            color: const Color(0XFFFEE717),
-                            fontWeight: FontWeight.bold
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return const RegisterPage();
+                              },
+                            ));
+                          },
+                          child: Text("BUAT AKUN BARU",
+                            style: robotoRegular.copyWith(
+                              color: const Color(0XFFFEE717),
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                       )
