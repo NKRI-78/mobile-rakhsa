@@ -14,17 +14,13 @@ import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/providers.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await StorageHelper.init();
 
   di.init();
 
-  runApp(MultiProvider(
-    providers: providers,
-    child: const MyApp()
-  ));
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -88,4 +84,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-

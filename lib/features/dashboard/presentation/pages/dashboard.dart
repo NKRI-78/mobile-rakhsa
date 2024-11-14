@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
+import 'package:rakhsa/features/event/persentation/pages/list.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -34,7 +35,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       'title': 'Menu 2',
     },
     {
-      'page': const SizedBox(),
+      'page': const EventListPage(),
       'title': 'Menu 3',
     },
   ];
@@ -106,10 +107,10 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.list,
+              Icons.event,
               size: 20.0,
             ),
-            title: Text('Menu 3',
+            title: Text('Event',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.white
