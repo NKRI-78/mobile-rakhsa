@@ -10,12 +10,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:rakhsa/camera.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
 
+import 'package:rakhsa/camera.dart';
+
+import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
@@ -215,7 +217,7 @@ class HomePageState extends State<HomePage> {
                               children: [
                                 
                                 CachedNetworkImage(
-                                  imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                                  imageUrl: notifier.profileModel.data?.avatar ?? "-",
                                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                     return CircleAvatar(
                                       backgroundImage: imageProvider,
@@ -311,7 +313,7 @@ class HomePageState extends State<HomePage> {
                                   children: [
 
                                     CachedNetworkImage(
-                                      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                                      imageUrl: notifier.profileModel.data?.avatar ?? "-",
                                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                         return CircleAvatar(
                                           backgroundImage: imageProvider,
