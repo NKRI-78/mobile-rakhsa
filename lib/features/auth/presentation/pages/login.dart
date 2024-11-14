@@ -15,6 +15,7 @@ import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,30 +35,44 @@ class LoginPageState extends State<LoginPage> {
   late TextEditingController valC; 
   late TextEditingController passwordC; 
 
+  FocusNode valFn = FocusNode();
+  FocusNode passwordFn = FocusNode();
+
   void setStateObscure() {
     setState(() => isObscure = !isObscure);
   }
 
   Future<void> submitLogin() async {
-    String val = valC.text;
-    String password = passwordC.text;
-
-    if(val.isEmpty) { 
-      ShowSnackbar.snackbarErr("Field E-mail / Nomor Hp is required");
-      return;
+    bool submissionValidation(
+      BuildContext context, String email, String password) {
+    if (email.isEmpty) {
+        ShowSnackbar.snackbarErr("Email tidak boleh kosong");
+        valFn.requestFocus();
+        return false;
+      } else if (!email.isValidEmail()) {
+        ShowSnackbar.snackbarErr("Email tidak valid");
+        valFn.requestFocus();
+        return false;
+      } else if (password.isEmpty) {
+        ShowSnackbar.snackbarErr("Password tidak boleh kosong");
+        passwordFn.requestFocus();
+        return false;
+      }
+      return true;
     }
 
-    if(password.isEmpty) {
-      ShowSnackbar.snackbarErr("Field Password is required");
-      return;
+
+    String val = valC.text.trim();
+    String pass = passwordC.text.trim();
+
+    final bool isClear = submissionValidation(context, val, pass);
+
+    if(isClear){
+      await loginNotifier.login(
+        value: val, 
+        password: pass
+      );
     }
-
-    if(password.isEmpty) return;
-
-    await loginNotifier.login(
-      value: val, 
-      password: password
-    );
 
     if(loginNotifier.message != "") {
       ShowSnackbar.snackbarErr(loginNotifier.message);
@@ -157,50 +172,16 @@ class LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 8.0),
                 
-                      SizedBox(
-                        height: 40.0,
-                        child: TextField(
-                          controller: valC,
-                          cursorColor: ColorResources.white,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.white
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: ColorResources.transparent,
-                            contentPadding: EdgeInsets.only(
-                              top: 16.0,
-                              left: 12.0,
-                              right: 12.0,
-                              bottom: 48.0
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white,
-                              )
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                          ),
-                        ),
+                      CustomTextField(
+                        controller: valC,
+                        labelText: '',
+                        isEmail: true,
+                        onChanged: (p0) {},
+                        hintText: "",
+                        fillColor: Colors.transparent,
+                        emptyText: "Email wajib di isi",
+                        textInputType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
                       ),
 
                       const SizedBox(height: 15.0),
@@ -219,64 +200,15 @@ class LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 8.0),
                 
-                      SizedBox(
-                        height: 40.0,
-                        child: TextField(
-                          controller: passwordC,
-                          cursorColor: ColorResources.white,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.white
-                          ),
-                          obscureText: isObscure,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: ColorResources.transparent,
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setStateObscure();
-                              },
-                              child: isObscure 
-                            ? const Icon(
-                                Icons.visibility,
-                                color: ColorResources.white,
-                              ) 
-                            : const Icon(Icons.visibility_off,
-                                color: ColorResources.white,
-                              )
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                              top: 16.0,
-                              left: 12.0,
-                              right: 12.0,
-                              bottom: 48.0
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white,
-                              )
-                            ),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                          ),
-                        ),
+                      CustomTextField(
+                        controller: passwordC,
+                        labelText: "",
+                        isPassword: true,
+                        hintText: "",
+                        fillColor: Colors.transparent,
+                        emptyText: "Kata Sandi tidak boleh kosong",
+                        textInputType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
                       ),
 
                       const SizedBox(height: 20.0),
@@ -328,13 +260,9 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20.0),
 
                       Center(
-                        child: GestureDetector(
+                        child: InkWell(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return const RegisterPage();
-                              },
-                            ));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterPage()));
                           },
                           child: Text("BUAT AKUN BARU",
                             style: robotoRegular.copyWith(

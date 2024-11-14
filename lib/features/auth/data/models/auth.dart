@@ -43,6 +43,7 @@ class User {
   String email;
   String phone;
   String role;
+  bool enabled;
 
   User({
     required this.id,
@@ -50,13 +51,15 @@ class User {
     required this.email,
     required this.phone,
     required this.role,
+    required this.enabled,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    name: json["name"],
-    email: json["email"],
-    phone: json["phone"],
-    role: json["role"],
+    id: json["id"] ?? "",
+    name: json["name"] ?? "",
+    email: json["email"] ?? "",
+    phone: json["phone"] ?? "",
+    role: json["role"] ?? "",
+    enabled: json["enabled"] ?? "",
   );
 }

@@ -4,6 +4,12 @@ import 'package:get_it/get_it.dart';
 import 'package:rakhsa/common/helpers/dio.dart';
 
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:rakhsa/features/auth/domain/usecases/register.dart';
+import 'package:rakhsa/features/auth/domain/usecases/resendOtp.dart';
+import 'package:rakhsa/features/auth/domain/usecases/verifyOtp.dart';
+import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 
@@ -48,6 +54,9 @@ void init() {
   // USE CASE
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
+  locator.registerLazySingleton(() => RegisterUseCase(locator()));
+  locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
+  locator.registerLazySingleton(() => ResendOtpUseCase(locator()));
   locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
@@ -56,6 +65,9 @@ void init() {
   // NOTIFIER 
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));

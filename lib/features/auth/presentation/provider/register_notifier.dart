@@ -3,13 +3,12 @@ import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 
-import 'package:rakhsa/features/auth/domain/usecases/login.dart';
+import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/global.dart';
 
-class LoginNotifier with ChangeNotifier {
-  final LoginUseCase useCase;
+class RegisterNotifier with ChangeNotifier {
+  final RegisterUseCase useCase;
 
   AuthModel _authModel = AuthModel();
   AuthModel get authModel => _authModel;
@@ -20,7 +19,7 @@ class LoginNotifier with ChangeNotifier {
   ProviderState _providerState = ProviderState.idle; 
   ProviderState get providerState => _providerState;
 
-  LoginNotifier({
+  RegisterNotifier({
     required this.useCase
   });
 
@@ -30,18 +29,26 @@ class LoginNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login({
-    required String value, 
+  Future<void> register({
+    required String fullname,
+    required String email,
+    required String phone,
+    required String passport,
+    required String emergencyContact,
     required String password
   }) async {
     setStateProviderState(ProviderState.loading);
 
-    final login = await useCase.execute(
-      value: value, 
-      password: password
+    final register = await useCase.execute(
+      fullname: fullname,
+      email: email,
+      phone: phone,
+      passport: passport,
+      emergencyContact: emergencyContact,
+      password: password,
     );
     
-    login.fold(
+    register.fold(
       (l) { 
         _message = l.message;
         setStateProviderState(ProviderState.error);
@@ -52,23 +59,12 @@ class LoginNotifier with ChangeNotifier {
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        debugPrint("Is Enable ${authModel.data?.user.enabled}");
-
-        if(authModel.data!.user.enabled){  
-          Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) {
-              return const DashboardScreen();
-            }),
-            (route) => false,
-          );
-        } else {
-          Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) {
-              return RegisterOtp(email: value,);
-            }),
-            (route) => false,
-          );
-        }
+        Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
+          MaterialPageRoute(builder: (context) {
+            return RegisterOtp(email: email,);
+          }),
+          (route) => false,
+        );
 
         setStateProviderState(ProviderState.loaded);
       }

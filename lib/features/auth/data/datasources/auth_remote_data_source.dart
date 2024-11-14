@@ -14,6 +14,21 @@ abstract class AuthRemoteDataSource {
     required String password
   });
   Future<ProfileModel> getProfile();
+  Future<AuthModel> register({
+    required String fullname,
+    required String email,
+    required String phone,
+    required String passport,
+    required String emergencyContact,
+    required String password
+  });
+  Future<void> verifyOtp({
+    required String email,
+    required String otp,
+  });
+  Future<void> resendOtp({
+    required String email,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -64,6 +79,79 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     } 
+  }
+
+  @override
+  Future<AuthModel> register({
+    required String fullname,
+    required String email,
+    required String phone,
+    required String passport,
+    required String emergencyContact,
+    required String password
+  }) async {
+    debugPrint(fullname);
+    debugPrint(email);
+    debugPrint(phone);
+    debugPrint(passport);
+    debugPrint(emergencyContact);
+    debugPrint(password);
+    try {
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/register-member",
+        data: {
+          "fullname": fullname,
+          "email": email,
+          "phone": phone,
+          "passport": passport,
+          "emergency_contact": emergencyContact,
+          "password": password
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      AuthModel authModel = AuthModel.fromJson(data);
+      return authModel;
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    } 
+  }
+  
+  @override
+  Future<void> verifyOtp({required String email, required String otp}) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/verify-otp",
+        data: {
+          "email": email,
+          "otp": otp,
+        }
+      );
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> resendOtp({required String email}) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/resend-otp",
+        data: {
+          "email": email,
+        }
+      );
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
   }
 
 }
