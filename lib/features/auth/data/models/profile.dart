@@ -41,7 +41,7 @@ class ProfileData {
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
     id: json["id"],
     username: json["username"],
-    avatar: json["avatar"],
+    avatar: json["avatar"] ?? "-",
     address: json["address"],
     passport: json["passport"],
     emergencyContact: json["emergency_contact"],
