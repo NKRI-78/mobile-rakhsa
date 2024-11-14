@@ -39,14 +39,23 @@ class LoginPageState extends State<LoginPage> {
 
   Future<void> submitLogin() async {
     String val = valC.text;
-    String pass = passwordC.text;
+    String password = passwordC.text;
 
-    if(val.isEmpty) return;
-    if(pass.isEmpty) return;
+    if(val.isEmpty) { 
+      ShowSnackbar.snackbarErr("Field E-mail / Nomor Hp is required");
+      return;
+    }
+
+    if(password.isEmpty) {
+      ShowSnackbar.snackbarErr("Field Password is required");
+      return;
+    }
+
+    if(password.isEmpty) return;
 
     await loginNotifier.login(
       value: val, 
-      password: pass
+      password: password
     );
 
     if(loginNotifier.message != "") {
