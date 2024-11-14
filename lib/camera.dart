@@ -13,7 +13,7 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/media/presentation/providers/upload_media_notifier.dart';
+import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
 

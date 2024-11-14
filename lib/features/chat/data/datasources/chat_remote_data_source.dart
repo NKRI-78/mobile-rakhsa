@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/features/chat/data/models/chats.dart';
 
+import 'package:rakhsa/features/chat/data/models/chats.dart';
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 
 abstract class ChatRemoteDataSource {
@@ -49,7 +49,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         }
       );
       Map<String, dynamic> data = response.data;
-      debugPrint(data.toString());
       MessageModel messageModel = MessageModel.fromJson(data);
       return messageModel;
     } on DioException catch(e) {

@@ -11,10 +11,12 @@ import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rakhsa/camera.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -32,6 +34,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
 
   late WebSocketsService webSocketsService;
+  late ProfileNotifier profileNotifier;
 
   String currentAddress = "";
   String currentCountry = "";
@@ -39,6 +42,11 @@ class HomePageState extends State<HomePage> {
   String currentLng = "";
 
   bool loadingCurrentAddress = true;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      profileNotifier.getProfile();
+  }
 
   Future<void> checkAndGetLocation() async {
     bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -111,8 +119,11 @@ class HomePageState extends State<HomePage> {
     super.initState();
 
     webSocketsService = context.read<WebSocketsService>();
+    profileNotifier = context.read<ProfileNotifier>();
 
     checkAndGetLocation();
+
+    Future.microtask(() => getData());
   }
 
   @override
@@ -126,158 +137,83 @@ class HomePageState extends State<HomePage> {
     Provider.of<WebSocketsService>(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator.adaptive(
-          onRefresh: () {
-            return Future.sync(() {
-              
-            });
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              padding: const EdgeInsets.all(8.0),
-              margin: const EdgeInsets.only(
-                top: 16.0,
-                left: 14.0,
-                right: 14.0,
-                bottom: 16.0
+      body: Consumer<ProfileNotifier>(
+        builder: (BuildContext context, ProfileNotifier notifier, Widget? child) {
+          if(notifier.providerState == ProviderState.loading) {
+            return const Center(
+              child: SizedBox(
+                width: 16.0,
+                height: 16.0,
+                child: CircularProgressIndicator()
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-              
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
+            );
+          }
+           if(notifier.providerState == ProviderState.error) {
+            return Center(
+              child: Text(notifier.message,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black
+                ),
+              ),
+            );
+          }
+          return SafeArea(
+            child: RefreshIndicator.adaptive(
+              onRefresh: () {
+                return Future.sync(() {
+                  
+                });
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.only(
+                    top: 16.0,
+                    left: 14.0,
+                    right: 14.0,
+                    bottom: 16.0
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-              
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                  
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text("Selamat datang",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeLarge,
-                              color: ColorResources.hintColor
-                            ),
-                          ), 
-                          Text("Reihan Agam",
-                            style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: Dimensions.fontSizeExtraLarge
-                            ),
-                          )
-                        ],
-                      ),
-
-                      GestureDetector(
-                        onTap: () {
-                          widget.globalKey.currentState?.openDrawer();
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            
-                            CachedNetworkImage(
-                              imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return CircleAvatar(
-                                  backgroundImage: imageProvider,
-                                );
-                              },
-                              placeholder: (BuildContext context, String url) {
-                                return const CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, Object error) {
-                                return const CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                );
-                              },
-                            )
-                        
-                          ],
-                        ),
-                      )
-              
-                    ],
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 30.0
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        
-                        Text("Apakah Anda dalam\nkeadaan darurat ?",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeOverLarge,
-                            fontWeight: FontWeight.bold
+                  
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Selamat datang",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  color: ColorResources.hintColor
+                                ),
+                              ), 
+                              Text(notifier.profileModel.data?.username ?? "-",
+                                style: robotoRegular.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Dimensions.fontSizeExtraLarge
+                                ),
+                              )
+                            ],
                           ),
-                        )
 
-                      ]
-                    )
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 20.0
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        
-                        Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
-                          textAlign: TextAlign.center,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.hintColor
-                          ),
-                        )
-
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 55.0
-                    ),
-                    child: SosButton(
-                      location: currentAddress,
-                      country: currentCountry,
-                      lat: currentLat,
-                      lng: currentLng,
-                    )
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 45.0
-                    ),
-                    child: Card(
-                      color: ColorResources.white,
-                      surfaceTintColor: ColorResources.white,
-                      elevation: 1.0,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
+                          GestureDetector(
+                            onTap: () {
+                              widget.globalKey.currentState?.openDrawer();
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-
+                                
                                 CachedNetworkImage(
                                   imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
                                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
@@ -295,53 +231,151 @@ class HomePageState extends State<HomePage> {
                                       backgroundImage: AssetImage('assets/images/default.jpeg'),
                                     );
                                   },
-                                ),
-
-                                const SizedBox(width: 15.0),
-
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-
-                                      Text("Posisi Anda saat ini",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 4.0),
-                                  
-                                      Text(loadingCurrentAddress 
-                                        ? "Mohon tunggu..." 
-                                        : currentAddress,
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeSmall,
-                                          color: ColorResources.black
-                                        ),
-                                      )
-                                  
-                                    ],
-                                  ),
                                 )
-
+                            
                               ],
+                            ),
+                          )
+                  
+                        ],
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text("Apakah Anda dalam\nkeadaan darurat ?",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeOverLarge,
+                                fontWeight: FontWeight.bold
+                              ),
+                            )
+
+                          ]
+                        )
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 20.0
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
+                              textAlign: TextAlign.center,
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: ColorResources.hintColor
+                              ),
                             )
 
                           ],
                         ),
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 55.0
+                        ),
+                        child: SosButton(
+                          location: currentAddress,
+                          country: currentCountry,
+                          lat: currentLat,
+                          lng: currentLng,
+                        )
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 45.0
+                        ),
+                        child: Card(
+                          color: ColorResources.white,
+                          surfaceTintColor: ColorResources.white,
+                          elevation: 1.0,
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+
+                                    CachedNetworkImage(
+                                      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                        return CircleAvatar(
+                                          backgroundImage: imageProvider,
+                                        );
+                                      },
+                                      placeholder: (BuildContext context, String url) {
+                                        return const CircleAvatar(
+                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                        );
+                                      },
+                                      errorWidget: (BuildContext context, String url, Object error) {
+                                        return const CircleAvatar(
+                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                        );
+                                      },
+                                    ),
+
+                                    const SizedBox(width: 15.0),
+
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+
+                                          Text("Posisi Anda saat ini",
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 4.0),
+                                      
+                                          Text(loadingCurrentAddress 
+                                            ? "Mohon tunggu..." 
+                                            : currentAddress,
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall,
+                                              color: ColorResources.black
+                                            ),
+                                          )
+                                      
+                                        ],
+                                      ),
+                                    )
+
+                                  ],
+                                )
+
+                              ],
+                            ),
+                          )
+                        )
                       )
-                    )
-                  )
-              
-                ],
+                  
+                    ],
+                  ),
+                )
               ),
-            )
-          ),
-        ),
-      )
+            ),
+          );
+        },
+      ) 
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 
 import 'package:rakhsa/global.dart';
@@ -14,6 +15,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
 
+  final GetChatsNotifier chatsNotifier;
   final GetMessagesNotifier messageNotifier;
 
   int maxReconnectAttempts = 5;
@@ -25,6 +27,7 @@ class WebSocketsService extends ChangeNotifier {
   ValueNotifier<bool> isConnected = ValueNotifier(false); 
 
   WebSocketsService({
+    required this.chatsNotifier,
     required this.messageNotifier
   }) {
     connect();
@@ -110,6 +113,7 @@ class WebSocketsService extends ChangeNotifier {
     switch (message["type"]) {
       
       case "confirm-sos":
+
         String chatId = message["chat_id"];
         String recipientId = message["recipient_id"];
 
@@ -118,11 +122,16 @@ class WebSocketsService extends ChangeNotifier {
             chatId: chatId, 
             recipientId: recipientId
           );
-        }));
+        })).then((_) {
+          chatsNotifier.getChats();
+        });
+
       break;
 
       case "message":
+
         messageNotifier.appendMessage(data: message);
+      
       break;
 
       default:

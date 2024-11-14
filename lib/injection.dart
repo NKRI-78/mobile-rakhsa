@@ -4,29 +4,30 @@ import 'package:get_it/get_it.dart';
 import 'package:rakhsa/common/helpers/dio.dart';
 
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart';
-
-import 'package:rakhsa/features/auth/domain/usecases/login.dart';
-import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
-import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
-import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-
-import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
-import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
-import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
-
-import 'package:rakhsa/features/chat/data/repositories/chat_repository_impl.dart';
-
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 
-import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:rakhsa/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:rakhsa/features/media/data/repositories/media_repository_impl.dart';
+
+import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
 import 'package:rakhsa/features/media/domain/repositories/media_repository.dart';
+
+import 'package:rakhsa/features/auth/domain/usecases/login.dart';
+import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
+
+import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
+
+import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
+
+import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
+import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
-import 'package:rakhsa/features/media/presentation/providers/upload_media_notifier.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -60,6 +61,7 @@ void init() {
   locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
   
   locator.registerFactory(() => WebSocketsService(
+    chatsNotifier: locator(),
     messageNotifier: locator()
   ));
 

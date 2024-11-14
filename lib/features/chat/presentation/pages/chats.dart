@@ -124,7 +124,9 @@ class ChatsPageState extends State<ChatsPage> {
                               recipientId: chat.user.id,
                               chatId: chat.chat.id,
                             );
-                          }));
+                          })).then((_) {
+                            getData();
+                          });
                         },
                         title: Text(chat.user.name,
                           style: const TextStyle(
@@ -171,20 +173,7 @@ class ChatsPageState extends State<ChatsPage> {
                               ? const SizedBox(height: 8.0)   
                               : const SizedBox(),
  
-                              chat.messages.first.isMe 
-                              ? Icon(Icons.mark_email_read,
-                                  size: 18.0,
-                                  color: chat.messages.first.isRead 
-                                  ? Colors.blue[800]
-                                  : Colors.black,
-                                )  
-                              : chat.countUnread == 0 
-                              ? const SizedBox() 
-                              : Badge(
-                                  alignment: Alignment.topRight,
-                                  offset: const Offset(4, -8),
-                                  label: Text(chat.countUnread.toString()),
-                                )
+                             
                             ],
                           ),
                         );

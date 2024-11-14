@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:grouped_list/grouped_list.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -93,8 +97,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       canPop: true,
       onPopInvoked: (didPop) {
         if (didPop) {
-
+          return;
         }
+        Navigator.pop(context, "refetch");
       },
       child: Scaffold(
         extendBody: true,
@@ -105,8 +110,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: kElevationToShadow[1]
+              color: const Color(0xFFEAEAEA),
+              boxShadow: kElevationToShadow[2]
             ),
             padding: const EdgeInsets.all(10.0),
             child: Row(
@@ -123,28 +128,24 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     ),
                     decoration: InputDecoration(
                       isDense: true,
-                      hintText: "Message",
+                      filled: true,
+                      fillColor: ColorResources.white,
+                      hintText: "ketik pesan singkat dan jelas",
                       hintStyle: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.grey
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(
-                          color: Colors.black
-                        )
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(
-                          color: Colors.black
-                        )
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(
-                          color: Colors.black,
-                        )
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none
                       ),
                     ),
                   ),
@@ -169,9 +170,17 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         messageC.clear();
                       });
                     }, 
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.black,
+                    icon: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: const BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(50.0))
+                      ),
+                      child: const Icon(
+                        Icons.send,
+                        size: 20.0,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 )
@@ -233,7 +242,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                     color: Colors.transparent,
                                     padding: EdgeInsets.zero,
                                     onPressed: () {
-                                      
+                                      Navigator.pop(context, "refetch");
                                     },
                                     child: const Icon(Icons.chevron_left,
                                       color: Colors.white,
@@ -250,13 +259,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                     },
                                     placeholder: (BuildContext context, String url) {
                                       return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/user.png'),
+                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
                                         radius: 16.0,
                                       );
                                     },
                                     errorWidget: (BuildContext context, String url, Object error) {
                                       return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/user.png'),
+                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
                                         radius: 16.0,
                                       );
                                     },
@@ -357,66 +366,67 @@ class ChatBubble extends StatelessWidget {
       alignment: isMe 
       ? Alignment.centerRight 
       : Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
-        decoration: BoxDecoration(
-          color: isMe ? Colors.purple[200] : Colors.grey[200],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(isMe ? 12.0 : 0.0),
-            topRight: Radius.circular(isMe ? 0.0 : 12.0),
-            bottomLeft: const Radius.circular(12.0),
-            bottomRight: const Radius.circular(12.0),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-
-            Text(text,
-              style: TextStyle(
-                color: isMe 
-                ? Colors.white 
-                : Colors.black,
-                fontSize: Dimensions.fontSizeDefault,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+         
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
+            margin: const EdgeInsets.symmetric(vertical: 10.0),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+            decoration: BoxDecoration(
+              color: isMe ? primaryColor : Colors.grey[200],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(isMe ? 12.0 : 0.0),
+                topRight: Radius.circular(isMe ? 0.0 : 12.0),
+                bottomLeft: const Radius.circular(12.0),
+                bottomRight: const Radius.circular(12.0),
               ),
             ),
-
-            const SizedBox(height: 5.0),
-
-            Row(
-              mainAxisSize: MainAxisSize.max,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
 
-                Text(time,
+                Text(text,
                   style: TextStyle(
                     color: isMe 
                     ? Colors.white 
                     : Colors.black,
-                    fontSize: Dimensions.fontSizeSmall,
+                    fontSize: Dimensions.fontSizeDefault,
                   ),
                 ),
 
-                const SizedBox(width: 5.0),
-
-                isMe 
-                ? Icon(Icons.mark_email_read,
-                  size: 18.0,
-                  color: isRead 
-                    ? Colors.blue[800]
-                    : Colors.black,
-                  ) 
-                : const SizedBox(),
+                const SizedBox(height: 5.0),
 
               ],
-            )
+            ) 
+          ),
 
+          isMe 
+          ? Positioned(
+              bottom: -12.0,
+              right: 6.0,
+              child: Text(time,
+                style: robotoRegular.copyWith(
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeSmall,
+                ),
+              ),
+            ) 
+          : Positioned(
+              bottom: -12.0,
+              left: 6.0,
+              child: Text(time,
+                style: robotoRegular.copyWith(
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeSmall,
+                ),
+              ),
+            ) 
 
-          ],
-        ) 
-      ),
+        ],
+      ) 
     );
   }
 }
