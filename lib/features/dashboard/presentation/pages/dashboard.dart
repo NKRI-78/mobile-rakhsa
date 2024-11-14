@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
+import 'package:rakhsa/features/news/persentation/pages/list.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -27,8 +28,8 @@ class DashboardScreenState extends State<DashboardScreen> {
       'title': 'Home',
     },
     {
-      'page': const SizedBox(),
-      'title': 'Menu 1',
+      'page': const NewsListPage(),
+      'title': 'News',
     },
     {
       'page': const SizedBox(),
@@ -36,7 +37,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     },
     {
       'page': const EventListPage(),
-      'title': 'Menu 3',
+      'title': 'Event',
     },
   ];
 
@@ -81,10 +82,10 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.list,
+              Icons.newspaper,
               size: 20.0,
             ),
-            title: Text('Menu 1',
+            title: Text('Ews',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.white

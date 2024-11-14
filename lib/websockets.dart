@@ -33,7 +33,7 @@ class WebSocketsService extends ChangeNotifier {
     connect();
   }
 
-  Future<void> connect() async {
+  void connect() {
     try {
       disposeChannel();
 
@@ -48,7 +48,7 @@ class WebSocketsService extends ChangeNotifier {
         onError: (error) => handleError(error),
       );
 
-      await join();
+      join();
 
       isConnected.value = true; 
       reconnectAttempts = 0; 
@@ -59,12 +59,10 @@ class WebSocketsService extends ChangeNotifier {
     }
   }
 
-  Future<void> join() async {
-    final userId = await StorageHelper.getUserId();
-
+  void join() {
     channel?.sink.add(jsonEncode({
       "type": "join",
-      "user_id": userId
+      "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251"
     }));
   }
 
@@ -116,18 +114,23 @@ class WebSocketsService extends ChangeNotifier {
         String chatId = message["chat_id"];
         String recipientId = message["recipient_id"];
 
+        debugPrint("=== CONFIRM SOS ===");
+
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(
             chatId: chatId, 
             recipientId: recipientId
           );
-        })).then((_) {
-          chatsNotifier.getChats();
-        });
+        }));
+
       break;
 
       case "message":
+
+        debugPrint("=== MESSAGE ===");
+        
         messageNotifier.appendMessage(data: message);
+
       break;
 
       default:

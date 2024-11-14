@@ -5,7 +5,6 @@ import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:provider/provider.dart';

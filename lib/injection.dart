@@ -11,6 +11,11 @@ import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dar
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
+import 'package:rakhsa/features/dashboard/data/repositories/news_repository_impl.dart';
+import 'package:rakhsa/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 
 import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart';
@@ -42,16 +47,19 @@ final locator = GetIt.instance;
 void init() {
 
   // REMOTE DATA SOURCE 
+  locator.registerLazySingleton<DashboardRemoteDataSource>(() => DashboardRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<MediaRemoteDatasource>(() => MediaRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
   
   // REPOSITORY 
+  locator.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
 
   // USE CASE
+  locator.registerLazySingleton(() => GetNewsUseCase(locator()));
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
@@ -63,6 +71,7 @@ void init() {
   
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
+  locator.registerLazySingleton(() => DashboardNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
