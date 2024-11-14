@@ -66,7 +66,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
      try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile",
         data: {
-          "user_id": await StorageHelper.getUserId(),
+          "user_id": StorageHelper.getUserId(),
         }
       );
       Map<String, dynamic> data = response.data;
@@ -90,12 +90,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String emergencyContact,
     required String password
   }) async {
-    debugPrint(fullname);
-    debugPrint(email);
-    debugPrint(phone);
-    debugPrint(passport);
-    debugPrint(emergencyContact);
-    debugPrint(password);
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/register-member",
         data: {

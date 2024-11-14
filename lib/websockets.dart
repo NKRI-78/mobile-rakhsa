@@ -60,9 +60,11 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void join() {
+    final userId = StorageHelper.getUserId();
+
     channel?.sink.add(jsonEncode({
       "type": "join",
-      "user_id": "64cdba1f-01ca-464d-a7d4-5c109de0a251"
+      "user_id": userId
     }));
   }
 
@@ -75,7 +77,7 @@ class WebSocketsService extends ChangeNotifier {
     required String lng,
     required String time
   }) async {
-    final userId = await StorageHelper.getUserId();
+    final userId = StorageHelper.getUserId();
     
     channel?.sink.add(jsonEncode({
       "type": "sos",
@@ -95,7 +97,7 @@ class WebSocketsService extends ChangeNotifier {
     required String recipientId, 
     required String message
   }) async {
-    final userId = await StorageHelper.getUserId();
+    final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
       "type": "message",

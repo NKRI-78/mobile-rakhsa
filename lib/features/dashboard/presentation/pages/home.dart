@@ -200,7 +200,6 @@ class HomePageState extends State<HomePage> {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
                   padding: const EdgeInsets.all(8.0),
                   margin: const EdgeInsets.only(
                     top: 16.0,

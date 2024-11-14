@@ -166,14 +166,11 @@ class ChatsPageState extends State<ChatsPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-
                               Text(chat.messages.first.time),
 
                               chat.messages.first.isMe 
                               ? const SizedBox(height: 8.0)   
                               : const SizedBox(),
- 
-                             
                             ],
                           ),
                         );

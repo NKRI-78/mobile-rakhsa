@@ -34,17 +34,14 @@ class StorageHelper {
     return token;
   } 
 
-  static Future<String?> getUserId() async {
-    String? userId = await storage.read(key: 'user_id');
+  static String? getUserId() {
+    String? userId = sharedPreferences.getString("user_id");
 
     return userId;
   }
 
-  static Future<void> saveUserId({required String userId}) async {
-    await storage.write(
-      key: "user_id", 
-      value: userId
-    );
+  static void saveUserId({required String userId}) async {
+    await sharedPreferences.setString("user_id", userId);
   }
 
   static Future<void> removeToken() async {
