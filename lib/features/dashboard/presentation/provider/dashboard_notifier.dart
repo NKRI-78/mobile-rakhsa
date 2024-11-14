@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
 class DashboardNotifier with ChangeNotifier {
+  final ProfileNotifier profileNotifier;
   final GetNewsUseCase useCase;
 
   DashboardNotifier({
+    required this.profileNotifier,
     required this.useCase
   });  
 
@@ -36,6 +39,14 @@ class DashboardNotifier with ChangeNotifier {
     }, (r) {
 
       _news = [];
+      _news.insert(0, NewsData(
+        id: 0, 
+        title: "", 
+        img: "", 
+        desc: "", 
+        createdAt: ""
+      ));
+
       _news.addAll(r.data);
 
       setStateProvider(ProviderState.loaded);

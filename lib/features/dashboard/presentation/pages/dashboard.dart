@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/coming_soon.dart';
+import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
+
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
-import 'package:rakhsa/features/news/persentation/pages/list.dart';
+import 'package:rakhsa/features/information/presentation/pages/list.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -28,12 +31,12 @@ class DashboardScreenState extends State<DashboardScreen> {
       'title': 'Home',
     },
     {
-      'page': const NewsListPage(),
-      'title': 'News',
+      'page': const InformationListPage(),
+      'title': 'Info',
     },
     {
       'page': const SizedBox(),
-      'title': 'Menu 2',
+      'title': 'Call',
     },
     {
       'page': const EventListPage(),
@@ -49,7 +52,64 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   void selectPage(int index) {
-    setState(() => selectedPageIndex = index);
+    if(index == 2) {
+      showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context, 
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 140.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: ColorResources.white,
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return const ComingSoonPage();
+                      }));
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                    
+                        Image.asset(
+                          width: 50.0,
+                          height: 50.0,
+                          AssetSource.iconFamilyCall,
+                        ),
+                        
+                        const SizedBox(height: 5.0),
+                    
+                        Text("Family Call",
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeSmall,
+                            color: ColorResources.black
+                          )
+                        )
+                    
+                      ],
+                    ),
+                  ) 
+                ),
+
+
+                
+              ],
+            ),
+          );  
+        },
+      );
+    } else {
+      setState(() => selectedPageIndex = index);
+    }
   }
   
   @override
@@ -63,9 +123,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: BottomNavyBar( 
         selectedIndex: selectedPageIndex,
         showElevation: false, 
-        onItemSelected: (int index) => setState(() {
-          selectedPageIndex = index;
-        }),
+        onItemSelected: (int index) => selectPage(index),
         items: [
           BottomNavyBarItem(
             icon: const Icon(
@@ -82,10 +140,10 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.newspaper,
+              Icons.info,
               size: 20.0,
             ),
-            title: Text('Ews',
+            title: Text('Info',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.white
@@ -95,10 +153,10 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavyBarItem(
             icon: const Icon(
-              Icons.list,
+              Icons.call,
               size: 20.0,
             ),
-            title: Text('Menu 2',
+            title: Text('Call',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.white

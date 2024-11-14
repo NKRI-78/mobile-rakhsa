@@ -71,7 +71,10 @@ void init() {
   
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
-  locator.registerLazySingleton(() => DashboardNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => DashboardNotifier(
+    profileNotifier: locator(),
+    useCase: locator()
+  ));
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));

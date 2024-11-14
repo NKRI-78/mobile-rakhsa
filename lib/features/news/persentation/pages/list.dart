@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -97,51 +99,72 @@ class NewsListPageState extends State<NewsListPage> {
               });
             },
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16.0),
               children: [
-                Container(
-                  clipBehavior: Clip.antiAlias,
-                  height: MediaQuery.sizeOf(context).width * .6,
-                  decoration: BoxDecoration(
-                    color: Colors.white, 
-                    borderRadius: BorderRadius.circular(9)
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Image.network(
-                          notifier.news.first.img.toString(),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.transparent,
-                            Colors.black.withOpacity(.3),
-                            Colors.black,
-                          ]
-                        )
-                      )),
-                      Positioned(
-                        bottom: 8,
-                        left: 16,
-                        right: 16,
-                        child: Text(notifier.news.first.title.toString(),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        )
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, 
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NewsDetailPage(
+                            title: notifier.news.first.title.toString(), 
+                            img: notifier.news.first.img.toString(), 
+                            desc: notifier.news.first.desc.toString()
+                          );
+                        },
                       )
-                    ],
+                    );
+                  },
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    height: MediaQuery.sizeOf(context).width * .6,
+                    decoration: BoxDecoration(
+                      color: Colors.white, 
+                      borderRadius: BorderRadius.circular(9)
+                    ),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            fit: BoxFit.fitWidth,
+                            imageUrl: notifier.news[1].img.toString(),
+                            placeholder: (context, url) {
+                              return Image.asset('assets/images/default.jpeg');
+                            },
+                            errorWidget: (context, url, error) {
+                              return Image.asset('assets/images/default.jpeg');
+                            },
+                          )
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.transparent,
+                              Colors.black.withOpacity(.3),
+                              Colors.black,
+                            ]
+                          )
+                        )),
+                        Positioned(
+                          bottom: 8,
+                          left: 16,
+                          right: 16,
+                          child: Text(notifier.news[1].title.toString(),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          )
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -152,6 +175,9 @@ class NewsListPageState extends State<NewsListPage> {
                   shrinkWrap: true,
                   itemCount: notifier.news.length,
                   itemBuilder: (BuildContext context, int i) {
+                    if(notifier.news[i].id == 0) {
+                      return const SizedBox();
+                    }
                     return Padding(
                       padding: const EdgeInsets.only(
                         bottom: 12,
@@ -179,9 +205,16 @@ class NewsListPageState extends State<NewsListPage> {
                               SizedBox(
                                 width: 100,
                                 height: double.infinity,
-                                child: Image.network(notifier.news[i].img.toString(),
-                                  fit: BoxFit.cover,
-                                ),
+                                child: CachedNetworkImage(
+                                fit: BoxFit.fitWidth,
+                                  imageUrl: notifier.news[i].img.toString(),
+                                  placeholder: (context, url) {
+                                    return Image.asset('assets/images/default.jpeg');
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return Image.asset('assets/images/default.jpeg');
+                                  },
+                                )
                               ),
                               Expanded(
                                 child: Padding(
@@ -216,68 +249,6 @@ class NewsListPageState extends State<NewsListPage> {
                     );
                   },
                 )
-                // ...List.generate(5, (index) {
-                //   return Padding(
-                //     padding: const EdgeInsets.only(
-                //       bottom: 12,
-                //     ),
-                //     child: InkWell(
-                //       onTap: () {
-                //         Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //                 builder: (_) => const NewsDetailPage()));
-                //       },
-                //       child: Container(
-                //         clipBehavior: Clip.antiAlias,
-                //         height: 100,
-                //         decoration: BoxDecoration(
-                //           color: Colors.white,
-                //           borderRadius: BorderRadius.circular(9),
-                //         ),
-                //         child: Row(
-                //           children: [
-                //             SizedBox(
-                //               width: 100,
-                //               height: double.infinity,
-                //               child: Image.network(
-                //                 'https://i.ytimg.com/vi/4sZeLgimKw0/maxresdefault.jpg',
-                //                 fit: BoxFit.cover,
-                //               ),
-                //             ),
-                //             const Expanded(
-                //                 child: Padding(
-                //               padding: EdgeInsets.symmetric(horizontal: 16.0),
-                //               child: Column(
-                //                 crossAxisAlignment: CrossAxisAlignment.start,
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Text(
-                //                     'Alur Jual-Beli Rekening Penampungan Judol dari WNI Dikirim ke Kamboja',
-                //                     style: TextStyle(
-                //                       fontWeight: FontWeight.w500,
-                //                       fontSize: 12.46,
-                //                     ),
-                //                   ),
-                //                   SizedBox(
-                //                     height: 6,
-                //                   ),
-                //                   Text(
-                //                     '7 menit yang lalu',
-                //                     style: TextStyle(
-                //                       fontWeight: FontWeight.w500,
-                //                       fontSize: 7,
-                //                     ),
-                //                   )
-                //                 ],
-                //               ),
-                //             ))
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //   );
-                // })
               ],
             ),
           );

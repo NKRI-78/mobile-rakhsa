@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -117,6 +118,9 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 shrinkWrap: true,
                 itemCount: notifier.news.length,
                 itemBuilder: (BuildContext context, int i) {
+                  if(notifier.news[i].id == 0) {
+                    return const SizedBox();
+                  }
                   return Padding(
                     padding: const EdgeInsets.only(
                       bottom: 12,
@@ -145,10 +149,16 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                             SizedBox(
                               width: 100,
                               height: double.infinity,
-                              child: Image.network(
-                                notifier.news[i].img.toString(),
+                              child: CachedNetworkImage(
                                 fit: BoxFit.fitWidth,
-                              ),
+                                imageUrl: notifier.news[i].img.toString(),
+                                placeholder: (context, url) {
+                                  return Image.asset('assets/images/default.jpeg');
+                                },
+                                errorWidget: (context, url, error) {
+                                  return Image.asset('assets/images/default.jpeg');
+                                },
+                              )
                             ),
                             Expanded(
                               child: Padding(
