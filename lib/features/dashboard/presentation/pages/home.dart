@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -8,14 +10,20 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/camera.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/websockets.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final GlobalKey<ScaffoldState> globalKey;
+  const HomePage({
+    required this.globalKey,
+    super.key
+  });
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -42,15 +50,15 @@ class HomePageState extends State<HomePage> {
         barrierDismissible: false,  
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Location Services Disabled'),
-            content: Text('Please enable location services to continue.'),
+            title: const Text('Location Services Disabled'),
+            content: const Text('Please enable location services to continue.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();  
                   Geolocator.openLocationSettings();  
                 },
-                child: Text('Open Settings'),
+                child: const Text('Open Settings'),
               ),
             ],
           );
@@ -122,7 +130,7 @@ class HomePageState extends State<HomePage> {
         child: RefreshIndicator.adaptive(
           onRefresh: () {
             return Future.sync(() {
-
+              
             });
           },
           child: SingleChildScrollView(
@@ -152,44 +160,49 @@ class HomePageState extends State<HomePage> {
                         children: [
                           Text("Selamat datang",
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                              fontSize: Dimensions.fontSizeLarge,
                               color: ColorResources.hintColor
                             ),
                           ), 
                           Text("Reihan Agam",
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
-                              fontSize: Dimensions.fontSizeLarge
+                              fontSize: Dimensions.fontSizeExtraLarge
                             ),
                           )
                         ],
                       ),
 
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          
-                          CachedNetworkImage(
-                            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
-                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                              );
-                            },
-                            placeholder: (BuildContext context, String url) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                            errorWidget: (BuildContext context, String url, Object error) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                          )
-
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          widget.globalKey.currentState?.openDrawer();
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            
+                            CachedNetworkImage(
+                              imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPnE_fy9lLMRP5DLYLnGN0LRLzZOiEpMrU4g&s",
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return CircleAvatar(
+                                  backgroundImage: imageProvider,
+                                );
+                              },
+                              placeholder: (BuildContext context, String url) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url, Object error) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                            )
+                        
+                          ],
+                        ),
                       )
               
                     ],
@@ -225,7 +238,7 @@ class HomePageState extends State<HomePage> {
                         Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
                           textAlign: TextAlign.center,
                           style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
+                            fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.hintColor
                           ),
                         )
@@ -404,33 +417,46 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   void startTimer() {
     DateTime now = DateTime.now();
-
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    context.read<WebSocketsService>().sos(
-      location: widget.location,
-      country: widget.country,
-      lat: widget.lat,
-      lng: widget.lng,
-      time: time
-    );
+    // context.read<WebSocketsService>().sos(
+    //   location: widget.location,
+    //   country: widget.country,
+    //   lat: widget.lat,
+    //   lng: widget.lng,
+    //   time: time
+    // );
 
-    setState(() {
-      isPressed = true;
-      countdownTime = 60; 
-    });
+    Navigator.push(context, 
+      MaterialPageRoute(builder: (context) {
+        return CameraPage(
+          location: widget.location, 
+          country: widget.country, 
+          lat: widget.lat, 
+          lng: widget.lng, 
+          time: time
+        ); 
+      })
+    ).then((_) {
 
-    timerController
+      setState(() {
+        isPressed = true;
+        countdownTime = 60; 
+      });
+
+      timerController
       ..reset()
       ..forward().whenComplete(() {
         setState(() => isPressed = false);
         pulseController.reverse();
       });
 
-    timerController.addListener(() {
-      setState(() {
-        countdownTime = (60 - (timerController.value * 60)).round();
+      timerController.addListener(() {
+        setState(() {
+          countdownTime = (60 - (timerController.value * 60)).round();
+        });
       });
+
     });
 
   }

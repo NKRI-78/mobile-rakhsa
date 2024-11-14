@@ -2,12 +2,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:provider/provider.dart';
 
 class RegisterOtp extends StatefulWidget {
-  const RegisterOtp({super.key});
+  const RegisterOtp({super.key, required this.email});
+
+  final String email;
 
   @override
   State<RegisterOtp> createState() => _RegisterOtpState();
@@ -15,10 +21,12 @@ class RegisterOtp extends StatefulWidget {
 
 class _RegisterOtpState extends State<RegisterOtp> {
   bool _startTimer = false;
+  late VerifyOtpNotifier verifyOtpNotifier;
+  late ResendOtpNotifier resendOtpNotifier;
 
   final StopWatchTimer _timer = StopWatchTimer(
     mode: StopWatchMode.countDown,
-    presetMillisecond: StopWatchTimer.getMilliSecFromSecond(40),
+    presetMillisecond: StopWatchTimer.getMinute(2),
   );
 
   String _parseSeconds(int value) {
@@ -27,6 +35,24 @@ class _RegisterOtpState extends State<RegisterOtp> {
       return "Kirim ulang lagi dalam $value detik";
     }
     return "Kirim ulang lagi dalam $value detik";
+  }
+
+  Future<void> submitVerifyOtp() async {
+    String email = widget.email;
+    String otp = verifyOtpNotifier.valueOtp;
+
+    debugPrint("email : $email");
+    debugPrint("Otp : $otp");
+
+    await verifyOtpNotifier.verifyOtp(
+      email: email, 
+      otp: otp
+    );
+
+    if(verifyOtpNotifier.message != "") {
+      ShowSnackbar.snackbarErr(verifyOtpNotifier.message);
+      return;
+    }
   }
 
   @override
@@ -38,6 +64,8 @@ class _RegisterOtpState extends State<RegisterOtp> {
       _timer.onResetTimer();
       setState(() {});
     });
+    verifyOtpNotifier = context.read<VerifyOtpNotifier>();
+    resendOtpNotifier = context.read<ResendOtpNotifier>();
   }
 
   @override
@@ -49,6 +77,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
   
   @override
   Widget build(BuildContext context) {
+    debugPrint("Email : ${widget.email}");
     return Scaffold(
       backgroundColor: primaryColor,
       body: SafeArea(
@@ -66,7 +95,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
                         decoration: const BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: AssetImage(loginOrnamen)
+                            image: AssetImage(loginOrnament)
                           )
                         ),
                       ),
@@ -123,11 +152,15 @@ class _RegisterOtpState extends State<RegisterOtp> {
                           fontSize: 25
                         ),
                         //runs when a code is typed in
-                        onCodeChanged: (String code) {},
+                        onCodeChanged: (String code) {
+                          verifyOtpNotifier.valueOtp = code;
+                        },
                         
                         contentPadding: const EdgeInsets.only(top: 10),
                         //runs when every textfield is filled
-                        onSubmit: (String verificationCode) {}, // end onSubmit
+                        onSubmit: (String verificationCode) {
+                          verifyOtpNotifier.valueOtp = verificationCode;
+                        }, // end onSubmit
                       ),
                       const SizedBox(
                         height: 16,
@@ -151,7 +184,14 @@ class _RegisterOtpState extends State<RegisterOtp> {
                                 color: yellowColor,
                               ),
                               recognizer: TapGestureRecognizer()
-                              ..onTap = () {},
+                              ..onTap = () async {
+                                await resendOtpNotifier.resendOtp(
+                                  email: widget.email, 
+                                );
+                                _startTimer = true;
+                                _timer.onStartTimer();
+                                setState(() {});
+                              },
                             ),
                             const TextSpan(
                                 text:
@@ -169,14 +209,12 @@ class _RegisterOtpState extends State<RegisterOtp> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                 child: CustomButton(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DashboardScreen()));
-                  },
+                  onTap: submitVerifyOtp,
                   isBorder: false,
                   isBorderRadius: true,
                   isBoxShadow: false,
                   btnColor: whiteColor,
-                  btnTxt: "Daftar",
+                  btnTxt: verifyOtpNotifier.valueOtp == "" ? "Daftar" : "Masuk",
                   btnTextColor: blackColor,
                 ),
               ),

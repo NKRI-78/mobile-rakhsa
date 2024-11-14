@@ -16,7 +16,7 @@ class DioManager {
       return client;
     });
     dio.options.connectTimeout = const Duration(milliseconds: 15000);
-    dio.options.baseUrl = RemoteDataSourceConsts.baseUrl;
+    dio.options.baseUrl = RemoteDataSourceConsts.baseUrlProd;
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {

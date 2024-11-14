@@ -6,10 +6,10 @@ import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
 
 class GetMessagesNotifier with ChangeNotifier {
-  final GetMessagesUseCase getMessagesUseCase;
+  final GetMessagesUseCase useCase;
 
   GetMessagesNotifier({
-    required this.getMessagesUseCase
+    required this.useCase
   });  
 
   ScrollController sC = ScrollController();
@@ -60,7 +60,7 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   Future<void> getMessages({required String chatId}) async {
-    final result = await getMessagesUseCase.execute(chatId: chatId);
+    final result = await useCase.execute(chatId: chatId);
     
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {

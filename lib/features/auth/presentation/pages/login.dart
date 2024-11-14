@@ -1,12 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register/register_state.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register.dart';
+
+import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,20 +28,71 @@ class LoginPageState extends State<LoginPage> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  late TextEditingController emailC; 
+  bool isObscure = false;
+
+  late LoginNotifier loginNotifier;
+
+  late TextEditingController valC; 
   late TextEditingController passwordC; 
+
+  FocusNode valFn = FocusNode();
+  FocusNode passwordFn = FocusNode();
+
+  void setStateObscure() {
+    setState(() => isObscure = !isObscure);
+  }
+
+  Future<void> submitLogin() async {
+    bool submissionValidation(
+      BuildContext context, String email, String password) {
+    if (email.isEmpty) {
+        ShowSnackbar.snackbarErr("Email tidak boleh kosong");
+        valFn.requestFocus();
+        return false;
+      } else if (!email.isValidEmail()) {
+        ShowSnackbar.snackbarErr("Email tidak valid");
+        valFn.requestFocus();
+        return false;
+      } else if (password.isEmpty) {
+        ShowSnackbar.snackbarErr("Password tidak boleh kosong");
+        passwordFn.requestFocus();
+        return false;
+      }
+      return true;
+    }
+
+
+    String val = valC.text.trim();
+    String pass = passwordC.text.trim();
+
+    final bool isClear = submissionValidation(context, val, pass);
+
+    if(isClear){
+      await loginNotifier.login(
+        value: val, 
+        password: pass
+      );
+    }
+
+    if(loginNotifier.message != "") {
+      ShowSnackbar.snackbarErr(loginNotifier.message);
+      return;
+    }
+  }
 
   @override 
   void initState() {
     super.initState();
 
-    emailC = TextEditingController();
+    valC = TextEditingController();
     passwordC = TextEditingController();
+
+    loginNotifier = context.read<LoginNotifier>();
   }
 
   @override 
   void dispose() {
-    emailC.dispose();
+    valC.dispose();
     passwordC.dispose();
 
     super.dispose();
@@ -112,50 +172,16 @@ class LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 8.0),
                 
-                      SizedBox(
-                        height: 40.0,
-                        child: TextField(
-                          controller: emailC,
-                          cursorColor: ColorResources.white,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.white
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: ColorResources.transparent,
-                            contentPadding: EdgeInsets.only(
-                              top: 16.0,
-                              left: 12.0,
-                              right: 12.0,
-                              bottom: 48.0
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white,
-                              )
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                          ),
-                        ),
+                      CustomTextField(
+                        controller: valC,
+                        labelText: '',
+                        isEmail: true,
+                        onChanged: (p0) {},
+                        hintText: "",
+                        fillColor: Colors.transparent,
+                        emptyText: "Email wajib di isi",
+                        textInputType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
                       ),
 
                       const SizedBox(height: 15.0),
@@ -174,61 +200,30 @@ class LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 8.0),
                 
-                      SizedBox(
-                        height: 40.0,
-                        child: TextField(
-                          controller: passwordC,
-                          cursorColor: ColorResources.white,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.white
-                          ),
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: ColorResources.transparent,
-                            contentPadding: EdgeInsets.only(
-                              top: 16.0,
-                              left: 12.0,
-                              right: 12.0,
-                              bottom: 48.0
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white,
-                              )
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8.0)
-                              ),
-                              borderSide: BorderSide(
-                                color: ColorResources.white
-                              )
-                            ),
-                          ),
-                        ),
+                      CustomTextField(
+                        controller: passwordC,
+                        labelText: "",
+                        isPassword: true,
+                        hintText: "",
+                        fillColor: Colors.transparent,
+                        emptyText: "Kata Sandi tidak boleh kosong",
+                        textInputType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
                       ),
 
                       const SizedBox(height: 20.0),
 
                       CustomButton(
-                        onTap: () {},
+                        onTap: submitLogin,
+                        isLoading: context.watch<LoginNotifier>().providerState == ProviderState.loading 
+                        ? true 
+                        : false,
                         isBorder: false,
                         isBorderRadius: true,
                         isBoxShadow: false,
-                        btnColor: ColorResources.white,
                         btnTxt: "Masuk",
+                        loadingColor: primaryColor,
+                        btnColor: ColorResources.white,
                         btnTextColor: ColorResources.black,
                       ),
 
@@ -267,7 +262,7 @@ class LoginPageState extends State<LoginPage> {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterPage()));
                           },
                           child: Text("BUAT AKUN BARU",
                             style: robotoRegular.copyWith(
