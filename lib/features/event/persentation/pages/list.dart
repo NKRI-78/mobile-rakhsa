@@ -91,105 +91,105 @@ class EventListData extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16),
       shrinkWrap: true,
       children: [
-        InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const EventDetailPage()));
-          },
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(2, 2),
-                    color: Colors.black.withOpacity(.3),
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                  )
-                ]),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Liburan Amerika 2 Minggu',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Jumat',
-                          style: TextStyle(
-                            color: Color(0xffBBBBBB),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          '9 Feb 2025',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          'Amerika',
-                          style: TextStyle(
-                            color: Color(0xff939393),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Image.asset('assets/images/airplane.png'),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Jumat',
-                          style: TextStyle(
-                            color: Color(0xffBBBBBB),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          '23 Feb 2025',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
-                        ),
-                        Text(
-                          'Indonesia',
-                          style: TextStyle(
-                            color: Color(0xff939393),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        )
+        // InkWell(
+        //   onTap: () {
+        //     Navigator.push(context,
+        //         MaterialPageRoute(builder: (_) => const EventDetailPage()));
+        //   },
+        //   child: Container(
+        //     width: double.infinity,
+        //     margin: const EdgeInsets.symmetric(horizontal: 16),
+        //     padding: const EdgeInsets.all(16),
+        //     decoration: BoxDecoration(
+        //         borderRadius: BorderRadius.circular(8),
+        //         color: Colors.white,
+        //         boxShadow: [
+        //           BoxShadow(
+        //             offset: const Offset(2, 2),
+        //             color: Colors.black.withOpacity(.3),
+        //             blurRadius: 10,
+        //             spreadRadius: 0,
+        //           )
+        //         ]),
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         const Text(
+        //           'Liburan Amerika 2 Minggu',
+        //           style: TextStyle(
+        //             fontSize: 15,
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //         ),
+        //         const SizedBox(
+        //           height: 8,
+        //         ),
+        //         Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             const Column(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               children: [
+        //                 Text(
+        //                   'Jumat',
+        //                   style: TextStyle(
+        //                     color: Color(0xffBBBBBB),
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: 16,
+        //                   ),
+        //                 ),
+        //                 Text(
+        //                   '9 Feb 2025',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.bold,
+        //                     fontSize: 17,
+        //                   ),
+        //                 ),
+        //                 Text(
+        //                   'Amerika',
+        //                   style: TextStyle(
+        //                     color: Color(0xff939393),
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: 12,
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //             Image.asset('assets/images/airplane.png'),
+        //             const Column(
+        //               crossAxisAlignment: CrossAxisAlignment.end,
+        //               children: [
+        //                 Text(
+        //                   'Jumat',
+        //                   style: TextStyle(
+        //                     color: Color(0xffBBBBBB),
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: 16,
+        //                   ),
+        //                 ),
+        //                 Text(
+        //                   '23 Feb 2025',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.bold,
+        //                     fontSize: 17,
+        //                   ),
+        //                 ),
+        //                 Text(
+        //                   'Indonesia',
+        //                   style: TextStyle(
+        //                     color: Color(0xff939393),
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: 12,
+        //                   ),
+        //                 ),
+        //               ],
+        //             )
+        //           ],
+        //         )
+        //       ],
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
