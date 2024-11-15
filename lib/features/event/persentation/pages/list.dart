@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
+
 import 'package:rakhsa/features/event/persentation/pages/create.dart';
-import 'package:rakhsa/features/event/persentation/pages/detail.dart';
 
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
@@ -45,6 +46,7 @@ class EventListView extends StatelessWidget {
         const SliverToBoxAdapter(
           child: EventListData(),
         ),
+
         SliverToBoxAdapter(
           child: Column(
             children: [
@@ -90,7 +92,7 @@ class EventListData extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(top: 16),
       shrinkWrap: true,
-      children: [
+      children: const [
         // InkWell(
         //   onTap: () {
         //     Navigator.push(context,
