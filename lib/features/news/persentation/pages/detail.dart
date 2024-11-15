@@ -177,6 +177,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                     height: 6.0,
                                   ),
                                   Text(notifier.news[i].desc.toString(),
+                                    overflow: TextOverflow.ellipsis,
                                     style: robotoRegular.copyWith(
                                       fontWeight: FontWeight.w500,
                                       fontSize: Dimensions.fontSizeSmall,
