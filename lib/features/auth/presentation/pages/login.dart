@@ -49,10 +49,6 @@ class LoginPageState extends State<LoginPage> {
         ShowSnackbar.snackbarErr("Email tidak boleh kosong");
         valFn.requestFocus();
         return false;
-      } else if (!email.isValidEmail()) {
-        ShowSnackbar.snackbarErr("Email tidak valid");
-        valFn.requestFocus();
-        return false;
       } else if (password.isEmpty) {
         ShowSnackbar.snackbarErr("Password tidak boleh kosong");
         passwordFn.requestFocus();
