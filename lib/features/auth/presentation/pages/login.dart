@@ -43,8 +43,7 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Future<void> submitLogin() async {
-    bool submissionValidation(
-      BuildContext context, String email, String password) {
+    bool submissionValidation(BuildContext context, String email, String password) {
     if (email.isEmpty) {
         ShowSnackbar.snackbarErr("Email tidak boleh kosong");
         valFn.requestFocus();
