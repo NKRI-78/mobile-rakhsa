@@ -8,6 +8,7 @@ import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/global.dart';
 
@@ -17,6 +18,7 @@ class WebSocketsService extends ChangeNotifier {
 
   final GetChatsNotifier chatsNotifier;
   final GetMessagesNotifier messageNotifier;
+  final SosNotifier sosNotifier;
 
   int maxReconnectAttempts = 5;
   int reconnectAttempts = 0;
@@ -28,7 +30,8 @@ class WebSocketsService extends ChangeNotifier {
 
   WebSocketsService({
     required this.chatsNotifier,
-    required this.messageNotifier
+    required this.messageNotifier,
+    required this.sosNotifier
   }) {
     connect();
   }
@@ -117,6 +120,8 @@ class WebSocketsService extends ChangeNotifier {
         String recipientId = message["recipient_id"];
 
         debugPrint("=== CONFIRM SOS ===");
+
+        sosNotifier.stopTimer();
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(

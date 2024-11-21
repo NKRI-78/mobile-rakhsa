@@ -4,18 +4,29 @@ import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
 
-class ExpireSosNotifier with ChangeNotifier {
+class SosNotifier with ChangeNotifier {
   final ExpireSosUseCase useCase;
 
-  ExpireSosNotifier({
+  SosNotifier({
     required this.useCase
   });  
+
+  late AnimationController pulseController;
+  late AnimationController timerController;  
+
+  late Animation<double> pulseAnimation;
 
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
 
   String _message = "";
   String get message => _message;
+
+  void stopTimer() {
+    timerController.stop();
+
+    notifyListeners();
+  }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;

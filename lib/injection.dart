@@ -79,7 +79,7 @@ void init() {
     useCase: locator()
   ));
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => ExpireSosNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
@@ -90,7 +90,8 @@ void init() {
   
   locator.registerFactory(() => WebSocketsService(
     chatsNotifier: locator(),
-    messageNotifier: locator()
+    messageNotifier: locator(),
+    sosNotifier: locator()
   ));
 
   DioHelper dio = DioHelper();

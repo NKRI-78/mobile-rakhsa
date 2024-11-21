@@ -22,7 +22,7 @@ List<SingleChildWidget> providers = [
 
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<ExpireSosNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<SosNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ProfileNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<LoginNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<RegisterNotifier>()),

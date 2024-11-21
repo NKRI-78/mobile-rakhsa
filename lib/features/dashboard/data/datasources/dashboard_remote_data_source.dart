@@ -20,7 +20,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   @override
   Future<NewsModel> getNews() async {
     try { 
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news");
+      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=ews");
       Map<String, dynamic> data = response.data;
       NewsModel newsModel = NewsModel.fromJson(data);
       return newsModel;

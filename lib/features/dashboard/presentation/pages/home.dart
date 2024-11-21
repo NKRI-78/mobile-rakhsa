@@ -16,7 +16,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-
 import 'package:rakhsa/camera.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -26,6 +25,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 import 'package:rakhsa/websockets.dart';
@@ -712,10 +712,7 @@ class SosButton extends StatefulWidget {
 
 class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
-  late AnimationController pulseController;
-  late AnimationController timerController;  
-
-  late Animation<double> pulseAnimation;
+  late SosNotifier sosNotifier;
 
   late int countdownTime;
 
@@ -726,26 +723,28 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    pulseController = AnimationController(
+    sosNotifier = context.read<SosNotifier>();
+
+    sosNotifier.pulseController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: pulseController, curve: Curves.easeOut),
+    sosNotifier.pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
+      CurvedAnimation(parent: sosNotifier.pulseController, curve: Curves.easeOut),
     );
 
-    timerController = AnimationController(
+    sosNotifier.timerController = AnimationController(
       duration: const Duration(seconds: 60),
       vsync: this,
     );
   }
 
   void handleLongPressStart() {
-    pulseController.forward();
+    sosNotifier.pulseController.forward();
 
     holdTimer = Timer(const Duration(milliseconds: 2000), () {
-      pulseController.reverse();
+      sosNotifier.pulseController.reverse();
       if (mounted) {
         startTimer();
       }
@@ -755,7 +754,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   void handleLongPressEnd() {
     if (holdTimer?.isActive ?? false) {
       holdTimer?.cancel();
-      pulseController.reverse();
+      sosNotifier.pulseController.reverse();
     } else if (!isPressed) {
       setState(() => isPressed = false);
     }
@@ -782,16 +781,17 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         countdownTime = 60; 
       });
 
-      timerController
+      sosNotifier.timerController
       ..reset()
       ..forward().whenComplete(() {
         setState(() => isPressed = false);
-        pulseController.reverse();
+        // context.read<SosNotifier>().expireSos(sosId: "");
+        sosNotifier.pulseController.reverse();
       });
 
-      timerController.addListener(() {
+      sosNotifier.timerController.addListener(() {
         setState(() {
-          countdownTime = (60 - (timerController.value * 60)).round();
+          countdownTime = (60 - (sosNotifier.timerController.value * 60)).round();
         });
       });
 
@@ -801,8 +801,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    pulseController.dispose();
-    timerController.dispose();
+    sosNotifier.pulseController.dispose();
+    sosNotifier.timerController.dispose();
     
     holdTimer?.cancel();
 
@@ -817,10 +817,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         children: [
           for (double scaleFactor in [0.8, 1.2, 1.4])
             AnimatedBuilder(
-              animation: pulseAnimation,
+              animation: sosNotifier.pulseAnimation,
               builder: (BuildContext context, Widget? child) {
                 return Transform.scale(
-                  scale: pulseAnimation.value * scaleFactor,
+                  scale: sosNotifier.pulseAnimation.value * scaleFactor,
                   child: Container(
                     width: 55, 
                     height: 55,
@@ -839,7 +839,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
               child: CircularProgressIndicator(
                 valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
                 strokeWidth: 6,
-                value: 1 - timerController.value,
+                value: 1 - sosNotifier.timerController.value,
                 backgroundColor: Colors.transparent,
               ),
             ),
@@ -847,7 +847,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
             onLongPressStart: (_) => handleLongPressStart(),
             onLongPressEnd: (_) => handleLongPressEnd(),
             child: AnimatedBuilder(
-              animation: timerController,
+              animation: sosNotifier.timerController,
               builder: (BuildContext context, Widget? child) {
                 return Container(
                   width: 130,
