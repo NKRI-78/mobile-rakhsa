@@ -9,6 +9,7 @@ import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.d
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -21,6 +22,7 @@ List<SingleChildWidget> providers = [
 
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<ExpireSosNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ProfileNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<LoginNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<RegisterNotifier>()),

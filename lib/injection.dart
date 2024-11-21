@@ -12,10 +12,12 @@ import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.d
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
-import 'package:rakhsa/features/dashboard/data/repositories/news_repository_impl.dart';
+import 'package:rakhsa/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:rakhsa/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 
 import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart';
@@ -61,6 +63,7 @@ void init() {
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
+  locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
   locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
@@ -76,6 +79,7 @@ void init() {
     useCase: locator()
   ));
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => ExpireSosNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));

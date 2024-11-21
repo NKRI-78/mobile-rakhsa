@@ -765,14 +765,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     DateTime now = DateTime.now();
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    // context.read<WebSocketsService>().sos(
-    //   location: widget.location,
-    //   country: widget.country,
-    //   lat: widget.lat,
-    //   lng: widget.lng,
-    //   time: time
-    // );
-
     Navigator.push(context, 
       MaterialPageRoute(builder: (context) {
         return CameraPage(

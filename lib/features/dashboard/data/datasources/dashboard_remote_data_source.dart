@@ -8,6 +8,7 @@ import 'package:rakhsa/features/dashboard/data/models/news.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<NewsModel> getNews();
+  Future<void> expireSos({required String sosId});
 }
 
 class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
@@ -27,6 +28,23 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       String message = handleDioException(e);
       throw ServerException(message);
     } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override 
+  Future<void> expireSos({required String sosId}) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/expire",
+        data: {
+          "id": sosId
+        }
+      );
+    } on DioException catch (e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     }
