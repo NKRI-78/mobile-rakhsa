@@ -3,8 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class EventCreatePage extends StatelessWidget {
+class EventCreatePage extends StatefulWidget {
   const EventCreatePage({super.key});
+
+  @override
+  State<EventCreatePage> createState() => EventCreatePageState();
+}
+
+class EventCreatePageState extends State<EventCreatePage> {
+
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   @override
   Widget build(BuildContext context) {
@@ -67,19 +78,65 @@ class EventCreatePage extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: TableCalendar(
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: DateTime.now(),
-              // selectedDayPredicate: (day) {
-              //   // return isSameDay(_selectedDay, day);
-              // },
+              firstDay: DateTime(2020),
+              lastDay: DateTime(2050),
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              rangeSelectionMode: _rangeSelectionMode,
               onDaySelected: (selectedDay, focusedDay) {
-                // setState(() {
-                //   _selectedDay = selectedDay;
-                //   _focusedDay = focusedDay;
-                // });
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _rangeStart = null;
+                  _rangeEnd = null;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                });
               },
-              calendarFormat: CalendarFormat.month,
+              onRangeSelected: (start, end, focusedDay) {
+                setState(() {
+                  _selectedDay = null;
+                  _rangeStart = start;
+                  _rangeEnd = end;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                });
+              },
+              daysOfWeekStyle: const DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                  color: Colors.white
+                ),
+                weekendStyle: TextStyle(
+                  color: Colors.white
+                )
+              ),
+              calendarStyle: CalendarStyle(
+                rangeHighlightColor: Colors.white.withOpacity(0.3),
+                todayTextStyle: const TextStyle(
+                  color: Colors.black
+                ),
+                outsideTextStyle: const TextStyle(
+                  color: Colors.white
+                ),
+                weekendTextStyle: const TextStyle(
+                  color: Colors.white
+                ),
+                todayDecoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                rangeStartDecoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                rangeEndDecoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: const BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
+              ),
               headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
                 titleTextStyle: TextStyle(
@@ -88,25 +145,7 @@ class EventCreatePage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
                 leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
-                rightChevronIcon:
-                    Icon(Icons.chevron_right, color: Colors.white),
-              ),
-              daysOfWeekStyle: const DaysOfWeekStyle(
-                weekdayStyle: TextStyle(color: Colors.white),
-                weekendStyle: TextStyle(color: Colors.white70),
-              ),
-              calendarStyle: const CalendarStyle(
-                defaultTextStyle: TextStyle(color: Colors.white),
-                weekendTextStyle: TextStyle(color: Colors.white70),
-                outsideTextStyle: TextStyle(color: Colors.white38),
-                todayDecoration: BoxDecoration(
-                  color: Colors.white24,
-                  shape: BoxShape.circle,
-                ),
-                selectedDecoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
+                rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
               ),
             ),
           ),
