@@ -1,6 +1,3 @@
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -22,10 +19,7 @@ class ListEventNotifier extends ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  Future<void> send({
-    required File file,
-    required String folderName
-  }) async {
+  Future<void> list() async {
     _state = ProviderState.loading;
     notifyListeners();
 
@@ -33,7 +27,6 @@ class ListEventNotifier extends ChangeNotifier {
     result.fold((l) {
       _state = ProviderState.error;
       _message = l.message;
-      debugPrint(l.message);
     }, (r) {
       _state = ProviderState.loaded;
       _entity = [];

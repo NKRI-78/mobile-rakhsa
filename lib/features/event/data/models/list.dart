@@ -25,6 +25,8 @@ class EventData {
   String description;
   String state;
   String continent;
+  String startDay;
+  String endDay;
   String startDate;
   String endDate;
   EventUser user;
@@ -35,6 +37,8 @@ class EventData {
     required this.description,
     required this.state,
     required this.continent,
+    required this.startDay,
+    required this.endDay,
     required this.startDate,
     required this.endDate,
     required this.user,
@@ -46,6 +50,8 @@ class EventData {
     description: json["description"],
     state: json["state"],
     continent: json["continent"],
+    startDay: json["start_day"],
+    endDay: json["end_day"],
     startDate: json["start_date"],
     endDate: json["end_date"],
     user: EventUser.fromJson(json["user"]),

@@ -176,7 +176,9 @@ class HomePageState extends State<HomePage> {
               child: SizedBox(
                 width: 16.0,
                 height: 16.0,
-                child: CircularProgressIndicator()
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                ),
               ),
             );
           }
