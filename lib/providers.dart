@@ -10,6 +10,7 @@ import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.da
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -23,6 +24,7 @@ List<SingleChildWidget> providers = [
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<ListEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ProfileNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<LoginNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<RegisterNotifier>()),
