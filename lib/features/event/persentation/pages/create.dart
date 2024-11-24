@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/features/administration/data/models/continent.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 
 class EventCreatePage extends StatefulWidget {
   const EventCreatePage({super.key});
@@ -12,12 +17,28 @@ class EventCreatePage extends StatefulWidget {
 
 class EventCreatePageState extends State<EventCreatePage> {
 
+  late GetContinentNotifier getContinentNotifier;
+
   DateTime? selectedDay;
 
   DateTime? rangeStart;
   DateTime? rangeEnd;
   
   RangeSelectionMode rangeSelectionMode = RangeSelectionMode.toggledOff;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      getContinentNotifier.getContinent();
+  }
+
+  @override 
+  void initState() {
+    super.initState();
+
+    getContinentNotifier = context.read<GetContinentNotifier>();
+
+    Future.microtask(() => getData());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +108,9 @@ class EventCreatePageState extends State<EventCreatePage> {
               rangeStartDay: rangeStart,
               rangeEndDay: rangeEnd,
               rangeSelectionMode: rangeSelectionMode,
-              onDaySelected: (selDay, focusedDay) {
+              onDaySelected: (DateTime currentSelectedDay, DateTime focusedDay) {
                 setState(() {
-                  selectedDay = selDay;
+                  selectedDay = currentSelectedDay;
                   
                   rangeStart = null;
                   rangeEnd = null;
@@ -97,7 +118,7 @@ class EventCreatePageState extends State<EventCreatePage> {
                   rangeSelectionMode = RangeSelectionMode.toggledOff;
                 });
               },
-              onRangeSelected: (start, end, focusedDay) {
+              onRangeSelected: (DateTime? start, DateTime? end, DateTime focusedDay) {
                 setState(() {
                   selectedDay = null;
 
@@ -158,50 +179,52 @@ class EventCreatePageState extends State<EventCreatePage> {
           const SizedBox(
             height: 20,
           ),
-
-          // Autocomplete<String>(
-          //   optionsBuilder: (TextEditingValue textEditingValue) {
-          //     if (textEditingValue.text.isEmpty) {
-          //       return const Iterable<String>.empty();
-          //     }
-          //     return suggestions.where((String option) {
-          //       return option.toLowerCase().contains(
-          //             textEditingValue.text.toLowerCase(),
-          //           );
-          //     });
-          //   },
-          //   onSelected: (String selection) {
-          //     print('You selected: $selection');
-          //   },
-          //   fieldViewBuilder: (BuildContext context,
-          //       TextEditingController textEditingController,
-          //       FocusNode focusNode,
-          //       VoidCallback onFieldSubmitted) {
-          //     return TextField(
-          //       controller: textEditingController,
-          //       focusNode: focusNode,
-          //       decoration: InputDecoration(
-          //         labelText: 'Enter a fruit',
-          //         border: OutlineInputBorder(),
-          //       ),
-          //     );
-          //   },
-          // ),
-          // TextField(
-          //   decoration: InputDecoration(
-          //     fillColor: const Color(0xffF4F4F7),
-          //     filled: true,
-          //     hintText: 'Masukkan Nama Benua',
-          //     border: OutlineInputBorder(
-          //       borderSide: const BorderSide(
-          //         style: BorderStyle.none,
-          //       ),
-          //       borderRadius: BorderRadius.circular(9),
-          //     ),
-          //   ),
-          // ),
+          
+          Consumer<GetContinentNotifier>(
+            builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
+              if(notifier.providerState == ProviderState.loading) {
+                return const SizedBox();
+              }
+              return Autocomplete<CountryData>(
+               optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return const Iterable<CountryData>.empty();
+                }
+                return notifier.entity.where((region) {
+                  return region.name
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase());
+                });
+              },
+              displayStringForOption: (CountryData option) => option.name,
+              onSelected: (CountryData selection) {
+                
+              },
+              fieldViewBuilder: (BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      fillColor: const Color(0xffF4F4F7),
+                      filled: true,
+                      hintText: 'Masukkan Nama Benua',
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
           const SizedBox(
-            height: 14,
+            height: 14.0,
           ),
           TextField(
             decoration: InputDecoration(

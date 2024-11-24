@@ -5,9 +5,11 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
 
 import 'package:rakhsa/features/administration/data/models/continent.dart';
+import 'package:rakhsa/features/administration/data/models/state.dart';
 
 abstract class AdministrationRemoteDataSource {
   Future<ContinentModel> getContinent();
+  Future<StateModel> getStates({required String continentId});
 }
 
 class AdministrationRemoteDataSourceImpl implements AdministrationRemoteDataSource {
@@ -32,5 +34,26 @@ class AdministrationRemoteDataSourceImpl implements AdministrationRemoteDataSour
     } 
   }
 
+  @override
+  Future<StateModel> getStates({
+    required String continentId
+  }) async {
+    try {
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/administration/states",
+        data: {
+          "continent_id": continentId
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      StateModel stateModel = StateModel.fromJson(data);
+      return stateModel;
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    } 
+  }
 
 }

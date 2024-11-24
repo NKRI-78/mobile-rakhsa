@@ -27,10 +27,7 @@ class GetContinentNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login({
-    required String value, 
-    required String password
-  }) async {
+  Future<void> getContinent() async {
     setStateProviderState(ProviderState.loading);
 
     final continent = await useCase.execute();

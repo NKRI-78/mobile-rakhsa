@@ -5,6 +5,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
 import 'package:rakhsa/features/administration/data/models/continent.dart';
+import 'package:rakhsa/features/administration/data/models/state.dart';
 
 import 'package:rakhsa/features/administration/domain/repository/administration_repository.dart';
 
@@ -17,6 +18,20 @@ class AdministrationRepositoryImpl implements AdministrationRepository {
   Future<Either<Failure, ContinentModel>> getContinent() async {
     try {
       var result = await remoteDataSource.getContinent();
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, StateModel>> getStates({
+    required String continentId
+  }) async {
+    try {
+      var result = await remoteDataSource.getStates(continentId: continentId);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));
