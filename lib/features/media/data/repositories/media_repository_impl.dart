@@ -7,7 +7,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 import 'package:rakhsa/features/media/domain/entities/media.dart';
-import 'package:rakhsa/features/media/domain/repositories/media_repository.dart';
+import 'package:rakhsa/features/media/domain/repository/media_repository.dart';
 
 class MediaRepositoryImpl implements MediaRepository {
   final MediaRemoteDatasource remoteDataSource;

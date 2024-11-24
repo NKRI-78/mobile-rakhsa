@@ -52,8 +52,6 @@ class LoginNotifier with ChangeNotifier {
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        debugPrint("Is Enable ${authModel.data?.user.enabled}");
-
         if(authModel.data!.user.enabled){  
           Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
             MaterialPageRoute(builder: (context) {

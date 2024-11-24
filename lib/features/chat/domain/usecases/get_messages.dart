@@ -4,7 +4,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 
-import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
+import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
 
 class GetMessagesUseCase {
   final ChatRepository repository;

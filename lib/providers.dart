@@ -1,6 +1,8 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
@@ -14,7 +16,6 @@ import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
 import 'package:rakhsa/injection.dart' as di;
-
 import 'package:rakhsa/websockets.dart';
 
 List<SingleChildWidget> providers = [
@@ -33,5 +34,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<UploadMediaNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetChatsNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetMessagesNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>()),
 ];

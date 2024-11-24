@@ -12,10 +12,12 @@ class EventCreatePage extends StatefulWidget {
 
 class EventCreatePageState extends State<EventCreatePage> {
 
-  DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
+  DateTime? selectedDay;
+
+  DateTime? rangeStart;
+  DateTime? rangeEnd;
+  
+  RangeSelectionMode rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   @override
   Widget build(BuildContext context) {
@@ -79,26 +81,30 @@ class EventCreatePageState extends State<EventCreatePage> {
             ),
             child: TableCalendar(
               focusedDay: DateTime.now(),
-              firstDay: DateTime(2020),
+              firstDay: DateTime.now(),
               lastDay: DateTime(2050),
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              rangeStartDay: _rangeStart,
-              rangeEndDay: _rangeEnd,
-              rangeSelectionMode: _rangeSelectionMode,
-              onDaySelected: (selectedDay, focusedDay) {
+              selectedDayPredicate: (day) => isSameDay(selectedDay, day),
+              rangeStartDay: rangeStart,
+              rangeEndDay: rangeEnd,
+              rangeSelectionMode: rangeSelectionMode,
+              onDaySelected: (selDay, focusedDay) {
                 setState(() {
-                  _selectedDay = selectedDay;
-                  _rangeStart = null;
-                  _rangeEnd = null;
-                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                  selectedDay = selDay;
+                  
+                  rangeStart = null;
+                  rangeEnd = null;
+                  
+                  rangeSelectionMode = RangeSelectionMode.toggledOff;
                 });
               },
               onRangeSelected: (start, end, focusedDay) {
                 setState(() {
-                  _selectedDay = null;
-                  _rangeStart = start;
-                  _rangeEnd = end;
-                  _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                  selectedDay = null;
+
+                  rangeStart = start;
+                  rangeEnd = end;
+                  
+                  rangeSelectionMode = RangeSelectionMode.toggledOn;
                 });
               },
               daysOfWeekStyle: const DaysOfWeekStyle(
@@ -152,19 +158,48 @@ class EventCreatePageState extends State<EventCreatePage> {
           const SizedBox(
             height: 20,
           ),
-          TextField(
-            decoration: InputDecoration(
-              fillColor: const Color(0xffF4F4F7),
-              filled: true,
-              hintText: 'Masukkan Nama Benua',
-              border: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  style: BorderStyle.none,
-                ),
-                borderRadius: BorderRadius.circular(9),
-              ),
-            ),
-          ),
+
+          // Autocomplete<String>(
+          //   optionsBuilder: (TextEditingValue textEditingValue) {
+          //     if (textEditingValue.text.isEmpty) {
+          //       return const Iterable<String>.empty();
+          //     }
+          //     return suggestions.where((String option) {
+          //       return option.toLowerCase().contains(
+          //             textEditingValue.text.toLowerCase(),
+          //           );
+          //     });
+          //   },
+          //   onSelected: (String selection) {
+          //     print('You selected: $selection');
+          //   },
+          //   fieldViewBuilder: (BuildContext context,
+          //       TextEditingController textEditingController,
+          //       FocusNode focusNode,
+          //       VoidCallback onFieldSubmitted) {
+          //     return TextField(
+          //       controller: textEditingController,
+          //       focusNode: focusNode,
+          //       decoration: InputDecoration(
+          //         labelText: 'Enter a fruit',
+          //         border: OutlineInputBorder(),
+          //       ),
+          //     );
+          //   },
+          // ),
+          // TextField(
+          //   decoration: InputDecoration(
+          //     fillColor: const Color(0xffF4F4F7),
+          //     filled: true,
+          //     hintText: 'Masukkan Nama Benua',
+          //     border: OutlineInputBorder(
+          //       borderSide: const BorderSide(
+          //         style: BorderStyle.none,
+          //       ),
+          //       borderRadius: BorderRadius.circular(9),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(
             height: 14,
           ),

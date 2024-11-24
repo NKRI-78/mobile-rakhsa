@@ -8,7 +8,7 @@ import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.da
 import 'package:rakhsa/features/chat/data/models/chats.dart';
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 
-import 'package:rakhsa/features/chat/domain/repositories/chat_repository.dart';
+import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
   final ChatRemoteDataSource remoteDataSource;

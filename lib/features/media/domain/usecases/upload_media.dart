@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/media/domain/entities/media.dart';
-import 'package:rakhsa/features/media/domain/repositories/media_repository.dart';
+import 'package:rakhsa/features/media/domain/repository/media_repository.dart';
 
 class UploadMediaUseCase {
   final MediaRepository repository;

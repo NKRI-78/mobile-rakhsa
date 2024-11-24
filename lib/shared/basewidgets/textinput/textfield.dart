@@ -27,6 +27,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final Color counterColor;
   final Color fillColor;
+  final Color cursorColor;
   final bool isPhoneNumber;
   final bool isEmail;
   final bool isPassword;
@@ -60,6 +61,7 @@ class CustomTextField extends StatefulWidget {
     this.counterColor = whiteColor,
     this.fillColor = whiteColor,
     this.focusNode,
+    this.cursorColor = whiteColor,
     this.nextNode,
     this.textInputAction,
     this.maxLines = 1,
@@ -101,6 +103,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       minLines: widget.maxLines,
       maxLines: widget.maxLines,
       focusNode: widget.focusNode,
+      cursorColor: widget.cursorColor,
       keyboardType: widget.textInputType,
       maxLength: widget.maxLength,
       onSaved: widget.onSaved,
