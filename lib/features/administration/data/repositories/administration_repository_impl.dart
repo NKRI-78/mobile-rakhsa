@@ -28,7 +28,7 @@ class AdministrationRepositoryImpl implements AdministrationRepository {
 
   @override
   Future<Either<Failure, StateModel>> getStates({
-    required String continentId
+    required int continentId
   }) async {
     try {
       var result = await remoteDataSource.getStates(continentId: continentId);

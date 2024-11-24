@@ -11,7 +11,7 @@ class GetStateUseCase {
 
   GetStateUseCase(this.repository);
 
-  Future<Either<Failure, StateModel>> execute({required String continentId}) {
+  Future<Either<Failure, StateModel>> execute({required int continentId}) {
     return repository.getStates(continentId: continentId);
   }
 }

@@ -21,13 +21,16 @@ class StateModel {
 }
 
 class StateData {
+  int id;
   String name;
 
   StateData({
+    required this.id,
     required this.name,
   });
 
   factory StateData.fromJson(Map<String, dynamic> json) => StateData(
+    id: json["id"],
     name: json["name"],
   );
 }

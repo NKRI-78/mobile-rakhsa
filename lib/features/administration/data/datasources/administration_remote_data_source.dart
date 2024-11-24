@@ -9,7 +9,7 @@ import 'package:rakhsa/features/administration/data/models/state.dart';
 
 abstract class AdministrationRemoteDataSource {
   Future<ContinentModel> getContinent();
-  Future<StateModel> getStates({required String continentId});
+  Future<StateModel> getStates({required int continentId});
 }
 
 class AdministrationRemoteDataSourceImpl implements AdministrationRemoteDataSource {
@@ -36,7 +36,7 @@ class AdministrationRemoteDataSourceImpl implements AdministrationRemoteDataSour
 
   @override
   Future<StateModel> getStates({
-    required String continentId
+    required int continentId
   }) async {
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/administration/states",

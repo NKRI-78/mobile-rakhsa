@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:rakhsa/common/helpers/dio.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
+import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
+import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
@@ -86,7 +88,8 @@ void init() {
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
   locator.registerLazySingleton(() => GetContinentUseCase(locator()));
-  
+  locator.registerLazySingleton(() => GetStateUseCase(locator()));
+
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
   locator.registerLazySingleton(() => DashboardNotifier(
@@ -101,6 +104,7 @@ void init() {
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetStateNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetContinentNotifier(useCase: locator()));

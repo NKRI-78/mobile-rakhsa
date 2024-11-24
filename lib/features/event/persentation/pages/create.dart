@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/features/administration/data/models/continent.dart';
+import 'package:rakhsa/features/administration/data/models/state.dart';
+import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
@@ -18,6 +20,9 @@ class EventCreatePage extends StatefulWidget {
 class EventCreatePageState extends State<EventCreatePage> {
 
   late GetContinentNotifier getContinentNotifier;
+  late GetStateNotifier getStateNotifier;
+
+  String stateId = "";
 
   DateTime? selectedDay;
 
@@ -36,6 +41,7 @@ class EventCreatePageState extends State<EventCreatePage> {
     super.initState();
 
     getContinentNotifier = context.read<GetContinentNotifier>();
+    getStateNotifier = context.read<GetStateNotifier>();
 
     Future.microtask(() => getData());
   }
@@ -198,7 +204,8 @@ class EventCreatePageState extends State<EventCreatePage> {
               },
               displayStringForOption: (CountryData option) => option.name,
               onSelected: (CountryData selection) {
-                
+                int continentId = selection.id;
+                getStateNotifier.getState(continentId: continentId);
               },
               fieldViewBuilder: (BuildContext context,
                 TextEditingController textEditingController,
@@ -226,18 +233,48 @@ class EventCreatePageState extends State<EventCreatePage> {
           const SizedBox(
             height: 14.0,
           ),
-          TextField(
-            decoration: InputDecoration(
-              fillColor: const Color(0xffF4F4F7),
-              filled: true,
-              hintText: 'Masukkan Nama Negara',
-              border: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  style: BorderStyle.none,
-                ),
-                borderRadius: BorderRadius.circular(9),
-              ),
-            ),
+          Consumer<GetStateNotifier>(
+            builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
+              if(notifier.providerState == ProviderState.loading) {
+                return const SizedBox();
+              }
+              return Autocomplete<StateData>(
+               optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return const Iterable<StateData>.empty();
+                }
+                return notifier.entity.where((region) {
+                  return region.name
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase());
+                });
+              },
+              displayStringForOption: (StateData option) => option.name,
+              onSelected: (StateData selection) {
+                
+              },
+              fieldViewBuilder: (BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      fillColor: const Color(0xffF4F4F7),
+                      filled: true,
+                      hintText: 'Masukkan Nama Negara',
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
           const SizedBox(
             height: 14,
