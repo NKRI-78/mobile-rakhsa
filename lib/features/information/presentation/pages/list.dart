@@ -32,17 +32,29 @@ class InformationListPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           ListCardInformation(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Container();
+              }));
+            },
             image: AssetSource.iconInfo, 
             title: "Informasi KBRI"
           ),
           ListCardInformation(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Container();
+              }));
+            },
             image: AssetSource.iconCard, 
             title: "Passport & VISA"
           ),
           ListCardInformation(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Container();
+              }));
+            },
             image: AssetSource.iconHukum, 
             title: "Panduan Hukum"
           ),
