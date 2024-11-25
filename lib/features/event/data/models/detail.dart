@@ -20,28 +20,28 @@ class EventDetailModel {
 }
 
 class EventDetailData {
-  int id;
-  String title;
-  String description;
-  String state;
-  String continent;
-  String startDay;
-  String endDay;
-  String startDate;
-  String endDate;
-  User user;
+  int? id;
+  String? title;
+  String? description;
+  String? state;
+  String? continent;
+  String? startDay;
+  String? endDay;
+  String? startDate;
+  String? endDate;
+  User? user;
 
   EventDetailData({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.state,
-    required this.continent,
-    required this.startDay,
-    required this.endDay,
-    required this.startDate,
-    required this.endDate,
-    required this.user,
+    this.id,
+    this.title,
+    this.description,
+    this.state,
+    this.continent,
+    this.startDay,
+    this.endDay,
+    this.startDate,
+    this.endDate,
+    this.user,
   });
 
   factory EventDetailData.fromJson(Map<String, dynamic> json) => EventDetailData(

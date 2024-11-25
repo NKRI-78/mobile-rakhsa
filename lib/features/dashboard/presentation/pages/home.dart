@@ -171,7 +171,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       body: Consumer<ProfileNotifier>(
         builder: (BuildContext context, ProfileNotifier notifier, Widget? child) {
-          if(notifier.providerState == ProviderState.loading) {
+          if(notifier.state == ProviderState.loading) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
@@ -182,7 +182,7 @@ class HomePageState extends State<HomePage> {
               ),
             );
           }
-           if(notifier.providerState == ProviderState.error) {
+           if(notifier.state == ProviderState.error) {
             return Center(
               child: Text(notifier.message,
                 style: robotoRegular.copyWith(

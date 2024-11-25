@@ -15,15 +15,15 @@ class ProfileNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _providerState = ProviderState.idle; 
-  ProviderState get providerState => _providerState;
+  ProviderState _state = ProviderState.idle; 
+  ProviderState get state => _state;
 
   ProfileNotifier({
     required this.useCase
   });
 
   void setStateProviderState(ProviderState param) {
-    _providerState = param;
+    _state = param;
 
     notifyListeners();
   }

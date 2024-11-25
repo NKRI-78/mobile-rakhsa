@@ -200,7 +200,9 @@ class EventListData extends StatelessWidget {
           child: InkWell(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const EventDetailPage();
+                return EventDetailPage(
+                  id: events[i].id,
+                );
               }));
             },
             child: Container(

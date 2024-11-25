@@ -41,7 +41,11 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   @override 
   Future<EventModel> list() async {
     try {
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/event");
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/event/list-event-user",
+        data: {
+          "user_id": StorageHelper.getUserId()
+        }
+      );
       Map<String, dynamic> data = response.data;
       EventModel eventModel = EventModel.fromJson(data);
       return eventModel;
