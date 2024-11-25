@@ -23,7 +23,9 @@ class EventDetailData {
   int? id;
   String? title;
   String? description;
+  int? stateId;
   String? state;
+  int? continentId;
   String? continent;
   String? startDay;
   String? endDay;
@@ -35,7 +37,9 @@ class EventDetailData {
     this.id,
     this.title,
     this.description,
+    this.stateId,
     this.state,
+    this.continentId,
     this.continent,
     this.startDay,
     this.endDay,
@@ -48,7 +52,9 @@ class EventDetailData {
     id: json["id"],
     title: json["title"],
     description: json["description"],
+    stateId: json["state_id"],
     state: json["state"],
+    continentId: json["continent_id"],
     continent: json["continent"],
     startDay: json["start_day"],
     endDay: json["end_day"],

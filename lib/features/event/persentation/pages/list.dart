@@ -10,6 +10,7 @@ import 'package:rakhsa/features/event/data/models/list.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/create.dart';
 import 'package:rakhsa/features/event/persentation/pages/detail.dart';
+import 'package:rakhsa/features/event/persentation/pages/edit.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
@@ -236,24 +237,50 @@ class EventListData extends StatelessWidget {
                         ),
                       ),
 
-                      Material(
-                        child: InkWell(
-                          onTap: () {
-                            GeneralModal.deleteEvent(
-                              id: events[i].id,
-                              getData: getData
-                            );
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(
-                              Icons.delete,
-                              color: ColorResources.error,
-                              size: 18.0,
+                      Row(
+                        children: [
+
+                          Material(
+                            child: InkWell(
+                              onTap: () {
+                                GeneralModal.deleteEvent(
+                                  id: events[i].id,
+                                  getData: getData
+                                );
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: ColorResources.error,
+                                  size: 15.0,
+                                )
+                              ),
                             ),
                           ),
-                        ),
-                      )
+
+                          const SizedBox(width: 5.0),
+
+                          Material(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return EventEditPage(id: events[i].id);
+                                }));
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: ColorResources.blue,
+                                  size: 15.0,
+                                ),
+                              ),
+                            ),
+                          )
+
+                        ],
+                      ),
 
                     ],
                   ),

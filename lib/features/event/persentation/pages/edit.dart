@@ -1,33 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/administration/data/models/continent.dart';
 import 'package:rakhsa/features/administration/data/models/state.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 
-class EventCreatePage extends StatefulWidget {
-  const EventCreatePage({super.key});
+class EventEditPage extends StatefulWidget {
+  final int id;
+
+  const EventEditPage({
+    required this.id,
+    super.key
+  });
 
   @override
-  State<EventCreatePage> createState() => EventCreatePageState();
+  State<EventEditPage> createState() => EventEditPageState();
 }
 
-class EventCreatePageState extends State<EventCreatePage> {
+class EventEditPageState extends State<EventEditPage> {
 
   late TextEditingController titleC;
   late TextEditingController descC;
 
   late SaveEventNotifier saveEventNotifier;
+  late DetailEventNotifier detailEventNotifier;
   late GetContinentNotifier getContinentNotifier;
   late GetStateNotifier getStateNotifier;
+
+  bool isLoading = true;
 
   int continentId = -1;
   int stateId = -1;
@@ -50,7 +61,7 @@ class EventCreatePageState extends State<EventCreatePage> {
     String desc = descC.text;
     String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
     String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
-
+    
     if(title.isEmpty) {
       ShowSnackbar.snackbarErr("Field title is required");
       return;
@@ -58,21 +69,6 @@ class EventCreatePageState extends State<EventCreatePage> {
 
     if(desc.isEmpty) {
       ShowSnackbar.snackbarErr("Field description is required");
-      return;
-    }
-
-    if (rangeStart == null || rangeEnd == null) {
-      ShowSnackbar.snackbarErr("Please select a valid date range");
-      return;
-    }
-
-    if(continentId == -1) {
-      ShowSnackbar.snackbarErr("Please select your continent");
-      return;
-    }
-    
-    if(stateId == -1) {
-      ShowSnackbar.snackbarErr("Please select your state");
       return;
     }
 
@@ -85,23 +81,13 @@ class EventCreatePageState extends State<EventCreatePage> {
       description: desc
     );
 
-    if(saveEventNotifier.message.isNotEmpty) {
+    if(saveEventNotifier.message != "") {
       ShowSnackbar.snackbarErr(saveEventNotifier.message);
       return;
     }
     
     if(!mounted) return;
-
-    titleC.clear();
-    descC.clear();
-    setState(() {
-      rangeStart = null;
-      rangeEnd = null;
-      continentId = -1;
-      stateId = -1;
-    });
-
-    Navigator.pop(context, "refetch");
+      Navigator.pop(context, "refetch");
   }
 
   @override 
@@ -112,10 +98,20 @@ class EventCreatePageState extends State<EventCreatePage> {
     descC = TextEditingController();
 
     saveEventNotifier = context.read<SaveEventNotifier>();
+    detailEventNotifier = context.read<DetailEventNotifier>();
     getContinentNotifier = context.read<GetContinentNotifier>();
     getStateNotifier = context.read<GetStateNotifier>();
 
     Future.microtask(() => getData());
+
+    Future.delayed(Duration.zero, () async {
+      await detailEventNotifier.find(id: widget.id);
+
+      setState(() => isLoading = false);
+
+      titleC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.title.toString());
+      descC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.description.toString());
+    });
   }
 
   @override 
@@ -196,10 +192,8 @@ class EventCreatePageState extends State<EventCreatePage> {
               rangeSelectionMode: RangeSelectionMode.toggledOn,
               onRangeSelected: (DateTime? start, DateTime? end, DateTime focusedDay) {
                 setState(() {
-
                   rangeStart = start;
                   rangeEnd = end;
-                  
                 });
               },
               daysOfWeekStyle: const DaysOfWeekStyle(
@@ -270,10 +264,10 @@ class EventCreatePageState extends State<EventCreatePage> {
                   .contains(textEditingValue.text.toLowerCase());
                 });
               },
+              // initialValue: TextEditingValue(text: "Asia"),
               displayStringForOption: (CountryData option) => option.name,
               onSelected: (CountryData selection) {
                 continentId = selection.id;
-
                 getStateNotifier.getState(continentId: continentId);
               },
               fieldViewBuilder: (BuildContext context,
