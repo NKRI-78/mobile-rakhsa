@@ -141,7 +141,11 @@ class EventListView extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const EventCreatePage()
-                    ));
+                    )).then((val) { 
+                      if(val != "") {
+                        getData();
+                      }
+                    });
                   },
                   
                   style: ElevatedButton.styleFrom(

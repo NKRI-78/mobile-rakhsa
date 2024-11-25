@@ -68,6 +68,14 @@ class EventCreatePageState extends State<EventCreatePage> {
       stateId: stateId, 
       description: desc
     );
+
+    if(saveEventNotifier.message != "") {
+      ShowSnackbar.snackbarErr(saveEventNotifier.message);
+      return;
+    }
+    
+    if(!mounted) return;
+      Navigator.pop(context, "refetch");
   }
 
   @override 
@@ -356,7 +364,9 @@ class EventCreatePageState extends State<EventCreatePage> {
                   ? const SizedBox(
                       width: 16.0,
                       height: 16.0,
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        backgroundColor: ColorResources.white,
+                      ),
                     )
                   : const Text(
                     'Simpan',
