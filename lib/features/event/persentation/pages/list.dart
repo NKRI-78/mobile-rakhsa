@@ -266,7 +266,11 @@ class EventListData extends StatelessWidget {
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                                   return EventEditPage(id: events[i].id);
-                                }));
+                                })).then((val) {
+                                  if(val != "") {
+                                    getData();
+                                  }
+                                });
                               },
                               child: const Padding(
                                 padding: EdgeInsets.all(4.0),

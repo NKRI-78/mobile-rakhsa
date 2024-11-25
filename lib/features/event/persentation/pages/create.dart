@@ -38,8 +38,6 @@ class EventCreatePageState extends State<EventCreatePage> {
   DateTime? rangeStart;
   DateTime? rangeEnd;
   
-  RangeSelectionMode rangeSelectionMode = RangeSelectionMode.toggledOff;
-
   Future<void> getData() async {
     if(!mounted) return;
       getContinentNotifier.getContinent();

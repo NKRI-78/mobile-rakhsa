@@ -536,7 +536,9 @@ class HomePageState extends State<HomePage> {
                                                               const SizedBox(height: 4.0),
                                                               Text(
                                                                 item.desc.toString(),
+                                                                maxLines: 4,
                                                                 style: robotoRegular.copyWith(
+                                                                  overflow: TextOverflow.ellipsis,
                                                                   color: ColorResources.white,
                                                                   fontSize: Dimensions.fontSizeSmall,
                                                                 ),
