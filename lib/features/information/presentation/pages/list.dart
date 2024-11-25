@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/features/information/presentation/pages/search.dart';
 
 import 'package:rakhsa/features/information/presentation/widgets/list_card.dart';
 
@@ -34,7 +35,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Container();
+                return const SearchPage();
               }));
             },
             image: AssetSource.iconInfo, 
@@ -43,7 +44,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Container();
+                return const SearchPage();
               }));
             },
             image: AssetSource.iconCard, 
@@ -52,7 +53,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Container();
+                return const SearchPage();
               }));
             },
             image: AssetSource.iconHukum, 
