@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rakhsa/coming_soon.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 
@@ -58,8 +60,10 @@ class DashboardScreenState extends State<DashboardScreen> {
         context: context, 
         builder: (BuildContext context) {
           return SizedBox(
-            height: 140.0,
+            width: 180.0,
+            height: 180.0,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
 
@@ -75,28 +79,61 @@ class DashboardScreenState extends State<DashboardScreen> {
                         return const ComingSoonPage();
                       }));
                     },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                    
-                        Image.asset(
-                          width: 50.0,
-                          height: 50.0,
-                          AssetSource.iconFamilyCall,
-                        ),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                         
-                        const SizedBox(height: 5.0),
-                    
-                        Text("Family Call",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.black
-                          )
-                        )
-                    
+                            Image.asset(
+                              width: 50.0,
+                              height: 50.0,
+                              AssetSource.iconFamilyCall,
+                            ),
+                            
+                            const SizedBox(height: 5.0),
+                        
+                            Text("Family Call",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: ColorResources.black
+                              )
+                            )
+                        
+                          ],
+                        ),
+
+                        const SizedBox(width: 20.0),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                        
+                            Image.asset(
+                              width: 50.0,
+                              height: 50.0,
+                              AssetSource.iconFamilyCall,
+                            ),
+                            
+                            const SizedBox(height: 5.0),
+                        
+                            Text("News",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: ColorResources.black
+                              )
+                            )
+                        
+                          ],
+                        ),
+
                       ],
-                    ),
+                    )
                   ) 
                 ),
                 

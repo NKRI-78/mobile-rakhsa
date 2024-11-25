@@ -38,9 +38,7 @@ class ProfileNotifier with ChangeNotifier {
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
-
         _profileModel = r;
-
         setStateProviderState(ProviderState.loaded);
       }
     );

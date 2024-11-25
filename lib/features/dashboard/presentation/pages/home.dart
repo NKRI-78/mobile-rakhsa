@@ -61,10 +61,10 @@ class HomePageState extends State<HomePage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      profileNotifier.getProfile();
+      await profileNotifier.getProfile();
 
     if(!mounted) return;
-      dashboardNotifier.getNews();
+      await dashboardNotifier.getNews();
   }
 
   Future<void> checkAndGetLocation() async {
@@ -73,24 +73,24 @@ class HomePageState extends State<HomePage> {
     if (!isLocationServiceEnabled) {
       if(mounted) {
         showDialog(
-        context: context,
-        barrierDismissible: false,  
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Location Services Disabled'),
-            content: const Text('Please enable location services to continue.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();  
-                  Geolocator.openLocationSettings();  
-                },
-                child: const Text('Open Settings'),
-              ),
-            ],
-          );
-        },
-      );
+          context: context,
+          barrierDismissible: false,  
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Location Services Disabled'),
+              content: const Text('Please enable location services to continue.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();  
+                    Geolocator.openLocationSettings();  
+                  },
+                  child: const Text('Open Settings'),
+                ),
+              ],
+            );
+          }
+        );
       }
     } else {
       getCurrentLocation();
