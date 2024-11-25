@@ -365,7 +365,7 @@ class EventCreatePageState extends State<EventCreatePage> {
                       width: 16.0,
                       height: 16.0,
                       child: CircularProgressIndicator(
-                        backgroundColor: ColorResources.white,
+                        valueColor: AlwaysStoppedAnimation(ColorResources.white),
                       ),
                     )
                   : const Text(

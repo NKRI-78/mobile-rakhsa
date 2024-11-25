@@ -14,6 +14,7 @@ import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
@@ -40,6 +41,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SaveEventNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<DetailEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<DeleteEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),

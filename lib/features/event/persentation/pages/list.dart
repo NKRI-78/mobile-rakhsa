@@ -9,6 +9,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/event/data/models/list.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/create.dart';
+import 'package:rakhsa/features/event/persentation/pages/detail.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
@@ -198,6 +199,9 @@ class EventListData extends StatelessWidget {
           margin: const EdgeInsets.only(top: 10.0),
           child: InkWell(
             onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const EventDetailPage();
+              }));
             },
             child: Container(
               width: double.infinity,
