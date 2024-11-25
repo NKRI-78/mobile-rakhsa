@@ -47,12 +47,12 @@ class EventListPageState extends State<EventListPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
         leading: const SizedBox(),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
           child: Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 32, bottom: 10),
+            padding: const EdgeInsets.only(left: 16.0, right: 32, bottom: 10),
             child: Text('Tentukan Rencana Perjalanan mu di Sini',
-              style: TextStyle(
+              style: robotoRegular.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeOverLarge,
               ),
@@ -73,6 +73,16 @@ class EventListPageState extends State<EventListPage> {
               )
             );
           }
+          if(notifier.state == ProviderState.empty) {
+            return Text(
+              'Belum ada Rencana yang di Buat',
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade700
+              ),
+            );
+          }
           if(notifier.state == ProviderState.error) {
             return Center(
               child: Text(notifier.message,
@@ -84,7 +94,8 @@ class EventListPageState extends State<EventListPage> {
             );
           }
           return EventListView(
-            events: notifier.entity
+            events: notifier.entity,
+            getData: getData,
           );
         },
       )
@@ -94,60 +105,67 @@ class EventListPageState extends State<EventListPage> {
 
 class EventListView extends StatelessWidget {
   final List<EventData> events;
+  final Function getData;
 
   const EventListView({
     required this.events,
+    required this.getData,
     super.key
   });
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      slivers: [
-
-        // const SliverToBoxAdapter(
-        //   child: EventListEmpty(),
-        // ),
-
-        SliverToBoxAdapter(
-          child: EventListData(
-            events: events
+    return RefreshIndicator.adaptive(
+      onRefresh: () {
+        return Future.sync(() {
+          getData();
+        });
+      },
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+      
+          SliverToBoxAdapter(
+            child: EventListData(
+              events: events
+            ),
           ),
-        ),
-
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 26,
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const EventCreatePage()
-                  ));
-                },
-                
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                    8,
-                  )),
-                  backgroundColor: const Color(0xffFE1717),
+      
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 26,
                 ),
-                label: const Text('Rencana',
-                  style: TextStyle(color: ColorResources.white),
-                ),
-                icon: const Icon(
-                  Icons.add,
-                  color: ColorResources.white,
-                ),
-              )
-            ],
-          ),
-        )
-      ],
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const EventCreatePage()
+                    ));
+                  },
+                  
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                      8,
+                    )),
+                    backgroundColor: const Color(0xffFE1717),
+                  ),
+                  label: Text('Rencana',
+                    style: robotoRegular.copyWith(
+                      color: ColorResources.white
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.add,
+                    color: ColorResources.white,
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -168,127 +186,107 @@ class EventListData extends StatelessWidget {
       shrinkWrap: true,
       itemCount: events.length,
       itemBuilder: (BuildContext context, int i) {
-        return InkWell(
-          onTap: () {
-            // Navigator.push(context,
-            // MaterialPageRoute(builder: (_) => const EventDetailPage()));
-          },
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(2, 2),
-                  color: Colors.black.withOpacity(.3),
-                  blurRadius: 10,
-                  spreadRadius: 0,
-                )
-              ]
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(events[i].title,
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeLarge,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          events[i].startDay,
-                          style: const TextStyle(
-                            color: Color(0xffBBBBBB),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        Text(
-                          events[i].startDate,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17.0,
-                          ),
-                        ),
-                        Text(
-                          events[i].continent,
-                          style: const TextStyle(
-                            color: Color(0xff939393),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
+        return Container(
+          margin: const EdgeInsets.only(top: 10.0),
+          child: InkWell(
+            onTap: () {
+              // Navigator.push(context,
+              // MaterialPageRoute(builder: (_) => const EventDetailPage()));
+            },
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(2, 2),
+                    color: Colors.black.withOpacity(.3),
+                    blurRadius: 10,
+                    spreadRadius: 0,
+                  )
+                ]
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(events[i].title,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Image.asset('assets/images/airplane.png'),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          events[i].endDay,
-                          style: const TextStyle(
-                            color: Color(0xffBBBBBB),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16.0,
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            events[i].startDay,
+                            style: robotoRegular.copyWith(
+                              color: const Color(0xffBBBBBB),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0,
+                            ),
                           ),
-                        ),
-                        Text(
-                          events[i].endDate,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17.0,
+                          Text(
+                            events[i].startDate,
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17.0,
+                            ),
                           ),
-                        ),
-                        Text(events[i].state,
-                          style: const TextStyle(
-                            color: Color(0xff939393),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                          Text(
+                            events[i].continent,
+                            style: robotoRegular.copyWith(
+                              color: const Color(0xff939393),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12.0,
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              ],
+                        ],
+                      ),
+                      Image.asset('assets/images/airplane.png'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            events[i].endDay,
+                            style: robotoRegular.copyWith(
+                              color: const Color(0xffBBBBBB),
+                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.fontSizeDefault,
+                            ),
+                          ),
+                          Text(events[i].endDate,
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: Dimensions.fontSizeLarge,
+                            )
+                          ),  
+                          Text(events[i].state,
+                            style: robotoRegular.copyWith(
+                              color: const Color(0xff939393),
+                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.fontSizeSmall,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class EventListEmpty extends StatelessWidget {
-  const EventListEmpty({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 32,
-        ),
-        Text(
-          'Belum ada Rencana yang di Buat',
-          style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey.shade700),
-        ),
-      ],
     );
   }
 }

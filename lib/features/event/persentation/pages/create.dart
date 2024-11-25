@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/administration/data/models/continent.dart';
 import 'package:rakhsa/features/administration/data/models/state.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
@@ -19,11 +22,17 @@ class EventCreatePage extends StatefulWidget {
 
 class EventCreatePageState extends State<EventCreatePage> {
 
+  late TextEditingController titleC;
+  late TextEditingController descC;
+
+  late SaveEventNotifier saveEventNotifier;
   late GetContinentNotifier getContinentNotifier;
   late GetStateNotifier getStateNotifier;
 
-  String stateId = "";
+  int continentId = -1;
+  int stateId = -1;
 
+  DateTime focusedDay = DateTime.now();
   DateTime? selectedDay;
 
   DateTime? rangeStart;
@@ -36,14 +45,50 @@ class EventCreatePageState extends State<EventCreatePage> {
       getContinentNotifier.getContinent();
   }
 
+  Future<void> save() async {
+    String title = titleC.text;
+    String desc = descC.text;
+    String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
+    String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
+    if(title.isEmpty) {
+      ShowSnackbar.snackbarErr("Field title is required");
+      return;
+    }
+
+    if(desc.isEmpty) {
+      ShowSnackbar.snackbarErr("Field description is required");
+      return;
+    }
+
+    await saveEventNotifier.save(
+      title: title, 
+      startDate: startDate, 
+      endDate: endDate, 
+      continentId: continentId, 
+      stateId: stateId, 
+      description: desc
+    );
+  }
+
   @override 
   void initState() {
     super.initState();
 
+    titleC = TextEditingController();
+    descC = TextEditingController();
+
+    saveEventNotifier = context.read<SaveEventNotifier>();
     getContinentNotifier = context.read<GetContinentNotifier>();
     getStateNotifier = context.read<GetStateNotifier>();
 
     Future.microtask(() => getData());
+  }
+
+  @override 
+  void dispose() {
+    titleC.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -75,6 +120,7 @@ class EventCreatePageState extends State<EventCreatePage> {
         padding: const EdgeInsets.all(16),
         children: [
           TextField(
+            controller: titleC,
             decoration: InputDecoration(
               fillColor: const Color(0xffF4F4F7),
               filled: true,
@@ -107,31 +153,19 @@ class EventCreatePageState extends State<EventCreatePage> {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: TableCalendar(
-              focusedDay: DateTime.now(),
+              focusedDay: focusedDay,
               firstDay: DateTime.now(),
               lastDay: DateTime(2050),
               selectedDayPredicate: (day) => isSameDay(selectedDay, day),
               rangeStartDay: rangeStart,
               rangeEndDay: rangeEnd,
-              rangeSelectionMode: rangeSelectionMode,
-              onDaySelected: (DateTime currentSelectedDay, DateTime focusedDay) {
-                setState(() {
-                  selectedDay = currentSelectedDay;
-                  
-                  rangeStart = null;
-                  rangeEnd = null;
-                  
-                  rangeSelectionMode = RangeSelectionMode.toggledOff;
-                });
-              },
+              rangeSelectionMode: RangeSelectionMode.toggledOn,
               onRangeSelected: (DateTime? start, DateTime? end, DateTime focusedDay) {
                 setState(() {
-                  selectedDay = null;
 
                   rangeStart = start;
                   rangeEnd = end;
                   
-                  rangeSelectionMode = RangeSelectionMode.toggledOn;
                 });
               },
               daysOfWeekStyle: const DaysOfWeekStyle(
@@ -204,7 +238,8 @@ class EventCreatePageState extends State<EventCreatePage> {
               },
               displayStringForOption: (CountryData option) => option.name,
               onSelected: (CountryData selection) {
-                int continentId = selection.id;
+                continentId = selection.id;
+
                 getStateNotifier.getState(continentId: continentId);
               },
               fieldViewBuilder: (BuildContext context,
@@ -251,7 +286,7 @@ class EventCreatePageState extends State<EventCreatePage> {
               },
               displayStringForOption: (StateData option) => option.name,
               onSelected: (StateData selection) {
-                
+                stateId = selection.id;
               },
               fieldViewBuilder: (BuildContext context,
                 TextEditingController textEditingController,
@@ -280,6 +315,7 @@ class EventCreatePageState extends State<EventCreatePage> {
             height: 14,
           ),
           TextField(
+            controller: descC,
             maxLines: 8,
             decoration: InputDecoration(
               fillColor: const Color(0xffF4F4F7),
@@ -299,31 +335,40 @@ class EventCreatePageState extends State<EventCreatePage> {
           SizedBox(
             width: double.infinity,
             height: 50,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const EventCreatePage()));
+            child: Consumer<SaveEventNotifier>(
+              builder: (BuildContext context, SaveEventNotifier notifier, Widget? child) {
+                return ElevatedButton.icon(
+                  onPressed: () async {
+                    await save();
+                  },
+                  icon: const Icon(
+                    Icons.save,
+                    color: ColorResources.white,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                      8,
+                    )),
+                    backgroundColor: const Color(0xffFE1717),
+                  ),
+                  label: notifier.state == ProviderState.loading 
+                  ? const SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(),
+                    )
+                  : const Text(
+                    'Simpan',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                );
               },
-              icon: const Icon(
-                Icons.save,
-                color: ColorResources.white,
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                  8,
-                )),
-                backgroundColor: const Color(0xffFE1717),
-              ),
-              label: const Text(
-                'Simpan',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            )
           ),
           const SizedBox(
             height: 36,

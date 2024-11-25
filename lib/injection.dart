@@ -10,6 +10,8 @@ import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.da
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
+import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
+import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 import 'package:rakhsa/features/event/data/repositories/event_remote_datasource_impl.dart';
 
@@ -81,6 +83,7 @@ void init() {
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => ListEventUseCase(locator()));
+  locator.registerLazySingleton(() => SaveEventUseCase(locator()));
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
   locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
   locator.registerLazySingleton(() => ResendOtpUseCase(locator()));
@@ -99,6 +102,7 @@ void init() {
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ListEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => SaveEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
