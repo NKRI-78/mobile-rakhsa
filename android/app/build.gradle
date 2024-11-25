@@ -47,13 +47,18 @@ android {
     }
 
     defaultConfig {
+<<<<<<< HEAD
         applicationId "com.inovatiftujuh8.rakhsa"
+=======
+        applicationId "com.example.rakhsa"
+>>>>>>> cf83e068e4508c935bf0bc1f330d5fc976538636
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
+<<<<<<< HEAD
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -66,6 +71,11 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+=======
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+>>>>>>> cf83e068e4508c935bf0bc1f330d5fc976538636
         }
     }
 }
