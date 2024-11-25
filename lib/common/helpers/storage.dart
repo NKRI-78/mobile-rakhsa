@@ -45,11 +45,11 @@ class StorageHelper {
   }
 
   static Future<void> removeToken() async {
-    await storage.delete(key: 'token');
+    await storage.delete(key: "token");
   }
 
   static Future<bool?> isLoggedIn() async {
-    var token = await storage.read(key: 'token');
+    var token = await storage.read(key: "token");
 
     return token != null 
     ? true 

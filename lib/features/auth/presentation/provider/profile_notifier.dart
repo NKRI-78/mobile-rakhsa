@@ -15,7 +15,7 @@ class ProfileNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _state = ProviderState.idle; 
+  ProviderState _state = ProviderState.loading; 
   ProviderState get state => _state;
 
   ProfileNotifier({
@@ -31,6 +31,8 @@ class ProfileNotifier with ChangeNotifier {
   Future<void> getProfile() async {
     setStateProviderState(ProviderState.loading);
 
+    debugPrint("==== TERPANGGIL ====");
+
     final profile = await useCase.execute();
     
     profile.fold(
@@ -39,10 +41,10 @@ class ProfileNotifier with ChangeNotifier {
         setStateProviderState(ProviderState.error);
       }, (r) {
         _profileModel = r;
-        setStateProviderState(ProviderState.loaded);
       }
     );
-   
+
+    setStateProviderState(ProviderState.loaded);
   }
 
 }

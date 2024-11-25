@@ -143,7 +143,7 @@ class GeneralModal {
     });
   }
 
-  static Future<void> logout() {
+  static Future<void> logout({required GlobalKey<ScaffoldState> globalKey}) {
     return showDialog(
       context: navigatorKey.currentContext!,
       builder: (context) {
@@ -228,7 +228,10 @@ class GeneralModal {
                                 isBorderRadius: true,
                                 height: 40.0,
                                 onTap: () async {
+                                  StorageHelper.clear();
                                   StorageHelper.removeToken();
+
+                                  globalKey.currentState?.closeDrawer();
 
                                   Navigator.pushReplacement(
                                     context, MaterialPageRoute(builder: (BuildContext context) {

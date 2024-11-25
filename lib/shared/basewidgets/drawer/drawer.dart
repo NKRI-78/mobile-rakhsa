@@ -10,7 +10,11 @@ import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class DrawerWidget extends StatefulWidget {
-  const DrawerWidget({super.key});
+  final GlobalKey<ScaffoldState> globalKey;
+  const DrawerWidget({
+    required this.globalKey,
+    super.key
+  });
 
   @override
   State<DrawerWidget> createState() => DrawerWidgetState();
@@ -49,7 +53,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
                 height: 110.0,
               ), 
               onPress: () async {
-                await GeneralModal.logout();
+                await GeneralModal.logout(globalKey: widget.globalKey);
               }
             )
             

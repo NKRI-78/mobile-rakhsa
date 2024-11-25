@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:provider/provider.dart';
+
+import 'package:rakhsa/websockets.dart';
+
 import 'package:rakhsa/coming_soon.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 
@@ -8,6 +13,9 @@ import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
+
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -26,6 +34,17 @@ class DashboardScreen extends StatefulWidget {
 class DashboardScreenState extends State<DashboardScreen> {
 
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
+  late DashboardNotifier dashboardNotifier;
+  late ProfileNotifier profileNotifier;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      profileNotifier.getProfile();
+
+    if(!mounted) return;
+      dashboardNotifier.getNews();
+  }
 
   List<Map<String, dynamic>> pages = [
     {
@@ -51,6 +70,11 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override 
   void initState() {
     super.initState();
+
+    dashboardNotifier = context.read<DashboardNotifier>();
+    profileNotifier = context.read<ProfileNotifier>();
+
+    Future.microtask(() => getData());
   }
 
   void selectPage(int index) {
@@ -149,10 +173,13 @@ class DashboardScreenState extends State<DashboardScreen> {
   
   @override
   Widget build(BuildContext context) {
+
+    Provider.of<WebSocketsService>(context);
+
     return Scaffold(
       key: globalKey,
-      drawer: const SafeArea(
-        child: DrawerWidget()
+      drawer: SafeArea(
+        child: DrawerWidget(globalKey: globalKey)
       ),
       body: pages[selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavyBar( 

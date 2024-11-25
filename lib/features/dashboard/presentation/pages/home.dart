@@ -48,7 +48,6 @@ class HomePageState extends State<HomePage> {
   List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
-  late WebSocketsService webSocketsService;
   late DashboardNotifier dashboardNotifier;
   late ProfileNotifier profileNotifier;
 
@@ -61,10 +60,10 @@ class HomePageState extends State<HomePage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      await profileNotifier.getProfile();
+      profileNotifier.getProfile();
 
     if(!mounted) return;
-      await dashboardNotifier.getNews();
+      dashboardNotifier.getNews();
   }
 
   Future<void> checkAndGetLocation() async {
@@ -149,9 +148,8 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    webSocketsService = context.read<WebSocketsService>();
-    dashboardNotifier = context.read<DashboardNotifier>();
     profileNotifier = context.read<ProfileNotifier>();
+    dashboardNotifier = context.read<DashboardNotifier>();
 
     Future.microtask(() => getData());
 
