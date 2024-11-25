@@ -49,5 +49,49 @@ class EventRepositoryImpl implements EventRepository {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
+  
+  @override 
+  Future<Either<Failure, void>> delete({
+    required int id
+  }) async {
+    try {
+      var result = await remoteDataSource.delete(
+        id: id
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, void>> update({
+    required int id, 
+    required String title, 
+    required String startDate, 
+    required String endDate, 
+    required int continentId, 
+    required int stateId,
+    required String description
+  }) async {
+    try {
+      var result = await remoteDataSource.update(
+        id: id,
+        title: title, 
+        startDate: startDate,
+        endDate: endDate,
+        continentId: continentId,
+        stateId: stateId,
+        description: description
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
 
 }

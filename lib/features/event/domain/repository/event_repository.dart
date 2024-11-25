@@ -14,4 +14,14 @@ abstract class EventRepository {
     required int stateId,
     required String description
   });
+  Future<Either<Failure, void>> update({
+    required int id,
+    required String title,
+    required String startDate,
+    required String endDate,
+    required int continentId,
+    required int stateId,
+    required String description
+  });
+  Future<Either<Failure, void>> delete({required int id});
 }

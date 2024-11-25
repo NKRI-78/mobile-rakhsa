@@ -10,8 +10,12 @@ import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.da
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
+import 'package:rakhsa/features/event/domain/usecases/delete_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
+import 'package:rakhsa/features/event/domain/usecases/update_event.dart';
+import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 import 'package:rakhsa/features/event/data/repositories/event_remote_datasource_impl.dart';
 
@@ -83,6 +87,8 @@ void init() {
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => ListEventUseCase(locator()));
+  locator.registerLazySingleton(() => UpdateEventUseCase(locator()));
+  locator.registerLazySingleton(() => DeleteEventUseCase(locator()));
   locator.registerLazySingleton(() => SaveEventUseCase(locator()));
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
   locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
@@ -103,6 +109,8 @@ void init() {
   locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ListEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => SaveEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UpdateEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => DeleteEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));

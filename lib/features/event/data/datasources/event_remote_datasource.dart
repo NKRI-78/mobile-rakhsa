@@ -17,6 +17,18 @@ abstract class EventRemoteDataSource {
     required int stateId, 
     required String description
   });
+  Future<void> update({
+    required int id, 
+    required String title, 
+    required String startDate,
+    required String endDate, 
+    required int continentId,
+    required int stateId, 
+    required String description
+  });
+  Future<void> delete({
+    required int id
+  });
 }
 
 class EventRemoteDataSourceImpl implements EventRemoteDataSource {
@@ -69,6 +81,53 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     } 
+  }
+
+  @override 
+  Future<void> update({
+    required int id,
+    required String title,
+    required String startDate,
+    required String endDate,
+    required int continentId,
+    required int stateId, 
+    required String description
+  }) async {
+    try {
+      await client.put("${RemoteDataSourceConsts.baseUrlProd}/api/v1/event/$id",
+        data: {
+          "title": title,
+          "start_date": startDate,
+          "end_date": endDate,
+          "continent_id": continentId,
+          "state_id": stateId,
+          "description": description
+        }
+      );
+    } on DioException catch(e) {
+      debugPrint(e.response.toString());
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    } 
+  }
+
+  @override 
+  Future<void> delete({
+    required int id
+  }) async {
+    try {
+      await client.delete("${RemoteDataSourceConsts.baseUrlProd}/api/v1/event/$id");
+    } on DioException catch(e) {
+      debugPrint(e.response.toString());
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
   }
 
 }
