@@ -17,7 +17,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-  
+
   late TextEditingController searchC;
 
   @override 

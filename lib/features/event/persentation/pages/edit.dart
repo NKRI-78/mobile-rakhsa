@@ -303,7 +303,7 @@ class EventEditPageState extends State<EventEditPage> {
               
               Consumer<GetContinentNotifier>(
                 builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
-                  if(notifier.providerState == ProviderState.loading) {
+                  if(notifier.state == ProviderState.loading) {
                     return const SizedBox();
                   }
                   return Autocomplete<CountryData>(

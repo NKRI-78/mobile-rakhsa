@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
-import 'package:rakhsa/features/administration/data/models/continent.dart';
-import 'package:rakhsa/features/administration/domain/usecases/get_continent.dart';
+import 'package:rakhsa/features/administration/data/models/country.dart' ;
+import 'package:rakhsa/features/administration/domain/usecases/get_country.dart';
 
-class GetContinentNotifier with ChangeNotifier {
-  final GetContinentUseCase useCase;
+class GetCountryNotifier with ChangeNotifier {
+  final GetCountryUseCase useCase;
 
   List<CountryData> _entity = [];
   List<CountryData> get entity => [..._entity];
@@ -17,7 +17,7 @@ class GetContinentNotifier with ChangeNotifier {
   ProviderState _state = ProviderState.idle; 
   ProviderState get state => _state;
 
-  GetContinentNotifier({
+  GetCountryNotifier({
     required this.useCase
   });
 
@@ -27,7 +27,7 @@ class GetContinentNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getContinent() async {
+  Future<void> getCountry() async {
     setStateProviderState(ProviderState.loading);
 
     final continent = await useCase.execute();
