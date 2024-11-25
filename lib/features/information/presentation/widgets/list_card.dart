@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
@@ -13,39 +14,50 @@ class ListCardInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 85,
+      height: 85.0,
       decoration: BoxDecoration(
         color: Colors.white, 
-        borderRadius: BorderRadius.circular(9)
+        borderRadius: BorderRadius.circular(9.0)
       ),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Material(
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(9.0),
         child: InkWell(
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(9.0),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  image,
-                  width: 50,
-                  height: 50,
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      
+                      Image.asset(
+                        image,
+                        width: 45.0,
+                        height: 45.0,
+                      ),
+                      
+                      const SizedBox(width: 15.0),
+                            
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: ColorResources.black,
+                          fontSize: Dimensions.fontSizeExtraLarge,
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                            
+                    ]
                   ),
                 ),
                 const Icon(
                   Icons.arrow_forward,
-                  size: 30,
+                  size: 30.0,
                 )
               ],
             ),

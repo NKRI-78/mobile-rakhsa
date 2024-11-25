@@ -3,15 +3,19 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
+import 'package:rakhsa/features/information/presentation/pages/passport_visa.dart';
 
 class SearchPage extends StatefulWidget {
   final String info;
+
   const SearchPage({
     required this.info,
     super.key
@@ -26,7 +30,6 @@ class SearchPageState extends State<SearchPage> {
   Timer? debounce;
 
   late GetCountryNotifier getCountryNotifier;
-
   late TextEditingController searchC;
 
   @override 
@@ -34,6 +37,7 @@ class SearchPageState extends State<SearchPage> {
     super.initState();
 
     getCountryNotifier = context.read<GetCountryNotifier>();
+    getCountryNotifier.clear();
 
     searchC = TextEditingController();
   }
@@ -155,7 +159,17 @@ class SearchPageState extends State<SearchPage> {
                         color: ColorResources.transparent,
                         child: InkWell(
                           onTap: () {
-                          
+                            switch(widget.info) {
+                              case "informasi-kbri":
+                              break;  
+                              case "passport-visa":
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return PassportVisaPage(countryCode: notifier.entity[i].id);
+                                }));
+                              break;
+                              case "panduan-hukum": 
+                              break;
+                            }
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

@@ -27,6 +27,10 @@ class GetCountryNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    _entity = [];
+  }
+
   Future<void> getCountry({required String search}) async {
     setStateProviderState(ProviderState.loading);
 
