@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/features/information/presentation/pages/search.dart';
 
 import 'package:rakhsa/features/information/presentation/widgets/list_card.dart';
@@ -18,7 +20,11 @@ class InformationListPage extends StatelessWidget {
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 32, bottom: 10),
+            padding: EdgeInsets.only(
+              left: 20.0, 
+              right: 20.0, 
+              bottom: 10.0
+            ),
             child: Text(
               'Informasi apa, yang ingin anda ketahui ?',
               style: TextStyle(
