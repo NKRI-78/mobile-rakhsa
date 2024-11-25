@@ -35,7 +35,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage();
+                return const SearchPage(info: "informasi-kbri");
               }));
             },
             image: AssetSource.iconInfo, 
@@ -44,7 +44,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage();
+                return const SearchPage(info: "passport-visa");
               }));
             },
             image: AssetSource.iconCard, 
@@ -53,7 +53,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage();
+                return const SearchPage(info: "panduan-hukum");
               }));
             },
             image: AssetSource.iconHukum, 

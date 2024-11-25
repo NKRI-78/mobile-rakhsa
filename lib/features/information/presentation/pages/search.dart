@@ -11,8 +11,9 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 
 class SearchPage extends StatefulWidget {
-
+  final String info;
   const SearchPage({
+    required this.info,
     super.key
   });
 
@@ -154,7 +155,7 @@ class SearchPageState extends State<SearchPage> {
                         color: ColorResources.transparent,
                         child: InkWell(
                           onTap: () {
-                            
+                          
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
