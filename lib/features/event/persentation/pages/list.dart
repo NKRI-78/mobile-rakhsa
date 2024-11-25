@@ -10,6 +10,7 @@ import 'package:rakhsa/features/event/data/models/list.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/create.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class EventListPage extends StatefulWidget {
   const EventListPage({super.key});
@@ -127,7 +128,8 @@ class EventListView extends StatelessWidget {
       
           SliverToBoxAdapter(
             child: EventListData(
-              events: events
+              events: events,
+              getData: getData,
             ),
           ),
       
@@ -176,9 +178,11 @@ class EventListView extends StatelessWidget {
 
 class EventListData extends StatelessWidget {
   final List<EventData> events;
+  final Function getData;
 
   const EventListData({
     required this.events,
+    required this.getData,
     super.key
   });
 
@@ -194,8 +198,6 @@ class EventListData extends StatelessWidget {
           margin: const EdgeInsets.only(top: 10.0),
           child: InkWell(
             onTap: () {
-              // Navigator.push(context,
-              // MaterialPageRoute(builder: (_) => const EventDetailPage()));
             },
             child: Container(
               width: double.infinity,
@@ -216,11 +218,38 @@ class EventListData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(events[i].title,
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      
+                      Text(events[i].title,
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Material(
+                        child: InkWell(
+                          onTap: () {
+                            GeneralModal.deleteEvent(
+                              id: events[i].id,
+                              getData: getData
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(
+                              Icons.delete,
+                              color: ColorResources.error,
+                              size: 18.0,
+                            ),
+                          ),
+                        ),
+                      )
+
+                    ],
                   ),
                   const SizedBox(
                     height: 8.0,
