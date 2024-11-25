@@ -39,7 +39,6 @@ class CameraPage extends StatefulWidget {
 class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
-  
 
   late WebSocketsService webSocketsService;
   late UploadMediaNotifier uploadMediaNotifier;

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
@@ -83,6 +85,7 @@ class WebSocketsService extends ChangeNotifier {
     final userId = StorageHelper.getUserId();
     
     channel?.sink.add(jsonEncode({
+      "sos_id": const Uuid().v4(),
       "type": "sos",
       "user_id": userId,
       "location": location,
