@@ -27,10 +27,10 @@ class GetCountryNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCountry() async {
+  Future<void> getCountry({required String search}) async {
     setStateProviderState(ProviderState.loading);
 
-    final continent = await useCase.execute();
+    final continent = await useCase.execute(search: search);
     
     continent.fold(
       (l) { 

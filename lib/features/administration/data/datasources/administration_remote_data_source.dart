@@ -10,7 +10,7 @@ import 'package:rakhsa/features/administration/data/models/state.dart';
 
 abstract class AdministrationRemoteDataSource {
   Future<ContinentModel> getContinent();
-  Future<CountryModel> getCountry();
+  Future<CountryModel> getCountry({required String search});
   Future<StateModel> getStates({required int continentId});
 }
 
@@ -37,9 +37,9 @@ class AdministrationRemoteDataSourceImpl implements AdministrationRemoteDataSour
   }
 
   @override 
-  Future<CountryModel> getCountry() async {
+  Future<CountryModel> getCountry({required String search}) async {
     try {
-      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/administration/countries");
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/administration/countries?search=$search");
       Map<String, dynamic> data = response.data;
       CountryModel countryModel = CountryModel.fromJson(data);
       return countryModel;

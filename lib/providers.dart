@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
+import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
@@ -44,6 +45,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<DetailEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<DeleteEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateEventNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<GetCountryNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>()),
 ];

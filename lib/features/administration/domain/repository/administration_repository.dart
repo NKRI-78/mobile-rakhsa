@@ -8,7 +8,9 @@ import 'package:rakhsa/features/administration/data/models/state.dart';
 
 abstract class AdministrationRepository {
   Future<Either<Failure, ContinentModel>> getContinent();
-  Future<Either<Failure, CountryModel>> getCountry();
+  Future<Either<Failure, CountryModel>> getCountry({
+    required String search 
+  });
   Future<Either<Failure, StateModel>> getStates({
     required int continentId
   });

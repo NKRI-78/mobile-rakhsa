@@ -11,7 +11,7 @@ class GetCountryUseCase {
 
   GetCountryUseCase(this.repository);
 
-  Future<Either<Failure, CountryModel>> execute() {
-    return repository.getCountry();
+  Future<Either<Failure, CountryModel>> execute({required String search}) {
+    return repository.getCountry(search: search);
   }
 }

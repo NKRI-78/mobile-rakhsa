@@ -28,9 +28,11 @@ class AdministrationRepositoryImpl implements AdministrationRepository {
   }
 
   @override
-  Future<Either<Failure, CountryModel>> getCountry() async {
+  Future<Either<Failure, CountryModel>> getCountry({
+    required String search
+  }) async {
     try {
-      var result = await remoteDataSource.getCountry();
+      var result = await remoteDataSource.getCountry(search: search);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));
