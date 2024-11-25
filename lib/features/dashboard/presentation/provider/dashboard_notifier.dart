@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
@@ -39,13 +40,16 @@ class DashboardNotifier with ChangeNotifier {
     }, (r) {
 
       _news = [];
-      _news.insert(0, NewsData(
-        id: 0, 
-        title: "", 
-        img: "", 
-        desc: "", 
-        createdAt: ""
-      ));
+
+      if(StorageHelper.getUserId() != null) {
+        _news.insert(0, NewsData(
+          id: 0, 
+          title: "", 
+          img: "", 
+          desc: "", 
+          createdAt: ""
+        ));
+      }
 
       _news.addAll(r.data);
 

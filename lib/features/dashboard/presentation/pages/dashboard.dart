@@ -7,12 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/websockets.dart';
 
 import 'package:rakhsa/coming_soon.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
-import 'package:rakhsa/features/information/presentation/pages/list.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
@@ -20,6 +18,7 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
+import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -51,14 +50,14 @@ class DashboardScreenState extends State<DashboardScreen> {
       'page': HomePage(globalKey: globalKey),
       'title': 'Home',
     },
-    {
-      'page': const InformationListPage(),
-      'title': 'Info',
-    },
-    {
-      'page': const SizedBox(),
-      'title': 'Call',
-    },
+    // {
+    //   'page': const InformationListPage(),
+    //   'title': 'Info',
+    // },
+    // {
+    //   'page': const SizedBox(),
+    //   'title': 'Call',
+    // },
     {
       'page': const EventListPage(),
       'title': 'Event',
@@ -182,7 +181,8 @@ class DashboardScreenState extends State<DashboardScreen> {
         child: DrawerWidget(globalKey: globalKey)
       ),
       body: pages[selectedPageIndex]['page'],
-      bottomNavigationBar: BottomNavyBar( 
+      bottomNavigationBar: BottomNavyBar(
+        mainAxisAlignment: MainAxisAlignment.center, 
         selectedIndex: selectedPageIndex,
         showElevation: false, 
         onItemSelected: (int index) => selectPage(index),
@@ -200,32 +200,32 @@ class DashboardScreenState extends State<DashboardScreen> {
             ),
             activeColor: const Color(0xFFFE1717),
           ),
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.info,
-              size: 20.0,
-            ),
-            title: Text('Info',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
-              ),
-            ),
-            activeColor: const Color(0xFFFE1717)
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.call,
-              size: 20.0,
-            ),
-            title: Text('Call',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
-              ),
-            ),
-            activeColor: const Color(0xFFFE1717),
-          ),
+          // BottomNavyBarItem(
+          //   icon: const Icon(
+          //     Icons.info,
+          //     size: 20.0,
+          //   ),
+          //   title: Text('Info',
+          //     style: robotoRegular.copyWith(
+          //       fontSize: Dimensions.fontSizeDefault,
+          //       color: ColorResources.white
+          //     ),
+          //   ),
+          //   activeColor: const Color(0xFFFE1717)
+          // ),
+          // BottomNavyBarItem(
+          //   icon: const Icon(
+          //     Icons.call,
+          //     size: 20.0,
+          //   ),
+          //   title: Text('Call',
+          //     style: robotoRegular.copyWith(
+          //       fontSize: Dimensions.fontSizeDefault,
+          //       color: ColorResources.white
+          //     ),
+          //   ),
+          //   activeColor: const Color(0xFFFE1717),
+          // ),
           BottomNavyBarItem(
             icon: const Icon(
               Icons.event,

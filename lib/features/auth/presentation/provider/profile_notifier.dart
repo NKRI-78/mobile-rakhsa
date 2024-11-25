@@ -31,8 +31,6 @@ class ProfileNotifier with ChangeNotifier {
   Future<void> getProfile() async {
     setStateProviderState(ProviderState.loading);
 
-    debugPrint("==== TERPANGGIL ====");
-
     final profile = await useCase.execute();
     
     profile.fold(

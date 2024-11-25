@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+// import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/global.dart';
@@ -35,27 +35,27 @@ class MyAppState extends State<MyApp> {
   Widget home = const SizedBox();
 
   Future<void> getData() async {
-    bool? isLoggedIn = await StorageHelper.isLoggedIn();
+    // bool? isLoggedIn = await StorageHelper.isLoggedIn();
     
-    if(isLoggedIn != null) {
+    // if(isLoggedIn != null) {
 
-      if(isLoggedIn) {
+      // if(isLoggedIn) {
         if(mounted) {
           setState(() => home = const DashboardScreen()); 
         }
-      } else {
-        if(mounted) {
-          setState(() => home = const LoginPage()); 
-        }
-      }
+      // } else {
+      //   if(mounted) {
+      //     setState(() => home = const LoginPage()); 
+      //   }
+      // }
 
-    } else {
+    // } else {
 
-      if(mounted) {
-        setState(() => home = const LoginPage()); 
-      }
+      // if(mounted) {
+      //   setState(() => home = const LoginPage()); 
+      // }
 
-    }
+    // }
   }
 
   @override 

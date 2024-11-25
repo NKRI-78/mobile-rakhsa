@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 
 import 'package:provider/provider.dart';
@@ -78,8 +79,7 @@ class EventListPageState extends State<EventListPage> {
             );
           }
           if(notifier.state == ProviderState.empty) {
-            return Text(
-              'Belum ada Rencana yang di Buat',
+            return Text('Belum ada Rencana yang di Buat',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 fontWeight: FontWeight.w500,
@@ -129,16 +129,30 @@ class EventListView extends StatelessWidget {
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
       
-          SliverToBoxAdapter(
+          StorageHelper.getUserId() == null 
+          ? SliverFillRemaining(
+              child: Center(
+                child: Text('Belum ada Rencana yang di Buat',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade700
+                ),
+              )
+            ),
+          )
+          : SliverToBoxAdapter(
             child: EventListData(
               events: events,
               getData: getData,
             ),
           ),
-      
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
+
+          StorageHelper.getUserId() == null 
+          ? const SliverToBoxAdapter()
+          : SliverToBoxAdapter(
+              child: Column(
+                children: [
                 const SizedBox(
                   height: 26,
                 ),
