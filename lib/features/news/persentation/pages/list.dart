@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,6 +48,11 @@ class NewsListPageState extends State<NewsListPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
+        leading: CupertinoNavigationBarBackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: Padding(

@@ -194,10 +194,8 @@ class EventCreatePageState extends State<EventCreatePage> {
               rangeSelectionMode: RangeSelectionMode.toggledOn,
               onRangeSelected: (DateTime? start, DateTime? end, DateTime focusedDay) {
                 setState(() {
-
                   rangeStart = start;
                   rangeEnd = end;
-                  
                 });
               },
               daysOfWeekStyle: const DaysOfWeekStyle(
@@ -210,6 +208,10 @@ class EventCreatePageState extends State<EventCreatePage> {
               ),
               calendarStyle: CalendarStyle(
                 rangeHighlightColor: Colors.white.withOpacity(0.3),
+                disabledTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+                ),
                 todayTextStyle: const TextStyle(
                   color: Colors.black
                 ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/features/news/persentation/pages/list.dart';
 
 import 'package:rakhsa/websockets.dart';
-
-import 'package:rakhsa/coming_soon.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
@@ -94,43 +94,43 @@ class DashboardScreenState extends State<DashboardScreen> {
                     color: ColorResources.white,
                     borderRadius: BorderRadius.circular(10.0)
                   ),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return const ComingSoonPage();
-                      }));
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                        
-                            Image.asset(
-                              width: 50.0,
-                              height: 50.0,
-                              AssetSource.iconFamilyCall,
-                            ),
-                            
-                            const SizedBox(height: 5.0),
-                        
-                            Text("Family Call",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall,
-                                color: ColorResources.black
-                              )
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                  
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                      
+                          Image.asset(
+                            width: 50.0,
+                            height: 50.0,
+                            AssetSource.iconFamilyCall,
+                          ),
+                          
+                          const SizedBox(height: 5.0),
+                      
+                          Text("Family Call",
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              color: ColorResources.black
                             )
-                        
-                          ],
-                        ),
-
-                        const SizedBox(width: 20.0),
-
-                        Column(
+                          )
+                      
+                        ],
+                      ),
+                  
+                      const SizedBox(width: 20.0),
+                  
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return const NewsListPage();
+                          }));
+                        },
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -152,9 +152,9 @@ class DashboardScreenState extends State<DashboardScreen> {
                         
                           ],
                         ),
-
-                      ],
-                    )
+                      ),
+                  
+                    ],
                   ) 
                 ),
                 
