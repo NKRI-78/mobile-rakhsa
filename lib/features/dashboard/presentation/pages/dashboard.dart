@@ -99,30 +99,30 @@ class DashboardScreenState extends State<DashboardScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                   
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   mainAxisSize: MainAxisSize.min,
+                      //   children: [
                       
-                          Image.asset(
-                            width: 50.0,
-                            height: 50.0,
-                            AssetSource.iconFamilyCall,
-                          ),
+                      //     Image.asset(
+                      //       width: 50.0,
+                      //       height: 50.0,
+                      //       AssetSource.iconFamilyCall,
+                      //     ),
                           
-                          const SizedBox(height: 5.0),
+                      //     const SizedBox(height: 5.0),
                       
-                          Text("Family Call",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              color: ColorResources.black
-                            )
-                          )
+                      //     Text("Family Call",
+                      //       style: robotoRegular.copyWith(
+                      //         fontSize: Dimensions.fontSizeSmall,
+                      //         color: ColorResources.black
+                      //       )
+                      //     )
                       
-                        ],
-                      ),
+                      //   ],
+                      // ),
                   
-                      const SizedBox(width: 20.0),
+                      // const SizedBox(width: 20.0),
                   
                       GestureDetector(
                         onTap: () {
@@ -175,7 +175,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       key: globalKey,
-      drawer: SafeArea(
+      endDrawer: SafeArea(
         child: DrawerWidget(globalKey: globalKey)
       ),
       body: pages[selectedPageIndex]['page'],

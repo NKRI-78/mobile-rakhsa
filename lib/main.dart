@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/features/auth/presentation/pages/profile.dart';
 
 // import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
@@ -41,7 +42,8 @@ class MyAppState extends State<MyApp> {
 
       // if(isLoggedIn) {
         if(mounted) {
-          setState(() => home = const DashboardScreen()); 
+          setState(() => home = const ProfilePage()); 
+          debugPrint(home.toString());
         }
       // } else {
       //   if(mounted) {

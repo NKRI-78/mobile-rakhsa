@@ -224,7 +224,7 @@ class HomePageState extends State<HomePage> {
 
                     GestureDetector(
                       onTap: () {
-                        widget.globalKey.currentState?.openDrawer();
+                        widget.globalKey.currentState?.openEndDrawer();
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

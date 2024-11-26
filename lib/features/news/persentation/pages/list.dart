@@ -134,7 +134,7 @@ class NewsListPageState extends State<NewsListPage> {
                           width: double.infinity,
                           child: CachedNetworkImage(
                             fit: BoxFit.fitWidth,
-                            imageUrl: notifier.news[1].img.toString(),
+                            imageUrl: notifier.news.first.img.toString(),
                             placeholder: (context, url) {
                               return Image.asset('assets/images/default.jpeg');
                             },
@@ -160,7 +160,7 @@ class NewsListPageState extends State<NewsListPage> {
                           bottom: 8,
                           left: 16,
                           right: 16,
-                          child: Text(notifier.news[1].title.toString(),
+                          child: Text(notifier.news.first.title.toString(),
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeDefault,
                               fontWeight: FontWeight.w500,
