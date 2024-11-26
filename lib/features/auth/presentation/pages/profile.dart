@@ -93,7 +93,6 @@ class ProfilePageState extends State<ProfilePage> {
                         children: [
                           
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
                             children: [
               
@@ -102,6 +101,8 @@ class ProfilePageState extends State<ProfilePage> {
                                   fontSize: Dimensions.fontSizeDefault
                                 ),
                               ),
+
+                              const SizedBox(width: 20.0),
               
                               Text("Reihan Agam",
                                 style: robotoRegular.copyWith(
@@ -156,18 +157,17 @@ class ProfilePageState extends State<ProfilePage> {
                           const SizedBox(height: 8.0),
               
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
                             children: [
               
-                              Text("No Telepon",
+                              Text("No Tlp",
                                 style: robotoRegular.copyWith(
                                   color: ColorResources.black,
                                   fontSize: Dimensions.fontSizeDefault
                                 ),
                               ),
               
-                              const SizedBox(height: 10.0),
+                              const SizedBox(width: 10.0),
               
                               Text("089670558381",
                                 style: robotoRegular.copyWith(
