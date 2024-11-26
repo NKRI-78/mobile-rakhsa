@@ -75,6 +75,7 @@ icons_launcher:
   platforms:
     android:
       enable: true
+      adaptive_round_image: "assets/images/ic-apps.png"
     ios:
       enable: true
 

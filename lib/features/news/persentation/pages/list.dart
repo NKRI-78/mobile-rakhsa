@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
