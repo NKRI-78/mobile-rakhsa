@@ -124,7 +124,7 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== CONFIRM SOS ===");
 
-                navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
+        navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(
@@ -140,6 +140,15 @@ class WebSocketsService extends ChangeNotifier {
         debugPrint("=== MESSAGE ===");
         
         messageNotifier.appendMessage(data: message);
+
+      break;
+
+      case "finish-sos": 
+
+        debugPrint("=== FINISH SOS ===");
+
+        messageNotifier.showBtnSessionEnd();
+
 
       break;
 

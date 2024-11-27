@@ -10,7 +10,9 @@ class GetMessagesNotifier with ChangeNotifier {
 
   GetMessagesNotifier({
     required this.useCase
-  });  
+  });
+
+  bool isBtnSessionEnd = false;
 
   ScrollController sC = ScrollController();
 
@@ -55,6 +57,18 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
+
+    notifyListeners();
+  }
+
+  void initializeBtnSessionEnd() {
+    isBtnSessionEnd = false;
+
+    notifyListeners();
+  }
+
+  void showBtnSessionEnd() {
+    isBtnSessionEnd = true;
 
     notifyListeners();
   }

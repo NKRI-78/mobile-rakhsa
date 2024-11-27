@@ -17,6 +17,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -59,6 +60,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     webSocketService = context.read<WebSocketsService>();
 
     messageC = TextEditingController();
+
+    messageNotifier.initializeBtnSessionEnd();
 
     Future.microtask(() => getData());
   }
@@ -114,79 +117,101 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               boxShadow: kElevationToShadow[2]
             ),
             padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-          
-                Expanded(
-                  flex: 5,
-                  child: TextField(
-                    maxLines: null,
-                    controller: messageC,
-                    style: const TextStyle(
-                      fontSize: 12.0
-                    ),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      filled: true,
-                      fillColor: ColorResources.white,
-                      hintText: "ketik pesan singkat dan jelas",
-                      hintStyle: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide.none
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide.none
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide.none
-                      ),
-                    ),
-                  ),
-                ),
-      
-                const SizedBox(width: 15.0),
-          
-                Flexible(
-                  child: IconButton(
-                    onPressed: () async {
-                      if (messageC.text.isEmpty) {
-                        return;
-                      }
 
-                      await webSocketService.sendMessage(
-                        chatId: widget.chatId,
-                        recipientId: widget.recipientId, 
-                        message: messageC.text,
-                      );
-                  
-                      setState(() {
-                        messageC.clear();
-                      });
-                    }, 
-                    icon: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0))
-                      ),
-                      child: const Icon(
-                        Icons.send,
-                        size: 20.0,
-                        color: Colors.white,
+                context.watch<GetMessagesNotifier>().isBtnSessionEnd 
+                ? CustomButton(
+                    onTap: () {},
+                    btnColor: const Color(0xFFC82927),
+                    isBorder: false,
+                    isBoxShadow: false,
+                    isBorderRadius: true,
+                    btnTxt: "Akhiri sesi",
+                  ) 
+                : const SizedBox(),
+
+                context.watch<GetMessagesNotifier>().isBtnSessionEnd 
+                ? const SizedBox(height: 10.0)
+                : const SizedBox(),
+
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+              
+                    Expanded(
+                      flex: 5,
+                      child: TextField(
+                        maxLines: null,
+                        controller: messageC,
+                        style: const TextStyle(
+                          fontSize: 12.0
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          filled: true,
+                          fillColor: ColorResources.white,
+                          hintText: "ketik pesan singkat dan jelas",
+                          hintStyle: const TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.grey
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            borderSide: BorderSide.none
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            borderSide: BorderSide.none
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            borderSide: BorderSide.none
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                )
-      
+          
+                    const SizedBox(width: 15.0),
+              
+                    Flexible(
+                      child: IconButton(
+                        onPressed: () async {
+                          if (messageC.text.isEmpty) {
+                            return;
+                          }
+
+                          await webSocketService.sendMessage(
+                            chatId: widget.chatId,
+                            recipientId: widget.recipientId, 
+                            message: messageC.text,
+                          );
+                      
+                          setState(() {
+                            messageC.clear();
+                          });
+                        }, 
+                        icon: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.all(Radius.circular(50.0))
+                          ),
+                          child: const Icon(
+                            Icons.send,
+                            size: 20.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+          
+                  ],
+                ),
+                
               ],
-            ),
+            ) 
           
           ),
         ),

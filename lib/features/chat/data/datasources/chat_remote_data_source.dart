@@ -24,7 +24,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     try { 
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list",
         data: {
-          "user_id": await StorageHelper.getUserId()
+          "user_id": StorageHelper.getUserId()
         }
       );
       Map<String, dynamic> data = response.data;
@@ -44,8 +44,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
         data: {
-          "sender_id": await StorageHelper.getUserId(),
-          "chat_id": chatId
+          "sender_id": StorageHelper.getUserId(),
+          "chat_id": chatId,
+          "is_agent": false
         }
       );
       Map<String, dynamic> data = response.data;
