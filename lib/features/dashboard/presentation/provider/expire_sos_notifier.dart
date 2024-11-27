@@ -24,6 +24,15 @@ class SosNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
+  void initializePulse(TickerProvider vsync) {
+    pulseController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: vsync,
+    );
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void initializeTimer(TickerProvider vsync) {
     timerController = AnimationController(
       duration: const Duration(seconds: 60),
@@ -35,7 +44,7 @@ class SosNotifier with ChangeNotifier {
 
   void stopTimer() {
     isPressed = false;
-    
+
     timerController?.stop();
     timerController?.reset();
     

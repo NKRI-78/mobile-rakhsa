@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/material.dart';
@@ -740,17 +742,20 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     DateTime now = DateTime.now();
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    // Navigator.push(context, 
-    //   MaterialPageRoute(builder: (context) {
-    //     return CameraPage(
-    //       location: widget.location, 
-    //       country: widget.country, 
-    //       lat: widget.lat, 
-    //       lng: widget.lng, 
-    //       time: time
-    //     ); 
-    //   })
-    // ).then((_) {
+    String sosId = const Uuid().v4();
+
+    Navigator.push(context, 
+      MaterialPageRoute(builder: (context) {
+        return CameraPage(
+          sosId: sosId,
+          location: widget.location, 
+          country: widget.country, 
+          lat: widget.lat, 
+          lng: widget.lng, 
+          time: time
+        ); 
+      })
+    ).then((_) {
 
       setState(() {
         sosNotifier.isPressed = true;
@@ -761,6 +766,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
       ..reset()
       ..forward().whenComplete(() {
         setState(() => sosNotifier.isPressed = false);
+        
+        sosNotifier.expireSos(sosId: sosId);
         sosNotifier.pulseController!.reverse();
       });
 
@@ -770,7 +777,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         });
       });
 
-    // });
+    });
 
   }
 
@@ -780,10 +787,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
     sosNotifier = context.read<SosNotifier>();
 
-    sosNotifier.pulseController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
+    sosNotifier.initializePulse(this);
 
     sosNotifier.pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
       CurvedAnimation(parent: sosNotifier.pulseController!, curve: Curves.easeOut),

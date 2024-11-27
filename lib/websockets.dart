@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import 'package:uuid/uuid.dart';
 
 import 'package:provider/provider.dart';
 
@@ -74,6 +73,7 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   Future<void> sos({
+    required String sosId,
     required String location,
     required String country,
     required String media,
@@ -85,7 +85,7 @@ class WebSocketsService extends ChangeNotifier {
     final userId = StorageHelper.getUserId();
     
     channel?.sink.add(jsonEncode({
-      "sos_id": const Uuid().v4(),
+      "sos_id": sosId,
       "type": "sos",
       "user_id": userId,
       "location": location,
