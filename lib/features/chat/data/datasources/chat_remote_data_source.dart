@@ -24,7 +24,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     try { 
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list",
         data: {
-          "user_id": StorageHelper.getUserId()
+          "user_id": StorageHelper.getUserId(),
+          "is_agent": false
         }
       );
       Map<String, dynamic> data = response.data;
