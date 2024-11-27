@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
@@ -20,7 +22,6 @@ class WebSocketsService extends ChangeNotifier {
 
   final GetChatsNotifier chatsNotifier;
   final GetMessagesNotifier messageNotifier;
-  final SosNotifier sosNotifier;
 
   int maxReconnectAttempts = 5;
   int reconnectAttempts = 0;
@@ -33,7 +34,6 @@ class WebSocketsService extends ChangeNotifier {
   WebSocketsService({
     required this.chatsNotifier,
     required this.messageNotifier,
-    required this.sosNotifier
   }) {
     connect();
   }
@@ -124,7 +124,7 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== CONFIRM SOS ===");
 
-        sosNotifier.stopTimer();
+                navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(

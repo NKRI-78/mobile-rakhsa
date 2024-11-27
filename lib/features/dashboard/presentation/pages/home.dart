@@ -46,8 +46,6 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  Completer<GoogleMapController> mapsC = Completer();
-
   List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
@@ -367,10 +365,14 @@ class HomePageState extends State<HomePage> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
-                                                            
-                                          CachedNetworkImage(
-                                            imageUrl: profileNotifier.profileModel.data!.avatar.toString(),
-                                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+
+                                          context.watch<ProfileNotifier>().state == ProviderState.error 
+                                          ? const SizedBox()
+                                          : context.watch<ProfileNotifier>().state == ProviderState.loading 
+                                          ? const SizedBox() 
+                                          : CachedNetworkImage(
+                                              imageUrl: profileNotifier.profileModel.data!.avatar.toString(),
+                                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                               return CircleAvatar(
                                                 backgroundImage: imageProvider,
                                               );
@@ -442,9 +444,6 @@ class HomePageState extends State<HomePage> {
                                             zoom: 15.0,
                                           ),
                                           markers: Set.from(markers),
-                                          onMapCreated: (GoogleMapController controller) {
-                                            mapsC.complete(controller);
-                                          },
                                         ),
                                       )
                                                             
@@ -703,29 +702,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   late int countdownTime;
 
-  bool isPressed = false;
   Timer? holdTimer;
-
-  @override
-  void initState() {
-    super.initState();
-
-    sosNotifier = context.read<SosNotifier>();
-
-    sosNotifier.pulseController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
-    sosNotifier.pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: sosNotifier.pulseController, curve: Curves.easeOut),
-    );
-
-    sosNotifier.timerController = AnimationController(
-      duration: const Duration(seconds: 60),
-      vsync: this,
-    );
-  }
 
   void handleLongPressStart() {
     if(StorageHelper.getUserId() == null) {
@@ -733,10 +710,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         return const LoginPage();
       }));
     } else {
-      sosNotifier.pulseController.forward();
+      sosNotifier.pulseController!.forward();
 
       holdTimer = Timer(const Duration(milliseconds: 2000), () {
-        sosNotifier.pulseController.reverse();
+        sosNotifier.pulseController!.reverse();
         if (mounted) {
           startTimer();
         }
@@ -752,9 +729,9 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     } else {
       if (holdTimer?.isActive ?? false) {
         holdTimer?.cancel();
-        sosNotifier.pulseController.reverse();
-      } else if (!isPressed) {
-        setState(() => isPressed = false);
+        sosNotifier.pulseController!.reverse();
+      } else if (!sosNotifier.isPressed) {
+        setState(() => sosNotifier.isPressed = false);
       }
     }
   }
@@ -763,44 +740,62 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     DateTime now = DateTime.now();
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
-    Navigator.push(context, 
-      MaterialPageRoute(builder: (context) {
-        return CameraPage(
-          location: widget.location, 
-          country: widget.country, 
-          lat: widget.lat, 
-          lng: widget.lng, 
-          time: time
-        ); 
-      })
-    ).then((_) {
+    // Navigator.push(context, 
+    //   MaterialPageRoute(builder: (context) {
+    //     return CameraPage(
+    //       location: widget.location, 
+    //       country: widget.country, 
+    //       lat: widget.lat, 
+    //       lng: widget.lng, 
+    //       time: time
+    //     ); 
+    //   })
+    // ).then((_) {
 
       setState(() {
-        isPressed = true;
+        sosNotifier.isPressed = true;
         countdownTime = 60; 
       });
 
-      sosNotifier.timerController
+      sosNotifier.timerController!
       ..reset()
       ..forward().whenComplete(() {
-        setState(() => isPressed = false);
-        sosNotifier.pulseController.reverse();
+        setState(() => sosNotifier.isPressed = false);
+        sosNotifier.pulseController!.reverse();
       });
 
-      sosNotifier.timerController.addListener(() {
+      sosNotifier.timerController!.addListener(() {
         setState(() {
-          countdownTime = (60 - (sosNotifier.timerController.value * 60)).round();
+          countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
         });
       });
 
-    });
+    // });
 
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    sosNotifier = context.read<SosNotifier>();
+
+    sosNotifier.pulseController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    sosNotifier.pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
+      CurvedAnimation(parent: sosNotifier.pulseController!, curve: Curves.easeOut),
+    );
+
+    sosNotifier.initializeTimer(this);
+  }
+
+  @override
   void dispose() {
-    sosNotifier.pulseController.dispose();
-    sosNotifier.timerController.dispose();
+    sosNotifier.pulseController?.dispose();
+    sosNotifier.timerController?.dispose();
     
     holdTimer?.cancel();
 
@@ -830,14 +825,14 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                 );
               },
             ),
-          if (isPressed)
+          if (sosNotifier.isPressed)
             SizedBox(
               width: 145,
               height: 145,
               child: CircularProgressIndicator(
                 valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
                 strokeWidth: 6,
-                value: 1 - sosNotifier.timerController.value,
+                value: 1 - sosNotifier.timerController!.value,
                 backgroundColor: Colors.transparent,
               ),
             ),
@@ -845,7 +840,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
             onLongPressStart: (_) => handleLongPressStart(),
             onLongPressEnd: (_) => handleLongPressEnd(),
             child: AnimatedBuilder(
-              animation: sosNotifier.timerController,
+              animation: sosNotifier.timerController!,
               builder: (BuildContext context, Widget? child) {
                 return Container(
                   width: 130,
@@ -863,7 +858,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    isPressed ? "$countdownTime" : "SOS",
+                    sosNotifier.isPressed ? "$countdownTime" : "SOS",
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

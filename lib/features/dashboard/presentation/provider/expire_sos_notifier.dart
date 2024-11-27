@@ -9,12 +9,14 @@ class SosNotifier with ChangeNotifier {
 
   SosNotifier({
     required this.useCase
-  });  
+  });
 
-  late AnimationController pulseController;
-  late AnimationController timerController;  
+  late AnimationController? pulseController;
+  late AnimationController? timerController;  
 
   late Animation<double> pulseAnimation;
+
+  bool isPressed = false;
 
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
@@ -22,11 +24,23 @@ class SosNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  void stopTimer() {
-    timerController.stop();
-
-    notifyListeners();
+  void initializeTimer(TickerProvider vsync) {
+    timerController = AnimationController(
+      duration: const Duration(seconds: 60),
+      vsync: vsync,
+    );
+    
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
+
+  void stopTimer() {
+    isPressed = false;
+    
+    timerController?.stop();
+    timerController?.reset();
+    
+    Future.delayed(Duration.zero, () => notifyListeners());
+  } 
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
@@ -44,6 +58,5 @@ class SosNotifier with ChangeNotifier {
       setStateProvider(ProviderState.loaded);
     });
   }
-
   
 }
