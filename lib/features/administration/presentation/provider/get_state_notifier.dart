@@ -17,6 +17,13 @@ class GetStateNotifier with ChangeNotifier {
   ProviderState _providerState = ProviderState.idle; 
   ProviderState get providerState => _providerState;
 
+  StateData? selectedState;
+
+  void setSelectedState(StateData state) {
+    selectedState = state;
+    notifyListeners();
+  }
+
   GetStateNotifier({
     required this.useCase
   });
@@ -42,6 +49,10 @@ class GetStateNotifier with ChangeNotifier {
 
         _entity = [];
         _entity = r.data;
+
+        if (entity.isNotEmpty) {
+          selectedState = entity.first;
+        }
 
         setStateProviderState(ProviderState.loaded);
       }

@@ -255,101 +255,77 @@ class EventCreatePageState extends State<EventCreatePage> {
               ),
             ),
           ),
+
           const SizedBox(
             height: 20,
           ),
-          
-          Consumer<GetContinentNotifier>(
-            builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
-              if(notifier.state == ProviderState.loading) {
-                return const SizedBox();
-              }
-              return Autocomplete<CountryData>(
-               optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text.isEmpty) {
-                  return const Iterable<CountryData>.empty();
-                }
-                return notifier.entity.where((region) {
-                  return region.name
-                  .toLowerCase()
-                  .contains(textEditingValue.text.toLowerCase());
-                });
-              },
-              displayStringForOption: (CountryData option) => option.name,
-              onSelected: (CountryData selection) {
-                continentId = selection.id;
 
-                getStateNotifier.getState(continentId: continentId);
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Consumer<GetContinentNotifier>(
+              builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
+                if (notifier.state == ProviderState.loading) {
+                  return const SizedBox();
+                }
+                return DropdownButton<CountryData>(
+                  hint: const Text('Pilih Nama Benua'),
+                  value: notifier.selectedContinent, 
+                  items: notifier.entity.map((CountryData region) {
+                    return DropdownMenuItem<CountryData>(
+                      value: region,
+                      child: Text(region.name),
+                    );
+                  }).toList(),
+                  onChanged: (CountryData? newValue) {
+                    if (newValue != null) {
+                      notifier.setSelectedContinent(newValue); 
+                      continentId = newValue.id;
+                      getStateNotifier.getState(continentId: newValue.id);
+                    }
+                  },
+                  isExpanded: true,
+                  dropdownColor: const Color(0xffF4F4F7),
+                  style: const TextStyle(color: Colors.black),
+                );
               },
-              fieldViewBuilder: (BuildContext context,
-                TextEditingController textEditingController,
-                FocusNode focusNode,
-                VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      fillColor: const Color(0xffF4F4F7),
-                      filled: true,
-                      hintText: 'Masukkan Nama Benua',
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          style: BorderStyle.none,
-                        ),
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+            ),
           ),
+          
           const SizedBox(
             height: 14.0,
           ),
-          Consumer<GetStateNotifier>(
-            builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
-              if(notifier.providerState == ProviderState.loading) {
-                return const SizedBox();
-              }
-              return Autocomplete<StateData>(
-               optionsBuilder: (TextEditingValue textEditingValue) {
-                if (textEditingValue.text.isEmpty) {
-                  return const Iterable<StateData>.empty();
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Consumer<GetStateNotifier>(
+              builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
+                if (notifier.providerState == ProviderState.loading) {
+                  return const SizedBox();
                 }
-                return notifier.entity.where((region) {
-                  return region.name
-                  .toLowerCase()
-                  .contains(textEditingValue.text.toLowerCase());
-                });
+                return DropdownButton<StateData>(
+                  hint: const Text('Pilih Nama Negara'),
+                  value: notifier.selectedState,
+                  items: notifier.entity.map((StateData region) {
+                    return DropdownMenuItem<StateData>(
+                      value: region,
+                      child: Text(region.name),
+                    );
+                  }).toList(),
+                  onChanged: (StateData? newValue) {
+                    if (newValue != null) {
+                      notifier.setSelectedState(newValue); 
+                      stateId = newValue.id;
+                    }
+                  },
+                  isExpanded: true,
+                  dropdownColor: const Color(0xffF4F4F7),
+                  style: const TextStyle(color: Colors.black),
+                );
               },
-              displayStringForOption: (StateData option) => option.name,
-              onSelected: (StateData selection) {
-                stateId = selection.id;
-              },
-              fieldViewBuilder: (BuildContext context,
-                TextEditingController textEditingController,
-                FocusNode focusNode,
-                VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      fillColor: const Color(0xffF4F4F7),
-                      filled: true,
-                      hintText: 'Masukkan Nama Negara',
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          style: BorderStyle.none,
-                        ),
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+            ),
           ),
+
+
           const SizedBox(
             height: 14,
           ),

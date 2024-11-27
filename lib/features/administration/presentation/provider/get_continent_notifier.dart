@@ -17,6 +17,13 @@ class GetContinentNotifier with ChangeNotifier {
   ProviderState _state = ProviderState.idle; 
   ProviderState get state => _state;
 
+  CountryData? selectedContinent;
+
+  void setSelectedContinent(CountryData continent) {
+    selectedContinent = continent;
+    notifyListeners();
+  }
+
   GetContinentNotifier({
     required this.useCase
   });
