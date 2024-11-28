@@ -235,8 +235,10 @@ class GeneralModal {
                                   await context.read<SosNotifier>().expireSos(sosId: sosId);
 
                                   Future.delayed(Duration.zero, () {
-                                    Navigator.pop(context, "refetch");
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
                                   });
+
                                 },
                                 btnTxt: "Ya",
                               ),

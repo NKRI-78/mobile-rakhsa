@@ -18,6 +18,9 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
 
+  Timer? pingTimer;
+  Timer? pongTimeoutTimer;
+  bool isPongReceived = true;
 
   int maxReconnectAttempts = 5;
   int reconnectAttempts = 0;
@@ -46,6 +49,8 @@ class WebSocketsService extends ChangeNotifier {
         onError: (error) => handleError(error),
       );
 
+      startPing();
+
       join();
 
       isConnected.value = true; 
@@ -55,6 +60,36 @@ class WebSocketsService extends ChangeNotifier {
       debugPrint("Connection error: $e");
       handleDisconnect();
     }
+  }
+
+  void startPing() {
+    pingTimer?.cancel();
+    pingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (!isPongReceived) {
+        debugPrint('No pong response, disconnecting...');
+        handleDisconnect();
+      } else {
+        isPongReceived = false;
+        sendPing();
+        startPongTimeout();
+      }
+    });
+  }
+
+  void startPongTimeout() {
+    pongTimeoutTimer?.cancel();
+    pongTimeoutTimer = Timer(const Duration(seconds: 5), () {
+      if (!isPongReceived) {
+        debugPrint('Pong timeout reached, disconnecting...');
+        handleDisconnect();
+      }
+    });
+  }
+
+  void sendPing() {
+    final pingMessage = jsonEncode({'type': 'ping'});
+    channel?.sink.add(pingMessage);
+    debugPrint('Ping sent to server');
   }
 
   void join() {
@@ -111,6 +146,11 @@ class WebSocketsService extends ChangeNotifier {
   void onMessageReceived(Map<String, dynamic> message) {
 
     switch (message["type"]) {
+
+      case "pong":
+        isPongReceived = true;
+        debugPrint('Pong received from server');
+      break;
       
       case "confirm-sos":
         String chatId = message["chat_id"];
