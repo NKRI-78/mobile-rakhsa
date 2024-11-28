@@ -15,6 +15,7 @@ import 'package:rakhsa/features/event/persentation/provider/delete_event_notifie
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
 
@@ -233,6 +234,10 @@ class GeneralModal {
                                 height: 40.0,
                                 onTap: () async {
                                   await context.read<SosNotifier>().expireSos(sosId: sosId);
+
+                                  Future.delayed(Duration.zero,() {
+                                    context.read<WebSocketsService>().userFinishSos(sosId: sosId);
+                                  });
 
                                   Future.delayed(Duration.zero, () {
                                     Navigator.pop(context);

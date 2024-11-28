@@ -91,9 +91,17 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void sendPing() {
-    final pingMessage = jsonEncode({'type': 'ping'});
+    final pingMessage = jsonEncode({"type": "ping"});
     channel?.sink.add(pingMessage);
     debugPrint('Ping sent to server');
+  }
+
+  void userFinishSos({required String sosId}) {
+
+    channel?.sink.add(jsonEncode({
+      "type": "user-finish-sos",
+      "sos_id": sosId
+    }));
   }
 
   void join() {
@@ -186,7 +194,7 @@ class WebSocketsService extends ChangeNotifier {
       case "finish-sos": 
 
         debugPrint("=== FINISH SOS ===");
-        
+
         getMessagesNotifier.showBtnSessionEnd();
 
       break;
