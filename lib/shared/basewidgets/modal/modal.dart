@@ -307,7 +307,19 @@ class GeneralModal {
                       ),
 
                       Positioned(
-                        bottom: 0.0,
+                        top: 80.0,
+                        left: 0.0, 
+                        right: 0.0,
+                        child: Align(
+                          child: Image.asset('assets/images/logout-icon.png',
+                            width: 130.0,
+                            height: 130.0,
+                          ),
+                        )
+                      ),
+
+                      Positioned(
+                        bottom: 50.0,
                         left: 80.0,
                         right: 80.0,
                         child: Row(
@@ -317,12 +329,12 @@ class GeneralModal {
                             Expanded(
                               child: CustomButton(
                                 isBorder: false,
-                                btnColor: ColorResources.white,
-                                btnTextColor: ColorResources.black,
-                                sizeBorderRadius: 20.0,
+                                btnColor: const Color(0xFF17B5FE),
+                                btnTextColor: ColorResources.white,
+                                sizeBorderRadius: 8.0,
                                 fontSize: Dimensions.fontSizeSmall,
                                 isBorderRadius: true,
-                                height: 40.0,
+                                height: 30.0,
                                 onTap: () {
                                   Navigator.pop(context);
                                 },
@@ -337,10 +349,10 @@ class GeneralModal {
                                 isBorder: false,
                                 btnColor: ColorResources.error,
                                 btnTextColor: ColorResources.white,
-                                sizeBorderRadius: 20.0,
+                                sizeBorderRadius: 8.0,
                                 fontSize: Dimensions.fontSizeSmall,
                                 isBorderRadius: true,
-                                height: 40.0,
+                                height: 30.0,
                                 onTap: () async {
                                   StorageHelper.clear();
                                   StorageHelper.removeToken();
