@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
@@ -83,8 +84,9 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
 
                     Container(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(16.0),
                       decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
                         color: ColorResources.white
                       ),
                       child: Column(
@@ -96,18 +98,22 @@ class ProfilePageState extends State<ProfilePage> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
               
-                              Text("Nama",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault
+                              Expanded(
+                                child: Text("Nama",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.grey,
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ),
                                 ),
                               ),
 
-                              const SizedBox(width: 20.0),
-              
-                              Text("Reihan Agam",
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontWeight: FontWeight.bold
+                              Expanded(
+                                flex: 3,
+                                child: Text("Reihan Agam",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.black,
+                                    fontWeight: FontWeight.bold
+                                  ),
                                 ),
                               )
               
@@ -117,8 +123,8 @@ class ProfilePageState extends State<ProfilePage> {
                           const SizedBox(height: 8.0),
                     
                           const Divider(
-                            thickness: 1.0,
-                            color: ColorResources.greyDarkPrimary
+                            thickness: 0.5,
+                            color: ColorResources.hintColor
                           ),
               
                           const SizedBox(height: 8.0),
@@ -127,20 +133,23 @@ class ProfilePageState extends State<ProfilePage> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
               
-                              Text("E-mail",
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontSize: Dimensions.fontSizeDefault
+                              Expanded(
+                                child: Text("E-mail",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.grey,
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ),
                                 ),
                               ),
               
-                              const SizedBox(width: 20.0),
-              
-                              Text("reihanagam7@gmail.com",
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.bold
+                              Expanded(
+                                flex: 3,
+                                child: Text("reihanagam7@gmail.com",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.black,
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    fontWeight: FontWeight.bold
+                                  ),
                                 ),
                               )
               
@@ -150,8 +159,8 @@ class ProfilePageState extends State<ProfilePage> {
                           const SizedBox(height: 8.0),
                     
                           const Divider(
-                            thickness: 1.0,
-                            color: ColorResources.greyDarkPrimary
+                            thickness: 0.5,
+                            color: ColorResources.hintColor
                           ),
               
                           const SizedBox(height: 8.0),
@@ -160,20 +169,23 @@ class ProfilePageState extends State<ProfilePage> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
               
-                              Text("No Tlp",
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontSize: Dimensions.fontSizeDefault
+                              Expanded(
+                                child: Text("No Tlp",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.grey,
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ),
                                 ),
                               ),
               
-                              const SizedBox(width: 10.0),
-              
-                              Text("089670558381",
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.bold
+                              Expanded(
+                                flex: 3,
+                                child: Text("089670558381",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.black,
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    fontWeight: FontWeight.bold
+                                  ),
                                 ),
                               )
               
@@ -182,7 +194,52 @@ class ProfilePageState extends State<ProfilePage> {
               
                         ],
                       )
-                    )
+                    ),
+                    
+                    const SizedBox(height: 10.0),
+
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        color: ColorResources.white
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+              
+                              Expanded(
+                                flex: 2,
+                                child: Text("Kontak darurat",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.grey,
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ),
+                                ),
+                              ),
+
+                              Expanded(
+                                flex: 3,
+                                child: Text("Reihan Agam",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.black,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              )
+              
+                            ],
+                          ), 
+              
+                        ],
+                      )
+                    ),
+
                  
                   ],
                 )
