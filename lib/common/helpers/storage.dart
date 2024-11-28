@@ -40,8 +40,22 @@ class StorageHelper {
     return userId;
   }
 
+  static String? getSosId() {
+    String? sosId = sharedPreferences.getString("sos_id");
+
+    return sosId;
+  }
+
   static void saveUserId({required String userId}) async {
     await sharedPreferences.setString("user_id", userId);
+  }
+
+  static void saveSosId({required String sosId}) async {
+    await sharedPreferences.setString("sos_id", sosId);
+  }
+
+  static void removeSosId() async {
+    await sharedPreferences.remove("sos_id");
   }
 
   static Future<void> removeToken() async {

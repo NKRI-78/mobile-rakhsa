@@ -31,11 +31,13 @@ class ChatPage extends StatefulWidget {
   final String sosId;
   final String chatId;
   final String recipientId;
+  final bool autoGreetings;
   
   const ChatPage({
     required this.sosId,
     required this.chatId,
     required this.recipientId,
+    required this.autoGreetings,
     super.key
   });
 
@@ -46,6 +48,8 @@ class ChatPage extends StatefulWidget {
 class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   Timer? debounce;
+
+  bool showAutoGreetings = false;
 
   late TextEditingController messageC;
 
@@ -62,6 +66,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    showAutoGreetings = widget.autoGreetings;
 
     messageNotifier = context.read<GetMessagesNotifier>();
 
@@ -214,6 +220,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       
                           setState(() {
                             messageC.clear();
+                            showAutoGreetings = false;
                           });
                         }, 
                         icon: Container(
@@ -346,6 +353,58 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           ),
                         ),
                       ),
+                      
+                      if(notifier.state == ProviderState.loaded)
+                        SliverToBoxAdapter(
+                          child: showAutoGreetings 
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 30.0,
+                                    horizontal: 12.0,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0),
+                                      bottomLeft: Radius.circular(12.0),
+                                      bottomRight: Radius.circular(12.0),
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.white,
+                                      ),
+                                      children: [
+                                        const TextSpan(
+                                          text: "Terima kasih telah menghubungi kami di ",
+                                        ),
+                                        TextSpan(
+                                          text: "Raksha",
+                                          style: robotoRegular.copyWith(
+                                            fontWeight: FontWeight.bold, // Make "Raksha" bold
+                                            color: ColorResources.white,
+                                          ),
+                                        ),
+                                        const TextSpan(
+                                          text: ". Apakah yang bisa kami bantu atas keluhan anda?",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ) 
+                          : const SizedBox(),
+                        ),
                           
                      if(notifier.state == ProviderState.loaded)
                        SliverToBoxAdapter(

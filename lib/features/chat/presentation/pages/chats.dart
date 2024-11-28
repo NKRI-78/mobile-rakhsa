@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -121,9 +122,10 @@ class ChatsPageState extends State<ChatsPage> {
                         onTap: () async {
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return ChatPage(
-                              sosId: "-",
+                              sosId: StorageHelper.getSosId() ?? "-",
                               recipientId: chat.user.id,
                               chatId: chat.chat.id,
+                              autoGreetings: false,
                             );
                           })).then((_) {
                             getData();
