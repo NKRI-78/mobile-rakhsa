@@ -121,6 +121,7 @@ class ChatsPageState extends State<ChatsPage> {
                         onTap: () async {
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return ChatPage(
+                              sosId: "-",
                               recipientId: chat.user.id,
                               chatId: chat.chat.id,
                             );

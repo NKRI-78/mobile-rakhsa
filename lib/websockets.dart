@@ -121,6 +121,7 @@ class WebSocketsService extends ChangeNotifier {
       case "confirm-sos":
         String chatId = message["chat_id"];
         String recipientId = message["recipient_id"];
+        String sosId = message["sos_id"];
 
         debugPrint("=== CONFIRM SOS ===");
 
@@ -129,7 +130,8 @@ class WebSocketsService extends ChangeNotifier {
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(
             chatId: chatId, 
-            recipientId: recipientId
+            recipientId: recipientId,
+            sosId: sosId,
           );
         }));
 

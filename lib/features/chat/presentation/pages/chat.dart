@@ -10,22 +10,31 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:grouped_list/grouped_list.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/websockets.dart';
 
 class ChatPage extends StatefulWidget {
+  final String sosId;
   final String chatId;
   final String recipientId;
   
   const ChatPage({
+    required this.sosId,
     required this.chatId,
     required this.recipientId,
     super.key
@@ -40,6 +49,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   Timer? debounce;
 
   late TextEditingController messageC;
+
+  late SosNotifier sosNotifier;
 
   late GetMessagesNotifier messageNotifier; 
 
@@ -56,6 +67,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     messageNotifier = context.read<GetMessagesNotifier>();
+
+    sosNotifier = context.read<SosNotifier>();
 
     webSocketService = context.read<WebSocketsService>();
 
@@ -123,7 +136,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? CustomButton(
-                    onTap: () {},
+                    onTap: () async {
+                      if(widget.sosId != "-") {
+                        GeneralModal.finishSos(sosId: widget.sosId);
+                      }
+                    },
                     btnColor: const Color(0xFFC82927),
                     isBorder: false,
                     isBoxShadow: false,
