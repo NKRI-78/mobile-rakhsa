@@ -62,6 +62,8 @@ class SosNotifier with ChangeNotifier {
   } 
 
   Future<void> expireSos({required String sosId}) async {
+    setStateProvider(ProviderState.loading);
+
     final result = await useCase.execute(sosId: sosId);
 
     result.fold((l) {

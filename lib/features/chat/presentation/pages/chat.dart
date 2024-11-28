@@ -21,6 +21,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -134,10 +135,21 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                 ? CustomButton(
                     onTap: () async {
                       if(widget.sosId != "-") {
-                        GeneralModal.finishSos(sosId: widget.sosId);
+                        await context.read<SosNotifier>().expireSos(sosId: widget.sosId);
+
+                        Future.delayed(Duration.zero,() {
+                          context.read<WebSocketsService>().userFinishSos(sosId: widget.sosId);
+                        });
+
+                        Future.delayed(Duration.zero, () {
+                          Navigator.pop(context);
+                        });
                       }
                     },
                     btnColor: const Color(0xFFC82927),
+                    isLoading: context.watch<SosNotifier>().state == ProviderState.loading 
+                    ? true 
+                    : false,
                     isBorder: false,
                     isBoxShadow: false,
                     isBorderRadius: true,

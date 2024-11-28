@@ -172,7 +172,9 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== CONFIRM SOS ===");
 
-        navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
+        Future.delayed(const Duration(seconds: 2), () {
+          navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
+        });
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(

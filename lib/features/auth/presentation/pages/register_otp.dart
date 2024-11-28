@@ -15,20 +15,20 @@ class RegisterOtp extends StatefulWidget {
   final String email;
 
   @override
-  State<RegisterOtp> createState() => _RegisterOtpState();
+  State<RegisterOtp> createState() => RegisterOtpState();
 }
 
-class _RegisterOtpState extends State<RegisterOtp> {
-  bool _startTimer = false;
+class RegisterOtpState extends State<RegisterOtp> {
+  bool startTimer = false;
   late VerifyOtpNotifier verifyOtpNotifier;
   late ResendOtpNotifier resendOtpNotifier;
 
-  final StopWatchTimer _timer = StopWatchTimer(
+  final StopWatchTimer timer = StopWatchTimer(
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMinute(2),
   );
 
-  String _parseSeconds(int value) {
+  String parseSeconds(int value) {
     value++;
     if (value > 1) {
       return "Kirim ulang lagi dalam $value detik";
@@ -39,9 +39,6 @@ class _RegisterOtpState extends State<RegisterOtp> {
   Future<void> submitVerifyOtp() async {
     String email = widget.email;
     String otp = verifyOtpNotifier.valueOtp;
-
-    debugPrint("email : $email");
-    debugPrint("Otp : $otp");
 
     await verifyOtpNotifier.verifyOtp(
       email: email, 
@@ -58,9 +55,9 @@ class _RegisterOtpState extends State<RegisterOtp> {
   void initState() {
     super.initState();
 
-    _timer.fetchEnded.listen((value) {
-      _startTimer = false;
-      _timer.onResetTimer();
+    timer.fetchEnded.listen((value) {
+      startTimer = false;
+      timer.onResetTimer();
       setState(() {});
     });
     verifyOtpNotifier = context.read<VerifyOtpNotifier>();
@@ -71,7 +68,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
   void dispose() {
     super.dispose();
 
-    _timer.dispose();
+    timer.dispose();
   }
   
   @override
@@ -164,14 +161,14 @@ class _RegisterOtpState extends State<RegisterOtp> {
                       const SizedBox(
                         height: 16,
                       ),
-                      _startTimer
+                      startTimer
                     ? StreamBuilder<int>(
-                        stream: _timer.secondTime,
-                        initialData: _timer.initialPresetTime,
+                        stream: timer.secondTime,
+                        initialData: timer.initialPresetTime,
                         builder: (context, snap) {
                           final value = snap.data ?? 0;
                           return Text(
-                            _parseSeconds(value),
+                            parseSeconds(value),
                             style: const TextStyle(color: whiteColor),
                           );
                         })
@@ -187,8 +184,8 @@ class _RegisterOtpState extends State<RegisterOtp> {
                                 await resendOtpNotifier.resendOtp(
                                   email: widget.email, 
                                 );
-                                _startTimer = true;
-                                _timer.onStartTimer();
+                                startTimer = true;
+                                timer.onStartTimer();
                                 setState(() {});
                               },
                             ),
