@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
@@ -42,16 +46,20 @@ class DrawerWidgetState extends State<DrawerWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-            
-                Container(
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0)
+
+                context.watch<ProfileNotifier>().state == ProviderState.loading 
+                ? const SizedBox() 
+                : context.watch<ProfileNotifier>().state == ProviderState.error 
+                ? const SizedBox()
+                : Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0)
+                      ),
+                      color: ColorResources.white
                     ),
-                    color: ColorResources.white
-                  ),
-                  child: Column(
+                    child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
             
@@ -60,13 +68,18 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         children: [
             
                           CachedNetworkImage(
-                            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4g_2Qj3LsNR-iqUAFm6ut2EQVcaou4u2YXw&s",
+                            imageUrl: context.read<ProfileNotifier>().profileModel.data?.avatar ?? "-",
                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
                               );
                             },
                             placeholder: (BuildContext context, String url) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/default.jpeg'),
+                              );
+                            },
+                            errorWidget: (BuildContext context, String url, Object error) {
                               return const CircleAvatar(
                                 backgroundImage: AssetImage('assets/images/default.jpeg'),
                               );
@@ -90,7 +103,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             
                               const SizedBox(height: 2.0),
             
-                              Text("Reihan Agam",
+                              Text(context.read<ProfileNotifier>().profileModel.data?.username ?? "-",
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge,
                                   fontWeight: FontWeight.bold,

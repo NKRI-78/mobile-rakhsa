@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -72,179 +73,207 @@ class ProfilePageState extends State<ProfilePage> {
               ),
             ),
 
-            SliverPadding(
-              padding: const EdgeInsets.only(
-                left: 16.0, 
-                right: 16.0
-              ),
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        color: ColorResources.white
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-              
-                              Expanded(
-                                child: Text("Nama",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.grey,
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ),
-                                ),
-                              ),
-
-                              Expanded(
-                                flex: 3,
-                                child: Text("Reihan Agam",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              )
-              
-                            ],
-                          ), 
-                    
-                          const SizedBox(height: 8.0),
-                    
-                          const Divider(
-                            thickness: 0.5,
-                            color: ColorResources.hintColor
-                          ),
-              
-                          const SizedBox(height: 8.0),
-              
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-              
-                              Expanded(
-                                child: Text("E-mail",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.grey,
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ),
-                                ),
-                              ),
-              
-                              Expanded(
-                                flex: 3,
-                                child: Text("reihanagam7@gmail.com",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              )
-              
-                            ],
-                          ), 
-                          
-                          const SizedBox(height: 8.0),
-                    
-                          const Divider(
-                            thickness: 0.5,
-                            color: ColorResources.hintColor
-                          ),
-              
-                          const SizedBox(height: 8.0),
-              
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-              
-                              Expanded(
-                                child: Text("No Tlp",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.grey,
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ),
-                                ),
-                              ),
-              
-                              Expanded(
-                                flex: 3,
-                                child: Text("089670558381",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              )
-              
-                            ],
-                          ), 
-              
-                        ],
-                      )
+            if(context.watch<ProfileNotifier>().state == ProviderState.loading)
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: SizedBox(
+                    width: 16.0,
+                    height: 16.0,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
                     ),
-                    
-                    const SizedBox(height: 10.0),
-
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        color: ColorResources.white
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-              
-                              Expanded(
-                                flex: 2,
-                                child: Text("Kontak darurat",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.grey,
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ),
-                                ),
-                              ),
-
-                              Expanded(
-                                flex: 3,
-                                child: Text("Reihan Agam",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              )
-              
-                            ],
-                          ), 
-              
-                        ],
-                      )
-                    ),
-
-                 
-                  ],
+                  )
                 )
-              )
-            ),
+              ),
+
+            if(context.watch<ProfileNotifier>().state == ProviderState.error)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(context.read<ProfileNotifier>().message,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      color: ColorResources.black
+                    ),
+                  )
+                )
+              ),
+
+            if(context.watch<ProfileNotifier>().state == ProviderState.loaded)
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: 16.0, 
+                  right: 16.0
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          color: ColorResources.white
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                
+                                Expanded(
+                                  child: Text("Nama",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.grey,
+                                      fontSize: Dimensions.fontSizeDefault
+                                    ),
+                                  ),
+                                ),
+
+                                Expanded(
+                                  flex: 3,
+                                  child: Text("Reihan Agam",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.black,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                )
+                
+                              ],
+                            ), 
+                      
+                            const SizedBox(height: 8.0),
+                      
+                            const Divider(
+                              thickness: 0.5,
+                              color: ColorResources.hintColor
+                            ),
+                
+                            const SizedBox(height: 8.0),
+                
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                
+                                Expanded(
+                                  child: Text("E-mail",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.grey,
+                                      fontSize: Dimensions.fontSizeDefault
+                                    ),
+                                  ),
+                                ),
+                
+                                Expanded(
+                                  flex: 3,
+                                  child: Text("reihanagam7@gmail.com",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.black,
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                )
+                
+                              ],
+                            ), 
+                            
+                            const SizedBox(height: 8.0),
+                      
+                            const Divider(
+                              thickness: 0.5,
+                              color: ColorResources.hintColor
+                            ),
+                
+                            const SizedBox(height: 8.0),
+                
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                
+                                Expanded(
+                                  child: Text("No Tlp",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.grey,
+                                      fontSize: Dimensions.fontSizeDefault
+                                    ),
+                                  ),
+                                ),
+                
+                                Expanded(
+                                  flex: 3,
+                                  child: Text("089670558381",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.black,
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                )
+                
+                              ],
+                            ), 
+                
+                          ],
+                        )
+                      ),
+                      
+                      const SizedBox(height: 10.0),
+
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          color: ColorResources.white
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                
+                                Expanded(
+                                  flex: 2,
+                                  child: Text("Kontak darurat",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.grey,
+                                      fontSize: Dimensions.fontSizeDefault
+                                    ),
+                                  ),
+                                ),
+
+                                Expanded(
+                                  flex: 3,
+                                  child: Text("Reihan Agam",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.black,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                )
+                
+                              ],
+                            ), 
+                
+                          ],
+                        )
+                      ),
+
+                  
+                    ],
+                  )
+                )
+              ),
         
           ],
         ),
