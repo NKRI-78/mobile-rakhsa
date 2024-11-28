@@ -18,6 +18,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
 
+  final GetMessagesNotifier getMessagesNotifier;
+
   Timer? pingTimer;
   Timer? pongTimeoutTimer;
   bool isPongReceived = true;
@@ -30,7 +32,9 @@ class WebSocketsService extends ChangeNotifier {
   Timer? reconnectTimer;
   ValueNotifier<bool> isConnected = ValueNotifier(false); 
 
-  WebSocketsService() {
+  WebSocketsService({
+    required this.getMessagesNotifier
+  }) {
     connect();
   }
 
@@ -175,15 +179,15 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== MESSAGE ===");
         
-        navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
+        getMessagesNotifier.appendMessage(data: message);
 
       break;
 
       case "finish-sos": 
 
         debugPrint("=== FINISH SOS ===");
-
-        navigatorKey.currentContext!.read<GetMessagesNotifier>().showBtnSessionEnd();
+        
+        getMessagesNotifier.showBtnSessionEnd();
 
       break;
 

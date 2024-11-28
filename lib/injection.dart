@@ -111,25 +111,27 @@ void init() {
     profileNotifier: locator(),
     useCase: locator()
   ));
-  locator.registerFactory(() => ProfileNotifier(useCase: locator()));
-  locator.registerFactory(() => SosNotifier(useCase: locator()));
-  locator.registerFactory(() => ListEventNotifier(useCase: locator()));
-  locator.registerFactory(() => SaveEventNotifier(useCase: locator()));
-  locator.registerFactory(() => UpdateEventNotifier(useCase: locator()));
-  locator.registerFactory(() => DetailEventNotifier(useCase: locator()));
-  locator.registerFactory(() => DeleteEventNotifier(useCase: locator()));
-  locator.registerFactory(() => LoginNotifier(useCase: locator()));
-  locator.registerFactory(() => RegisterNotifier(useCase: locator()));
-  locator.registerFactory(() => VerifyOtpNotifier(useCase: locator()));
-  locator.registerFactory(() => ResendOtpNotifier(useCase: locator()));
-  locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
-  locator.registerFactory(() => GetCountryNotifier(useCase: locator()));
-  locator.registerFactory(() => GetStateNotifier(useCase: locator()));
-  locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
-  locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
-  locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => ListEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => SaveEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UpdateEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => DetailEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => DeleteEventNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetCountryNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetStateNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => GetContinentNotifier(useCase: locator()));
   
-  locator.registerFactory(() => WebSocketsService());
+  locator.registerFactory(() => WebSocketsService(
+    getMessagesNotifier: locator()
+  ));
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();

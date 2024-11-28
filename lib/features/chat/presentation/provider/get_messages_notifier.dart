@@ -34,7 +34,7 @@ class GetMessagesNotifier with ChangeNotifier {
   void updateUserStatus({required Map<String, dynamic> data}) {
     onlineStatus[data["recipient"]] = data["type"] == "online" ? true : false;
   
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   bool isOnline(String userId) {
@@ -48,7 +48,7 @@ class GetMessagesNotifier with ChangeNotifier {
       typingStatus.remove(data["chat_id"]);
     }
     
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   bool isTyping(String chatId) {
@@ -58,19 +58,19 @@ class GetMessagesNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void initializeBtnSessionEnd() {
     isBtnSessionEnd = false;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void showBtnSessionEnd() {
     isBtnSessionEnd = true;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> getMessages({required String chatId}) async {
@@ -90,7 +90,6 @@ class GetMessagesNotifier with ChangeNotifier {
       _message = l.message;
       setStateProvider(ProviderState.error);
     }, (r) {
-
       _recipient = r.data.recipient;
 
       _messages = [];
@@ -98,6 +97,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
       setStateProvider(ProviderState.loaded);
     });
+
   }
 
   void appendMessage({required Map<String, dynamic> data}) {
@@ -118,7 +118,7 @@ class GetMessagesNotifier with ChangeNotifier {
       createdAt: DateTime.now()
     ));
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
@@ -140,8 +140,7 @@ class GetMessagesNotifier with ChangeNotifier {
       }
     }
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
-
 
 }
