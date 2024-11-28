@@ -18,7 +18,7 @@ class DeleteEventNotifier extends ChangeNotifier {
     required int id
   }) async {
     _state = ProviderState.loading;
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
 
     final result = await useCase.execute(
       id: id
@@ -28,7 +28,7 @@ class DeleteEventNotifier extends ChangeNotifier {
       _message = l.message;
     }, (r) {
       _state = ProviderState.loaded;
+      Future.delayed(Duration.zero, () => notifyListeners());
     });
-    notifyListeners();
   }
 }

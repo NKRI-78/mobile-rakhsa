@@ -22,18 +22,21 @@ class DetailEventNotifier extends ChangeNotifier {
     required int id
   }) async {
     _state = ProviderState.loading;
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
 
     final result = await useCase.execute(
       id: id
     );
     result.fold((l) {
       _state = ProviderState.error;
+      Future.delayed(Duration.zero, () => notifyListeners());
+
       _message = l.message;
     }, (r) {
       _entity = r.data;
       _state = ProviderState.loaded;
+      Future.delayed(Duration.zero, () => notifyListeners());
     });
-    notifyListeners();
+  
   }
 }

@@ -24,7 +24,7 @@ class UpdateEventNotifier extends ChangeNotifier {
     required String description
   }) async {
     _state = ProviderState.loading;
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
 
     final result = await useCase.execute(
       id: id,
@@ -40,7 +40,8 @@ class UpdateEventNotifier extends ChangeNotifier {
       _message = l.message;
     }, (r) {
       _state = ProviderState.loaded;
+      Future.delayed(Duration.zero, () => notifyListeners());
     });
-    notifyListeners();
+
   }
 }

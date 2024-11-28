@@ -257,6 +257,17 @@ class EventEditPageState extends State<EventEditPage> {
                       color: Colors.white
                     )
                   ),
+                  onPageChanged: (date) {
+                    if (date.isBefore(DateTime.now())) {
+                      setState(() {
+                        focusedDay = DateTime.now();
+                      });
+                    } else {
+                      setState(() {
+                        focusedDay = date;
+                      });
+                    }
+                  },
                   calendarStyle: CalendarStyle(
                     rangeHighlightColor: Colors.white.withOpacity(0.3),
                     todayTextStyle: const TextStyle(
