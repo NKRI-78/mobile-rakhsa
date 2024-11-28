@@ -21,7 +21,8 @@ class GetStateNotifier with ChangeNotifier {
 
   void setSelectedState(StateData state) {
     selectedState = state;
-    notifyListeners();
+
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   GetStateNotifier({
@@ -31,7 +32,7 @@ class GetStateNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _providerState = param;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> getState({required int continentId}) async {

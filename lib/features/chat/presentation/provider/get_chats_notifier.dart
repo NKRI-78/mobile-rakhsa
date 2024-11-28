@@ -25,7 +25,7 @@ class GetChatsNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> getChats() async {
@@ -64,7 +64,7 @@ class GetChatsNotifier with ChangeNotifier {
 
     }
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
   
 }

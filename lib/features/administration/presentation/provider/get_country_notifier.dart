@@ -24,7 +24,7 @@ class GetCountryNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _state = param;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void clear() {

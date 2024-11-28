@@ -37,6 +37,7 @@ class UpdateEventNotifier extends ChangeNotifier {
     );
     result.fold((l) {
       _state = ProviderState.error;
+      Future.delayed(Duration.zero, () => notifyListeners());
       _message = l.message;
     }, (r) {
       _state = ProviderState.loaded;
