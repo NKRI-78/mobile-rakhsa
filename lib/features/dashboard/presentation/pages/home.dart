@@ -66,7 +66,7 @@ class HomePageState extends State<HomePage> {
       profileNotifier.getProfile();
 
     if(!mounted) return;
-      dashboardNotifier.getNews();
+      dashboardNotifier.getNews(type: "ews");
   }
 
   Future<void> checkAndGetLocation() async {

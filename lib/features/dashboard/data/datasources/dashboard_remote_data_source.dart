@@ -7,7 +7,7 @@ import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 
 abstract class DashboardRemoteDataSource {
-  Future<NewsModel> getNews();
+  Future<NewsModel> getNews({required String type});
   Future<void> expireSos({required String sosId});
 }
 
@@ -18,9 +18,9 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   DashboardRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<NewsModel> getNews() async {
+  Future<NewsModel> getNews({required String type}) async {
     try { 
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=ews");
+      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=$type");
       Map<String, dynamic> data = response.data;
       NewsModel newsModel = NewsModel.fromJson(data);
       return newsModel;

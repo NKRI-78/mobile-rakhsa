@@ -13,9 +13,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   DashboardRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, NewsModel>> getNews() async {
+  Future<Either<Failure, NewsModel>> getNews({required String type}) async {
     try {
-      var result = await remoteDataSource.getNews();
+      var result = await remoteDataSource.getNews(type: type);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

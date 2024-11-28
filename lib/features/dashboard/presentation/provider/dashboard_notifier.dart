@@ -31,8 +31,8 @@ class DashboardNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getNews() async {
-    final result = await useCase.execute();
+  Future<void> getNews({required String type}) async {
+    final result = await useCase.execute(type: type);
 
     result.fold((l) {
       _message = l.message;
@@ -52,6 +52,10 @@ class DashboardNotifier with ChangeNotifier {
       }
 
       _news.addAll(r.data);
+
+      if(news.length == 1) {
+        setStateProvider(ProviderState.empty);
+      }
 
       setStateProvider(ProviderState.loaded);
     });

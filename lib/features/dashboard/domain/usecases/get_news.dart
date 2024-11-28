@@ -10,7 +10,7 @@ class GetNewsUseCase {
 
   GetNewsUseCase(this.repository);
 
-  Future<Either<Failure, NewsModel>> execute() {
-    return repository.getNews();
+  Future<Either<Failure, NewsModel>> execute({required String type}) {
+    return repository.getNews(type: type);
   }
 }

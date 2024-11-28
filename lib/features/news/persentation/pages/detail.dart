@@ -31,7 +31,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews();
+      dashboardNotifier.getNews(type: "news");
   }
 
   @override 

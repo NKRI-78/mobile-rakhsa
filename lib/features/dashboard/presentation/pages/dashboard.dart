@@ -40,7 +40,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       profileNotifier.getProfile();
 
     if(!mounted) return;
-      dashboardNotifier.getNews();
+      dashboardNotifier.getNews(type: "ews");
   }
 
   List<Map<String, dynamic>> pages = [

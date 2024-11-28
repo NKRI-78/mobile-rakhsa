@@ -24,7 +24,7 @@ class NewsListPageState extends State<NewsListPage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews();
+      dashboardNotifier.getNews(type: "news");
   }
 
   @override 
@@ -112,9 +112,9 @@ class NewsListPageState extends State<NewsListPage> {
                       MaterialPageRoute(
                         builder: (context) {
                           return NewsDetailPage(
-                            title: notifier.news.first.title.toString(), 
-                            img: notifier.news.first.img.toString(), 
-                            desc: notifier.news.first.desc.toString()
+                            title: notifier.news[1].title.toString(), 
+                            img: notifier.news[1].img.toString(), 
+                            desc: notifier.news[1].desc.toString()
                           );
                         },
                       )
@@ -134,7 +134,7 @@ class NewsListPageState extends State<NewsListPage> {
                           width: double.infinity,
                           child: CachedNetworkImage(
                             fit: BoxFit.fitWidth,
-                            imageUrl: notifier.news.first.img.toString(),
+                            imageUrl: notifier.news[1].img.toString(),
                             placeholder: (context, url) {
                               return Image.asset('assets/images/default.jpeg');
                             },
@@ -160,7 +160,7 @@ class NewsListPageState extends State<NewsListPage> {
                           bottom: 8,
                           left: 16,
                           right: 16,
-                          child: Text(notifier.news.first.title.toString(),
+                          child: Text(notifier.news[1].title.toString(),
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeDefault,
                               fontWeight: FontWeight.w500,
