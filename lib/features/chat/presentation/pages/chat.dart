@@ -122,6 +122,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         resizeToAvoidBottomInset: true,
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(
+            top: 20.0,
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
@@ -408,8 +409,8 @@ class ChatBubble extends StatelessWidget {
       alignment: isMe 
       ? Alignment.centerRight 
       : Alignment.centerLeft,
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
          
           Container(
@@ -446,26 +447,18 @@ class ChatBubble extends StatelessWidget {
           ),
 
           isMe 
-          ? Positioned(
-              bottom: -12.0,
-              right: 6.0,
-              child: Text(time,
-                style: robotoRegular.copyWith(
-                  color: ColorResources.black,
-                  fontSize: Dimensions.fontSizeSmall,
-                ),
-              ),
-            ) 
-          : Positioned(
-              bottom: -12.0,
-              left: 6.0,
-              child: Text(time,
-                style: robotoRegular.copyWith(
-                  color: ColorResources.black,
-                  fontSize: Dimensions.fontSizeSmall,
-                ),
-              ),
-            ) 
+          ? Text(time,
+            style: robotoRegular.copyWith(
+              color: ColorResources.black,
+              fontSize: Dimensions.fontSizeSmall,
+            ),
+          ) 
+          : Text(time,
+            style: robotoRegular.copyWith(
+              color: ColorResources.black,
+              fontSize: Dimensions.fontSizeSmall,
+            ),
+          ) 
 
         ],
       ) 
