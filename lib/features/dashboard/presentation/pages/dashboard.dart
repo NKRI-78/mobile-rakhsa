@@ -138,7 +138,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                             Image.asset(
                               width: 50.0,
                               height: 50.0,
-                              AssetSource.iconFamilyCall,
+                              AssetSource.iconInfo,
                             ),
                             
                             const SizedBox(height: 5.0),
