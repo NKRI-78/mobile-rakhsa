@@ -702,8 +702,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   late SosNotifier sosNotifier;
 
-  late int countdownTime;
-
   Timer? holdTimer;
 
   void handleLongPressStart() {
@@ -759,7 +757,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
       setState(() {
         sosNotifier.isPressed = true;
-        countdownTime = 60; 
+        sosNotifier.countdownTime = 60; 
       });
 
       sosNotifier.timerController!
@@ -773,7 +771,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
       sosNotifier.timerController!.addListener(() {
         setState(() {
-          countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
+          sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
         });
       });
 
@@ -862,7 +860,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    sosNotifier.isPressed ? "$countdownTime" : "SOS",
+                    sosNotifier.isPressed ? "${sosNotifier.countdownTime}" : "SOS",
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

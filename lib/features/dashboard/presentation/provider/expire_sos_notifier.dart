@@ -16,6 +16,8 @@ class SosNotifier with ChangeNotifier {
 
   late Animation<double> pulseAnimation;
 
+  late int countdownTime;
+
   bool isPressed = false;
 
   ProviderState _state = ProviderState.idle;
@@ -34,6 +36,8 @@ class SosNotifier with ChangeNotifier {
   }
 
   void initializeTimer(TickerProvider vsync) {
+    isPressed = false;
+    
     timerController = AnimationController(
       duration: const Duration(seconds: 60),
       vsync: vsync,
