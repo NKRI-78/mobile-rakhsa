@@ -51,7 +51,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   late TextEditingController messageC;
 
   late SosNotifier sosNotifier;
-
   late GetMessagesNotifier messageNotifier; 
 
   late WebSocketsService webSocketService;
@@ -67,7 +66,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     messageNotifier = context.read<GetMessagesNotifier>();
-
     sosNotifier = context.read<SosNotifier>();
 
     webSocketService = context.read<WebSocketsService>();

@@ -9,7 +9,6 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -19,8 +18,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
 
-  final GetChatsNotifier chatsNotifier;
-  final GetMessagesNotifier messageNotifier;
 
   int maxReconnectAttempts = 5;
   int reconnectAttempts = 0;
@@ -30,10 +27,7 @@ class WebSocketsService extends ChangeNotifier {
   Timer? reconnectTimer;
   ValueNotifier<bool> isConnected = ValueNotifier(false); 
 
-  WebSocketsService({
-    required this.chatsNotifier,
-    required this.messageNotifier,
-  }) {
+  WebSocketsService() {
     connect();
   }
 
@@ -141,7 +135,7 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== MESSAGE ===");
         
-        messageNotifier.appendMessage(data: message);
+        navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
 
       break;
 
@@ -149,8 +143,7 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== FINISH SOS ===");
 
-        messageNotifier.showBtnSessionEnd();
-
+        navigatorKey.currentContext!.read<GetMessagesNotifier>().showBtnSessionEnd();
 
       break;
 

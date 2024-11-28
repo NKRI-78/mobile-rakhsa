@@ -125,14 +125,11 @@ void init() {
   locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
   locator.registerFactory(() => GetCountryNotifier(useCase: locator()));
   locator.registerFactory(() => GetStateNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
+  locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
+  locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
   locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
   
-  locator.registerFactory(() => WebSocketsService(
-    chatsNotifier: locator(),
-    messageNotifier: locator(),
-  ));
+  locator.registerFactory(() => WebSocketsService());
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();
