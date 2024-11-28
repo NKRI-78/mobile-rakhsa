@@ -10,12 +10,10 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
 
