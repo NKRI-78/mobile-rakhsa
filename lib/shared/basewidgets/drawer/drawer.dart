@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
+import 'package:rakhsa/features/auth/presentation/pages/profile.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
-import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -29,22 +34,117 @@ class DrawerWidgetState extends State<DrawerWidget> {
       child: Container(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
 
-            CustomButton(
-              onTap: () async {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                  return const ChatsPage();
-                }));
-              },
-              isBorder: true,
-              isBorderRadius: true,
-              btnColor: ColorResources.transparent,
-              btnBorderColor: ColorResources.white,
-              fontSize: Dimensions.fontSizeDefault,
-              btnTxt: "Notification",
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+            
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0)
+                    ),
+                    color: ColorResources.white
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+            
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+            
+                          CachedNetworkImage(
+                            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4g_2Qj3LsNR-iqUAFm6ut2EQVcaou4u2YXw&s",
+                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                              );
+                            },
+                            placeholder: (BuildContext context, String url) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/default.jpeg'),
+                              );
+                            },
+                          ),
+            
+                          const SizedBox(width: 15.0),
+            
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+            
+                              Text("Nama",
+                                style: robotoRegular.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.grey
+                                ),
+                              ),
+            
+                              const SizedBox(height: 2.0),
+            
+                              Text("Reihan Agam",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorResources.black
+                                ),
+                              ),
+            
+                            ],
+                          ), 
+            
+                        ],
+                      ),
+            
+                      const SizedBox(height: 15.0),
+            
+                      CustomButton(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return const ProfilePage();
+                            },
+                          ));
+                        },
+                        isBorder: true,
+                        isBorderRadius: true,
+                        height: 40.0,
+                        sizeBorderRadius: 8.0,
+                        btnBorderColor: ColorResources.greyDarkPrimary,
+                        btnColor: ColorResources.white,
+                        btnTxt: "Profile",
+                        btnTextColor: const Color(0xFFC82927),
+                      ),
+                      
+                    ],
+                  ),
+                ),
+            
+                const SizedBox(height: 10.0),
+            
+                CustomButton(
+                  onTap: () async {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                      return const ChatsPage();
+                    }));
+                  },
+                  isBorder: true,
+                  isBorderRadius: true,
+                  btnColor: ColorResources.transparent,
+                  btnBorderColor: ColorResources.white,
+                  fontSize: Dimensions.fontSizeDefault,
+                  btnTxt: "Notification",
+                ),
+            
+              ],
             ),
 
             Bouncing(
@@ -56,7 +156,6 @@ class DrawerWidgetState extends State<DrawerWidget> {
                 await GeneralModal.logout(globalKey: widget.globalKey);
               }
             )
-            
 
           ],
         ),
