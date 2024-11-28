@@ -136,6 +136,7 @@ class WebSocketsService extends ChangeNotifier {
       "lng": lng,
       "country": country,
       "time": time,
+      "platform_type": "raksha"
     }));
   }
 
