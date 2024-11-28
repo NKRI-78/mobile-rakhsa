@@ -21,7 +21,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -50,7 +49,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   late TextEditingController messageC;
 
-  late SosNotifier sosNotifier;
   late GetMessagesNotifier messageNotifier; 
 
   late WebSocketsService webSocketService;
@@ -66,7 +64,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     messageNotifier = context.read<GetMessagesNotifier>();
-    sosNotifier = context.read<SosNotifier>();
 
     webSocketService = context.read<WebSocketsService>();
 

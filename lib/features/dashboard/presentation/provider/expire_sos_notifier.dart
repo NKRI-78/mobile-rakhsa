@@ -18,7 +18,7 @@ class SosNotifier with ChangeNotifier {
 
   bool isPressed = false;
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
 
   String _message = "";
