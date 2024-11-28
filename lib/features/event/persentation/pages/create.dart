@@ -211,6 +211,17 @@ class EventCreatePageState extends State<EventCreatePage> {
                   color: Colors.white
                 )
               ),
+              onPageChanged: (date) {
+                if (date.isBefore(DateTime.now())) {
+                  setState(() {
+                    focusedDay = DateTime.now();
+                  });
+                } else {
+                  setState(() {
+                    focusedDay = date;
+                  });
+                }
+              },
               calendarStyle: CalendarStyle(
                 rangeHighlightColor: Colors.white.withOpacity(0.3),
                 disabledTextStyle: const TextStyle(
@@ -252,6 +263,8 @@ class EventCreatePageState extends State<EventCreatePage> {
                 ),
                 leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
                 rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
+                  
+                
               ),
             ),
           ),
