@@ -118,6 +118,8 @@ class GetMessagesNotifier with ChangeNotifier {
       createdAt: DateTime.now()
     ));
 
+    notifyListeners();
+
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
         sC.animateTo(
@@ -127,8 +129,6 @@ class GetMessagesNotifier with ChangeNotifier {
         );
       }
     });
-
-    notifyListeners();
   } 
 
   void ackRead({required Map<String, dynamic> data}) {
