@@ -172,7 +172,7 @@ class WebSocketsService extends ChangeNotifier {
 
         debugPrint("=== CONFIRM SOS ===");
 
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(milliseconds: 1500), () {
           navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
         });
 
