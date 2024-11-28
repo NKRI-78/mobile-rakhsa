@@ -26,6 +26,12 @@ class SosNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
+  void setStateProvider(ProviderState newState) {
+    _state = newState;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void initializePulse(TickerProvider vsync) {
     pulseController = AnimationController(
       duration: const Duration(seconds: 2),
@@ -54,12 +60,6 @@ class SosNotifier with ChangeNotifier {
     
     Future.delayed(Duration.zero, () => notifyListeners());
   } 
-
-  void setStateProvider(ProviderState newState) {
-    _state = newState;
-
-    notifyListeners();
-  }
 
   Future<void> expireSos({required String sosId}) async {
     final result = await useCase.execute(sosId: sosId);

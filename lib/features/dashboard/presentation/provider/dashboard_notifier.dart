@@ -28,7 +28,7 @@ class DashboardNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> getNews({required String type}) async {
