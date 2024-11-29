@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
@@ -176,11 +175,14 @@ class WebSocketsService extends ChangeNotifier {
           navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
         });
 
+        StorageHelper.saveSosId(sosId: sosId);
+
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(
             chatId: chatId, 
             recipientId: recipientId,
             sosId: sosId,
+            autoGreetings: true
           );
         }));
 

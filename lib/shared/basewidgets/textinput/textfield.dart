@@ -82,10 +82,10 @@ class CustomTextField extends StatefulWidget {
   });
 
   @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
+  State<CustomTextField> createState() => CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   bool obscureText = true;
 
   void toggle() {
@@ -147,6 +147,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
               : widget.isEmail
                   ? [
                       FilteringTextInputFormatter.singleLineFormatter,
+                    ]
+                  : widget.isPhoneNumber 
+                  ? [
+                      FilteringTextInputFormatter.digitsOnly
                     ]
                   : [
                       FilteringTextInputFormatter.singleLineFormatter,

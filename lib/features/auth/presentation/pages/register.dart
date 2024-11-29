@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
+import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
@@ -331,49 +331,48 @@ class RegisterPageState extends State<RegisterPage> {
 
                       const SizedBox(height: 20.0),
 
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
+                      // Row(
+                      //   mainAxisSize: MainAxisSize.max,
+                      //   children: [
 
-                          const Expanded(
-                            flex: 3,
-                            child: Divider()
-                          ),
+                      //     const Expanded(
+                      //       flex: 3,
+                      //       child: Divider()
+                      //     ),
 
-                          Expanded(
-                            child: Center(
-                              child: Text("Atau",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.white
-                                ),
-                              )
-                            )
-                          ),
+                      //     Expanded(
+                      //       child: Center(
+                      //         child: Text("Atau",
+                      //           style: robotoRegular.copyWith(
+                      //             fontSize: Dimensions.fontSizeSmall,
+                      //             color: ColorResources.white
+                      //           ),
+                      //         )
+                      //       )
+                      //     ),
 
-                          const Expanded(
-                            flex: 3,
-                            child: Divider()
-                          ),
+                      //     const Expanded(
+                      //       flex: 3,
+                      //       child: Divider()
+                      //     ),
 
-                        ],
-                      ),
+                      //   ],
+                      // ),
                       
-                      const SizedBox(height: 20.0),
+                      // const SizedBox(height: 20.0),
 
-                      CustomButton(
-                        onTap: () {},
-                        isLoading: context.watch<LoginNotifier>().providerState == ProviderState.loading 
-                        ? true 
-                        : false,
-                        isBorder: false,
-                        isBorderRadius: true,
-                        isBoxShadow: false,
-                        btnColor: ColorResources.white,
-                        btnTxt: "Sign In With Google",
-                        btnTextColor: ColorResources.black,
-                      ),
-
+                      // CustomButton(
+                      //   onTap: () {},
+                      //   isLoading: context.watch<LoginNotifier>().providerState == ProviderState.loading 
+                      //   ? true 
+                      //   : false,
+                      //   isBorder: false,
+                      //   isBorderRadius: true,
+                      //   isBoxShadow: false,
+                      //   btnColor: ColorResources.white,
+                      //   btnTxt: "Sign In With Google",
+                      //   btnTextColor: ColorResources.black,
+                      // ),
                 
                     ],
                   )
