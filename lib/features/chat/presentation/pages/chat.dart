@@ -24,7 +24,6 @@ import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/websockets.dart';
 
