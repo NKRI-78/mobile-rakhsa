@@ -13,9 +13,17 @@ class DashboardRepositoryImpl implements DashboardRepository {
   DashboardRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, NewsModel>> getNews({required String type}) async {
+  Future<Either<Failure, NewsModel>> getNews({
+    required String type,
+    required double lat,
+    required double lng
+  }) async {
     try {
-      var result = await remoteDataSource.getNews(type: type);
+      var result = await remoteDataSource.getNews(
+        type: type, 
+        lat: lat, 
+        lng: lng
+      );
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));
@@ -28,6 +36,22 @@ class DashboardRepositoryImpl implements DashboardRepository {
   Future<Either<Failure, void>> expireSos({required String sosId}) async {
     try {
       var result = await remoteDataSource.expireSos(sosId: sosId);
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, void>> updateAddress({required String address, required double lat, required double lng}) async {
+     try {
+      var result = await remoteDataSource.updateAddress(
+        address: address,
+        lat: lat, 
+        lng: lng
+      );
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

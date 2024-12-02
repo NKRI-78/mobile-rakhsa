@@ -24,7 +24,7 @@ class NewsListPageState extends State<NewsListPage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews(type: "news");
+      dashboardNotifier.getNews(type: "news", lat: 0.0, lng: 0.0);
   }
 
   @override 
