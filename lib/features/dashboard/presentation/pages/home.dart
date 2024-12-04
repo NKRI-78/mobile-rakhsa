@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -52,6 +53,7 @@ class HomePageState extends State<HomePage> {
   List<Marker> get markers => [..._markers];
 
   late DashboardNotifier dashboardNotifier;
+  late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
 
   String currentAddress = "";
@@ -64,9 +66,6 @@ class HomePageState extends State<HomePage> {
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
-
-    if(!mounted) return;
-      dashboardNotifier.getNews(type: "ews");
   }
 
   Future<void> checkAndGetLocation() async {
@@ -145,6 +144,21 @@ class HomePageState extends State<HomePage> {
       
       loadingCurrentAddress = false;
     });
+
+    Future.delayed(Duration.zero, () async {
+      await updateAddressNotifier.updateAddress(
+        address: address, 
+        lat: position.latitude, 
+        lng: position.longitude
+      );
+      
+      if(!mounted) return;
+        dashboardNotifier.getNews(
+          type: "ews",
+          lat: position.latitude,
+          lng: position.longitude
+        );
+    });
   }
 
   @override
@@ -152,6 +166,7 @@ class HomePageState extends State<HomePage> {
     super.initState();
 
     profileNotifier = context.read<ProfileNotifier>();
+    updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
 
     Future.microtask(() => getData());

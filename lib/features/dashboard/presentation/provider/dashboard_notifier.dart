@@ -31,8 +31,16 @@ class DashboardNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> getNews({required String type}) async {
-    final result = await useCase.execute(type: type);
+  Future<void> getNews({
+    required String type, 
+    required double lat,
+    required double lng
+  }) async {
+    final result = await useCase.execute(
+      type: type,
+      lat: lat,
+      lng: lng
+    );
 
     result.fold((l) {
       _message = l.message;

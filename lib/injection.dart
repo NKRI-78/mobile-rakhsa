@@ -11,6 +11,8 @@ import 'package:rakhsa/features/administration/presentation/provider/get_state_n
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
 import 'package:rakhsa/features/event/domain/usecases/delete_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/detail_event.dart';
@@ -100,6 +102,7 @@ void init() {
   locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
   locator.registerLazySingleton(() => ResendOtpUseCase(locator()));
   locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
+  locator.registerLazySingleton(() => UpdateAddressUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
   locator.registerLazySingleton(() => GetContinentUseCase(locator()));
@@ -123,6 +126,7 @@ void init() {
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UpdateAddressNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetCountryNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetStateNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
