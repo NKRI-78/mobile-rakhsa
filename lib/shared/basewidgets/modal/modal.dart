@@ -14,6 +14,7 @@ import 'package:rakhsa/features/event/persentation/provider/delete_event_notifie
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
 
@@ -358,7 +359,9 @@ class GeneralModal {
                                 fontSize: Dimensions.fontSizeSmall,
                                 isBorderRadius: true,
                                 height: 30.0,
-                                onTap: () async {
+                                onTap: () {
+                                  context.read<WebSocketsService>().leave();
+
                                   StorageHelper.clear();
                                   StorageHelper.removeToken();
 

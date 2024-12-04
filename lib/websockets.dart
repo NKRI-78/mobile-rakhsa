@@ -67,6 +67,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void startPing() {
     pingTimer?.cancel();
+
     pingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!isPongReceived) {
         debugPrint('No pong response, disconnecting...');
@@ -81,6 +82,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void startPongTimeout() {
     pongTimeoutTimer?.cancel();
+
     pongTimeoutTimer = Timer(const Duration(seconds: 5), () {
       if (!isPongReceived) {
         debugPrint('Pong timeout reached, disconnecting...');
@@ -91,6 +93,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void sendPing() {
     final pingMessage = jsonEncode({"type": "ping"});
+
     channel?.sink.add(pingMessage);
     debugPrint('Ping sent to server');
   }
@@ -108,6 +111,15 @@ class WebSocketsService extends ChangeNotifier {
 
     channel?.sink.add(jsonEncode({
       "type": "join",
+      "user_id": userId
+    }));
+  }
+
+  void leave() {
+    final userId = StorageHelper.getUserId();
+
+    channel?.sink.add(jsonEncode({
+      "type": "leave",
       "user_id": userId
     }));
   }
