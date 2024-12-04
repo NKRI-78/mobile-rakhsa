@@ -121,18 +121,19 @@ class EventEditPageState extends State<EventEditPage> {
       setState(() {
         isLoading = false;
 
-        DateFormat format = DateFormat('dd MMM yyyy');
-        DateTime parsedStartDate = format.parse(detailEventNotifier.entity.startDate!);
-        DateTime parsedEndDate = format.parse(detailEventNotifier.entity.endDate!);
-
         continentId = detailEventNotifier.entity.continentId!;
         stateId = detailEventNotifier.entity.stateId!;
 
-        rangeStart = DateTime(parsedStartDate.year, parsedStartDate.month, parsedStartDate.day);
-        rangeEnd = DateTime(parsedEndDate.year, parsedEndDate.month, parsedEndDate.day);
-
         titleC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.title.toString());
         descC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.description.toString());
+
+        DateFormat format = DateFormat("dd MMM yyyy", "id_ID");
+
+        DateTime parsedStartDate = format.parse(detailEventNotifier.entity.startDate!);
+        DateTime parsedEndDate = format.parse(detailEventNotifier.entity.endDate!);
+
+        rangeStart = DateTime(parsedStartDate.year, parsedStartDate.month, parsedStartDate.day);
+        rangeEnd = DateTime(parsedEndDate.year, parsedEndDate.month, parsedEndDate.day);
       });
 
       await getStateNotifier.getState(continentId: continentId);

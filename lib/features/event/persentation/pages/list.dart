@@ -245,10 +245,13 @@ class EventListData extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       
-                      Text(events[i].title,
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeLarge,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(events[i].title,
+                          overflow: TextOverflow.ellipsis,
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
 
