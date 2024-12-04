@@ -45,7 +45,7 @@ class EventCreatePageState extends State<EventCreatePage> {
   
   Future<void> getData() async {
     if(!mounted) return;
-      getContinentNotifier.getContinent();
+      getContinentNotifier.getContinent(continentId: -1);
   }
 
   Future<void> save() async {
@@ -263,8 +263,6 @@ class EventCreatePageState extends State<EventCreatePage> {
                 ),
                 leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
                 rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
-                  
-                
               ),
             ),
           ),
@@ -337,7 +335,6 @@ class EventCreatePageState extends State<EventCreatePage> {
               },
             ),
           ),
-
 
           const SizedBox(
             height: 14,

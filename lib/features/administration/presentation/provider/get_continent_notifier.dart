@@ -25,6 +25,11 @@ class GetContinentNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  void updateContinent(String continent) {
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   GetContinentNotifier({
     required this.useCase
   });
@@ -35,10 +40,10 @@ class GetContinentNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> getContinent() async {
+  Future<void> getContinent({required int continentId}) async {
     setStateProviderState(ProviderState.loading);
 
-    final continent = await useCase.execute();
+    final continent = await useCase.execute(continentId: continentId);
     
     continent.fold(
       (l) { 
@@ -48,6 +53,10 @@ class GetContinentNotifier with ChangeNotifier {
 
         _entity = [];
         _entity = r.data;
+
+         if (entity.isNotEmpty) {
+          selectedContinent = entity.first;
+        }
 
         setStateProviderState(ProviderState.loaded);
       }

@@ -25,6 +25,12 @@ class GetStateNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  void updateState(String state) {
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+
   GetStateNotifier({
     required this.useCase
   });

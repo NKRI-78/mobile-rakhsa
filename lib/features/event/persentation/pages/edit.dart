@@ -56,11 +56,6 @@ class EventEditPageState extends State<EventEditPage> {
   DateTime? rangeStart;
   DateTime? rangeEnd;
 
-  Future<void> getData() async {
-    if(!mounted) return;
-     getContinentNotifier.getContinent();
-  }
-  
   Future<void> save() async {
     String title = titleC.text;
     String desc = descC.text;
@@ -113,8 +108,6 @@ class EventEditPageState extends State<EventEditPage> {
     getContinentNotifier = context.read<GetContinentNotifier>();
     getStateNotifier = context.read<GetStateNotifier>();
 
-    Future.microtask(() => getData());
-
     Future.delayed(Duration.zero, () async {
       await detailEventNotifier.find(id: widget.id);
 
@@ -123,6 +116,9 @@ class EventEditPageState extends State<EventEditPage> {
 
         continentId = detailEventNotifier.entity.continentId!;
         stateId = detailEventNotifier.entity.stateId!;
+
+        getContinentNotifier.getContinent(continentId: continentId);
+        getStateNotifier.getState(continentId: continentId); 
 
         titleC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.title.toString());
         descC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.description.toString());
@@ -312,99 +308,157 @@ class EventEditPageState extends State<EventEditPage> {
               const SizedBox(
                 height: 20,
               ),
-              
-              Consumer<GetContinentNotifier>(
-                builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
-                  if(notifier.state == ProviderState.loading) {
-                    return const SizedBox();
-                  }
-                  return Autocomplete<CountryData>(
-                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<CountryData>.empty();
+              // Consumer<GetContinentNotifier>(
+              //   builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
+              //     if(notifier.state == ProviderState.loading) {
+              //       return const SizedBox();
+              //     }
+              //     return Autocomplete<CountryData>(
+              //      optionsBuilder: (TextEditingValue textEditingValue) {
+              //       if (textEditingValue.text.isEmpty) {
+              //         return const Iterable<CountryData>.empty();
+              //       }
+              //       return notifier.entity.where((region) {
+              //         return region.name
+              //         .toLowerCase()
+              //         .contains(textEditingValue.text.toLowerCase());
+              //       });
+              //     },
+              //     initialValue: TextEditingValue(text: detailEventNotifier.entity.continent.toString()),
+              //     displayStringForOption: (CountryData option) => option.name,
+              //     onSelected: (CountryData selection) {
+              //       continentId = selection.id;
+              //       getStateNotifier.getState(continentId: continentId);
+              //     },
+              //     fieldViewBuilder: (BuildContext context,
+              //       TextEditingController textEditingController,
+              //       FocusNode focusNode,
+              //       VoidCallback onFieldSubmitted) {
+              //         return TextField(
+              //           controller: textEditingController,
+              //           focusNode: focusNode,
+              //           decoration: InputDecoration(
+              //             fillColor: const Color(0xffF4F4F7),
+              //             filled: true,
+              //             hintText: 'Masukkan Nama Benua',
+              //             border: OutlineInputBorder(
+              //               borderSide: const BorderSide(
+              //                 style: BorderStyle.none,
+              //               ),
+              //               borderRadius: BorderRadius.circular(9),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     );
+              //   },
+              // ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Consumer<GetContinentNotifier>(
+                  builder: (BuildContext context, GetContinentNotifier notifier, Widget? child) {
+                    if (notifier.state == ProviderState.loading) {
+                      return const SizedBox();
                     }
-                    return notifier.entity.where((region) {
-                      return region.name
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase());
-                    });
+                    return DropdownButton<CountryData>(
+                      hint: const Text('Pilih Nama Benua'),
+                      value: notifier.selectedContinent, 
+                      items: notifier.entity.map((CountryData region) {
+                        return DropdownMenuItem<CountryData>(
+                          value: region,
+                          child: Text(region.name),
+                        );
+                      }).toList(),
+                      onChanged: (CountryData? newValue) {
+                        if (newValue != null) {
+                          notifier.setSelectedContinent(newValue); 
+                          continentId = newValue.id;
+                          getStateNotifier.getState(continentId: newValue.id);
+                        }
+                      },
+                      isExpanded: true,
+                      dropdownColor: const Color(0xffF4F4F7),
+                      style: const TextStyle(color: Colors.black),
+                    );
                   },
-                  initialValue: TextEditingValue(text: detailEventNotifier.entity.continent.toString()),
-                  displayStringForOption: (CountryData option) => option.name,
-                  onSelected: (CountryData selection) {
-                    continentId = selection.id;
-                    getStateNotifier.getState(continentId: continentId);
-                  },
-                  fieldViewBuilder: (BuildContext context,
-                    TextEditingController textEditingController,
-                    FocusNode focusNode,
-                    VoidCallback onFieldSubmitted) {
-                      return TextField(
-                        controller: textEditingController,
-                        focusNode: focusNode,
-                        decoration: InputDecoration(
-                          fillColor: const Color(0xffF4F4F7),
-                          filled: true,
-                          hintText: 'Masukkan Nama Benua',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              style: BorderStyle.none,
-                            ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                ),
               ),
               const SizedBox(
                 height: 14.0,
               ),
-              Consumer<GetStateNotifier>(
-                builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
-                  if(notifier.providerState == ProviderState.loading) {
-                    return const SizedBox();
-                  }
-                  return Autocomplete<StateData>(
-                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<StateData>.empty();
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Consumer<GetStateNotifier>(
+                  builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
+                    if (notifier.providerState == ProviderState.loading) {
+                      return const SizedBox();
                     }
-                    return notifier.entity.where((region) {
-                      return region.name
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase());
-                    });
+                    return DropdownButton<StateData>(
+                      hint: const Text('Pilih Nama Negara'),
+                      value: notifier.selectedState,
+                      items: notifier.entity.map((StateData region) {
+                        return DropdownMenuItem<StateData>(
+                          value: region,
+                          child: Text(region.name),
+                        );
+                      }).toList(),
+                      onChanged: (StateData? newValue) {
+                        if (newValue != null) {
+                          notifier.setSelectedState(newValue); 
+                          stateId = newValue.id;
+                        }
+                      },
+                      isExpanded: true,
+                      dropdownColor: const Color(0xffF4F4F7),
+                      style: const TextStyle(color: Colors.black),
+                    );
                   },
-                  initialValue: TextEditingValue(text: detailEventNotifier.entity.state.toString()),
-                  displayStringForOption: (StateData option) => option.name,
-                  onSelected: (StateData selection) {
-                    stateId = selection.id;
-                  },
-                  fieldViewBuilder: (BuildContext context,
-                    TextEditingController textEditingController,
-                    FocusNode focusNode,
-                    VoidCallback onFieldSubmitted) {
-                      return TextField(
-                        controller: textEditingController,
-                        focusNode: focusNode,
-                        decoration: InputDecoration(
-                          fillColor: const Color(0xffF4F4F7),
-                          filled: true,
-                          hintText: 'Masukkan Nama Negara',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              style: BorderStyle.none,
-                            ),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                ),
               ),
+              // Consumer<GetStateNotifier>(
+              //   builder: (BuildContext context, GetStateNotifier notifier, Widget? child) {
+              //     if(notifier.providerState == ProviderState.loading) {
+              //       return const SizedBox();
+              //     }
+              //     return Autocomplete<StateData>(
+              //      optionsBuilder: (TextEditingValue textEditingValue) {
+              //       if (textEditingValue.text.isEmpty) {
+              //         return const Iterable<StateData>.empty();
+              //       }
+              //       return notifier.entity.where((region) {
+              //         return region.name
+              //         .toLowerCase()
+              //         .contains(textEditingValue.text.toLowerCase());
+              //       });
+              //     },
+              //     initialValue: TextEditingValue(text: detailEventNotifier.entity.state.toString()),
+              //     displayStringForOption: (StateData option) => option.name,
+              //     onSelected: (StateData selection) {
+              //       stateId = selection.id;
+              //     },
+              //     fieldViewBuilder: (BuildContext context,
+              //       TextEditingController textEditingController,
+              //       FocusNode focusNode,
+              //       VoidCallback onFieldSubmitted) {
+              //         return TextField(
+              //           controller: textEditingController,
+              //           focusNode: focusNode,
+              //           decoration: InputDecoration(
+              //             fillColor: const Color(0xffF4F4F7),
+              //             filled: true,
+              //             hintText: 'Masukkan Nama Negara',
+              //             border: OutlineInputBorder(
+              //               borderSide: const BorderSide(
+              //                 style: BorderStyle.none,
+              //               ),
+              //               borderRadius: BorderRadius.circular(9),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     );
+              //   },
+              // ),
               const SizedBox(
                 height: 14,
               ),
