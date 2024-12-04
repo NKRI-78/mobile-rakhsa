@@ -46,6 +46,9 @@ class EventCreatePageState extends State<EventCreatePage> {
   Future<void> getData() async {
     if(!mounted) return;
       getContinentNotifier.getContinent(continentId: -1);
+
+    if(!mounted) return; 
+      getStateNotifier.getState(continentId: -1, stateId: -1);
   }
 
   Future<void> save() async {
@@ -97,6 +100,7 @@ class EventCreatePageState extends State<EventCreatePage> {
 
     titleC.clear();
     descC.clear();
+
     setState(() {
       rangeStart = null;
       rangeEnd = null;
@@ -291,7 +295,7 @@ class EventCreatePageState extends State<EventCreatePage> {
                     if (newValue != null) {
                       notifier.setSelectedContinent(newValue); 
                       continentId = newValue.id;
-                      getStateNotifier.getState(continentId: newValue.id);
+                      getStateNotifier.getState(continentId: newValue.id, stateId: -1);
                     }
                   },
                   isExpanded: true,

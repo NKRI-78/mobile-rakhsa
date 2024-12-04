@@ -41,7 +41,10 @@ class GetStateNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> getState({required int continentId}) async {
+  Future<void> getState({
+    required int continentId,
+    required int stateId
+  }) async {
     setStateProviderState(ProviderState.loading);
 
     final state = await useCase.execute(
@@ -58,7 +61,11 @@ class GetStateNotifier with ChangeNotifier {
         _entity = r.data;
 
         if (entity.isNotEmpty) {
-          selectedState = entity.first;
+          if(stateId != -1) {
+            selectedState = _entity.where((el) => el.id == stateId).first;
+          } else {
+            selectedState = entity.first;
+          }
         }
 
         setStateProviderState(ProviderState.loaded);

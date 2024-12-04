@@ -10,11 +10,7 @@ class GetContinentUseCase {
 
   GetContinentUseCase(this.repository);
 
-  Future<Either<Failure, ContinentModel>> execute({
-    required int continentId
-  }) {
-    return repository.getContinent(
-      continentId: continentId
-    );
+  Future<Either<Failure, ContinentModel>> execute() {
+    return repository.getContinent();
   }
 }

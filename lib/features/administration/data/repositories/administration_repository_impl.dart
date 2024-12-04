@@ -16,9 +16,9 @@ class AdministrationRepositoryImpl implements AdministrationRepository {
   AdministrationRepositoryImpl({required this.remoteDataSource});
   
   @override
-  Future<Either<Failure, ContinentModel>> getContinent({required int continentId}) async {
+  Future<Either<Failure, ContinentModel>> getContinent() async {
     try {
-      var result = await remoteDataSource.getContinent(continentId: continentId);
+      var result = await remoteDataSource.getContinent();
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

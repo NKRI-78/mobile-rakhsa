@@ -117,9 +117,6 @@ class EventEditPageState extends State<EventEditPage> {
         continentId = detailEventNotifier.entity.continentId!;
         stateId = detailEventNotifier.entity.stateId!;
 
-        getContinentNotifier.getContinent(continentId: continentId);
-        getStateNotifier.getState(continentId: continentId); 
-
         titleC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.title.toString());
         descC = TextEditingController(text: isLoading ? "..." : detailEventNotifier.entity.description.toString());
 
@@ -132,8 +129,10 @@ class EventEditPageState extends State<EventEditPage> {
         rangeEnd = DateTime(parsedEndDate.year, parsedEndDate.month, parsedEndDate.day);
       });
 
-      await getStateNotifier.getState(continentId: continentId);
+      await getContinentNotifier.getContinent(continentId: continentId);
+      await getStateNotifier.getState(continentId: continentId, stateId: stateId);
     });
+
 
   }
 
@@ -196,7 +195,17 @@ class EventEditPageState extends State<EventEditPage> {
             ); 
           }
 
-          return ListView(
+          return isLoading 
+          ? const Center(
+              child: SizedBox(
+                width: 16.0,
+                height: 16.0,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Color(0xffFE1717))
+                )
+              )
+            )
+          : ListView(
             padding: const EdgeInsets.all(16),
             children: [
               TextField(
@@ -373,7 +382,7 @@ class EventEditPageState extends State<EventEditPage> {
                         if (newValue != null) {
                           notifier.setSelectedContinent(newValue); 
                           continentId = newValue.id;
-                          getStateNotifier.getState(continentId: newValue.id);
+                          getStateNotifier.getState(continentId: newValue.id, stateId: -1);
                         }
                       },
                       isExpanded: true,

@@ -43,7 +43,7 @@ class GetContinentNotifier with ChangeNotifier {
   Future<void> getContinent({required int continentId}) async {
     setStateProviderState(ProviderState.loading);
 
-    final continent = await useCase.execute(continentId: continentId);
+    final continent = await useCase.execute();
     
     continent.fold(
       (l) { 
@@ -54,8 +54,12 @@ class GetContinentNotifier with ChangeNotifier {
         _entity = [];
         _entity = r.data;
 
-         if (entity.isNotEmpty) {
-          selectedContinent = entity.first;
+        if (entity.isNotEmpty) {
+          if(continentId != -1) {
+            selectedContinent = _entity.where((el) => el.id == continentId).first;
+          } else {
+            selectedContinent = entity.first;
+          }
         }
 
         setStateProviderState(ProviderState.loaded);
