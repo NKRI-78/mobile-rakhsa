@@ -769,27 +769,29 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
           time: time
         ); 
       })
-    ).then((_) {
+    ).then((value) {
 
-      setState(() {
-        sosNotifier.isPressed = true;
-        sosNotifier.countdownTime = 60; 
-      });
-
-      sosNotifier.timerController!
-      ..reset()
-      ..forward().whenComplete(() {
-        setState(() => sosNotifier.isPressed = false);
-        
-        sosNotifier.expireSos(sosId: sosId);
-        sosNotifier.pulseController!.reverse();
-      });
-
-      sosNotifier.timerController!.addListener(() {
+      if(value != null) {
         setState(() {
-          sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
+          sosNotifier.isPressed = true;
+          sosNotifier.countdownTime = 60; 
         });
-      });
+
+        sosNotifier.timerController!
+        ..reset()
+        ..forward().whenComplete(() {
+          setState(() => sosNotifier.isPressed = false);
+          
+          sosNotifier.expireSos(sosId: sosId);
+          sosNotifier.pulseController!.reverse();
+        });
+
+        sosNotifier.timerController!.addListener(() {
+          setState(() {
+            sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
+          });
+        });
+      }
 
     });
 
