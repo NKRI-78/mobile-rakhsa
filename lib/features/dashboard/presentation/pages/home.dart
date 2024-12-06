@@ -228,7 +228,7 @@ class HomePageState extends State<HomePage> {
                             color: ColorResources.hintColor
                           ),
                         ), 
-                        Text(context.read<ProfileNotifier>().profileModel.data?.username ?? "-",
+                        Text(context.read<ProfileNotifier>().entity.data?.username ?? "-",
                           style: robotoRegular.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeExtraLarge
@@ -247,7 +247,7 @@ class HomePageState extends State<HomePage> {
                         children: [
                           
                           CachedNetworkImage(
-                            imageUrl: context.read<ProfileNotifier>().profileModel.data?.avatar ?? "-",
+                            imageUrl: context.read<ProfileNotifier>().entity.data?.avatar ?? "-",
                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
@@ -388,7 +388,7 @@ class HomePageState extends State<HomePage> {
                                           : context.watch<ProfileNotifier>().state == ProviderState.loading 
                                           ? const SizedBox() 
                                           : CachedNetworkImage(
-                                              imageUrl: profileNotifier.profileModel.data!.avatar.toString(),
+                                              imageUrl: profileNotifier.entity.data!.avatar.toString(),
                                               imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                               return CircleAvatar(
                                                 backgroundImage: imageProvider,

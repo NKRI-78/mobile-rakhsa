@@ -8,8 +8,8 @@ import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
 class ProfileNotifier with ChangeNotifier {
   final ProfileUseCase useCase;
 
-  ProfileModel _profileModel = ProfileModel();
-  ProfileModel get profileModel => _profileModel;
+  ProfileModel _entity = ProfileModel();
+  ProfileModel get entity => _entity;
 
   String _message = "";
   String get message => _message;
@@ -37,7 +37,7 @@ class ProfileNotifier with ChangeNotifier {
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
-        _profileModel = r;
+        _entity = r;
       }
     );
 

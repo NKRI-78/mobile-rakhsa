@@ -138,7 +138,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                                 Expanded(
                                   flex: 3,
-                                  child: Text("Reihan Agam",
+                                  child: Text(profileNotifier.entity.data!.username.toString(),
                                     style: robotoRegular.copyWith(
                                       color: ColorResources.black,
                                       fontWeight: FontWeight.bold
@@ -173,7 +173,7 @@ class ProfilePageState extends State<ProfilePage> {
                 
                                 Expanded(
                                   flex: 3,
-                                  child: Text("reihanagam7@gmail.com",
+                                  child: Text(profileNotifier.entity.data!.email.toString(),
                                     style: robotoRegular.copyWith(
                                       color: ColorResources.black,
                                       fontSize: Dimensions.fontSizeDefault,
@@ -209,7 +209,7 @@ class ProfilePageState extends State<ProfilePage> {
                 
                                 Expanded(
                                   flex: 3,
-                                  child: Text("089670558381",
+                                  child: Text(profileNotifier.entity.data!.contact.toString(),
                                     style: robotoRegular.copyWith(
                                       color: ColorResources.black,
                                       fontSize: Dimensions.fontSizeDefault,
@@ -254,7 +254,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                                 Expanded(
                                   flex: 3,
-                                  child: Text("Reihan Agam",
+                                  child: Text(profileNotifier.entity.data!.contact.toString(),
                                     style: robotoRegular.copyWith(
                                       color: ColorResources.black,
                                       fontWeight: FontWeight.bold

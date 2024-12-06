@@ -68,7 +68,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         children: [
             
                           CachedNetworkImage(
-                            imageUrl: context.read<ProfileNotifier>().profileModel.data?.avatar ?? "-",
+                            imageUrl: context.read<ProfileNotifier>().entity.data?.avatar ?? "-",
                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
@@ -103,7 +103,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             
                               const SizedBox(height: 2.0),
             
-                              Text(context.read<ProfileNotifier>().profileModel.data?.username ?? "-",
+                              Text(context.read<ProfileNotifier>().entity.data?.username ?? "-",
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge,
                                   fontWeight: FontWeight.bold,

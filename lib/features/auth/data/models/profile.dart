@@ -22,18 +22,22 @@ class ProfileModel {
 class ProfileData {
   String id;
   String username;
+  String email;
   String avatar;
   String address;
   String passport;
+  String contact;
   String emergencyContact;
   String createdAt;
 
   ProfileData({
     required this.id,
     required this.username,
+    required this.email,
     required this.avatar,
     required this.address,
     required this.passport,
+    required this.contact,
     required this.emergencyContact,
     required this.createdAt,
   });
@@ -41,9 +45,11 @@ class ProfileData {
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
     id: json["id"],
     username: json["username"],
+    email: json["email"],
     avatar: json["avatar"] ?? "-",
     address: json["address"],
     passport: json["passport"],
+    contact: json["contact"],
     emergencyContact: json["emergency_contact"],
     createdAt: json["created_at"],
   );
