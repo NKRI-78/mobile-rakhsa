@@ -14,6 +14,9 @@ abstract class AuthRemoteDataSource {
     required String password
   });
   Future<ProfileModel> getProfile();
+  Future<void> updateProfile({
+    required String avatar
+  });
   Future<AuthModel> register({
     required String fullname,
     required String email,
@@ -63,7 +66,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override 
   Future<ProfileModel> getProfile() async {
-     try {
+    try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile",
         data: {
           "user_id": StorageHelper.getUserId(),
@@ -72,6 +75,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       Map<String, dynamic> data = response.data;
       ProfileModel profileModel = ProfileModel.fromJson(data);
       return profileModel;
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    } 
+  }
+
+  @override 
+  Future<void> updateProfile({required String avatar}) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/update",
+        data: {
+          "user_id": StorageHelper.getUserId(),
+          "avatar": avatar,
+        }
+      );
     } on DioException catch(e) {
       String message = handleDioException(e);
       throw ServerException(message);

@@ -142,7 +142,6 @@ class RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -263,8 +262,8 @@ class RegisterPageState extends State<RegisterPage> {
                         child: CustomTextField(
                           controller: passportC,
                           labelText: 'Nomor Passport',
-                          isPhoneNumber: true,
-                          maxLength: 13,
+                          isPhoneNumber: false,
+                          maxLength: 8,
                           hintText: "Nomor Passport",
                           fillColor: Colors.transparent,
                           emptyText: "Nomor Passport wajib di isi",

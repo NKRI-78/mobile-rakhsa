@@ -478,7 +478,8 @@ class HomePageState extends State<HomePage> {
                                     return NewsDetailPage(
                                       title: item.title.toString(), 
                                       img: item.img.toString(), 
-                                      desc: item.desc.toString()
+                                      desc: item.desc.toString(),
+                                      type: item.type.toString(),
                                     );
                                   },
                                 )

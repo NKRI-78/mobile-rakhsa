@@ -27,7 +27,7 @@ class LoginNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _providerState = param;
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> login({

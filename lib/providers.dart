@@ -9,6 +9,7 @@ import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -36,18 +37,19 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<ProfileNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<LoginNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<RegisterNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<VerifyOtpNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ResendOtpNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<UploadMediaNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<VerifyOtpNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetChatsNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetContinentNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<GetCountryNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SaveEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<DetailEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<DeleteEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateAddressNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<GetCountryNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<UpdateProfileNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<UploadMediaNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>()),
 ];

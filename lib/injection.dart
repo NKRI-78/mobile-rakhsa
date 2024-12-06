@@ -9,6 +9,8 @@ import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
@@ -90,6 +92,7 @@ void init() {
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
+  locator.registerLazySingleton(() => UpdateProfileUseCase(locator()));
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
@@ -115,6 +118,7 @@ void init() {
     useCase: locator()
   ));
   locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UpdateProfileNotifier(useCase: locator()));
   locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ListEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => SaveEventNotifier(useCase: locator()));

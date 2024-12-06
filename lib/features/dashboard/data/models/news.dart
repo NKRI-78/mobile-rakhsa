@@ -24,6 +24,7 @@ class NewsData {
   String title;
   String img;
   String desc;
+  String type;
   String createdAt;
 
   NewsData({
@@ -31,6 +32,7 @@ class NewsData {
     required this.title,
     required this.img,
     required this.desc,
+    required this.type,
     required this.createdAt,
   });
 
@@ -39,6 +41,7 @@ class NewsData {
     title: json["title"],
     img: json["img"],
     desc: json["desc"],
+    type: json["type"],
     createdAt: json["created_at"],
   );
 }

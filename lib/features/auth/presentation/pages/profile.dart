@@ -1,15 +1,25 @@
 
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
+import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,11 +30,128 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
 
+  bool btnUpdateProfileLoading = false;
+
   late ProfileNotifier profileNotifier;
+  late UpdateProfileNotifier updateProfileNotifier;
+  late UploadMediaNotifier uploadMediaNotifier;
+
+  ImageSource? imageSource;
+  File? selectedFile;
+
+  Future<void> chooseFile() async {
+    imageSource = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Source Image",
+          style: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeDefault,
+            fontWeight: FontWeight.bold,
+            color: ColorResources.black
+          ),
+        ),
+        actions: [
+          MaterialButton(
+            child: Text("Camera",
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black
+              )
+            ),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          MaterialButton(
+            child: Text("Gallery",
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black
+              ),
+            ),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery)
+          )
+        ],
+      )
+    );
+    if (imageSource != null) {
+
+      if (imageSource == ImageSource.gallery) {
+        XFile? pickedFile = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+        );
+
+        File? cropped = await ImageCropper().cropImage(
+          sourcePath: pickedFile!.path,
+          androidUiSettings: AndroidUiSettings(
+            toolbarTitle: "Crop It",
+            toolbarColor: Colors.blueGrey[900],
+            toolbarWidgetColor: ColorResources.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false
+          ),
+          iosUiSettings: const IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          )
+        );
+
+        if (cropped != null) {
+          setState(() => selectedFile = cropped);
+        } else {
+          setState(() => selectedFile = null);
+        }
+
+      } else {
+       
+        XFile? pickedFile = await ImagePicker().pickImage(
+          source: ImageSource.camera,
+        );
+
+        File? cropped = await ImageCropper().cropImage(
+          sourcePath: pickedFile!.path,
+          androidUiSettings: AndroidUiSettings(
+            toolbarTitle: "Crop It",
+            toolbarColor: Colors.blueGrey[900],
+            toolbarWidgetColor: ColorResources.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false
+          ),
+          iosUiSettings: const IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          )
+        );
+        
+        if (cropped != null) {
+          setState(() => selectedFile = cropped);
+        } else {
+          setState(() => selectedFile = null);
+        }
+
+      }
+    }
+  }
 
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
+  }
+
+  Future<void> submit() async {
+    if(selectedFile == null) {
+      ShowSnackbar.snackbarErr("Field avatar is required");
+      return;
+    }
+
+    await uploadMediaNotifier.send(
+      file: selectedFile!, 
+      folderName: "avatar-raksha"
+    );
+
+    await updateProfileNotifier.updateProfile(avatar: uploadMediaNotifier.entity!.path);
+
+    if(updateProfileNotifier.message == "") {
+      ShowSnackbar.snackbarOk("Update Profile Success");
+    }
+
+    profileNotifier.getProfile();
   }
 
   @override 
@@ -32,6 +159,8 @@ class ProfilePageState extends State<ProfilePage> {
     super.initState();
 
     profileNotifier = context.read<ProfileNotifier>();
+    updateProfileNotifier = context.read<UpdateProfileNotifier>();
+    uploadMediaNotifier = context.read<UploadMediaNotifier>();
     
     Future.microtask(() => getData());
   }
@@ -45,6 +174,31 @@ class ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
+      bottomNavigationBar: selectedFile != null 
+      ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Container(
+              margin: const EdgeInsets.only(
+                top: 20.0,
+                bottom: 20.0,
+                left: 10.0,
+                right: 10.0
+              ),
+              child: CustomButton(
+                onTap: submit,
+                isBorder: false,
+                isBorderRadius: true,
+                btnColor: const Color(0xFFFE1717),
+                btnTxt: "Update Profile",
+              ),
+            )
+
+          ],
+        ) 
+      : const SizedBox(),
       body: RefreshIndicator(
         onRefresh: () {
           return Future.sync(() {
@@ -111,6 +265,87 @@ class ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+
+                      Container(
+                        margin: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          top: 20.0,
+                          bottom: 20.0
+                        ),
+                        child: Center(
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                          
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5), 
+                                      spreadRadius: 3, 
+                                      blurRadius: 4, 
+                                      offset: const Offset(0, 0.2), 
+                                    ),
+                                  ],
+                                ),
+                                child: selectedFile != null 
+                                ? CircleAvatar(
+                                    radius: 40.0,
+                                    backgroundColor: ColorResources.white,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                      child: Image.file(
+                                        selectedFile!,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                      return CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: imageProvider,
+                                      );
+                                    },
+                                    errorWidget: (BuildContext context, String url, Object error) {
+                                      return const CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                      ); 
+                                    },
+                                    placeholder: (BuildContext context, String url) {
+                                      return const CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                      );
+                                    },
+                                  )
+                              ),
+
+                              Positioned(
+                                right: 0.0,
+                                bottom: 0.0,
+                                child: CircleAvatar(
+                                  backgroundColor: ColorResources.white,
+                                  maxRadius: 12.0,
+                                  child: InkWell(
+                                    onTap: chooseFile,
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      size: 14.0,
+                                      color: ColorResources.black,
+                                    ),
+                                  ),
+                                ),
+                              )
+                          
+                            ],
+                          ),
+                        ) 
+                      ),
 
                       Container(
                         padding: const EdgeInsets.all(16.0),
@@ -254,7 +489,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                                 Expanded(
                                   flex: 3,
-                                  child: Text(profileNotifier.entity.data!.contact.toString(),
+                                  child: Text(profileNotifier.entity.data!.emergencyContact.toString(),
                                     style: robotoRegular.copyWith(
                                       color: ColorResources.black,
                                       fontWeight: FontWeight.bold

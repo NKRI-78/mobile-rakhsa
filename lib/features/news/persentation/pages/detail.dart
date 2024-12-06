@@ -13,11 +13,13 @@ class NewsDetailPage extends StatefulWidget {
   final String title; 
   final String img; 
   final String desc;
+  final String type;
 
   const NewsDetailPage({
     required this.title, 
     required this.img,
     required this.desc,
+    required this.type,
     super.key
   });
 
@@ -31,7 +33,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews(type: "news", lat: 0.0, lng: 0.0);
+      dashboardNotifier.getNews(type: widget.type, lat: 0.0, lng: 0.0);
   }
 
   @override 
@@ -134,6 +136,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                             title: notifier.news[i].title,
                             img: notifier.news[i].img,
                             desc: notifier.news[i].desc,
+                            type: notifier.news[i].type,
                           )
                         ));
                       },

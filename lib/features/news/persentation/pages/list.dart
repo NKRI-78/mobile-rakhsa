@@ -114,7 +114,8 @@ class NewsListPageState extends State<NewsListPage> {
                           return NewsDetailPage(
                             title: notifier.news[1].title.toString(), 
                             img: notifier.news[1].img.toString(), 
-                            desc: notifier.news[1].desc.toString()
+                            desc: notifier.news[1].desc.toString(),
+                            type: notifier.news[1].type.toString(),
                           );
                         },
                       )
@@ -195,6 +196,7 @@ class NewsListPageState extends State<NewsListPage> {
                               title: notifier.news[i].title.toString(),  
                               img: notifier.news[i].img.toString(),
                               desc: notifier.news[i].desc.toString(),
+                              type: notifier.news[i].type.toString(),
                             )
                           ));
                         },

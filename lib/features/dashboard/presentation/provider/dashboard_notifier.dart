@@ -55,6 +55,7 @@ class DashboardNotifier with ChangeNotifier {
           title: "", 
           img: "", 
           desc: "", 
+          type: "",
           createdAt: ""
         ));
       }
