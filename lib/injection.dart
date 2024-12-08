@@ -4,8 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:rakhsa/common/helpers/dio.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
-import 'package:rakhsa/features/administration/domain/usecases/get_country.dart';
-import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -18,12 +16,18 @@ import 'package:rakhsa/features/dashboard/presentation/provider/update_address_n
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
 import 'package:rakhsa/features/event/domain/usecases/delete_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/detail_event.dart';
+import 'package:rakhsa/features/administration/domain/usecases/get_country.dart';
+import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/update_event.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
+import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
+import 'package:rakhsa/features/information/data/repositories/information_remote_datasource_impl.dart';
+import 'package:rakhsa/features/information/domain/usecases/get_kbri.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 import 'package:rakhsa/features/event/data/repositories/event_remote_datasource_impl.dart';
 
@@ -77,6 +81,7 @@ void init() {
   locator.registerLazySingleton<AdministrationRemoteDataSource>(() => AdministrationRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<DashboardRemoteDataSource>(() => DashboardRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(client: locator()));
+  locator.registerLazySingleton<KbriRemoteDataSource>(() => KbriRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<MediaRemoteDatasource>(() => MediaRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<EventRemoteDataSource>(() => EventRemoteDataSourceImpl(client: locator()));
@@ -85,6 +90,7 @@ void init() {
   locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: locator()));
+  locator.registerLazySingleton<KbriRepositoryImpl>(() => KbriRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
@@ -95,6 +101,7 @@ void init() {
   locator.registerLazySingleton(() => UpdateProfileUseCase(locator()));
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
+  locator.registerLazySingleton(() => GetKbriUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => ListEventUseCase(locator()));
   locator.registerLazySingleton(() => DetailEventUseCase(locator()));
@@ -127,6 +134,7 @@ void init() {
   locator.registerLazySingleton(() => DeleteEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => KbriNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));

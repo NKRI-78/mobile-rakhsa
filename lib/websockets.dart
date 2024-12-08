@@ -200,9 +200,9 @@ class WebSocketsService extends ChangeNotifier {
 
       break;
 
-      case "message":
+      case "fetch-message":
 
-        debugPrint("=== MESSAGE ===");
+        debugPrint("=== FETCH MESSAGE ===");
         
         getMessagesNotifier.appendMessage(data: message);
 

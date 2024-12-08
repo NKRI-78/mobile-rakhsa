@@ -51,8 +51,6 @@ class EventRepositoryImpl implements EventRepository {
     }
   }
 
-  
-
   @override
   Future<Either<Failure, EventDetailModel>> detail({required int id}) async {
     try {

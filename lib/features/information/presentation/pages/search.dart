@@ -29,15 +29,15 @@ class SearchPageState extends State<SearchPage> {
 
   Timer? debounce;
 
-  late GetCountryNotifier getCountryNotifier;
+  late GetCountryNotifier countryNotifier;
   late TextEditingController searchC;
 
   @override 
   void initState() {
     super.initState();
 
-    getCountryNotifier = context.read<GetCountryNotifier>();
-    getCountryNotifier.clear();
+    countryNotifier = context.read<GetCountryNotifier>();
+    countryNotifier.clear();
 
     searchC = TextEditingController();
   }
@@ -98,7 +98,7 @@ class SearchPageState extends State<SearchPage> {
                     onChanged: (String val) async {
                       if (debounce?.isActive ?? false) debounce?.cancel();
                         debounce = Timer(const Duration(milliseconds: 500), () {
-                          getCountryNotifier.getCountry(search: val);
+                          countryNotifier.getCountry(search: val);
                         });
                     },
                     style: robotoRegular.copyWith(
