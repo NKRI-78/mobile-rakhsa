@@ -118,65 +118,78 @@ class ChatsPageState extends State<ChatsPage> {
 
                     if (i.isEven) {
                       final chat = chatData[i ~/ 2];
-                      return ListTile(
-                        onTap: () async {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ChatPage(
-                              sosId: StorageHelper.getSosId() ?? "-",
-                              recipientId: chat.user.id,
-                              chatId: chat.chat.id,
-                              autoGreetings: false,
-                            );
-                          })).then((_) {
-                            getData();
-                          });
-                        },
-                        title: Text(chat.user.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      return Container(
+                        margin: const EdgeInsets.only(
+                          top: 8.0,
+                          bottom: 8.0
                         ),
-                        subtitle: chat.messages.isEmpty 
-                        ? const SizedBox() 
-                        : Text(chat.messages.first.content,
-                            maxLines: 2,
-                            overflow: TextOverflow.clip,
+                        decoration: BoxDecoration(
+                          color: chat.isConfirm 
+                          ? Colors.grey[350]
+                          : Colors.transparent
+                        ),
+                        child: ListTile(
+                          onTap: () async {
+                            if(!chat.isConfirm) {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return ChatPage(
+                                  sosId: StorageHelper.getSosId() ?? "-",
+                                  recipientId: chat.user.id,
+                                  chatId: chat.chat.id,
+                                  autoGreetings: false,
+                                );
+                              })).then((_) {
+                                getData();
+                              });
+                            }
+                          },
+                          title: Text(chat.user.name,
                             style: const TextStyle(
-                              fontSize: 10.0
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        leading: CachedNetworkImage(
-                          imageUrl: chat.user.avatar,
-                          imageBuilder: (context, imageProvider) {
-                            return CircleAvatar(
-                              backgroundImage: imageProvider,
-                            );
-                          },
-                          placeholder: (context, url) {
-                            return const CircleAvatar(
-                              backgroundImage: AssetImage('assets/images/user.png'),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return const CircleAvatar(
-                              backgroundImage: AssetImage('assets/images/user.png'),
-                            );
-                          },
-                        ),
-                        trailing: chat.messages.isEmpty 
-                        ? const SizedBox() 
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(chat.messages.first.time),
-
-                              chat.messages.first.isMe 
-                              ? const SizedBox(height: 8.0)   
-                              : const SizedBox(),
-                            ],
+                          subtitle: chat.messages.isEmpty 
+                          ? const SizedBox() 
+                          : Text(chat.messages.first.content,
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                              style: const TextStyle(
+                                fontSize: 10.0
+                              ),
+                            ),
+                          leading: CachedNetworkImage(
+                            imageUrl: chat.user.avatar,
+                            imageBuilder: (context, imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                              );
+                            },
+                            placeholder: (context, url) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/user.png'),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/user.png'),
+                              );
+                            },
                           ),
-                        );
+                          trailing: chat.messages.isEmpty 
+                          ? const SizedBox() 
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(chat.messages.first.time),
+                        
+                                chat.messages.first.isMe 
+                                ? const SizedBox(height: 8.0)   
+                                : const SizedBox(),
+                              ],
+                            ),
+                          ),
+                      );
                     } else {
                       return const Divider();
                     }
