@@ -66,6 +66,8 @@ class HomePageState extends State<HomePage> {
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
+    if(!mounted) return;
+      getCurrentLocation();
   }
 
   Future<void> checkAndGetLocation() async {

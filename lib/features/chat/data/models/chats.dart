@@ -21,6 +21,7 @@ class ChatsModel {
 
 class ChatsData {
   Chat chat;
+  bool isConfirm;
   User user;
   int countUnread;
   bool isTyping;
@@ -28,6 +29,7 @@ class ChatsData {
 
   ChatsData({
     required this.chat,
+    required this.isConfirm,
     required this.user,
     required this.countUnread,
     required this.isTyping,
@@ -36,6 +38,7 @@ class ChatsData {
 
   factory ChatsData.fromJson(Map<String, dynamic> json) => ChatsData(
     chat: Chat.fromJson(json["chat"]),
+    isConfirm: json["is_confirm"],
     user: User.fromJson(json["user"]),
     countUnread: json["count_unread"],
     isTyping: false,
