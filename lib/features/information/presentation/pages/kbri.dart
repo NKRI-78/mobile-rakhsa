@@ -89,7 +89,7 @@ class KbriPageState extends State<KbriPage> {
                 if(notifier.state == ProviderState.error) 
                   SliverFillRemaining(
                     child: Center(
-                      child: Text("Kbri not found",
+                      child: Text("KBRI not found",
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           color: ColorResources.black
@@ -128,7 +128,7 @@ class KbriPageState extends State<KbriPage> {
                           bottom: 8.0
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsytTHnlOL92L-kaA13EY5Q_W2QABiTZSy_w&s",
+                          imageUrl: notifier.entity.data?.img.toString() ?? "-",
                           imageBuilder: (BuildContext context, ImageProvider<Object>  imageProvider) {
                             return Container(
                               width: double.infinity,
@@ -148,7 +148,7 @@ class KbriPageState extends State<KbriPage> {
                                   right: 10.0
                                 ),
                                 alignment: Alignment.bottomLeft,
-                                child: Text("Kbri Tokyo",
+                                child: Text("Kbri ${notifier.entity.data?.title.toString()}",
                                   style: robotoRegular.copyWith(
                                     color: ColorResources.white,
                                     fontSize: Dimensions.fontSizeOverLarge,
@@ -169,6 +169,22 @@ class KbriPageState extends State<KbriPage> {
                                   image: AssetImage('assets/images/default.jpeg')
                                 )
                               ),
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  bottom: 10.0,
+                                  left: 10.0,
+                                  right: 10.0
+                                ),
+                                alignment: Alignment.bottomLeft,
+                                child: Text("Kbri ${notifier.entity.data?.title.toString()}",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.white,
+                                    fontSize: Dimensions.fontSizeOverLarge,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              )
                             );
                           },
                           errorWidget: (BuildContext context, String url, Object error) {
@@ -182,6 +198,22 @@ class KbriPageState extends State<KbriPage> {
                                   image: AssetImage('assets/images/default.jpeg')
                                 )
                               ),
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  bottom: 10.0,
+                                  left: 10.0,
+                                  right: 10.0
+                                ),
+                                alignment: Alignment.bottomLeft,
+                                child: Text("Kbri ${notifier.entity.data?.title.toString()}",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.white,
+                                    fontSize: Dimensions.fontSizeOverLarge,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              )
                             );
                           },
                         ),
@@ -189,12 +221,7 @@ class KbriPageState extends State<KbriPage> {
               
                       Container(
                         margin: const EdgeInsets.all(16.0),
-                        child: HtmlWidget(
-                        '''
-                          <p>
-                            Kedutaan Besar Republik Indonesia di Tokyo (KBRI Tokyo) adalah misi diplomatik Republik Indonesia untuk Jepang dan merangkap sebagai perwakilan Indonesia untuk Federasi Mikronesia.ng adalah sebuah konsulat jenderal di Osaka.[3] Terdapat juga dua Konsul Kehormatan di Fukuoka dan Sapporo.[4]
-                          </p>
-                        ''',
+                        child: HtmlWidget(notifier.entity.data?.description.toString() ?? "-",
                           customStylesBuilder: (element) {
                             return null;
                           },
@@ -216,7 +243,7 @@ class KbriPageState extends State<KbriPage> {
                           right: 16.0,
                           bottom: 4.0
                         ),
-                        child: Text("Alamat : 5-2-9 Higashigotanda, Shinagawa Ward, Tokyo 141-00022",
+                        child: Text(notifier.entity.data?.address.toString() ?? "-",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
                             fontWeight: FontWeight.bold,
@@ -238,22 +265,30 @@ class KbriPageState extends State<KbriPage> {
                           mapType: MapType.normal,
                           gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
                           myLocationEnabled: false,
-                          initialCameraPosition: const CameraPosition(
+                          initialCameraPosition: CameraPosition(
                           target: LatLng(
-                            35.63132155675379, 
-                            139.72159131168362
+                            double.parse(notifier.entity.data!.lat), 
+                            double.parse(notifier.entity.data!.lng)
                           ),
                           zoom: 15.0,
                         ),
-                        // markers: Set.from([]),
-                        ),
+                        markers: <Marker>{
+                          Marker(
+                            markerId: MarkerId(notifier.entity.data?.title.toString() ?? "-"),
+                            position: LatLng(
+                              double.parse(notifier.entity.data!.lat), 
+                              double.parse(notifier.entity.data!.lng)
+                            )
+                          )
+                        },
                       ),
+                    ),
               
-                    ])
-                  )
+                  ])
+                )
             
-                ],
-              );
+              ],
+            );
 
           },
         )

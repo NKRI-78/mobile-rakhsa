@@ -26,6 +26,7 @@ import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
 import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
 import 'package:rakhsa/features/information/data/repositories/information_remote_datasource_impl.dart';
+import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_kbri.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
@@ -90,7 +91,7 @@ void init() {
   locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<KbriRepositoryImpl>(() => KbriRepositoryImpl(remoteDataSource: locator()));
+  locator.registerLazySingleton<KbriRepository>(() => KbriRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
