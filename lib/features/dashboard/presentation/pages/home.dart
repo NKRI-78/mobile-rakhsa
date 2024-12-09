@@ -61,7 +61,7 @@ class HomePageState extends State<HomePage> {
   String currentLat = "";
   String currentLng = "";
 
-  bool loadingCurrentAddress = true;
+  bool loadingGmaps = true;
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -142,7 +142,7 @@ class HomePageState extends State<HomePage> {
         )
       );
       
-      loadingCurrentAddress = false;
+      loadingGmaps = false;
     });
 
     Future.delayed(Duration.zero, () async {
@@ -423,7 +423,7 @@ class HomePageState extends State<HomePage> {
                                                             
                                                 const SizedBox(height: 4.0),
                                             
-                                                Text(loadingCurrentAddress 
+                                                Text(loadingGmaps 
                                                   ? "Mohon tunggu..." 
                                                   : currentAddress,
                                                   style: robotoRegular.copyWith(
@@ -447,22 +447,22 @@ class HomePageState extends State<HomePage> {
                                           left: 16.0, 
                                           right: 16.0
                                         ),
-                                        child: loadingCurrentAddress 
+                                        child: loadingGmaps 
                                         ? const SizedBox() 
                                         : GoogleMap(
-                                          mapType: MapType.normal,
-                                          gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                          myLocationEnabled: false,
-                                          initialCameraPosition: CameraPosition(
-                                            target: LatLng(
-                                              double.parse(currentLat), 
-                                              double.parse(currentLng)
+                                            mapType: MapType.normal,
+                                            gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                                            myLocationEnabled: false,
+                                            initialCameraPosition: CameraPosition(
+                                              target: LatLng(
+                                                double.parse(currentLat), 
+                                                double.parse(currentLng)
+                                              ),
+                                              zoom: 15.0,
                                             ),
-                                            zoom: 15.0,
+                                            markers: Set.from(markers),
                                           ),
-                                          markers: Set.from(markers),
-                                        ),
-                                      )
+                                        )
                                                             
                                     ],
                                   ),

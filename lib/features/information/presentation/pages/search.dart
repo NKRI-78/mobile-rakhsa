@@ -11,6 +11,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
+import 'package:rakhsa/features/information/presentation/pages/kbri.dart';
 import 'package:rakhsa/features/information/presentation/pages/passport_visa.dart';
 
 class SearchPage extends StatefulWidget {
@@ -161,6 +162,9 @@ class SearchPageState extends State<SearchPage> {
                           onTap: () {
                             switch(widget.info) {
                               case "informasi-kbri":
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return const KbriPage(); 
+                                }));
                               break;  
                               case "passport-visa":
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
