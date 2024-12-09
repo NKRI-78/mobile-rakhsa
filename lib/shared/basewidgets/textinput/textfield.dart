@@ -29,6 +29,7 @@ class CustomTextField extends StatefulWidget {
   final Color fillColor;
   final Color cursorColor;
   final bool isPhoneNumber;
+  final bool isAllowedSymbol;
   final bool isEmail;
   final bool isPassword;
   final bool isName;
@@ -77,6 +78,7 @@ class CustomTextField extends StatefulWidget {
     this.isCapital = false,
     this.maxLength,
     this.isPhoneNumber = false,
+    this.isAllowedSymbol = false,
     this.onEditingComplete,
     this.onSaved,
   });
@@ -129,32 +131,36 @@ class CustomTextFieldState extends State<CustomTextField> {
       onFieldSubmitted: (String v) {
         setState(() {
           widget.textInputAction == TextInputAction.done
-              ? FocusScope.of(context).consumeKeyboardToken()
-              : FocusScope.of(context).requestFocus(widget.nextNode);
+          ? FocusScope.of(context).consumeKeyboardToken()
+          : FocusScope.of(context).requestFocus(widget.nextNode);
         });
       },
       inputFormatters: widget.isAlphabetsAndNumbers
-          ? [
-              FilteringTextInputFormatter.singleLineFormatter,
-              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
-            ]
-          : widget.isName
-              ?  [
-                  // UpperCaseTextFormatter(), 
-                  FilteringTextInputFormatter.singleLineFormatter,
-                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
-                ]
-              : widget.isEmail
-                  ? [
-                      FilteringTextInputFormatter.singleLineFormatter,
-                    ]
-                  : widget.isPhoneNumber 
-                  ? [
-                      FilteringTextInputFormatter.digitsOnly
-                    ]
-                  : [
-                      FilteringTextInputFormatter.singleLineFormatter,
-                    ],
+      ? [
+          FilteringTextInputFormatter.singleLineFormatter,
+          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
+        ]
+      : widget.isName
+      ?  [
+          FilteringTextInputFormatter.singleLineFormatter,
+          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
+        ]
+      : widget.isEmail
+        ? [
+            FilteringTextInputFormatter.singleLineFormatter,
+          ]
+        : widget.isPhoneNumber 
+        ? [
+            FilteringTextInputFormatter.digitsOnly
+          ]
+        : widget.isAllowedSymbol ? 
+          [
+            FilteringTextInputFormatter.singleLineFormatter,
+            FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
+          ] 
+        : [
+            FilteringTextInputFormatter.singleLineFormatter,
+          ],
       decoration: InputDecoration(
         fillColor: widget.fillColor,
         filled: true,

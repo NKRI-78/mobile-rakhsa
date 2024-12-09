@@ -261,8 +261,9 @@ class RegisterPageState extends State<RegisterPage> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: CustomTextField(
                           controller: passportC,
-                          labelText: 'Nomor Passport',
+                          labelText: "Nomor Passport",
                           isPhoneNumber: false,
+                          isAllowedSymbol: true,
                           maxLength: 8,
                           hintText: "Nomor Passport",
                           fillColor: Colors.transparent,
