@@ -44,7 +44,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   String currentLat = "";
   String currentLng = "";
   
-  bool loadingCurrentAddress = true;
+  int selectedPageIndex = 0;
 
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
@@ -54,6 +54,97 @@ class DashboardScreenState extends State<DashboardScreen> {
     if(!mounted) return;
       profileNotifier.getProfile();
   } 
+
+    Future<void> checkAndGetLocation() async {
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!isLocationServiceEnabled) {
+      if(mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,  
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Location Services Disabled'),
+              content: const Text('Please enable location services to continue.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();  
+                    Geolocator.openLocationSettings();  
+                  },
+                  child: const Text('Open Settings'),
+                ),
+              ],
+            );
+          }
+        );
+      }
+    } else {
+      getCurrentLocation();
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Future.delayed(const Duration(seconds: 1), () {
+          checkAndGetLocation();
+        });
+        return;
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+      forceAndroidLocationManager: true
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    String country = placemarks[0].country ?? "-";
+    String street = placemarks[0].street ?? "-";
+    String administrativeArea = placemarks[0].administrativeArea ?? "-";
+    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+
+    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
+
+    setState(() {
+      currentAddress = address;
+      currentCountry = country;
+
+      currentLat = position.latitude.toString();
+      currentLng = position.longitude.toString();
+
+      _markers = [];
+      _markers.add(
+        Marker(
+          markerId: const MarkerId("currentPosition"),
+          position: LatLng(
+            position.latitude, 
+            position.longitude
+          ),
+          icon: BitmapDescriptor.defaultMarker,
+        )
+      );
+    });
+
+    Future.delayed(Duration.zero, () async {
+      await updateAddressNotifier.updateAddress(
+        address: address, 
+        lat: position.latitude, 
+        lng: position.longitude
+      );
+      
+      if(!mounted) return;
+        dashboardNotifier.getNews(
+          type: "ews",
+          lat: position.latitude,
+          lng: position.longitude
+        );
+    });
+  }
 
   List<Map<String, dynamic>> pages = [
     {
@@ -73,19 +164,6 @@ class DashboardScreenState extends State<DashboardScreen> {
       'title': 'Event',
     },
   ];
-
-  int selectedPageIndex = 0;
-
-  @override 
-  void initState() {
-    super.initState();
-
-    dashboardNotifier = context.read<DashboardNotifier>();
-    updateAddressNotifier = context.read<UpdateAddressNotifier>();
-    profileNotifier = context.read<ProfileNotifier>();
-
-    Future.microtask(() => getData());
-  }
 
   void selectPage(int index) {
     if(index == 2) {
@@ -181,99 +259,18 @@ class DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> checkAndGetLocation() async {
-    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+  @override 
+  void initState() {
+    super.initState();
 
-    if (!isLocationServiceEnabled) {
-      if(mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,  
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Location Services Disabled'),
-              content: const Text('Please enable location services to continue.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();  
-                    Geolocator.openLocationSettings();  
-                  },
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            );
-          }
-        );
-      }
-    } else {
-      getCurrentLocation();
-    }
+    dashboardNotifier = context.read<DashboardNotifier>();
+    updateAddressNotifier = context.read<UpdateAddressNotifier>();
+    profileNotifier = context.read<ProfileNotifier>();
+
+    Future.microtask(() => getData());
+
+    checkAndGetLocation();
   }
-
-  Future<void> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Future.delayed(const Duration(seconds: 1), () {
-          checkAndGetLocation();
-        });
-        return;
-      }
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.bestForNavigation,
-      forceAndroidLocationManager: true
-    );
-
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    String country = placemarks[0].country ?? "-";
-    String street = placemarks[0].street ?? "-";
-    String administrativeArea = placemarks[0].administrativeArea ?? "-";
-    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
-
-    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-
-    setState(() {
-      currentAddress = address;
-      currentCountry = country;
-
-      currentLat = position.latitude.toString();
-      currentLng = position.longitude.toString();
-
-      _markers = [];
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("currentPosition"),
-          position: LatLng(
-            position.latitude, 
-            position.longitude
-          ),
-          icon: BitmapDescriptor.defaultMarker,
-        )
-      );
-      
-      loadingCurrentAddress = false;
-    });
-
-    Future.delayed(Duration.zero, () async {
-      await updateAddressNotifier.updateAddress(
-        address: address, 
-        lat: position.latitude, 
-        lng: position.longitude
-      );
-      
-      if(!mounted) return;
-        dashboardNotifier.getNews(
-          type: "ews",
-          lat: position.latitude,
-          lng: position.longitude
-        );
-    });
-  }
-
   
   @override
   Widget build(BuildContext context) {

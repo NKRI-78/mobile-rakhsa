@@ -314,8 +314,8 @@ class HomePageState extends State<HomePage> {
                 ),
 
                 Container(
-                  margin: const EdgeInsets.only(
-                    top: 55.0
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 16.0
                   ),
                   child: SosButton(
                     location: currentAddress,
@@ -355,334 +355,340 @@ class HomePageState extends State<HomePage> {
                       );
                     }
                     
-                    return Container(
-                      margin: const EdgeInsets.only(
-                        top: 45.0,
+                    return CarouselSlider(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        viewportFraction: 1.0,
+                        height: 280.0 
                       ),
-                      child: CarouselSlider(
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          height: 175.0,
-                          viewportFraction: 1.0
-                        ),
-                        items: notifier.news.map((item) {
-                          if(item.id == 0) {
-                            return Card(
-                              color: ColorResources.white,
-                              surfaceTintColor: ColorResources.white,
-                              elevation: 1.0,
-                              child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                                            
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-
-                                          context.watch<ProfileNotifier>().state == ProviderState.error 
-                                          ? const SizedBox()
-                                          : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                                          ? const SizedBox() 
-                                          : CachedNetworkImage(
-                                              imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                              return CircleAvatar(
-                                                backgroundImage: imageProvider,
-                                              );
-                                            },
-                                            placeholder: (BuildContext context, String url) {
-                                              return const CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                              );
-                                            },
-                                            errorWidget: (BuildContext context, String url, Object error) {
-                                              return const CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                              );
-                                            },
-                                          ),
-                                                            
-                                          const SizedBox(width: 15.0),
-                                                            
-                                          Flexible(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                            
-                                                Text("Posisi Anda saat ini",
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeDefault,
-                                                    fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                                            
-                                                const SizedBox(height: 4.0),
-                                            
-                                                Text(loadingGmaps 
-                                                  ? "Mohon tunggu..." 
-                                                  : currentAddress,
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeSmall,
-                                                    color: ColorResources.black
-                                                  ),
-                                                )
-                                            
-                                              ],
-                                            ),
-                                          )
-                                                            
-                                        ],
-                                      ),
-                                  
-                                      Container(
-                                        width: double.infinity,
-                                        height: 180.0,
-                                        margin: const EdgeInsets.only(
-                                          top: 16.0,
-                                          left: 16.0, 
-                                          right: 16.0
-                                        ),
-                                        child: loadingGmaps 
+                      items: notifier.news.map((item) {
+                        if(item.id == 0) {
+                          return Card(
+                            color: ColorResources.white,
+                            surfaceTintColor: ColorResources.white,
+                            elevation: 1.0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                                          
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                          
+                                        context.watch<ProfileNotifier>().state == ProviderState.error 
+                                        ? const SizedBox()
+                                        : context.watch<ProfileNotifier>().state == ProviderState.loading 
                                         ? const SizedBox() 
-                                        : GoogleMap(
-                                            mapType: MapType.normal,
-                                            gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                            myLocationEnabled: false,
-                                            initialCameraPosition: CameraPosition(
-                                              target: LatLng(
-                                                double.parse(currentLat), 
-                                                double.parse(currentLng)
+                                        : CachedNetworkImage(
+                                            imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                            return CircleAvatar(
+                                              backgroundImage: imageProvider,
+                                            );
+                                          },
+                                          placeholder: (BuildContext context, String url) {
+                                            return const CircleAvatar(
+                                              backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                            );
+                                          },
+                                          errorWidget: (BuildContext context, String url, Object error) {
+                                            return const CircleAvatar(
+                                              backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                            );
+                                          },
+                                        ),
+                                                          
+                                        const SizedBox(width: 15.0),
+                                                          
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                                          
+                                              Text("Posisi Anda saat ini",
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  fontWeight: FontWeight.bold
+                                                ),
                                               ),
-                                              zoom: 15.0,
-                                            ),
-                                            markers: Set.from(markers),
+                                                          
+                                              const SizedBox(height: 4.0),
+                                          
+                                              Text(loadingGmaps 
+                                                ? "Mohon tunggu..." 
+                                                : currentAddress,
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeSmall,
+                                                  color: ColorResources.black
+                                                ),
+                                              )
+                                          
+                                            ],
                                           ),
                                         )
-                                                            
+                                                          
+                                      ],
+                                    ),
+                                
+                                    Container(
+                                      width: double.infinity,
+                                      height: 120.0,
+                                      margin: const EdgeInsets.only(
+                                        top: 16.0,
+                                        left: 16.0, 
+                                        right: 16.0
+                                      ),
+                                      child: loadingGmaps 
+                                      ? const SizedBox() 
+                                      : GoogleMap(
+                                          mapType: MapType.normal,
+                                          gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                                          myLocationEnabled: false,
+                                          initialCameraPosition: CameraPosition(
+                                            target: LatLng(
+                                              double.parse(currentLat), 
+                                              double.parse(currentLng)
+                                            ),
+                                            zoom: 12.0,
+                                          ),
+                                          markers: Set.from(markers),
+                                        ),
+                                      )
+                                                          
+                                  ],
+                                ),
+                              ),
+                            )
+                          );
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, 
+                              MaterialPageRoute(
+                              builder: (context) {
+                                return NewsDetailPage(
+                                  title: item.title.toString(), 
+                                  img: item.img.toString(), 
+                                  desc: item.desc.toString(),
+                                  type: item.type.toString(),
+                                );
+                              },
+                            )).then((value) {
+                              if(value != null) {
+                                getData();
+                              }
+                            });
+                          },
+                          child: Card(
+                            color: ColorResources.redHealth,
+                            surfaceTintColor: ColorResources.redHealth,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            elevation: 1.0,
+                            child: CachedNetworkImage(
+                              imageUrl: item.img.toString(),
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fitHeight,
+                                      image: imageProvider,
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        item.title.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeDefault,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4.0),
+                                                      Text(
+                                                        item.desc.toString(),
+                                                        maxLines: 4,
+                                                        style: robotoRegular.copyWith(
+                                                          overflow: TextOverflow.ellipsis,
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeSmall,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4.0),
+                                                       Text("Baca selengkapnya",
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: Dimensions.fontSizeDefault,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                              )
-                            );
-                          }
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, 
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return NewsDetailPage(
-                                      title: item.title.toString(), 
-                                      img: item.img.toString(), 
-                                      desc: item.desc.toString(),
-                                      type: item.type.toString(),
-                                    );
-                                  },
-                                )
-                              );
-                            },
-                            child: Card(
-                              color: ColorResources.white,
-                              surfaceTintColor: ColorResources.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              elevation: 1.0,
-                              child: CachedNetworkImage(
-                                imageUrl: item.img.toString(),
-                                imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: DecorationImage(
-                                        fit: BoxFit.fitWidth,
-                                        image: imageProvider,
+                                );
+                              },
+                              placeholder: (BuildContext context, String url) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: const DecorationImage(
+                                      fit: BoxFit.fitWidth,
+                                      image: AssetImage('assets/images/default.jpeg'),
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
                                       ),
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Flexible(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          item.title.toString(),
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeDefault,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        item.title.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeDefault,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
-                                                        const SizedBox(height: 4.0),
-                                                        Text(
-                                                          item.desc.toString(),
-                                                          maxLines: 4,
-                                                          style: robotoRegular.copyWith(
-                                                            overflow: TextOverflow.ellipsis,
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                          ),
+                                                      ),
+                                                      const SizedBox(height: 4.0),
+                                                      Text(
+                                                        item.desc.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeSmall,
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                placeholder: (BuildContext context, String url) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: const DecorationImage(
-                                        fit: BoxFit.fitWidth,
-                                        image: AssetImage('assets/images/default.jpeg'),
                                       ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url, Object error) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: const DecorationImage(
+                                      fit: BoxFit.fitWidth,
+                                      image: AssetImage('assets/images/default.jpeg'),
                                     ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
+                                  ),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(10.0),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Flexible(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          item.title.toString(),
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeDefault,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 4.0),
-                                                        Text(
-                                                          item.desc.toString(),
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                errorWidget: (BuildContext context, String url, Object error) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: const DecorationImage(
-                                        fit: BoxFit.fitWidth,
-                                        image: AssetImage('assets/images/default.jpeg'),
                                       ),
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Flexible(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          item.title.toString(),
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeDefault,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Flexible(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        item.title.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeDefault,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
-                                                        const SizedBox(height: 4.0),
-                                                        Text(
-                                                          item.desc.toString(),
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.white,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                          ),
+                                                      ),
+                                                      const SizedBox(height: 4.0),
+                                                      Text(
+                                                        item.desc.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.white,
+                                                          fontSize: Dimensions.fontSizeSmall,
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                          ),
+                        );
+                      }).toList(),
                     );
                   }
                 )

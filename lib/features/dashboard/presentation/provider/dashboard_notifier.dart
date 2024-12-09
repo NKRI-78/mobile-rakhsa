@@ -36,6 +36,9 @@ class DashboardNotifier with ChangeNotifier {
     required double lat,
     required double lng
   }) async {
+
+    debugPrint("=== KESINI ===");
+    
     final result = await useCase.execute(
       type: type,
       lat: lat,
