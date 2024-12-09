@@ -163,7 +163,7 @@ class SearchPageState extends State<SearchPage> {
                             switch(widget.info) {
                               case "informasi-kbri":
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return const KbriPage(); 
+                                  return KbriPage(stateId: notifier.entity[i].id); 
                                 }));
                               break;  
                               case "passport-visa":
