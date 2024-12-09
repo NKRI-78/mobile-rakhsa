@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/features/information/presentation/pages/search.dart';
 
-import 'package:rakhsa/features/information/presentation/widgets/list_card.dart';
+import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class InformationListPage extends StatelessWidget {
   const InformationListPage({super.key});

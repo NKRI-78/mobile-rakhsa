@@ -5,7 +5,7 @@ import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/information/presentation/widgets/list_card.dart';
+import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class PassportVisaPage extends StatelessWidget {
   final int countryCode;
