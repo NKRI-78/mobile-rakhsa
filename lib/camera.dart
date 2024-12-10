@@ -24,6 +24,7 @@ class CameraPage extends StatefulWidget {
   final String lat;
   final String lng;
   final String time;
+  
   const CameraPage({
     required this.sosId,
     required this.location,
