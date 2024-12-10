@@ -63,14 +63,12 @@ class DashboardRepositoryImpl implements DashboardRepository {
   @override
   Future<Either<Failure, void>> ratingSos({
     required String sosId,
-    required String userId,
     required String rating
   }) async {
      try {
       var result = await remoteDataSource.ratingSos(
         sosId: sosId,
         rating: rating,
-        userId: userId
       );
       return Right(result);
     } on ServerException catch(e) {

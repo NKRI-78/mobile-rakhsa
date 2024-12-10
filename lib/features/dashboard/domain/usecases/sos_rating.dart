@@ -12,12 +12,10 @@ class SosRatingUseCase {
   Future<Either<Failure, void>> execute({
     required sosId,
     required rating,
-    required userId
   }) {
     return repository.ratingSos(
       sosId: sosId,
       rating: rating,
-      userId: userId
     );
   }
 }

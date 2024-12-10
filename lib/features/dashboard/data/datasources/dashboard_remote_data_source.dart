@@ -21,7 +21,6 @@ abstract class DashboardRemoteDataSource {
   Future<void> expireSos({required String sosId});
   Future<void> ratingSos({
     required String sosId,
-    required String userId,
     required String rating
   });
 }
@@ -98,15 +97,14 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   @override 
   Future<void> ratingSos({
     required String sosId,
-    required String userId,
     required String rating         
   }) async {
     try {
       await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/rating",
         data: {
           "id": sosId,
-          "user_id": userId,
-          "rating": rating
+          "user_id": StorageHelper.getUserId(),
+          "rate": rating
         }
       );
     } on DioException catch (e) {

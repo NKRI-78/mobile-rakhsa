@@ -20,6 +20,9 @@ class SosRatingNotifier with ChangeNotifier {
 
   bool isPressed = false;
 
+  double _rating = 0.0;
+  double get rating => _rating;
+
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
 
@@ -32,17 +35,20 @@ class SosRatingNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  void onChangeRating({required double selectedRating}) {
+    _rating = selectedRating;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   Future<void> sosRating({
     required String sosId,
-    required String rating,
-    required String userId
   }) async {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(
       sosId: sosId,
-      rating: rating,
-      userId: userId,
+      rating: rating.toString(),
     );
 
     result.fold((l) {

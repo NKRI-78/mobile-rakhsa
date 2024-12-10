@@ -24,6 +24,7 @@ import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -140,15 +141,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                 ? CustomButton(
                     onTap: () async {
                       if(widget.sosId != "-") {
-                        await context.read<SosNotifier>().expireSos(sosId: widget.sosId);
-
-                        Future.delayed(Duration.zero,() {
-                          context.read<WebSocketsService>().userFinishSos(sosId: widget.sosId);
-                        });
-
-                        Future.delayed(Duration.zero, () {
-                          Navigator.pop(context);
-                        });
+                        GeneralModal.ratingSos(
+                          sosId: widget.sosId
+                        );
                       }
                     },
                     btnColor: const Color(0xFFC82927),
@@ -158,7 +153,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     isBorder: false,
                     isBoxShadow: false,
                     isBorderRadius: true,
-                    btnTxt: "Akhiri sesi",
+                    btnTxt: "Sudah ditangani ?",
                   ) 
                 : const SizedBox(),
 

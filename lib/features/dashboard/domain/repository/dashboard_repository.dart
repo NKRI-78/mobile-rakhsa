@@ -18,7 +18,6 @@ abstract class DashboardRepository {
   Future<Either<Failure, void>> expireSos({required String sosId});
   Future<Either<Failure, void>> ratingSos({
     required String sosId,
-    required String userId,
     required String rating
   });
 }
