@@ -15,6 +15,9 @@ class DashboardNotifier with ChangeNotifier {
     required this.profileNotifier,
     required this.useCase
   });  
+  
+  List<NewsData> _ews = [];
+  List<NewsData> get ews =>[..._ews];
 
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
@@ -36,9 +39,8 @@ class DashboardNotifier with ChangeNotifier {
     required double lat,
     required double lng
   }) async {
+    setStateProvider(ProviderState.loading);
 
-    debugPrint("=== KESINI ===");
-    
     final result = await useCase.execute(
       type: type,
       lat: lat,
@@ -66,6 +68,46 @@ class DashboardNotifier with ChangeNotifier {
       _news.addAll(r.data);
 
       if(news.length == 1) {
+        setStateProvider(ProviderState.empty);
+      }
+
+      setStateProvider(ProviderState.loaded);
+    });
+  }
+
+  Future<void> getEws({
+    required String type, 
+    required double lat,
+    required double lng
+  }) async {
+
+    final result = await useCase.execute(
+      type: type,
+      lat: lat,
+      lng: lng
+    );
+
+    result.fold((l) {
+      _message = l.message;
+      setStateProvider(ProviderState.error);
+    }, (r) {
+
+      _ews = [];
+
+      if(StorageHelper.getUserId() != null) {
+        _ews.insert(0, NewsData(
+          id: 0, 
+          title: "", 
+          img: "", 
+          desc: "", 
+          type: "",
+          createdAt: ""
+        ));
+      }
+
+      _ews.addAll(r.data);
+
+      if(ews.length == 1) {
         setStateProvider(ProviderState.empty);
       }
 

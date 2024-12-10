@@ -155,7 +155,7 @@ class HomePageState extends State<HomePage> {
       );
       
       if(!mounted) return;
-        dashboardNotifier.getNews(
+        dashboardNotifier.getEws(
           type: "ews",
           lat: position.latitude,
           lng: position.longitude
@@ -361,7 +361,7 @@ class HomePageState extends State<HomePage> {
                         viewportFraction: 1.0,
                         height: 280.0 
                       ),
-                      items: notifier.news.map((item) {
+                      items: notifier.ews.map((item) {
                         if(item.id == 0) {
                           return Card(
                             color: ColorResources.white,

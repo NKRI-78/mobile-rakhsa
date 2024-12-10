@@ -34,7 +34,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lng
   }) async {
     try { 
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=$type&lat=$lat&lng=$lng");
+      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=$type&lat=$lat&lng=$lng&is_admin=false");
       Map<String, dynamic> data = response.data;
       NewsModel newsModel = NewsModel.fromJson(data);
       return newsModel;

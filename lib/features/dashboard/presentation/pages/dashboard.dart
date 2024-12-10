@@ -138,7 +138,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       );
       
       if(!mounted) return;
-        dashboardNotifier.getNews(
+        dashboardNotifier.getEws(
           type: "ews",
           lat: position.latitude,
           lng: position.longitude

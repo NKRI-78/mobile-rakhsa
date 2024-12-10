@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -87,16 +88,6 @@ class NewsListPageState extends State<NewsListPage> {
               )
             );
           }
-          if(notifier.state == ProviderState.empty) {
-            return Center(
-              child: Text(notifier.message, 
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black
-                ),
-              )
-            );
-          }
           return RefreshIndicator.adaptive(
             onRefresh: () {
               return Future.sync(() {
@@ -136,10 +127,10 @@ class NewsListPageState extends State<NewsListPage> {
                           child: CachedNetworkImage(
                             fit: BoxFit.fitWidth,
                             imageUrl: notifier.news[1].img.toString(),
-                            placeholder: (context, url) {
+                            placeholder: (BuildContext context, String url) {
                               return Image.asset('assets/images/default.jpeg');
                             },
-                            errorWidget: (context, url, error) {
+                            errorWidget: (BuildContext context, String url, Object error) {
                               return Image.asset('assets/images/default.jpeg');
                             },
                           )
@@ -173,6 +164,7 @@ class NewsListPageState extends State<NewsListPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(
                   height: 18,
                 ),
@@ -213,12 +205,12 @@ class NewsListPageState extends State<NewsListPage> {
                                 width: 100,
                                 height: double.infinity,
                                 child: CachedNetworkImage(
-                                fit: BoxFit.fitWidth,
+                                fit: BoxFit.fill,
                                   imageUrl: notifier.news[i].img.toString(),
-                                  placeholder: (context, url) {
+                                  placeholder: (BuildContext context, String url) {
                                     return Image.asset('assets/images/default.jpeg');
                                   },
-                                  errorWidget: (context, url, error) {
+                                  errorWidget: (BuildContext context, String url, Object error) {
                                     return Image.asset('assets/images/default.jpeg');
                                   },
                                 )
@@ -232,7 +224,9 @@ class NewsListPageState extends State<NewsListPage> {
                                   children: [
                                     Text(
                                       notifier.news[i].title,
+                                      maxLines: 3,
                                       style: robotoRegular.copyWith(
+                                        overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.w500,
                                         fontSize: Dimensions.fontSizeLarge,
                                       ),
