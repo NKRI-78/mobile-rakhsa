@@ -19,6 +19,11 @@ abstract class DashboardRemoteDataSource {
     required double lng
   });
   Future<void> expireSos({required String sosId});
+  Future<void> ratingSos({
+    required String sosId,
+    required String userId,
+    required String rating
+  });
 }
 
 class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
@@ -72,11 +77,36 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   }
 
   @override 
-  Future<void> expireSos({required String sosId}) async {
+  Future<void> expireSos({
+    required String sosId
+  }) async {
     try {
       await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/expire",
         data: {
-          "id": sosId
+          "id": sosId,
+        }
+      );
+    } on DioException catch (e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override 
+  Future<void> ratingSos({
+    required String sosId,
+    required String userId,
+    required String rating         
+  }) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/rating",
+        data: {
+          "id": sosId,
+          "user_id": userId,
+          "rating": rating
         }
       );
     } on DioException catch (e) {
