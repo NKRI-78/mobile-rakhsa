@@ -141,43 +141,43 @@ class CustomTextFieldState extends State<CustomTextField> {
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
         ]
       : widget.isName
-      ?  [
+      ? [
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
         ]
       : widget.isEmail
-        ? [
-            FilteringTextInputFormatter.singleLineFormatter,
-          ]
-        : widget.isPhoneNumber 
-        ? [
-            FilteringTextInputFormatter.digitsOnly
-          ]
-        : widget.isAllowedSymbol ? 
-          [
-            FilteringTextInputFormatter.singleLineFormatter,
-            FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
-          ] 
-        : [
-            FilteringTextInputFormatter.singleLineFormatter,
-          ],
+      ? [
+          FilteringTextInputFormatter.singleLineFormatter,
+        ]
+      : widget.isPhoneNumber 
+      ? [
+          FilteringTextInputFormatter.digitsOnly
+        ]
+      : widget.isAllowedSymbol ? 
+        [
+          FilteringTextInputFormatter.singleLineFormatter,
+          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]'))
+        ] 
+      : [
+          FilteringTextInputFormatter.singleLineFormatter,
+        ],
       decoration: InputDecoration(
         fillColor: widget.fillColor,
         filled: true,
         isDense: true,
         prefixIcon: widget.isPrefixIcon ? widget.prefixIcon : null,
         suffixIcon: widget.isPassword
-            ? IconButton(
-                onPressed: toggle,
-                icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: whiteColor,
-                  size: 18.0,
-                ),
-              )
-            : widget.isSuffixIcon
-                ? widget.suffixIcon
-                : null,
+        ? IconButton(
+            onPressed: toggle,
+            icon: Icon(
+              obscureText ? Icons.visibility_off : Icons.visibility,
+              color: whiteColor,
+              size: 18.0,
+            ),
+          )
+        : widget.isSuffixIcon
+          ? widget.suffixIcon
+          : null,
         counterText: "",
         errorStyle: const TextStyle(
           fontSize: fontSizeLarge,
@@ -185,8 +185,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         ),
         counterStyle: TextStyle(color: widget.counterColor, fontSize: fontSizeLarge),
         floatingLabelBehavior: widget.floatingLabelBehavior,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
         hintText: widget.hintText,
         hintStyle: const TextStyle(
           color: greyColor,

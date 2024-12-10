@@ -95,6 +95,7 @@ class NewsListPageState extends State<NewsListPage> {
               });
             },
             child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16.0),
               children: [
                 GestureDetector(
@@ -171,6 +172,7 @@ class NewsListPageState extends State<NewsListPage> {
             
                 ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: notifier.news.length,
                   itemBuilder: (BuildContext context, int i) {
                     if(notifier.news[i].id == 0) {
