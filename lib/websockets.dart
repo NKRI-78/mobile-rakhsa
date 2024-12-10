@@ -175,6 +175,13 @@ class WebSocketsService extends ChangeNotifier {
         isPongReceived = true;
         debugPrint('Pong received from server');
       break;
+
+      case "expire-sos": 
+
+        debugPrint("=== EXPIRE SOS ===");
+        
+
+      break;
       
       case "confirm-sos":
         String chatId = message["chat_id"];

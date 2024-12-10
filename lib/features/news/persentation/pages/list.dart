@@ -57,7 +57,11 @@ class NewsListPageState extends State<NewsListPage> {
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: Padding(
-            padding: EdgeInsets.only(left: 16.0, right: 32, bottom: 10),
+            padding: EdgeInsets.only(
+              left: 16.0, 
+              right: 32.0,
+              bottom: 10.0
+            ),
             child: Text('Berita Terkini Seputar Indonesia',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -150,9 +154,9 @@ class NewsListPageState extends State<NewsListPage> {
                           )
                         )),
                         Positioned(
-                          bottom: 8,
-                          left: 16,
-                          right: 16,
+                          bottom: 8.0,
+                          left: 16.0,
+                          right: 16.0,
                           child: Text(notifier.news[1].title.toString(),
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeDefault,
@@ -167,7 +171,7 @@ class NewsListPageState extends State<NewsListPage> {
                 ),
 
                 const SizedBox(
-                  height: 18,
+                  height: 18.0,
                 ),
             
                 ListView.builder(
@@ -180,7 +184,7 @@ class NewsListPageState extends State<NewsListPage> {
                     }
                     return Padding(
                       padding: const EdgeInsets.only(
-                        bottom: 12,
+                        bottom: 12.0,
                       ),
                       child: InkWell(
                         onTap: () {
@@ -196,7 +200,7 @@ class NewsListPageState extends State<NewsListPage> {
                         },
                         child: Container(
                           clipBehavior: Clip.antiAlias,
-                          height: 100,
+                          height: 100.0,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(9),
@@ -204,7 +208,7 @@ class NewsListPageState extends State<NewsListPage> {
                           child: Row(
                             children: [
                               SizedBox(
-                                width: 100,
+                                width: 100.0,
                                 height: double.infinity,
                                 child: CachedNetworkImage(
                                 fit: BoxFit.fill,
