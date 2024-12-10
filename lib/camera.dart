@@ -210,26 +210,40 @@ class CameraPageState extends State<CameraPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
       
-                  isVideoMode 
-                  ? IconButton(
-                      icon: Icon(
-                      isRecording 
-                      ? Icons.stop 
-                      : Icons.fiber_manual_record,
-                        color: Colors.red,
-                        size: 30,
-                      ),
-                      onPressed: isVideoMode
-                      ? (isRecording ? stopVideoRecording : startVideoRecording)
-                      : null,
-                    ) 
+                  // isVideoMode 
+                  // ? IconButton(
+                  //     icon: Icon(
+                  //     isRecording 
+                  //     ? Icons.stop 
+                  //     : Icons.fiber_manual_record,
+                  //       color: Colors.red,
+                  //       size: 30,
+                  //     ),
+                  //     onPressed: isVideoMode
+                  //     ? (isRecording ? stopVideoRecording : startVideoRecording)
+                  //     : null,
+                  //   ) 
+                  // : 
+
+                  isRecording 
+                  ? const SizedBox() 
                   : IconButton(
-                    icon: Icon(
-                      Icons.camera_alt,
-                      color: isVideoMode ? Colors.white : Colors.blueAccent,
-                      size: 30,
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: takePicture,
                     ),
-                    onPressed: !isVideoMode ? takePicture : null,
+
+                  const SizedBox(width: 20.0),
+
+                  IconButton(
+                    icon: const Icon(Icons.videocam,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    onPressed: (isRecording ? stopVideoRecording : startVideoRecording),
                   ),
       
                   if (isRecording)
@@ -239,35 +253,36 @@ class CameraPageState extends State<CameraPage> {
                         fontSize: Dimensions.fontSizeLarge
                       ),
                     ),
+
                 ],
               ),
             ),
       
-            Positioned(
-              top: 50,
-              right: 20,
-              child: IconButton(
-                icon: Icon(
-                  isVideoMode ? Icons.camera : Icons.videocam,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: toggleMode,
-              ),
-            ),
+            // Positioned(
+            //   top: 50,
+            //   right: 20,
+            //   child: IconButton(
+            //     icon: Icon(
+            //       isVideoMode ? Icons.camera : Icons.videocam,
+            //       color: Colors.white,
+            //       size: 30,
+            //     ),
+            //     onPressed: toggleMode,
+            //   ),
+            // ),
       
-            Positioned(
-              top: 50,
-              left: 20,
-              child: Text(
-                isVideoMode ? "Video Mode" : "Photo Mode",
-                style: robotoRegular.copyWith(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   top: 50,
+            //   left: 20,
+            //   child: Text(
+            //     isVideoMode ? "Video Mode" : "Photo Mode",
+            //     style: robotoRegular.copyWith(
+            //       color: Colors.white,
+            //       fontSize: 18,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
       
           ],
         ),
