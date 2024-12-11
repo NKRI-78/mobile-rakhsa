@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/features/information/presentation/pages/panduan_hukum.dart';
 import 'package:rakhsa/features/information/presentation/pages/search.dart';
 
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
@@ -56,7 +57,7 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage(info: "panduan-hukum");
+                return const PanduanHukumPage();
               }));
             },
             image: AssetSource.iconHukum, 
