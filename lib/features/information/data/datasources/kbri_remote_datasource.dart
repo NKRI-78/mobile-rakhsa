@@ -41,7 +41,7 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
     required String stateId
   }) async {
     try {
-      Response res = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-visa/$stateId");
+      Response res = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-visa?state_id=$stateId");
       Map<String, dynamic> data = res.data;
       VisaContentModel visaContentModel = VisaContentModel.fromJson(data);
       return visaContentModel;

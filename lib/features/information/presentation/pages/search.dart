@@ -168,7 +168,7 @@ class SearchPageState extends State<SearchPage> {
                               break;  
                               case "passport-visa":
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return PassportVisaIndexPage(countryCode: notifier.entity[i].id);
+                                  return PassportVisaIndexPage(stateId: notifier.entity[i].id);
                                 }));
                               break;
                               case "panduan-hukum": 

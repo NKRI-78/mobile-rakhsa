@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/information/presentation/pages/passport_visa/visa/tatacara.dart';
 
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class VisaPage extends StatefulWidget {
-  const VisaPage({super.key});
+  final int stateId;
+
+  const VisaPage({
+    required this.stateId,
+    super.key
+  });
 
   @override
   State<VisaPage> createState() => VisaPageState();
@@ -46,7 +52,7 @@ class VisaPageState extends State<VisaPage> {
               left: 16.0, 
               right: 32, 
               bottom: 10
-          ),
+            ),
             child: Text('Perihal Pengajuan VISA bagi WNI',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -61,7 +67,13 @@ class VisaPageState extends State<VisaPage> {
         children: [
           ListCardInformation(
             onTap: () {
-              debugPrint("alert");
+              Navigator.push(context, MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return TataCaraPage(
+                    stateId: widget.stateId.toString()
+                  );
+                },
+              ));
             },
             image: AssetSource.iconHukum, 
             title: "Tatacara Pembuatan Visa"

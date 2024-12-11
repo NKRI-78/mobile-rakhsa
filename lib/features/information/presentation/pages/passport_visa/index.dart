@@ -10,10 +10,10 @@ import 'package:rakhsa/features/information/presentation/pages/passport_visa/vis
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class PassportVisaIndexPage extends StatelessWidget {
-  final int countryCode;
+  final int stateId;
 
   const PassportVisaIndexPage({
-    required this.countryCode,
+    required this.stateId,
     super.key
   });
  
@@ -63,7 +63,7 @@ class PassportVisaIndexPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const VisaPage(); 
+                return VisaPage(stateId: stateId); 
               }));
             },
             image: AssetSource.iconHukum, 
