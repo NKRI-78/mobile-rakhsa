@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
+import 'package:rakhsa/features/information/presentation/pages/passport_visa/passport/info.dart';
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class PassportPage extends StatefulWidget {
@@ -18,9 +21,7 @@ class PassportPage extends StatefulWidget {
 }
 
 class PassportPageState extends State<PassportPage> {
-
-  
-
+ 
   @override 
   void initState() {
     super.initState();
@@ -66,7 +67,13 @@ class PassportPageState extends State<PassportPage> {
         children: [
           ListCardInformation(
             onTap: () {
-              debugPrint("alert");
+              Navigator.push(context, MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return PassportInfoPage(
+                    stateId: widget.stateId.toString()
+                  );
+                },
+              ));
             },
             image: AssetSource.iconInfo, 
             title: "Passport Baru"

@@ -5,6 +5,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
 import 'package:rakhsa/features/information/data/models/kbri.dart';
+import 'package:rakhsa/features/information/data/models/passport.dart';
 import 'package:rakhsa/features/information/data/models/visa.dart';
 import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
 
@@ -31,6 +32,20 @@ class KbriRepositoryImpl implements KbriRepository {
   Future<Either<Failure, VisaContentModel>> infoVisa({required String stateId}) async {
     try {
       var result = await remoteDataSource.infoVisa(
+        stateId: stateId
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PassportContentModel>> infoPassport({required String stateId}) async {
+     try {
+      var result = await remoteDataSource.infoPassport(
         stateId: stateId
       );
       return Right(result);

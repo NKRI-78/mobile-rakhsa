@@ -23,6 +23,7 @@ import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
@@ -57,5 +58,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<KbriNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<VisaNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>()),
 ];

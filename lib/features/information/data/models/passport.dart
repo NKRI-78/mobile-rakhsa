@@ -1,14 +1,14 @@
 class PassportContentModel {
-  int status;
-  bool error;
-  String message;
-  PassportContentData data;
+  int? status;
+  bool? error;
+  String? message;
+  PassportContentData? data;
 
   PassportContentModel({
-    required this.status,
-    required this.error,
-    required this.message,
-    required this.data,
+    this.status,
+    this.error,
+    this.message,
+    this.data,
   });
 
   factory PassportContentModel.fromJson(Map<String, dynamic> json) => PassportContentModel(
