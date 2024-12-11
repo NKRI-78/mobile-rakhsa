@@ -7,18 +7,28 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
-class PassportVisaPage extends StatelessWidget {
-  final int countryCode;
+class VisaPage extends StatefulWidget {
+  const VisaPage({super.key});
 
-  const PassportVisaPage({
-    required this.countryCode,
-    super.key
-  });
- 
-   @override
+  @override
+  State<VisaPage> createState() => VisaPageState();
+}
+
+class VisaPageState extends State<VisaPage> {
+
+  @override 
+  void initState() {
+    super.initState();
+  }
+
+  @override 
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF4F4F7),
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
@@ -37,7 +47,7 @@ class PassportVisaPage extends StatelessWidget {
               right: 32, 
               bottom: 10
           ),
-            child: Text('Informasi mengenai Passport / Visa ?',
+            child: Text('Perihal Pengajuan VISA bagi WNI',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeOverLarge,
@@ -51,17 +61,10 @@ class PassportVisaPage extends StatelessWidget {
         children: [
           ListCardInformation(
             onTap: () {
-            
-            },
-            image: AssetSource.iconInfo, 
-            title: "Passport"
-          ),
-          ListCardInformation(
-            onTap: () {
-             
+              debugPrint("alert");
             },
             image: AssetSource.iconHukum, 
-            title: "Visa"
+            title: "Tatacara Pembuatan Visa"
           ),
         ],
       ),

@@ -23,8 +23,7 @@ class InformationListPage extends StatelessWidget {
               right: 20.0, 
               bottom: 10.0
             ),
-            child: Text(
-              'Informasi apa, yang ingin anda ketahui ?',
+            child: Text('Informasi apa, yang ingin anda ketahui ?',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
@@ -34,7 +33,7 @@ class InformationListPage extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         children: [
           ListCardInformation(
             onTap: () {

@@ -12,7 +12,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/information/presentation/pages/kbri.dart';
-import 'package:rakhsa/features/information/presentation/pages/passport_visa.dart';
+import 'package:rakhsa/features/information/presentation/pages/passport_visa/index.dart';
 
 class SearchPage extends StatefulWidget {
   final String info;
@@ -168,7 +168,7 @@ class SearchPageState extends State<SearchPage> {
                               break;  
                               case "passport-visa":
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return PassportVisaPage(countryCode: notifier.entity[i].id);
+                                  return PassportVisaIndexPage(countryCode: notifier.entity[i].id);
                                 }));
                               break;
                               case "panduan-hukum": 

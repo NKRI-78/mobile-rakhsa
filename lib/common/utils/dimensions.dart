@@ -5,7 +5,7 @@ class Dimensions {
   static const double fontSizeDefault = 14.0;
   static const double fontSizeLarge = 16.0;
   static const double fontSizeExtraLarge = 18.0;
-  static const double fontSizeOverLarge = 28.0;
+  static const double fontSizeOverLarge = 30.0;
 
   static const double paddingSizeExtraSmall = 5.0;
   static const double paddingSizeSmall = 10.0;
