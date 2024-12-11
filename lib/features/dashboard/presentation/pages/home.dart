@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
+
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -21,6 +22,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:rakhsa/camera.dart';
 
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
@@ -30,8 +33,11 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+
+import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 import 'package:rakhsa/websockets.dart';
@@ -47,7 +53,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> with WidgetsBindingObserver {
+
+  bool isDialogShowing = false;
 
   List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
@@ -70,102 +78,110 @@ class HomePageState extends State<HomePage> {
       getCurrentLocation();
   }
 
-  Future<void> checkAndGetLocation() async {
-    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+  Future<void> getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+        forceAndroidLocationManager: true
+      );
 
-    if (!isLocationServiceEnabled) {
-      if(mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,  
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Location Services Disabled'),
-              content: const Text('Please enable location services to continue.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();  
-                    Geolocator.openLocationSettings();  
-                  },
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            );
-          }
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      String country = placemarks[0].country ?? "-";
+      String street = placemarks[0].street ?? "-";
+      String administrativeArea = placemarks[0].administrativeArea ?? "-";
+      String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+
+      String address = "$administrativeArea $subadministrativeArea\n$street, $country";
+
+      setState(() {
+        currentAddress = address;
+        currentCountry = country;
+
+        currentLat = position.latitude.toString();
+        currentLng = position.longitude.toString();
+
+        _markers = [];
+        _markers.add(
+          Marker(
+            markerId: const MarkerId("currentPosition"),
+            position: LatLng(
+              position.latitude, 
+              position.longitude
+            ),
+            icon: BitmapDescriptor.defaultMarker,
+          )
         );
-      }
-    } else {
-      getCurrentLocation();
+        
+        loadingGmaps = false;
+      });
+
+      Future.delayed(Duration.zero, () async {
+        await updateAddressNotifier.updateAddress(
+          address: address, 
+          lat: position.latitude, 
+          lng: position.longitude
+        );
+        
+        if(!mounted) return;
+          dashboardNotifier.getEws(
+            type: "ews",
+            lat: position.latitude,
+            lng: position.longitude
+          );
+      });
+    } catch(e) {
+
+      checkLocationPermission();
+
     }
   }
 
-  Future<void> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Future.delayed(const Duration(seconds: 1), () {
-          checkAndGetLocation();
+  Future<void> checkLocationPermission() async {
+    var locationReq = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
+
+    if(locationReq) {
+      if (!isDialogShowing) {
+        setState(() => isDialogShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type: "notification"
+        );
+
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogShowing = false);
         });
-        return;
       }
     }
+  }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.bestForNavigation,
-      forceAndroidLocationManager: true
-    );
-
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    String country = placemarks[0].country ?? "-";
-    String street = placemarks[0].street ?? "-";
-    String administrativeArea = placemarks[0].administrativeArea ?? "-";
-    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
-
-    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-
-    setState(() {
-      currentAddress = address;
-      currentCountry = country;
-
-      currentLat = position.latitude.toString();
-      currentLng = position.longitude.toString();
-
-      _markers = [];
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("currentPosition"),
-          position: LatLng(
-            position.latitude, 
-            position.longitude
-          ),
-          icon: BitmapDescriptor.defaultMarker,
-        )
-      );
-      
-      loadingGmaps = false;
-    });
-
-    Future.delayed(Duration.zero, () async {
-      await updateAddressNotifier.updateAddress(
-        address: address, 
-        lat: position.latitude, 
-        lng: position.longitude
-      );
-      
-      if(!mounted) return;
-        dashboardNotifier.getEws(
-          type: "ews",
-          lat: position.latitude,
-          lng: position.longitude
-        );
-    });
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    /* Lifecycle */
+    // - Resumed (App in Foreground)
+    // - Inactive (App Partially Visible - App not focused)
+    // - Paused (App in Background)
+    // - Detached (View Destroyed - App Closed)
+    if (state == AppLifecycleState.resumed) {
+      debugPrint("=== APP RESUME ===");
+      getCurrentLocation();
+    }
+    if (state == AppLifecycleState.inactive) {
+      debugPrint("=== APP INACTIVE ===");
+    }
+    if (state == AppLifecycleState.paused) {
+      debugPrint("=== APP PAUSED ===");
+    }
+    if (state == AppLifecycleState.detached) {
+      debugPrint("=== APP CLOSED ===");
+    }
   }
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
@@ -173,7 +189,7 @@ class HomePageState extends State<HomePage> {
 
     Future.microtask(() => getData());
 
-    checkAndGetLocation();
+    getCurrentLocation();
   }
 
   @override

@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 
 import 'package:rakhsa/websockets.dart';
@@ -14,7 +9,6 @@ import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
@@ -32,119 +26,18 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> {
+class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
 
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
-  List<Marker> _markers = [];
-  List<Marker> get markers => [..._markers];
-
-  String currentAddress = "";
-  String currentCountry = "";
-  String currentLat = "";
-  String currentLng = "";
-  
   int selectedPageIndex = 0;
 
-  late DashboardNotifier dashboardNotifier;
-  late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
 
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
   } 
-
-    Future<void> checkAndGetLocation() async {
-    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!isLocationServiceEnabled) {
-      if(mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,  
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Location Services Disabled'),
-              content: const Text('Please enable location services to continue.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();  
-                    Geolocator.openLocationSettings();  
-                  },
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            );
-          }
-        );
-      }
-    } else {
-      getCurrentLocation();
-    }
-  }
-
-  Future<void> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Future.delayed(const Duration(seconds: 1), () {
-          checkAndGetLocation();
-        });
-        return;
-      }
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.bestForNavigation,
-      forceAndroidLocationManager: true
-    );
-
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    String country = placemarks[0].country ?? "-";
-    String street = placemarks[0].street ?? "-";
-    String administrativeArea = placemarks[0].administrativeArea ?? "-";
-    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
-
-    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-
-    setState(() {
-      currentAddress = address;
-      currentCountry = country;
-
-      currentLat = position.latitude.toString();
-      currentLng = position.longitude.toString();
-
-      _markers = [];
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("currentPosition"),
-          position: LatLng(
-            position.latitude, 
-            position.longitude
-          ),
-          icon: BitmapDescriptor.defaultMarker,
-        )
-      );
-    });
-
-    Future.delayed(Duration.zero, () async {
-      await updateAddressNotifier.updateAddress(
-        address: address, 
-        lat: position.latitude, 
-        lng: position.longitude
-      );
-      
-      if(!mounted) return;
-        dashboardNotifier.getEws(
-          type: "ews",
-          lat: position.latitude,
-          lng: position.longitude
-        );
-    });
-  }
 
   List<Map<String, dynamic>> pages = [
     {
@@ -259,17 +152,38 @@ class DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    /* Lifecycle */
+    // - Resumed (App in Foreground)
+    // - Inactive (App Partially Visible - App not focused)
+    // - Paused (App in Background)
+    // - Detached (View Destroyed - App Closed)
+    if (state == AppLifecycleState.resumed) {
+      debugPrint("=== APP RESUME ===");
+      // getCurrentLocation();
+    }
+    if (state == AppLifecycleState.inactive) {
+      debugPrint("=== APP INACTIVE ===");
+    }
+    if (state == AppLifecycleState.paused) {
+      debugPrint("=== APP PAUSED ===");
+    }
+    if (state == AppLifecycleState.detached) {
+      debugPrint("=== APP CLOSED ===");
+    }
+  }
+
   @override 
   void initState() {
     super.initState();
 
-    dashboardNotifier = context.read<DashboardNotifier>();
-    updateAddressNotifier = context.read<UpdateAddressNotifier>();
+    WidgetsBinding.instance.addObserver(this);
+
     profileNotifier = context.read<ProfileNotifier>();
 
     Future.microtask(() => getData());
-
-    checkAndGetLocation();
   }
   
   @override

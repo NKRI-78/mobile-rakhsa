@@ -294,12 +294,8 @@ class ProfilePageState extends State<ProfilePage> {
                                 ? CircleAvatar(
                                     radius: 40.0,
                                     backgroundColor: ColorResources.white,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(40.0),
-                                      child: Image.file(
-                                        selectedFile!,
-                                        fit: BoxFit.fill,
-                                      ),
+                                    child: Image.file(
+                                      selectedFile!,
                                     ),
                                   )
                                 : CachedNetworkImage(
@@ -307,18 +303,21 @@ class ProfilePageState extends State<ProfilePage> {
                                     imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                       return CircleAvatar(
                                         radius: 40.0,
+                                        backgroundColor: ColorResources.white,
                                         backgroundImage: imageProvider,
                                       );
                                     },
                                     errorWidget: (BuildContext context, String url, Object error) {
                                       return const CircleAvatar(
                                         radius: 40.0,
+                                        backgroundColor: ColorResources.white,
                                         backgroundImage: AssetImage('assets/images/default.jpeg'),
                                       ); 
                                     },
                                     placeholder: (BuildContext context, String url) {
                                       return const CircleAvatar(
                                         radius: 40.0,
+                                        backgroundColor: ColorResources.white,
                                         backgroundImage: AssetImage('assets/images/default.jpeg'),
                                       );
                                     },
