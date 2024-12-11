@@ -6,7 +6,12 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';
 
 class PassportPage extends StatefulWidget {
-  const PassportPage({super.key});
+  final int stateId; 
+
+  const PassportPage({
+    required this.stateId,
+    super.key
+  });
 
   @override
   State<PassportPage> createState() => PassportPageState();
@@ -62,21 +67,7 @@ class PassportPageState extends State<PassportPage> {
               debugPrint("alert");
             },
             image: AssetSource.iconInfo, 
-            title: "Tentang Visa"
-          ),
-          ListCardInformation(
-            onTap: () {
-              debugPrint("alert");
-            },
-            image: AssetSource.iconHukum, 
-            title: "Tatacara Pembuatan Visa"
-          ),
-          ListCardInformation(
-            onTap: () {
-              debugPrint("alert");
-            },
-            image: AssetSource.iconHukum, 
-            title: "Visa di Berbagai Negara"
+            title: "Passport Baru"
           ),
         ],
       ),

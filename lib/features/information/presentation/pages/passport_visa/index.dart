@@ -54,7 +54,7 @@ class PassportVisaIndexPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const PassportPage(); 
+                return PassportPage(stateId: stateId); 
               }));
             },
             image: AssetSource.iconInfo, 
