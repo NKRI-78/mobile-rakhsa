@@ -22,6 +22,9 @@ class ChatsModel {
 class ChatsData {
   Chat chat;
   bool isConfirm;
+  bool isFinish;
+  bool isResolved; 
+  bool isClosed;
   User user;
   int countUnread;
   bool isTyping;
@@ -30,6 +33,9 @@ class ChatsData {
   ChatsData({
     required this.chat,
     required this.isConfirm,
+    required this.isFinish,
+    required this.isResolved,
+    required this.isClosed,
     required this.user,
     required this.countUnread,
     required this.isTyping,
@@ -39,6 +45,9 @@ class ChatsData {
   factory ChatsData.fromJson(Map<String, dynamic> json) => ChatsData(
     chat: Chat.fromJson(json["chat"]),
     isConfirm: json["is_confirm"],
+    isResolved: json["is_resolved"],
+    isClosed: json["is_closed"],
+    isFinish: json["is_finish"],
     user: User.fromJson(json["user"]),
     countUnread: json["count_unread"],
     isTyping: false,
