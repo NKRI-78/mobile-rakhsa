@@ -47,8 +47,8 @@ class RegisterPageState extends State<RegisterPage> {
     if (fullname.isEmpty) {
       ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
       return false;
-    } else if (phone.isEmpty) {
-      ShowSnackbar.snackbarErr("No Telepon tidak boleh kosong");
+    } else if (phone.length < 10 || phone.length > 13) {
+      ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
       return false;
     } else if (email.isEmpty) {
       ShowSnackbar.snackbarErr("Email tidak boleh kosong");
@@ -221,7 +221,6 @@ class RegisterPageState extends State<RegisterPage> {
                         child:CustomTextField(
                           controller: fullnameC,
                           labelText: 'Nama Lengkap',
-                          isName: false,
                           isCapital: true,
                           hintText: "Nama Lengkap",
                           fillColor: Colors.transparent,
