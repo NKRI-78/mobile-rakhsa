@@ -265,27 +265,72 @@ class GeneralModal {
                         right: 20.0,
                         bottom: 20.0,
                         child: Container(
-                          height: 110.0,
+                          height: 150.0,
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25.0),
                             color: Colors.white
                           ),
-                          child: RatingBar.builder(
-                            initialRating: 3,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            itemBuilder: (BuildContext context, int i) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (double selectedRating) {
-                              context.read<SosRatingNotifier>().onChangeRating(selectedRating: selectedRating);
-                            },
-                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+
+                              context.watch<SosRatingNotifier>().state == ProviderState.loading 
+                              ? Text("Terimakasih, Atas feedback dari anda",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black
+                                  ),
+                                ) 
+                              : RichText(
+                                text: TextSpan(
+                                  text: "Di ",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.black, 
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ), // Gaya teks default
+                                  children: [
+                                    TextSpan(
+                                      text: "Raksha",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFFC82927),
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ",\nkami sangat menghargai kesetiaan\ndan dukungan Anda sebagai pengguna\nkami yang terhormat",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.black
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+
+                              const SizedBox(height: 15.0),
+      
+                              RatingBar.builder(
+                                initialRating: 0,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 20.0,
+                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (BuildContext context, int i) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (double selectedRating) {
+                                  context.read<SosRatingNotifier>().onChangeRating(selectedRating: selectedRating);
+                                },
+                              ),
+
+                            ],
+                          )
                         )
                       ),
 
@@ -303,7 +348,7 @@ class GeneralModal {
                                 btnColor: ColorResources.white,
                                 btnTextColor: ColorResources.black,
                                 sizeBorderRadius: 20.0,
-                                fontSize: Dimensions.fontSizeSmall,
+                                fontSize: Dimensions.fontSizeExtraSmall,
                                 isBorderRadius: true,
                                 height: 40.0,
                                 onTap: () {
@@ -323,7 +368,7 @@ class GeneralModal {
                                     btnColor: ColorResources.error,
                                     btnTextColor: ColorResources.white,
                                     sizeBorderRadius: 20.0,
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fontSizeExtraSmall,
                                     isBorderRadius: true,
                                     height: 40.0,
                                     isLoading: notifier.state == ProviderState.loading ? true : false,
