@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -55,31 +56,36 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
-  bool isDialogShowing = false;
-
-  List<Marker> _markers = [];
-  List<Marker> get markers => [..._markers];
-
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
+
+  List<Marker> _markers = [];
+  List<Marker> get markers => [..._markers];
 
   String currentAddress = "";
   String currentCountry = "";
   String currentLat = "";
   String currentLng = "";
 
+  bool isDialogShowing = false;
   bool loadingGmaps = true;
 
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
+      
     if(!mounted) return;
       getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
     try {
+      
+      if(Platform.isIOS) {
+        await Geolocator.requestPermission();
+      }
+
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation,
         forceAndroidLocationManager: true
@@ -121,7 +127,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           lat: position.latitude, 
           lng: position.longitude
         );
-        
+
         if(!mounted) return;
           dashboardNotifier.getEws(
             type: "ews",

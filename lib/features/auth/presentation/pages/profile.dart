@@ -88,9 +88,6 @@ class ProfilePageState extends State<ProfilePage> {
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false
           ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
         );
 
         if (cropped != null) {
@@ -294,7 +291,7 @@ class ProfilePageState extends State<ProfilePage> {
                                 ? CircleAvatar(
                                     radius: 40.0,
                                     backgroundColor: ColorResources.white,
-                                    child: Image.file(
+                                    backgroundImage: FileImage(
                                       selectedFile!,
                                     ),
                                   )
