@@ -15,6 +15,9 @@ class GetMessagesNotifier with ChangeNotifier {
   });
 
   bool isBtnSessionEnd = false;
+
+  bool _isRunning = false;
+  bool get isRunning => _isRunning;
   
   int _time = 60;
   int get time => _time;
@@ -22,15 +25,33 @@ class GetMessagesNotifier with ChangeNotifier {
   late Timer _timer;
 
   void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    if (_isRunning) return;
+
+    _isRunning = true;
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time > 0) {
         _time--;
-        notifyListeners();
+        Future.delayed(Duration.zero, () => notifyListeners());
       } else {
         _timer.cancel();
         showBtnSessionEnd();
       }
     });
+  }
+
+  void cancelTimer() {
+    if (_isRunning) {
+      _timer.cancel();
+      _isRunning = false;
+      Future.delayed(Duration.zero, () => notifyListeners());
+    }
+  }
+
+  void resetTimer() {
+    cancelTimer();
+    _time = 60; 
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   ScrollController sC = ScrollController();
