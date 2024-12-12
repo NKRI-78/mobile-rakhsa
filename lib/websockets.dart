@@ -193,7 +193,7 @@ class WebSocketsService extends ChangeNotifier {
           navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
         });
 
-        // StorageHelper.saveSosId(sosId: sosId);
+        StorageHelper.saveSosId(sosId: sosId);
 
         Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
           return ChatPage(

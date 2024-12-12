@@ -76,6 +76,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     messageC = TextEditingController();
 
+    messageNotifier.startTimer();
     messageNotifier.initializeBtnSessionEnd();
 
     Future.microtask(() => getData());
@@ -155,7 +156,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     isBorder: false,
                     isBoxShadow: false,
                     isBorderRadius: true,
-                    btnTxt: "Sudah ditangani ?",
+                    btnTxt: "Apa keluhan sudah ditangani ?",
                   ) 
                 : const SizedBox(),
 
@@ -282,7 +283,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                             bottom: 20.0,
                           ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -345,7 +346,19 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       
                                 ],
                               ),
-                      
+
+                              Consumer<GetMessagesNotifier>(
+                                builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
+                                  return Text(notifier.time.toString(),
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorResources.white,
+                                    ),
+                                  );
+                                },
+                              )
+                              
                             ],
                           ),
                         ),

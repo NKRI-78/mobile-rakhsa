@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -13,6 +15,23 @@ class GetMessagesNotifier with ChangeNotifier {
   });
 
   bool isBtnSessionEnd = false;
+  
+  int _time = 60;
+  int get time => _time;
+
+  late Timer _timer;
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_time > 0) {
+        _time--;
+        notifyListeners();
+      } else {
+        _timer.cancel();
+        showBtnSessionEnd();
+      }
+    });
+  }
 
   ScrollController sC = ScrollController();
 

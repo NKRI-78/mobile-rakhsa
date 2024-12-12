@@ -13,7 +13,6 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
@@ -261,24 +260,6 @@ class GeneralModal {
                           children: [
 
                             Expanded(
-                              child: CustomButton(
-                                isBorder: false,
-                                btnColor: ColorResources.white,
-                                btnTextColor: ColorResources.black,
-                                sizeBorderRadius: 20.0,
-                                fontSize: Dimensions.fontSizeSmall,
-                                isBorderRadius: true,
-                                height: 40.0,
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                btnTxt: "Batal",
-                              ),
-                            ),
-
-                            const SizedBox(width: 10.0),
-
-                            Expanded(
                               child: Consumer<DeleteEventNotifier>(
                                 builder: (BuildContext context, DeleteEventNotifier notifier, Widget? child) {
                                   return CustomButton(
@@ -370,32 +351,32 @@ class GeneralModal {
                                   ),
                                 ) 
                               : RichText(
-                                text: TextSpan(
-                                  text: "Di ",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black, 
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ), // Gaya teks default
-                                  children: [
-                                    TextSpan(
-                                      text: "Raksha",
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFFC82927),
-                                      ),
+                                  text: TextSpan(
+                                    text: "Di ",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.black, 
+                                      fontSize: Dimensions.fontSizeDefault
                                     ),
-                                    TextSpan(
-                                      text: ",\nkami sangat menghargai kesetiaan\ndan dukungan Anda sebagai pengguna\nkami yang terhormat",
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        color: ColorResources.black
+                                    children: [
+                                      TextSpan(
+                                        text: "Raksha",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFFC82927),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      TextSpan(
+                                        text: ",\nkami sangat menghargai kesetiaan\ndan dukungan Anda sebagai pengguna\nkami yang terhormat",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: ColorResources.black
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
 
                               const SizedBox(height: 15.0),
       
@@ -418,72 +399,6 @@ class GeneralModal {
 
                             ],
                           )
-                        )
-                      ),
-
-                      Positioned(
-                        bottom: 0.0,
-                        left: 80.0,
-                        right: 80.0,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-
-                            Expanded(
-                              child: CustomButton(
-                                isBorder: false,
-                                btnColor: ColorResources.white,
-                                btnTextColor: ColorResources.black,
-                                sizeBorderRadius: 20.0,
-                                fontSize: Dimensions.fontSizeExtraSmall,
-                                isBorderRadius: true,
-                                height: 40.0,
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                btnTxt: "Batal",
-                              ),
-                            ),
-
-                            const SizedBox(width: 10.0),
-
-                            Expanded(
-                              child: Consumer<SosRatingNotifier>(
-                                builder: (BuildContext context, SosRatingNotifier notifier, Widget? child) {
-                                  return CustomButton(
-                                    isBorder: false,
-                                    btnColor: ColorResources.error,
-                                    btnTextColor: ColorResources.white,
-                                    sizeBorderRadius: 20.0,
-                                    fontSize: Dimensions.fontSizeExtraSmall,
-                                    isBorderRadius: true,
-                                    height: 40.0,
-                                    isLoading: notifier.state == ProviderState.loading ? true : false,
-                                    onTap: () async {
-                                      await context.read<SosNotifier>().expireSos(sosId: sosId);
-
-                                      Future.delayed(Duration.zero,() {
-                                        context.read<WebSocketsService>().userFinishSos(sosId: sosId);
-                                      });
-
-                                      Future.delayed(Duration.zero, () {
-                                        context.read<SosRatingNotifier>().sosRating(
-                                          sosId: sosId,
-                                        );
-                                      });
-
-                                      Future.delayed(Duration.zero, () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    btnTxt: "Ulas",
-                                  );
-                                },
-                              )
-                            )
-
-                          ],
                         )
                       ),
                       
