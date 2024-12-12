@@ -221,7 +221,7 @@ class RegisterPageState extends State<RegisterPage> {
                         child:CustomTextField(
                           controller: fullnameC,
                           labelText: 'Nama Lengkap',
-                          isName: true,
+                          isName: false,
                           isCapital: true,
                           hintText: "Nama Lengkap",
                           fillColor: Colors.transparent,

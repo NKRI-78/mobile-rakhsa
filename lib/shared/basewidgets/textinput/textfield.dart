@@ -158,6 +158,10 @@ class CustomTextFieldState extends State<CustomTextField> {
           FilteringTextInputFormatter.singleLineFormatter,
           FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]'))
         ] 
+      : widget.isCapital 
+      ? [
+          UpperCaseTextFormatter()
+        ] 
       : [
           FilteringTextInputFormatter.singleLineFormatter,
         ],
@@ -165,7 +169,9 @@ class CustomTextFieldState extends State<CustomTextField> {
         fillColor: widget.fillColor,
         filled: true,
         isDense: true,
-        prefixIcon: widget.isPrefixIcon ? widget.prefixIcon : null,
+        prefixIcon: widget.isPrefixIcon 
+        ? widget.prefixIcon 
+        : null,
         suffixIcon: widget.isPassword
         ? IconButton(
             onPressed: toggle,
