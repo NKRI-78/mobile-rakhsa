@@ -144,6 +144,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         GeneralModal.ratingSos(
                           sosId: widget.sosId
                         );
+                      } else {
+                        GeneralModal.info(msg: "SOS tidak ditemukan");
                       }
                     },
                     btnColor: const Color(0xFFC82927),

@@ -178,7 +178,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   @override 
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
 
     profileNotifier = context.read<ProfileNotifier>();
