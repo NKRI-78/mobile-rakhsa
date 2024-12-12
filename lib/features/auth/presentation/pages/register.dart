@@ -76,7 +76,6 @@ class RegisterPageState extends State<RegisterPage> {
     }
     return true;
   }
-
     String fullname = fullnameC.text.trim();
     String email = emailC.text.trim();
     String phone = phoneC.text.trim();
