@@ -123,25 +123,21 @@ class ChatsPageState extends State<ChatsPage> {
                           top: 8.0,
                           bottom: 8.0
                         ),
-                        decoration: BoxDecoration(
-                          color: chat.isConfirm 
-                          ? Colors.grey[350]
-                          : Colors.transparent
+                        decoration: const BoxDecoration(
+                          color:Colors.transparent
                         ),
                         child: ListTile(
                           onTap: () async {
-                            if(!chat.isConfirm) {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return ChatPage(
-                                  sosId: StorageHelper.getSosId() ?? "-",
-                                  recipientId: chat.user.id,
-                                  chatId: chat.chat.id,
-                                  autoGreetings: false,
-                                );
-                              })).then((_) {
-                                getData();
-                              });
-                            }
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return ChatPage(
+                                sosId: StorageHelper.getSosId() ?? "-",
+                                recipientId: chat.user.id,
+                                chatId: chat.chat.id,
+                                autoGreetings: false,
+                              );
+                            })).then((_) {
+                              getData();
+                            });
                           },
                           title: Text(chat.user.name,
                             style: const TextStyle(

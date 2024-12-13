@@ -26,6 +26,7 @@ class ChatsData {
   bool isResolved; 
   bool isClosed;
   User user;
+  String createdAt;
   int countUnread;
   bool isTyping;
   List<Message> messages;
@@ -37,6 +38,7 @@ class ChatsData {
     required this.isResolved,
     required this.isClosed,
     required this.user,
+    required this.createdAt,
     required this.countUnread,
     required this.isTyping,
     required this.messages,
@@ -49,6 +51,7 @@ class ChatsData {
     isClosed: json["is_closed"],
     isFinish: json["is_finish"],
     user: User.fromJson(json["user"]),
+    createdAt: json["created_at"],
     countUnread: json["count_unread"],
     isTyping: false,
     messages: List<Message>.from(json["messages"].map((x) => Message.fromJson(x))),
