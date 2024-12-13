@@ -16,6 +16,9 @@ class GetMessagesNotifier with ChangeNotifier {
 
   bool isBtnSessionEnd = false;
 
+  String _activeChatId = "";
+  String get activeChatId => _activeChatId;
+
   bool _isRunning = false;
   bool get isRunning => _isRunning;
   
@@ -132,6 +135,8 @@ class GetMessagesNotifier with ChangeNotifier {
     }, (r) {
       _recipient = r.data.recipient;
 
+      _activeChatId = r.data.chatId;
+
       _messages = [];
       _messages.addAll(r.data.messages);
 
@@ -142,6 +147,12 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void appendMessage({required Map<String, dynamic> data}) {
     bool isRead = data["data"]["is_read"];
+    String incomingMessageId = data["data"]["id"];
+
+    // Avoid duplicate messages
+    if (_messages.any((message) => message.id == incomingMessageId)) {
+      return;
+    }
 
     _messages.insert(0, MessageData(
       id: data["data"]["id"],
@@ -158,8 +169,7 @@ class GetMessagesNotifier with ChangeNotifier {
       createdAt: DateTime.now()
     ));
 
-    Future.delayed(Duration.zero, () => notifyListeners());
-
+    // Smooth scroll
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
         sC.animateTo(
@@ -169,18 +179,7 @@ class GetMessagesNotifier with ChangeNotifier {
         );
       }
     });
-  } 
-
-  void ackRead({required Map<String, dynamic> data}) {
-    bool recipientView = data["recipient_view"];
-
-    if(!recipientView) {
-      for (MessageData message in messages) {
-        message.isRead = true;
-      }
-    }
-
+    
     Future.delayed(Duration.zero, () => notifyListeners());
-  }
-
+  } 
 }

@@ -169,6 +169,12 @@ class WebSocketsService extends ChangeNotifier {
 
   void onMessageReceived(Map<String, dynamic> message) {
 
+    if(message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
+      debugPrint("=== FETCH MESSAGE ===");
+        
+      getMessagesNotifier.appendMessage(data: message);
+    }
+
     switch (message["type"]) {
 
       case "pong":
@@ -177,9 +183,7 @@ class WebSocketsService extends ChangeNotifier {
       break;
 
       case "expire-sos": 
-
         debugPrint("=== EXPIRE SOS ===");
-
       break;
       
       case "confirm-sos":
@@ -203,30 +207,18 @@ class WebSocketsService extends ChangeNotifier {
             autoGreetings: true
           );
         }));
-
-      break;
-
-      case "fetch-message":
-
-        debugPrint("=== FETCH MESSAGE ===");
-        
-        getMessagesNotifier.appendMessage(data: message);
-
       break;
 
       case "finish-sos": 
-
         debugPrint("=== FINISH SOS ===");
-
         getMessagesNotifier.showBtnSessionEnd();
-
       break;
 
       default:
         break;
     }
 
-    notifyListeners();
+    Future.delayed(Duration.zero, () =>  notifyListeners());
   }
 
   void handleDisconnect() {

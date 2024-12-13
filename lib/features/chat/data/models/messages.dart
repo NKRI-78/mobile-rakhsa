@@ -20,16 +20,19 @@ class MessageModel {
 }
 
 class MessageParentData {
+  String chatId;
   RecipientUser recipient;
   List<MessageData> messages;
 
   MessageParentData({
+    required this.chatId,
     required this.recipient,
     required this.messages,
   });
 
   factory MessageParentData.fromJson(Map<String, dynamic> json) => MessageParentData(
-    recipient: RecipientUser.fromJson(json["recipient"]),
+    chatId: json["chat_id"],
+   recipient: RecipientUser.fromJson(json["recipient"]),
     messages: List<MessageData>.from(json["messages"].map((x) => MessageData.fromJson(x))),
   );
 }
