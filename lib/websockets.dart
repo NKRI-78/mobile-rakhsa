@@ -169,10 +169,35 @@ class WebSocketsService extends ChangeNotifier {
 
   void onMessageReceived(Map<String, dynamic> message) {
 
+    String? userId = StorageHelper.getUserId();
+
     if(message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
       debugPrint("=== FETCH MESSAGE ===");
-        
       getMessagesNotifier.appendMessage(data: message);
+    }
+
+    if(message["type"] == "confirm-sos-${userId.toString()}") {
+      
+      debugPrint("=== CONFIRM SOS ===");
+
+      String chatId = message["chat_id"];
+      String recipientId = message["recipient_id"];
+      String sosId = message["sos_id"];
+   
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
+      });
+
+      StorageHelper.saveSosId(sosId: sosId);
+
+      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
+        return ChatPage(
+          chatId: chatId, 
+          recipientId: recipientId,
+          sosId: sosId,
+          autoGreetings: true
+        );
+      }));
     }
 
     switch (message["type"]) {
@@ -186,29 +211,6 @@ class WebSocketsService extends ChangeNotifier {
         debugPrint("=== EXPIRE SOS ===");
       break;
       
-      case "confirm-sos":
-        String chatId = message["chat_id"];
-        String recipientId = message["recipient_id"];
-        String sosId = message["sos_id"];
-
-        debugPrint("=== CONFIRM SOS ===");
-
-        Future.delayed(const Duration(milliseconds: 1500), () {
-          navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
-        });
-
-        StorageHelper.saveSosId(sosId: sosId);
-
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
-          return ChatPage(
-            chatId: chatId, 
-            recipientId: recipientId,
-            sosId: sosId,
-            autoGreetings: true
-          );
-        }));
-      break;
-
       case "finish-sos": 
         debugPrint("=== FINISH SOS ===");
         getMessagesNotifier.showBtnSessionEnd();
