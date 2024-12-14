@@ -21,39 +21,27 @@ class ChatsModel {
 
 class ChatsData {
   Chat chat;
-  bool isConfirm;
-  bool isFinish;
-  bool isResolved; 
-  bool isClosed;
   User user;
   String createdAt;
+  String status;
   int countUnread;
-  bool isTyping;
   List<Message> messages;
 
   ChatsData({
     required this.chat,
-    required this.isConfirm,
-    required this.isFinish,
-    required this.isResolved,
-    required this.isClosed,
     required this.user,
     required this.createdAt,
+    required this.status,
     required this.countUnread,
-    required this.isTyping,
     required this.messages,
   });
 
   factory ChatsData.fromJson(Map<String, dynamic> json) => ChatsData(
     chat: Chat.fromJson(json["chat"]),
-    isConfirm: json["is_confirm"],
-    isResolved: json["is_resolved"],
-    isClosed: json["is_closed"],
-    isFinish: json["is_finish"],
     user: User.fromJson(json["user"]),
     createdAt: json["created_at"],
+    status: json["status"],
     countUnread: json["count_unread"],
-    isTyping: false,
     messages: List<Message>.from(json["messages"].map((x) => Message.fromJson(x))),
   );
 }
