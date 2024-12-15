@@ -204,7 +204,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               
                     Flexible(
                       child: IconButton(
-                        onPressed: () async {
+                        onPressed: widget.status == "CLOSED" 
+                        ? () {} 
+                        : () async {
                           if (messageC.text.isEmpty) {
                             return;
                           }

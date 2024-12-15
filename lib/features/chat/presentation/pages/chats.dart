@@ -183,8 +183,6 @@ class ChatsPageState extends State<ChatsPage> {
                                   ),
                                 ),
                               )
-
-
                             ],
                           ),
                           subtitle: chat.messages.isEmpty 
