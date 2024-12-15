@@ -137,7 +137,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? CustomButton(
                     onTap: () async {
