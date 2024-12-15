@@ -71,8 +71,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     showAutoGreetings = widget.autoGreetings;
 
     messageNotifier = context.read<GetMessagesNotifier>();
-
     webSocketService = context.read<WebSocketsService>();
+
+    messageNotifier.startTimer();
 
     messageC = TextEditingController();
 
