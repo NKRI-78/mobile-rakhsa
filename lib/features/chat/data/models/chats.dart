@@ -22,6 +22,7 @@ class ChatsModel {
 class ChatsData {
   Chat chat;
   User user;
+  String sosId;
   String createdAt;
   String status;
   String note;
@@ -31,6 +32,7 @@ class ChatsData {
   ChatsData({
     required this.chat,
     required this.user,
+    required this.sosId,
     required this.createdAt,
     required this.status,
     required this.note,
@@ -40,6 +42,7 @@ class ChatsData {
 
   factory ChatsData.fromJson(Map<String, dynamic> json) => ChatsData(
     chat: Chat.fromJson(json["chat"]),
+    sosId: json["sos_id"],
     user: User.fromJson(json["user"]),
     createdAt: json["created_at"],
     status: json["status"],

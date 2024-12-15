@@ -77,7 +77,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     messageC = TextEditingController();
 
     messageNotifier.startTimer();
-    messageNotifier.initializeBtnSessionEnd();
+    // messageNotifier.initializeBtnSessionEnd();
 
     Future.microtask(() => getData());
   }
@@ -141,13 +141,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? CustomButton(
                     onTap: () async {
-                      if(widget.sosId != "-") {
-                        GeneralModal.ratingSos(
-                          sosId: widget.sosId
-                        );
-                      } else {
-                        GeneralModal.info(msg: "SOS tidak ditemukan");
-                      }
+                      GeneralModal.ratingSos(
+                        sosId: widget.sosId
+                      );
                     },
                     btnColor: const Color(0xFFC82927),
                     isLoading: context.watch<SosNotifier>().state == ProviderState.loading 
@@ -413,7 +409,35 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                 ),
                               ],
                             ) 
-                          : const SizedBox(),
+                          : notifier.note.isNotEmpty 
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 30.0,
+                                    horizontal: 12.0,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0),
+                                      bottomLeft: Radius.circular(12.0),
+                                      bottomRight: Radius.circular(12.0),
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text("Information : ${notifier.note}",
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      color: ColorResources.white,
+                                    ),
+                                  )
+                                ),
+                            ],
+                          ) : const SizedBox(),
                         ),
                           
                      if(notifier.state == ProviderState.loaded)

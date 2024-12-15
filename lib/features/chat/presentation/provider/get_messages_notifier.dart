@@ -19,6 +19,9 @@ class GetMessagesNotifier with ChangeNotifier {
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
 
+  String _note = "";
+  String get note => _note;
+
   bool _isRunning = false;
   bool get isRunning => _isRunning;
   
@@ -134,6 +137,8 @@ class GetMessagesNotifier with ChangeNotifier {
       setStateProvider(ProviderState.error);
     }, (r) {
       _recipient = r.data.recipient;
+
+      _note = r.data.note;
 
       _activeChatId = r.data.chatId;
 

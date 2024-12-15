@@ -394,6 +394,10 @@ class GeneralModal {
                                 ),
                                 onRatingUpdate: (double selectedRating) {
                                   context.read<SosRatingNotifier>().onChangeRating(selectedRating: selectedRating);
+
+                                  Future.delayed(const Duration(seconds: 2), () {
+                                    context.read<SosRatingNotifier>().sosRating(sosId: sosId);
+                                  });
                                 },
                               ),
 
