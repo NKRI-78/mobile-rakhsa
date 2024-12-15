@@ -149,7 +149,6 @@ class GetMessagesNotifier with ChangeNotifier {
     bool isRead = data["data"]["is_read"];
     String incomingMessageId = data["data"]["id"];
 
-    // Avoid duplicate messages
     if (_messages.any((message) => message.id == incomingMessageId)) {
       return;
     }
@@ -169,7 +168,6 @@ class GetMessagesNotifier with ChangeNotifier {
       createdAt: DateTime.now()
     ));
 
-    // Smooth scroll
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
         sC.animateTo(
