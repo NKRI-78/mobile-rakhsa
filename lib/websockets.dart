@@ -183,6 +183,7 @@ class WebSocketsService extends ChangeNotifier {
       String chatId = message["chat_id"];
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
+      String status = message["status"];
    
       Future.delayed(const Duration(milliseconds: 1000), () {
         navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
@@ -194,6 +195,7 @@ class WebSocketsService extends ChangeNotifier {
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
         return ChatPage(
           chatId: chatId, 
+          status: status,
           recipientId: recipientId,
           sosId: sosId,
           autoGreetings: true

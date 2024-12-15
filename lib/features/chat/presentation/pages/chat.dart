@@ -31,12 +31,14 @@ import 'package:rakhsa/websockets.dart';
 class ChatPage extends StatefulWidget {
   final String sosId;
   final String chatId;
+  final String status;
   final String recipientId;
   final bool autoGreetings;
   
   const ChatPage({
     required this.sosId,
     required this.chatId,
+    required this.status,
     required this.recipientId,
     required this.autoGreetings,
     super.key
@@ -170,6 +172,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         style: const TextStyle(
                           fontSize: 12.0
                         ),
+                        readOnly: widget.status == "CLOSED"
+                        ? true 
+                        : false,
                         decoration: InputDecoration(
                           isDense: true,
                           filled: true,

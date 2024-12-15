@@ -150,6 +150,7 @@ class ChatsPageState extends State<ChatsPage> {
                                 sosId: chat.sosId,
                                 recipientId: chat.user.id,
                                 chatId: chat.chat.id,
+                                status: chat.status,
                                 autoGreetings: false,
                               );
                             })).then((_) {
