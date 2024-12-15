@@ -24,6 +24,7 @@ class ChatsData {
   User user;
   String createdAt;
   String status;
+  String note;
   int countUnread;
   List<Message> messages;
 
@@ -32,6 +33,7 @@ class ChatsData {
     required this.user,
     required this.createdAt,
     required this.status,
+    required this.note,
     required this.countUnread,
     required this.messages,
   });
@@ -41,6 +43,7 @@ class ChatsData {
     user: User.fromJson(json["user"]),
     createdAt: json["created_at"],
     status: json["status"],
+    note: json["note"],
     countUnread: json["count_unread"],
     messages: List<Message>.from(json["messages"].map((x) => Message.fromJson(x))),
   );
