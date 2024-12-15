@@ -45,8 +45,31 @@ class ChatsPageState extends State<ChatsPage> {
     super.dispose();
   }
 
+  
+  Color status(val) {
+    Color color;
+
+      debugPrint(val);
+
+
+    switch (val) {
+      case "PROCESS":
+        color = Colors.blue;
+      break;
+      case "RESOLVED":
+        color =Colors.grey;
+      break;
+      case "CLOSED":
+        color = Colors.red;
+      break;
+      default:
+        color = Colors.blue;
+    }
+    return color;
+  } 
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
 
     return Scaffold(
       body:  RefreshIndicator.adaptive(
@@ -139,10 +162,35 @@ class ChatsPageState extends State<ChatsPage> {
                               getData();
                             });
                           },
-                          title: Text(chat.user.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                          title: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(chat.user.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              
+                              const SizedBox(width: 10.0),
+
+                              Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: status(chat.status),
+                                ),
+                                child: Text(chat.status,
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.white,
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              )
+
+
+                            ],
                           ),
                           subtitle: chat.messages.isEmpty 
                           ? const SizedBox() 
@@ -160,12 +208,12 @@ class ChatsPageState extends State<ChatsPage> {
                                 backgroundImage: imageProvider,
                               );
                             },
-                            placeholder: (context, url) {
+                            placeholder: (BuildContext context, String url) {
                               return const CircleAvatar(
                                 backgroundImage: AssetImage('assets/images/user.png'),
                               );
                             },
-                            errorWidget: (context, url, error) {
+                            errorWidget: (BuildContext context, String url, dynamic error) {
                               return const CircleAvatar(
                                 backgroundImage: AssetImage('assets/images/user.png'),
                               );
