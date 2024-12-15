@@ -14,23 +14,27 @@ class GetMessagesNotifier with ChangeNotifier {
     required this.useCase
   });
 
-  bool isBtnSessionEnd = false;
-
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
 
   String _note = "";
   String get note => _note;
 
+  bool _isBtnSessionEnd = false;
+  bool get isBtnSessionEnd => _isBtnSessionEnd;
+
   bool _isRunning = false;
   bool get isRunning => _isRunning;
   
-  int _time = 60;
+  int _time = 5;
   int get time => _time;
 
   late Timer _timer;
 
   void startTimer() {
+    _isBtnSessionEnd = false;
+    Future.delayed(Duration.zero, () => notifyListeners());
+
     if (_isRunning) return;
 
     _isRunning = true;
@@ -41,7 +45,8 @@ class GetMessagesNotifier with ChangeNotifier {
         Future.delayed(Duration.zero, () => notifyListeners());
       } else {
         _timer.cancel();
-        showBtnSessionEnd();
+        _isBtnSessionEnd = true;
+        Future.delayed(Duration.zero, () => notifyListeners());
       }
     });
   }
@@ -56,7 +61,8 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void resetTimer() {
     cancelTimer();
-    _time = 60; 
+    _time = 5; 
+    _isBtnSessionEnd = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
@@ -108,13 +114,13 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void initializeBtnSessionEnd() {
-    isBtnSessionEnd = false;
+    _isBtnSessionEnd = false;
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void showBtnSessionEnd() {
-    isBtnSessionEnd = true;
+    _isBtnSessionEnd = true;
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }

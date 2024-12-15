@@ -20,6 +20,7 @@ class ChatsModel {
 }
 
 class ChatsData {
+  String id;
   Chat chat;
   User user;
   String sosId;
@@ -30,6 +31,7 @@ class ChatsData {
   List<Message> messages;
 
   ChatsData({
+    required this.id,
     required this.chat,
     required this.user,
     required this.sosId,
@@ -41,6 +43,7 @@ class ChatsData {
   });
 
   factory ChatsData.fromJson(Map<String, dynamic> json) => ChatsData(
+    id: json["id"],
     chat: Chat.fromJson(json["chat"]),
     sosId: json["sos_id"],
     user: User.fromJson(json["user"]),

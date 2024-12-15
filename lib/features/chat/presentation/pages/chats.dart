@@ -44,13 +44,8 @@ class ChatsPageState extends State<ChatsPage> {
     super.dispose();
   }
 
-  
   Color status(val) {
     Color color;
-
-      debugPrint(val);
-
-
     switch (val) {
       case "PROCESS":
         color = Colors.blue;

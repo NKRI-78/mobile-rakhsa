@@ -184,9 +184,12 @@ class WebSocketsService extends ChangeNotifier {
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
    
-      Future.delayed(const Duration(milliseconds: 1500), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
       });
+
+      getMessagesNotifier.resetTimer();
+      getMessagesNotifier.startTimer();
 
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
         return ChatPage(

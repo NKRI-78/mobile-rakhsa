@@ -76,9 +76,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     messageC = TextEditingController();
 
-    messageNotifier.startTimer();
-    // messageNotifier.initializeBtnSessionEnd();
-
     Future.microtask(() => getData());
   }
 
