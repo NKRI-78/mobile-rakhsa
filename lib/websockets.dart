@@ -124,7 +124,7 @@ class WebSocketsService extends ChangeNotifier {
     }));
   }
 
-  Future<void> sos({
+  void sos({
     required String sosId,
     required String location,
     required String country,
@@ -151,11 +151,11 @@ class WebSocketsService extends ChangeNotifier {
     }));
   }
 
-  Future<void> sendMessage({
+  void sendMessage({
     required String chatId,
     required String recipientId, 
     required String message
-  }) async {
+  }) {
     final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
@@ -164,6 +164,16 @@ class WebSocketsService extends ChangeNotifier {
       "chat_id": chatId,
       "recipient": recipientId,
       "text": message
+    }));
+  }
+
+  void userResolvedSos({
+    required String sosId,
+  }) {
+
+    channel?.sink.add(jsonEncode({
+      "type": "user-resolved-sos",
+      "sos_id": sosId 
     }));
   }
 

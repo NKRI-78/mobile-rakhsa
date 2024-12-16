@@ -400,6 +400,8 @@ class GeneralModal {
                                     Navigator.pop(context);
                                     Navigator.pop(context, "refetch");
                                   });
+
+                                  context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
                                 },
                               ),
 

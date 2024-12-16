@@ -162,7 +162,7 @@ class ChatsPageState extends State<ChatsPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(chat.user.name,
-                                style: const TextStyle(
+                                style: robotoRegular.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -172,13 +172,13 @@ class ChatsPageState extends State<ChatsPage> {
                               Container(
                                 padding: const EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderRadius: BorderRadius.circular(6.0),
                                   color: status(chat.status),
                                 ),
                                 child: Text(chat.status,
                                   style: robotoRegular.copyWith(
                                     color: ColorResources.white,
-                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontSize: Dimensions.fontSizeExtraSmall,
                                     fontWeight: FontWeight.bold
                                   ),
                                 ),
@@ -190,7 +190,7 @@ class ChatsPageState extends State<ChatsPage> {
                           : Text(chat.messages.first.content,
                               maxLines: 2,
                               overflow: TextOverflow.clip,
-                              style: const TextStyle(
+                              style: robotoRegular.copyWith(
                                 fontSize: 10.0
                               ),
                             ),
