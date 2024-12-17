@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/global.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -168,12 +172,27 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void onMessageReceived(Map<String, dynamic> message) {
-
     String? userId = StorageHelper.getUserId();
 
     if(message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
       debugPrint("=== FETCH MESSAGE ===");
       getMessagesNotifier.appendMessage(data: message);
+    }
+
+    if(message["type"] == "closed-sos-$userId") {
+      debugPrint("=== CLOSED SOS ===");
+
+      String msg = message["message"];
+      String chatId = message["chat_id"];
+
+      GeneralModal.info(msg: msg);
+
+      Navigator.pop(navigatorKey.currentContext!);
+
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
+        navigatorKey.currentContext!.read<GetMessagesNotifier>().getMessages(chatId: chatId);
+      });
     }
 
     if(message["type"] == "confirm-sos-${userId.toString()}") {
