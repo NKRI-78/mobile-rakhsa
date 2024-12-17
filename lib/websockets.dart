@@ -185,7 +185,7 @@ class WebSocketsService extends ChangeNotifier {
 
       String msg = message["message"];
 
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoResolvedSos(msg: msg);
       });
     }
@@ -195,7 +195,7 @@ class WebSocketsService extends ChangeNotifier {
 
       String msg = message["message"];
       
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoClosedSos(msg: msg);
       });
     }

@@ -13,6 +13,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
@@ -172,8 +173,9 @@ class GeneralModal {
                             sizeBorderRadius: 20.0,
                             isBorderRadius: true,
                             height: 40.0,
-                            onTap: () async {
-                              Navigator.pop(context);
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
+                              MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
                             },
                             btnTxt: "Ok",
                           )
@@ -256,9 +258,8 @@ class GeneralModal {
                             isBorderRadius: true,
                             height: 40.0,
                             onTap: () {
-                              Future.delayed(Duration.zero, () {
-                                Navigator.pop(context);
-                              });
+                              Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
+                              MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
                             },
                             btnTxt: "Ok",
                           )
@@ -508,43 +509,37 @@ class GeneralModal {
                             color: Colors.white
                           ),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
 
-                              context.watch<SosRatingNotifier>().state == ProviderState.loading 
-                              ? Text("Terimakasih, Atas feedback dari anda",
+                              RichText(
+                                text: TextSpan(
+                                  text: "Di ",
                                   style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    color: ColorResources.black
+                                    color: ColorResources.black, 
+                                    fontSize: Dimensions.fontSizeDefault
                                   ),
-                                ) 
-                              : RichText(
-                                  text: TextSpan(
-                                    text: "Di ",
-                                    style: robotoRegular.copyWith(
-                                      color: ColorResources.black, 
-                                      fontSize: Dimensions.fontSizeDefault
+                                  children: [
+                                    TextSpan(
+                                      text: "Raksha",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFFC82927),
+                                      ),
                                     ),
-                                    children: [
-                                      TextSpan(
-                                        text: "Raksha",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFFC82927),
-                                        ),
+                                    TextSpan(
+                                      text: ",\nkami sangat menghargai kesetiaan\ndan dukungan Anda sebagai pengguna\nkami yang terhormat",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.black
                                       ),
-                                      TextSpan(
-                                        text: ",\nkami sangat menghargai kesetiaan\ndan dukungan Anda sebagai pengguna\nkami yang terhormat",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.black
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
+                                textAlign: TextAlign.center,
+                              ),
 
                               const SizedBox(height: 15.0),
       
@@ -566,13 +561,91 @@ class GeneralModal {
                                   Future.delayed(Duration.zero, () {
                                     context.read<SosRatingNotifier>().sosRating(sosId: sosId);
                                     Navigator.pop(context);
-                                    Navigator.pop(context, "refetch");
+                                    Future.delayed(const Duration(seconds: 1), () {
+                                      feedbackSos(selectedRating);
+                                    });
                                   });
 
                                   context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
                                 },
                               ),
 
+                            ],
+                          )
+                        )
+                      ),
+                      
+                    ],  
+                  )
+                  
+                ) 
+              ] 
+            ),
+          ),
+        );
+    });
+  }
+
+  static Future<void> feedbackSos(double rating) {
+     return showDialog(
+      context: navigatorKey.currentContext!,
+      builder: (context) {
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                
+                SizedBox(
+                  width: 350.0,
+                  height: 380.0,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+
+                      Positioned(
+                        left: 20.0,
+                        right: 20.0,
+                        bottom: 20.0,
+                        child: Container(
+                          height: 150.0,
+                          padding: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            color: Colors.white
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                        
+                              Text("Terimakasih, Atas feedback dari Anda",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorResources.black
+                                ),
+                              ),
+                        
+                              const SizedBox(height: 15.0),
+                              
+                              RatingBar.builder(
+                                initialRating: rating,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 20.0,
+                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (BuildContext context, int i) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (double selectedRating) {},
+                              ),
+                        
                             ],
                           )
                         )

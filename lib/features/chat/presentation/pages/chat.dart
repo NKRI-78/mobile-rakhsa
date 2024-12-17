@@ -139,6 +139,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               mainAxisSize: MainAxisSize.min,
               children: [
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
+                ? widget.status != "CLOSED" 
                 ? CustomButton(
                     onTap: () async {
                       GeneralModal.ratingSos(
@@ -154,7 +155,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     isBorderRadius: true,
                     btnTxt: "Apa keluhan sudah ditangani ?",
                   ) 
-                : const SizedBox(),
+                : const SizedBox() 
+                : const SizedBox(), 
 
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? const SizedBox(height: 10.0)
