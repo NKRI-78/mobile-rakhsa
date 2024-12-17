@@ -549,7 +549,7 @@ class GeneralModal {
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
                                 itemCount: 5,
-                                itemSize: 20.0,
+                                itemSize: 25.0,
                                 itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                                 itemBuilder: (BuildContext context, int i) => const Icon(
                                   Icons.star,
@@ -637,7 +637,7 @@ class GeneralModal {
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
                                 itemCount: 5,
-                                itemSize: 20.0,
+                                itemSize: 25.0,
                                 itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                                 itemBuilder: (BuildContext context, int i) => const Icon(
                                   Icons.star,
