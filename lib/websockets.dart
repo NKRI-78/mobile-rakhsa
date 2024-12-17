@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -194,37 +191,19 @@ class WebSocketsService extends ChangeNotifier {
     if(message["type"] == "resolved-sos-$userId") {
       debugPrint("=== RESOLVED SOS ===");
 
-      String msg = message["message"];
-      String chatId = message["chat_id"];
+      String msg = message["message"].toString();
+      String chatId = message["chat_id"].toString();
 
-      navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
-
-      getMessagesNotifier.getMessages(chatId: chatId);
-
-      Future.delayed(const Duration(milliseconds: 1000) ,() {
-        GeneralModal.info(msg: msg);
-       if(getMessagesNotifier.activeChatId != "") {
-          Navigator.pop(navigatorKey.currentContext!, "refetch");
-        } 
-      });
+      GeneralModal.infoResolvedSos(msg: msg, chatId: chatId);
     }
 
     if(message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
 
-      String msg = message["message"];
-      String chatId = message["chat_id"];
+      String msg = message["message"].toString();
+      String chatId = message["chat_id"].toString();
 
-      navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
-
-      getMessagesNotifier.getMessages(chatId: chatId);
-
-      Future.delayed(const Duration(milliseconds: 1000) ,() {
-        GeneralModal.info(msg: msg);
-       if(getMessagesNotifier.activeChatId != "") {
-          Navigator.pop(navigatorKey.currentContext!, "refetch");
-        } 
-      });
+      GeneralModal.infoClosedSos(msg: msg, chatId: chatId);
     }
 
     if(message["type"] == "confirm-sos-${userId.toString()}") {
