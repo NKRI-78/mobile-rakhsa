@@ -218,7 +218,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
+          child:  Container(
             padding: const EdgeInsets.all(8.0),
             margin: const EdgeInsets.only(
               top: 16.0,

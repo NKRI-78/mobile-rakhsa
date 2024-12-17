@@ -83,6 +83,14 @@ class GetMessagesNotifier with ChangeNotifier {
   Map<String, bool> onlineStatus = {};
   Map<String, String?> typingStatus = {};
 
+  void clearActiveChatId() {
+    _activeChatId = "";
+
+    debugPrint("=== $activeChatId");
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void updateUserStatus({required Map<String, dynamic> data}) {
     onlineStatus[data["recipient"]] = data["type"] == "online" ? true : false;
   

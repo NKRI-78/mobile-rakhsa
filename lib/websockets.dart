@@ -33,6 +33,7 @@ class WebSocketsService extends ChangeNotifier {
   WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
+
   ValueNotifier<bool> isConnected = ValueNotifier(false); 
 
   WebSocketsService({
@@ -186,6 +187,7 @@ class WebSocketsService extends ChangeNotifier {
 
     if(message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
       debugPrint("=== FETCH MESSAGE ===");
+
       getMessagesNotifier.appendMessage(data: message);
     }
 
@@ -195,18 +197,20 @@ class WebSocketsService extends ChangeNotifier {
       String msg = message["message"];
       String chatId = message["chat_id"];
 
-      GeneralModal.info(msg: msg);
+      if(getMessagesNotifier.activeChatId != "") {
+        Navigator.pop(navigatorKey.currentContext!, "refetch");
+      } 
 
-      Navigator.pop(navigatorKey.currentContext!);
+      navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
-        navigatorKey.currentContext!.read<GetMessagesNotifier>().getMessages(chatId: chatId);
+      getMessagesNotifier.getMessages(chatId: chatId);
+
+      Future.delayed(const Duration(milliseconds: 1000) ,() {
+        GeneralModal.info(msg: msg);
       });
     }
 
     if(message["type"] == "confirm-sos-${userId.toString()}") {
-      
       debugPrint("=== CONFIRM SOS ===");
 
       String chatId = message["chat_id"];
@@ -283,12 +287,14 @@ class WebSocketsService extends ChangeNotifier {
 
   void handleError(dynamic error) {
     debugPrint("WebSocket Error: $error");
+
     handleDisconnect();
   }
 
   @override
   void dispose() {
     reconnectTimer?.cancel();
+
     disposeChannel(); 
     isConnected.dispose();
     

@@ -113,11 +113,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
 
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvoked: (didPop) {
         if (didPop) {
           return;
         }
+        messageNotifier.clearActiveChatId();
         Navigator.pop(context, "refetch");
       },
       child: Scaffold(
@@ -296,6 +297,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                     color: Colors.transparent,
                                     padding: EdgeInsets.zero,
                                     onPressed: () {
+                                      messageNotifier.clearActiveChatId();
                                       Navigator.pop(context, "refetch");
                                     },
                                     child: const Icon(Icons.chevron_left,
