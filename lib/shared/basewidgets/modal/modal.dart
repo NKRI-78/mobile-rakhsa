@@ -13,7 +13,6 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
@@ -111,7 +110,6 @@ class GeneralModal {
   }
 
   static Future<void> infoResolvedSos({
-    required String chatId,
     required String msg,
   }) {
     return showDialog(
@@ -175,17 +173,7 @@ class GeneralModal {
                             isBorderRadius: true,
                             height: 40.0,
                             onTap: () async {
-                              Future.delayed(Duration.zero, () {
-                                Navigator.pop(context);
-                              });
-
-                              await context.read<GetMessagesNotifier>().getMessages(chatId: chatId);
-
-                              Future.delayed(Duration.zero, () {
-                                if(context.read<GetMessagesNotifier>().activeChatId != "") {
-                                  Navigator.pop(navigatorKey.currentContext!, "refetch");
-                                }
-                              });
+                              Navigator.pop(context);
                             },
                             btnTxt: "Ok",
                           )
@@ -205,7 +193,6 @@ class GeneralModal {
   }
 
   static Future<void> infoClosedSos({
-    required String chatId,
     required String msg,
   }) {
     return showDialog(
@@ -271,14 +258,6 @@ class GeneralModal {
                             onTap: () async {
                               Future.delayed(Duration.zero, () {
                                 Navigator.pop(context);
-                              });
-
-                              await context.read<GetMessagesNotifier>().getMessages(chatId: chatId);
-
-                              Future.delayed(Duration.zero, () {
-                                if(context.read<GetMessagesNotifier>().activeChatId != "") {
-                                  Navigator.pop(navigatorKey.currentContext!, "refetch");
-                                }
                               });
                             },
                             btnTxt: "Ok",
@@ -584,7 +563,7 @@ class GeneralModal {
                                 onRatingUpdate: (double selectedRating) {
                                   context.read<SosRatingNotifier>().onChangeRating(selectedRating: selectedRating);
 
-                                  Future.delayed(const Duration(seconds: 1), () {
+                                  Future.delayed(Duration.zero, () {
                                     context.read<SosRatingNotifier>().sosRating(sosId: sosId);
                                     Navigator.pop(context);
                                     Navigator.pop(context, "refetch");
@@ -609,126 +588,7 @@ class GeneralModal {
         );
     });
   }
-
-  // static Future<void> finishSos({required String sosId}) {
-  //   return showDialog(
-  //     context: navigatorKey.currentContext!,
-  //     builder: (context) {
-  //       return Scaffold(
-  //         backgroundColor: Colors.transparent,
-  //         body: Center(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-                
-  //               SizedBox(
-  //                 width: 300.0,
-  //                 height: 380.0,
-  //                 child: Stack(
-  //                   clipBehavior: Clip.none,
-  //                   children: [
-
-  //                     Positioned(
-  //                       left: 20.0,
-  //                       right: 20.0,
-  //                       bottom: 20.0,
-  //                       child: Container(
-  //                         height: 200.0,
-  //                         padding: const EdgeInsets.all(12.0),
-  //                         decoration: BoxDecoration(
-  //                           borderRadius: BorderRadius.circular(25.0),
-  //                           color: Colors.white
-  //                         ),
-  //                         child: Column(
-  //                           mainAxisAlignment: MainAxisAlignment.center,
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-                          
-  //                             Text("Akhiri sesi ?", 
-  //                               textAlign: TextAlign.center,
-  //                               style: robotoRegular.copyWith(
-  //                                 fontSize: Dimensions.fontSizeDefault,
-  //                                 fontWeight: FontWeight.w600,
-  //                                 color: Colors.black
-  //                               ),
-  //                             )
-                          
-  //                           ],
-  //                         ),
-  //                       )
-  //                     ),
-
-  //                     Positioned(
-  //                       bottom: 0.0,
-  //                       left: 80.0,
-  //                       right: 80.0,
-  //                       child: Row(
-  //                         mainAxisSize: MainAxisSize.max,
-  //                         children: [
-
-  //                           Expanded(
-  //                             child: CustomButton(
-  //                               isBorder: false,
-  //                               btnColor: ColorResources.white,
-  //                               btnTextColor: ColorResources.black,
-  //                               sizeBorderRadius: 20.0,
-  //                               fontSize: Dimensions.fontSizeSmall,
-  //                               isBorderRadius: true,
-  //                               height: 40.0,
-  //                               onTap: () {
-  //                                 Navigator.pop(context);
-  //                               },
-  //                               btnTxt: "Batal",
-  //                             ),
-  //                           ),
-
-  //                           const SizedBox(width: 10.0),
-
-  //                           Expanded(
-  //                             child: CustomButton(
-  //                               isBorder: false,
-  //                               btnColor: ColorResources.error,
-  //                               btnTextColor: ColorResources.white,
-  //                               sizeBorderRadius: 20.0,
-  //                               fontSize: Dimensions.fontSizeSmall,
-  //                               isBorderRadius: true,
-  //                               isLoading: context.watch<SosNotifier>().state == ProviderState.loading 
-  //                               ? true 
-  //                               : false,
-  //                               height: 40.0,
-  //                               onTap: () async {
-  //                                 await context.read<SosNotifier>().expireSos(sosId: sosId);
-
-  //                                 Future.delayed(Duration.zero,() {
-  //                                   context.read<WebSocketsService>().userFinishSos(sosId: sosId);
-  //                                 });
-
-  //                                 Future.delayed(Duration.zero, () {
-  //                                   Navigator.pop(context);
-  //                                   Navigator.pop(context);
-  //                                 });
-
-  //                               },
-  //                               btnTxt: "Ya",
-  //                             ),
-  //                           )
-  //                         ],
-  //                       )
-  //                     ),
-                      
-  //                   ],  
-  //                 )
-                  
-  //               ) 
-  //             ] 
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   ); 
-  // } 
-
+  
   static Future<void> logout({required GlobalKey<ScaffoldState> globalKey}) {
     return showDialog(
       context: navigatorKey.currentContext!,

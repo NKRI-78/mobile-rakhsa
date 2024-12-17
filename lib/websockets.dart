@@ -100,14 +100,6 @@ class WebSocketsService extends ChangeNotifier {
     debugPrint('Ping sent to server');
   }
 
-  void userFinishSos({required String sosId}) {
-
-    channel?.sink.add(jsonEncode({
-      "type": "user-finish-sos",
-      "sos_id": sosId
-    }));
-  }
-
   void join() {
     final userId = StorageHelper.getUserId();
 
@@ -191,19 +183,21 @@ class WebSocketsService extends ChangeNotifier {
     if(message["type"] == "resolved-sos-$userId") {
       debugPrint("=== RESOLVED SOS ===");
 
-      String msg = message["message"].toString();
-      String chatId = message["chat_id"].toString();
+      String msg = message["message"];
 
-      GeneralModal.infoResolvedSos(msg: msg, chatId: chatId);
+      Future.delayed(const Duration(seconds: 1), () {
+        GeneralModal.infoResolvedSos(msg: msg);
+      });
     }
 
     if(message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
 
-      String msg = message["message"].toString();
-      String chatId = message["chat_id"].toString();
-
-      GeneralModal.infoClosedSos(msg: msg, chatId: chatId);
+      String msg = message["message"];
+      
+      Future.delayed(const Duration(seconds: 1), () {
+        GeneralModal.infoClosedSos(msg: msg);
+      });
     }
 
     if(message["type"] == "confirm-sos-${userId.toString()}") {
@@ -214,7 +208,7 @@ class WebSocketsService extends ChangeNotifier {
       String sosId = message["sos_id"];
       String status = message["status"];
    
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(seconds: 1), () {
         navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
       });
 
@@ -243,11 +237,6 @@ class WebSocketsService extends ChangeNotifier {
         debugPrint("=== EXPIRE SOS ===");
       break;
       
-      case "finish-sos": 
-        debugPrint("=== FINISH SOS ===");
-        getMessagesNotifier.showBtnSessionEnd();
-      break;
-
       default:
         break;
     }

@@ -51,6 +51,7 @@ class GetMessagesNotifier with ChangeNotifier {
   void cancelTimer() {
     if (_isRunning) {
       _timer.cancel();
+      _isBtnSessionEnd = false;
       _isRunning = false;
       Future.delayed(Duration.zero, () => notifyListeners());
     }
@@ -81,8 +82,6 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void clearActiveChatId() {
     _activeChatId = "";
-
-    debugPrint("=== $activeChatId");
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }
