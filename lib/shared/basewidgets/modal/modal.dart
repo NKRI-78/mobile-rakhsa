@@ -255,7 +255,7 @@ class GeneralModal {
                             sizeBorderRadius: 20.0,
                             isBorderRadius: true,
                             height: 40.0,
-                            onTap: () async {
+                            onTap: () {
                               Future.delayed(Duration.zero, () {
                                 Navigator.pop(context);
                               });
