@@ -168,7 +168,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       child: TextField(
                         maxLines: null,
                         controller: messageC,
-                        style: const TextStyle(
+                        style: robotoRegular.copyWith(
                           fontSize: 12.0
                         ),
                         readOnly: widget.status == "CLOSED"
@@ -179,7 +179,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           filled: true,
                           fillColor: ColorResources.white,
                           hintText: "ketik pesan singkat dan jelas",
-                          hintStyle: const TextStyle(
+                          hintStyle: robotoRegular.copyWith(
                             fontSize: 12.0,
                             color: Colors.grey
                           ),
@@ -210,7 +210,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                             return;
                           }
 
-                          await webSocketService.sendMessage(
+                          webSocketService.sendMessage(
                             chatId: widget.chatId,
                             recipientId: widget.recipientId, 
                             message: messageC.text,
@@ -334,7 +334,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                       
                                       Text(
                                         notifier.recipient.name?.toString() ?? 'User',
-                                        style: const TextStyle(
+                                        style: robotoRegular.copyWith(
                                           fontSize: 16.0,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -400,7 +400,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                         TextSpan(
                                           text: "Raksha",
                                           style: robotoRegular.copyWith(
-                                            fontWeight: FontWeight.bold, // Make "Raksha" bold
+                                            fontWeight: FontWeight.bold,
                                             color: ColorResources.white,
                                           ),
                                         ),
@@ -463,7 +463,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                               ),
                               child: Center(
                                 child: Text(DateFormat("MMMM dd, yyyy").format(groupByValue),
-                                  style: const TextStyle(
+                                  style: robotoRegular.copyWith(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold
                                   ),
@@ -535,7 +535,7 @@ class ChatBubble extends StatelessWidget {
               children: [
 
                 Text(text,
-                  style: TextStyle(
+                  style: robotoRegular.copyWith(
                     color: isMe 
                     ? Colors.white 
                     : Colors.black,

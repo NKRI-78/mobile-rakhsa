@@ -93,7 +93,7 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
 
-      await webSocketsService.sos(
+      webSocketsService.sos(
         sosId: widget.sosId,
         location: widget.location,
         country: widget.country, 
@@ -154,7 +154,7 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
       
-      await webSocketsService.sos(
+      webSocketsService.sos(
         sosId: widget.sosId,
         location: widget.location,
         country: widget.country,
