@@ -191,15 +191,11 @@ class WebSocketsService extends ChangeNotifier {
       getMessagesNotifier.appendMessage(data: message);
     }
 
-    if(message["type"] == "closed-sos-$userId") {
-      debugPrint("=== CLOSED SOS ===");
+    if(message["type"] == "resolved-sos-$userId") {
+      debugPrint("=== RESOLVED SOS ===");
 
       String msg = message["message"];
       String chatId = message["chat_id"];
-
-      if(getMessagesNotifier.activeChatId != "") {
-        Navigator.pop(navigatorKey.currentContext!, "refetch");
-      } 
 
       navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
 
@@ -207,6 +203,27 @@ class WebSocketsService extends ChangeNotifier {
 
       Future.delayed(const Duration(milliseconds: 1000) ,() {
         GeneralModal.info(msg: msg);
+       if(getMessagesNotifier.activeChatId != "") {
+          Navigator.pop(navigatorKey.currentContext!, "refetch");
+        } 
+      });
+    }
+
+    if(message["type"] == "closed-sos-$userId") {
+      debugPrint("=== CLOSED SOS ===");
+
+      String msg = message["message"];
+      String chatId = message["chat_id"];
+
+      navigatorKey.currentContext!.read<GetChatsNotifier>().getChats();
+
+      getMessagesNotifier.getMessages(chatId: chatId);
+
+      Future.delayed(const Duration(milliseconds: 1000) ,() {
+        GeneralModal.info(msg: msg);
+       if(getMessagesNotifier.activeChatId != "") {
+          Navigator.pop(navigatorKey.currentContext!, "refetch");
+        } 
       });
     }
 

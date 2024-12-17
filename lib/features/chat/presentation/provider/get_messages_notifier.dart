@@ -32,9 +32,6 @@ class GetMessagesNotifier with ChangeNotifier {
   late Timer _timer;
 
   void startTimer() {
-    _isBtnSessionEnd = false;
-    Future.delayed(Duration.zero, () => notifyListeners());
-
     if (_isRunning) return;
 
     _isRunning = true;
@@ -62,7 +59,6 @@ class GetMessagesNotifier with ChangeNotifier {
   void resetTimer() {
     cancelTimer();
     _time = 5; 
-    _isBtnSessionEnd = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
