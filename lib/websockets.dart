@@ -70,7 +70,7 @@ class WebSocketsService extends ChangeNotifier {
   void startPing() {
     pingTimer?.cancel();
 
-    pingTimer = Timer.periodic(const Duration(seconds: 20), (_) {
+    pingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!isPongReceived) {
         debugPrint('No pong response, disconnecting...');
         handleDisconnect();
@@ -85,7 +85,7 @@ class WebSocketsService extends ChangeNotifier {
   void startPongTimeout() {
     pongTimeoutTimer?.cancel();
 
-    pongTimeoutTimer = Timer(const Duration(seconds: 10), () {
+    pongTimeoutTimer = Timer(const Duration(seconds: 5), () {
       if (!isPongReceived) {
         debugPrint('Pong timeout reached, disconnecting...');
         handleDisconnect();
