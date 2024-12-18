@@ -14,6 +14,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -87,6 +88,11 @@ class CameraPageState extends State<CameraPage> {
       setState(() => loading = true);
 
       await uploadMediaNotifier.send(file: file, folderName: "pictures");
+
+      if(uploadMediaNotifier.message != "") {
+        GeneralModal.info(msg: uploadMediaNotifier.message);
+        return;
+      }
 
       setState(() => loading = false);
 

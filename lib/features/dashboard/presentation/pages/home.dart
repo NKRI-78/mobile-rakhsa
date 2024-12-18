@@ -811,8 +811,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         ..reset()
         ..forward().whenComplete(() {
           setState(() => sosNotifier.isPressed = false);
-          
-          // sosNotifier.expireSos(sosId: sosId);
           sosNotifier.pulseController!.reverse();
         });
 

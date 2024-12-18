@@ -36,7 +36,6 @@ class UploadMediaNotifier extends ChangeNotifier {
     result.fold((l) {
       _state = ProviderState.error;
       _message = l.message;
-      debugPrint(l.message);
     }, (r) {
       _state = ProviderState.loaded;
       _entity = r;
