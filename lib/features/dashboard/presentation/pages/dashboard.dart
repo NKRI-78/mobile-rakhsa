@@ -196,23 +196,17 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
         child: DrawerWidget(globalKey: globalKey)
       ),
       body: ValueListenableBuilder(
-      valueListenable: context.read<WebSocketsService>().isConnected,
-        builder: (context, value, child) {
-          return const SizedBox();
-          // if(value) {
-          //   return pages[selectedPageIndex]['page'];
-          // } else {
-          //   return Center(
-          //     child: Text("uhuy",
-          //       style: robotoRegular.copyWith(
-          //         color: ColorResources.black
-          //       ),
-          //     )
-          //   );
-          // }
+        valueListenable: context.read<WebSocketsService>().isConnected,
+        builder: (BuildContext context, bool checkConnection, Widget? child) {
+          if(checkConnection) {
+            return pages[selectedPageIndex]['page'];
+          } else {
+            return const Center(
+              child: CircularProgressIndicator()
+            );
+          }
         },
       ),
-      // 
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: selectedPageIndex,
         showElevation: false, 
