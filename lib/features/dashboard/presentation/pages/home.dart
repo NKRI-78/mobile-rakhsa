@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -81,7 +80,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
-      
+
     if(!mounted) return;
       getCurrentLocation();
   }
@@ -89,9 +88,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> getCurrentLocation() async {
     try {
       
-      if(Platform.isIOS) {
-        await Geolocator.requestPermission();
-      }
+      await Geolocator.requestPermission();
 
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation,
@@ -177,7 +174,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // - Detached (View Destroyed - App Closed)
     if (state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
-      webSocketsService.connect();
       getCurrentLocation();
     }
     if (state == AppLifecycleState.inactive) {
@@ -205,8 +201,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     Future.microtask(() => getData());
 
-    getCurrentLocation();
-
     connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       setState(() {
         switch (result) {
@@ -225,10 +219,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           case ConnectivityResult.none:
             connectionStatus = 'No Internet Connection';
             webSocketsService.toggleConnection(false);
+            webSocketsService.reconnect();
             break;
           default:
             connectionStatus = 'Unknown Connection Status';
             webSocketsService.toggleConnection(false);
+             webSocketsService.reconnect();
         }
       });
     });
@@ -796,24 +792,27 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   Timer? holdTimer;
 
-  void handleLongPressStart() {
-    if(context.read<WebSocketsService>().isConnected) {
-      if(StorageHelper.getUserId() == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const LoginPage();
-        }));
-      } else {
-        sosNotifier.pulseController!.forward();
+  Future<void> handleLongPressStart() async {
+    await Geolocator.requestPermission();
+    if(mounted) {
+      if(context.read<WebSocketsService>().isConnected) {
+        if(StorageHelper.getUserId() == null) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const LoginPage();
+          }));
+        } else {
+          sosNotifier.pulseController!.forward();
 
-        holdTimer = Timer(const Duration(milliseconds: 2000), () {
-          sosNotifier.pulseController!.reverse();
-          if (mounted) {
-            startTimer();
-          }
-        });
+          holdTimer = Timer(const Duration(milliseconds: 2000), () {
+            sosNotifier.pulseController!.reverse();
+            if (mounted) {
+              startTimer();
+            }
+          });
+        }
+      } else {
+        GeneralModal.info(msg: "The connection is unstable. Please wait a moment...");
       }
-    } else {
-      GeneralModal.info(msg: "The connection is unstable. Please wait a moment...");
     }
   }
 
@@ -935,7 +934,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
               ),
             ),
           GestureDetector(
-            onLongPressStart: (_) => handleLongPressStart(),
+            onLongPressStart: (_) async => await handleLongPressStart(),
             onLongPressEnd: (_) => handleLongPressEnd(),
             child: AnimatedBuilder(
               animation: sosNotifier.timerController!,

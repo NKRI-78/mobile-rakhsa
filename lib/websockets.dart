@@ -17,7 +17,6 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketsService extends ChangeNotifier {
-
   final GetMessagesNotifier getMessagesNotifier;
 
   WebSocketChannel? channel;
@@ -27,7 +26,7 @@ class WebSocketsService extends ChangeNotifier {
   bool isConnected = false;
 
   WebSocketsService({
-    required this.getMessagesNotifier
+    required this.getMessagesNotifier,
   }) {
     connect();
   }
@@ -46,23 +45,33 @@ class WebSocketsService extends ChangeNotifier {
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
-        onDone: () => {},
+        onDone: () => reconnect(),
         onError: (error) => handleError(error),
       );
 
       join();
-
       debugPrint("Connected to socket.");
     } catch (e) {
       debugPrint("Connection error: $e");
+      reconnect();
     }
   }
+
+  void reconnect() {
+    debugPrint("Attempting to reconnect...");
+    reconnectTimer = Timer(const Duration(seconds: 5), () {
+      if (channel == null || !isConnected) {
+        connect();
+      }
+    });
+  }
+
   void join() {
     final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
       "type": "join",
-      "user_id": userId
+      "user_id": userId,
     }));
   }
 
@@ -71,7 +80,7 @@ class WebSocketsService extends ChangeNotifier {
 
     channel?.sink.add(jsonEncode({
       "type": "leave",
-      "user_id": userId
+      "user_id": userId,
     }));
   }
 
@@ -81,9 +90,9 @@ class WebSocketsService extends ChangeNotifier {
     required String country,
     required String media,
     required String ext,
-    required String lat, 
+    required String lat,
     required String lng,
-    required String time
+    required String time,
   }) async {
     final userId = StorageHelper.getUserId();
 
@@ -94,17 +103,17 @@ class WebSocketsService extends ChangeNotifier {
       "location": location,
       "media": media,
       "ext": ext,
-      "lat": lat, 
+      "lat": lat,
       "lng": lng,
       "country": country,
       "time": time,
-      "platform_type": "raksha"
+      "platform_type": "raksha",
     }));
   }
 
   void sendMessage({
-    required String recipientId, 
-    required String message
+    required String recipientId,
+    required String message,
   }) {
     final userId = StorageHelper.getUserId();
 
@@ -112,57 +121,51 @@ class WebSocketsService extends ChangeNotifier {
       "type": "message",
       "sender": userId,
       "recipient": recipientId,
-      "text": message
+      "text": message,
     }));
   }
 
   void userResolvedSos({
     required String sosId,
   }) {
-
     channel?.sink.add(jsonEncode({
       "type": "user-resolved-sos",
-      "sos_id": sosId 
+      "sos_id": sosId,
     }));
   }
 
   void onMessageReceived(Map<String, dynamic> message) {
     String? userId = StorageHelper.getUserId();
 
-    if(message["type"] == "fetch-message") {
+    if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
-
       getMessagesNotifier.appendMessage(data: message);
     }
 
-    if(message["type"] == "resolved-sos-$userId") {
+    if (message["type"] == "resolved-sos-$userId") {
       debugPrint("=== RESOLVED SOS ===");
-
       String msg = message["message"];
-
       Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoResolvedSos(msg: msg);
       });
     }
 
-    if(message["type"] == "closed-sos-$userId") {
+    if (message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
-
       String msg = message["message"];
-      
       Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoClosedSos(msg: msg);
       });
     }
 
-    if(message["type"] == "confirm-sos-${userId.toString()}") {
+    if (message["type"] == "confirm-sos-${userId.toString()}") {
       debugPrint("=== CONFIRM SOS ===");
 
       String chatId = message["chat_id"];
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
       String status = message["status"];
-   
+
       Future.delayed(const Duration(seconds: 1), () {
         navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
       });
@@ -172,41 +175,33 @@ class WebSocketsService extends ChangeNotifier {
 
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
         return ChatPage(
-          chatId: chatId, 
+          chatId: chatId,
           status: status,
           recipientId: recipientId,
           sosId: sosId,
-          autoGreetings: true
+          autoGreetings: true,
         );
       }));
     }
 
-    Future.delayed(Duration.zero, () =>  notifyListeners());
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-
   void disposeChannel() {
-    if (channelSubscription != null) {
-      channelSubscription?.cancel();
-      channelSubscription = null;
-    }
-
-    if (channel != null) {
-      channel?.sink.close(); 
-      channel = null; 
-    }
+    channelSubscription?.cancel();
+    channel?.sink.close();
+    channel = null;
   }
 
   void handleError(dynamic error) {
     debugPrint("WebSocket Error: $error");
+    reconnect();
   }
 
   @override
   void dispose() {
     reconnectTimer?.cancel();
-
-    disposeChannel(); 
-    
+    disposeChannel();
     super.dispose();
   }
 }
