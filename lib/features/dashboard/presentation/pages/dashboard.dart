@@ -195,18 +195,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
       endDrawer: SafeArea(
         child: DrawerWidget(globalKey: globalKey)
       ),
-      body: ValueListenableBuilder(
-        valueListenable: context.read<WebSocketsService>().isConnected,
-        builder: (BuildContext context, bool checkConnection, Widget? child) {
-          if(checkConnection) {
-            return pages[selectedPageIndex]['page'];
-          } else {
-            return const Center(
-              child: CircularProgressIndicator()
-            );
-          }
-        },
-      ),
+      body: pages[selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: selectedPageIndex,
         showElevation: false, 

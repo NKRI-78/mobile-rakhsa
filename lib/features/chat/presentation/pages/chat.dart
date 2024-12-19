@@ -214,7 +214,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           }
 
                           webSocketService.sendMessage(
-                            chatId: widget.chatId,
                             recipientId: widget.recipientId, 
                             message: messageC.text,
                           );

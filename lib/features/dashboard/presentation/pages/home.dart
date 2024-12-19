@@ -261,6 +261,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       ],
                     ),
 
+                    Container(
+                      width: 12.0,
+                      height: 12.0,
+                      decoration: BoxDecoration(
+                        color: context.watch<WebSocketsService>().isConnected ? ColorResources.green : ColorResources.error,
+                        shape: BoxShape.circle,
+                      ),                      
+                    ),
+
                     GestureDetector(
                       onTap: () {
                         widget.globalKey.currentState?.openEndDrawer();
@@ -768,17 +777,22 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   void handleLongPressEnd() {
-    if(StorageHelper.getUserId() == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {  
-        return const LoginPage();
-      }));
-    } else {
-      if (holdTimer?.isActive ?? false) {
-        holdTimer?.cancel();
-        sosNotifier.pulseController!.reverse();
-      } else if (!sosNotifier.isPressed) {
-        setState(() => sosNotifier.isPressed = false);
+    if(context.watch<WebSocketsService>().isConnected) {
+      if(StorageHelper.getUserId() == null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {  
+          return const LoginPage();
+        }));
+      } else {
+        if (holdTimer?.isActive ?? false) {
+          holdTimer?.cancel();
+          sosNotifier.pulseController!.reverse();
+        } else if (!sosNotifier.isPressed) {
+          setState(() => sosNotifier.isPressed = false);
+        }
       }
+    } else {
+      GeneralModal.info(msg: "Connection is unstable, please wait...");
+      return;
     }
   }
 

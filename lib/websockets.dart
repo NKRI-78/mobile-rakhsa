@@ -20,18 +20,14 @@ class WebSocketsService extends ChangeNotifier {
 
   final GetMessagesNotifier getMessagesNotifier;
 
-  Timer? pingTimer;
-  Timer? pongTimeoutTimer;
-  bool isPongReceived = true;
-
-  int maxReconnectAttempts = 5;
+  int maxReconnectAttempts = 3;
   int reconnectAttempts = 0;
 
   WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
 
-  ValueNotifier<bool> isConnected = ValueNotifier(false); 
+  bool isConnected = false;
 
   WebSocketsService({
     required this.getMessagesNotifier
@@ -54,11 +50,11 @@ class WebSocketsService extends ChangeNotifier {
         onError: (error) => handleError(error),
       );
 
-      startPing();
-
       join();
 
-      isConnected.value = true; 
+      isConnected = true; 
+      Future.delayed(Duration.zero, () =>  notifyListeners());
+    
       reconnectAttempts = 0; 
       debugPrint("Connected to socket.");
     } catch (e) {
@@ -66,40 +62,6 @@ class WebSocketsService extends ChangeNotifier {
       handleDisconnect();
     }
   }
-
-  void startPing() {
-    pingTimer?.cancel();
-
-    pingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!isPongReceived) {
-        debugPrint('No pong response, disconnecting...');
-        handleDisconnect();
-      } else {
-        isPongReceived = false;
-        sendPing();
-        startPongTimeout();
-      }
-    });
-  }
-
-  void startPongTimeout() {
-    pongTimeoutTimer?.cancel();
-
-    pongTimeoutTimer = Timer(const Duration(seconds: 5), () {
-      if (!isPongReceived) {
-        debugPrint('Pong timeout reached, disconnecting...');
-        handleDisconnect();
-      }
-    });
-  }
-
-  void sendPing() {
-    final pingMessage = jsonEncode({"type": "ping"});
-
-    channel?.sink.add(pingMessage);
-    debugPrint('Ping sent to server');
-  }
-
   void join() {
     final userId = StorageHelper.getUserId();
 
@@ -146,7 +108,6 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void sendMessage({
-    required String chatId,
     required String recipientId, 
     required String message
   }) {
@@ -155,7 +116,6 @@ class WebSocketsService extends ChangeNotifier {
     channel?.sink.add(jsonEncode({
       "type": "message",
       "sender": userId,
-      "chat_id": chatId,
       "recipient": recipientId,
       "text": message
     }));
@@ -174,7 +134,7 @@ class WebSocketsService extends ChangeNotifier {
   void onMessageReceived(Map<String, dynamic> message) {
     String? userId = StorageHelper.getUserId();
 
-    if(message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
+    if(message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
 
       getMessagesNotifier.appendMessage(data: message);
@@ -226,26 +186,12 @@ class WebSocketsService extends ChangeNotifier {
       }));
     }
 
-    switch (message["type"]) {
-
-      case "pong":
-        isPongReceived = true;
-        debugPrint('Pong received from server');
-      break;
-
-      case "expire-sos": 
-        debugPrint("=== EXPIRE SOS ===");
-      break;
-      
-      default:
-        break;
-    }
-
     Future.delayed(Duration.zero, () =>  notifyListeners());
   }
 
   void handleDisconnect() {
-    isConnected.value = false;
+    isConnected = false;
+    Future.delayed(Duration.zero, () =>  notifyListeners());
 
     if (reconnectAttempts < maxReconnectAttempts) {
       reconnectAttempts++;
@@ -281,7 +227,6 @@ class WebSocketsService extends ChangeNotifier {
     reconnectTimer?.cancel();
 
     disposeChannel(); 
-    isConnected.dispose();
     
     super.dispose();
   }
