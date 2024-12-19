@@ -7,6 +7,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:uuid/uuid.dart';
@@ -55,6 +57,11 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
+
+  late StreamSubscription<ConnectivityResult> connectivitySubscription;
+  String connectionStatus = 'Unknown';
+
+  late WebSocketsService webSocketsService;
 
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
@@ -170,6 +177,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // - Detached (View Destroyed - App Closed)
     if (state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
+      webSocketsService.connect();
       getCurrentLocation();
     }
     if (state == AppLifecycleState.inactive) {
@@ -188,6 +196,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+    
+    webSocketsService = context.read<WebSocketsService>();
 
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
@@ -196,10 +206,37 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     Future.microtask(() => getData());
 
     getCurrentLocation();
+
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      setState(() {
+        switch (result) {
+          case ConnectivityResult.mobile:
+            connectionStatus = 'Connected to Mobile Network';
+            webSocketsService.connect();
+            webSocketsService.toggleConnection(true);
+            getData();
+            break;
+          case ConnectivityResult.wifi:
+            connectionStatus = 'Connected to WiFi';
+            webSocketsService.connect();
+            webSocketsService.toggleConnection(true);
+            getData();
+            break;
+          case ConnectivityResult.none:
+            connectionStatus = 'No Internet Connection';
+            webSocketsService.toggleConnection(false);
+            break;
+          default:
+            connectionStatus = 'Unknown Connection Status';
+            webSocketsService.toggleConnection(false);
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
+    connectivitySubscription.cancel();
     super.dispose();
   }
 
@@ -760,7 +797,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   Timer? holdTimer;
 
   void handleLongPressStart() {
-    if(context.watch<WebSocketsService>().isConnected) {
+    if(context.read<WebSocketsService>().isConnected) {
       if(StorageHelper.getUserId() == null) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return const LoginPage();

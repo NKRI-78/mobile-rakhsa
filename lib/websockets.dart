@@ -20,9 +20,6 @@ class WebSocketsService extends ChangeNotifier {
 
   final GetMessagesNotifier getMessagesNotifier;
 
-  int maxReconnectAttempts = 3;
-  int reconnectAttempts = 0;
-
   WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
@@ -35,10 +32,13 @@ class WebSocketsService extends ChangeNotifier {
     connect();
   }
 
+  void toggleConnection(bool connection) {
+    isConnected = connection;
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void connect() {
     try {
-      disposeChannel();
-
       channel = WebSocketChannel.connect(Uri.parse(RemoteDataSourceConsts.websocketUrlProd));
 
       channelSubscription = channel!.stream.listen(
@@ -46,20 +46,15 @@ class WebSocketsService extends ChangeNotifier {
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
-        onDone: () => handleDisconnect(),
+        onDone: () => {},
         onError: (error) => handleError(error),
       );
 
       join();
 
-      isConnected = true; 
-      Future.delayed(Duration.zero, () =>  notifyListeners());
-    
-      reconnectAttempts = 0; 
       debugPrint("Connected to socket.");
     } catch (e) {
       debugPrint("Connection error: $e");
-      handleDisconnect();
     }
   }
   void join() {
@@ -189,20 +184,6 @@ class WebSocketsService extends ChangeNotifier {
     Future.delayed(Duration.zero, () =>  notifyListeners());
   }
 
-  void handleDisconnect() {
-    isConnected = false;
-    Future.delayed(Duration.zero, () =>  notifyListeners());
-
-    if (reconnectAttempts < maxReconnectAttempts) {
-      reconnectAttempts++;
-      final reconnectDelay = Duration(seconds: 2 * reconnectAttempts);
-      reconnectTimer = Timer(reconnectDelay, () {
-        connect();
-      });
-    } else {
-      debugPrint("Max reconnection attempts reached. Could not reconnect.");
-    }
-  }
 
   void disposeChannel() {
     if (channelSubscription != null) {
@@ -218,8 +199,6 @@ class WebSocketsService extends ChangeNotifier {
 
   void handleError(dynamic error) {
     debugPrint("WebSocket Error: $error");
-
-    handleDisconnect();
   }
 
   @override
