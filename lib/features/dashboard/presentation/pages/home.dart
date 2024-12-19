@@ -160,33 +160,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-    /* Lifecycle */
-    // - Resumed (App in Foreground)
-    // - Inactive (App Partially Visible - App not focused)
-    // - Paused (App in Background)
-    // - Detached (View Destroyed - App Closed)
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("=== APP RESUME ===");
-      getCurrentLocation();
-    }
-    if (state == AppLifecycleState.inactive) {
-      debugPrint("=== APP INACTIVE ===");
-    }
-    if (state == AppLifecycleState.paused) {
-      debugPrint("=== APP PAUSED ===");
-    }
-    if (state == AppLifecycleState.detached) {
-      debugPrint("=== APP CLOSED ===");
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
     
     webSocketsService = context.read<WebSocketsService>();
 
@@ -199,10 +176,29 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    // WidgetsBinding.instance.removeObserver(this);
     
     super.dispose();
   }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   super.didChangeAppLifecycleState(state);
+
+  //   if (state == AppLifecycleState.resumed) {
+  //     debugPrint("=== APP RESUME ===");
+  //     getCurrentLocation();
+  //   }
+  //   if (state == AppLifecycleState.inactive) {
+  //     debugPrint("=== APP INACTIVE ===");
+  //   }
+  //   if (state == AppLifecycleState.paused) {
+  //     debugPrint("=== APP PAUSED ===");
+  //   }
+  //   if (state == AppLifecycleState.detached) {
+  //     debugPrint("=== APP CLOSED ===");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -763,33 +759,31 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   Future<void> handleLongPressStart() async {
     await Geolocator.requestPermission();
 
-    final status = await [Permission.camera, Permission.microphone].request();
-    if (status[Permission.camera] != PermissionStatus.granted || status[Permission.microphone] != PermissionStatus.granted) {
-      GeneralModal.info(msg: 'Camera and microphone permissions are required.');
-      if(mounted) {
-        Navigator.pop(context);
-      }
-    }
+    // final status = await [Permission.camera, Permission.microphone].request();
+    // if (status[Permission.camera] != PermissionStatus.granted || status[Permission.microphone] != PermissionStatus.granted) {
+    //   GeneralModal.info(msg: 'Camera and microphone permissions are required.');
+    //   if(mounted) {
+    //     Navigator.pop(context);
+    //   }
+    // }
     
-    if(mounted) {
-      if(context.read<WebSocketsService>().isConnected) {
-        if(StorageHelper.getUserId() == null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const LoginPage();
-          }));
-        } else {
-          sosNotifier.pulseController!.forward();
-
-          holdTimer = Timer(const Duration(milliseconds: 2000), () {
-            sosNotifier.pulseController!.reverse();
-            if (mounted) {
-              startTimer();
-            }
-          });
-        }
+    if(context.read<WebSocketsService>().isConnected) {
+      if(StorageHelper.getUserId() == null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return const LoginPage();
+        }));
       } else {
-        GeneralModal.info(msg: "Koneksi belum stabil. Silahkan tunggu...");
+        sosNotifier.pulseController!.forward();
+
+        holdTimer = Timer(const Duration(milliseconds: 2000), () {
+          sosNotifier.pulseController!.reverse();
+          if (mounted) {
+            startTimer();
+          }
+        });
       }
+    } else {
+      GeneralModal.info(msg: "Koneksi belum stabil. Silahkan tunggu...");
     }
   }
 
