@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 
-import 'package:rakhsa/websockets.dart';
-
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
@@ -142,8 +140,6 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    Provider.of<WebSocketsService>(context);
 
     return Scaffold(
       key: globalKey,

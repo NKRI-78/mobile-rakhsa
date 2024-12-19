@@ -145,10 +145,16 @@ void init() {
   locator.registerLazySingleton(() => UpdateEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => DetailEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => DeleteEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => LoginNotifier(
+    webSocketsService: locator(),
+    useCase: locator()
+  ));
   locator.registerLazySingleton(() => VisaNotifier(useCase: locator()));
   locator.registerLazySingleton(() => PassportNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => RegisterNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => RegisterNotifier(
+    webSocketsService: locator(),
+    useCase: locator(),
+  ));
   locator.registerLazySingleton(() => KbriNotifier(useCase: locator()));
   locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));

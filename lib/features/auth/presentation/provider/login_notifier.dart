@@ -7,8 +7,10 @@ import 'package:rakhsa/features/auth/domain/usecases/login.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/global.dart';
+import 'package:rakhsa/websockets.dart';
 
 class LoginNotifier with ChangeNotifier {
+  final WebSocketsService webSocketsService;
   final LoginUseCase useCase;
 
   AuthModel _authModel = AuthModel();
@@ -21,6 +23,7 @@ class LoginNotifier with ChangeNotifier {
   ProviderState get providerState => _providerState;
 
   LoginNotifier({
+    required this.webSocketsService,
     required this.useCase
   });
 
@@ -51,6 +54,8 @@ class LoginNotifier with ChangeNotifier {
 
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+        webSocketsService.join();
 
         if(authModel.data!.user.enabled){  
           Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,

@@ -217,7 +217,7 @@ class RegisterPageState extends State<RegisterPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        child:CustomTextField(
+                        child: CustomTextField(
                           controller: fullnameC,
                           labelText: 'Nama Lengkap',
                           isCapital: true,

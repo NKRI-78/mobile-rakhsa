@@ -5,9 +5,12 @@ import 'package:rakhsa/features/auth/data/models/auth.dart';
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
+
 import 'package:rakhsa/global.dart';
+import 'package:rakhsa/websockets.dart';
 
 class RegisterNotifier with ChangeNotifier {
+  final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
 
   AuthModel _authModel = AuthModel();
@@ -20,6 +23,7 @@ class RegisterNotifier with ChangeNotifier {
   ProviderState get providerState => _providerState;
 
   RegisterNotifier({
+    required this.webSocketsService,
     required this.useCase
   });
 
@@ -58,6 +62,8 @@ class RegisterNotifier with ChangeNotifier {
 
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+        webSocketsService.join();
 
         Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
           MaterialPageRoute(builder: (context) {

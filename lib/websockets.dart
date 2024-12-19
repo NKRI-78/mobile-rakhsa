@@ -172,7 +172,7 @@ class WebSocketsService extends ChangeNotifier {
       });
     }
 
-    if (message["type"] == "confirm-sos-${userId.toString()}") {
+    if (message["type"] == "confirm-sos") {
       debugPrint("=== CONFIRM SOS ===");
 
       String chatId = message["chat_id"];
