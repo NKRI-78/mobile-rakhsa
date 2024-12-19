@@ -83,31 +83,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
                     mainAxisSize: MainAxisSize.max,
                     children: [
                   
-                      // Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.center,
-                      //   mainAxisSize: MainAxisSize.min,
-                      //   children: [
-                      
-                      //     Image.asset(
-                      //       width: 50.0,
-                      //       height: 50.0,
-                      //       AssetSource.iconFamilyCall,
-                      //     ),
-                          
-                      //     const SizedBox(height: 5.0),
-                      
-                      //     Text("Family Call",
-                      //       style: robotoRegular.copyWith(
-                      //         fontSize: Dimensions.fontSizeSmall,
-                      //         color: ColorResources.black
-                      //       )
-                      //     )
-                      
-                      //   ],
-                      // ),
-                  
-                      // const SizedBox(width: 20.0),
-                  
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) {

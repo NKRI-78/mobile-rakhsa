@@ -760,39 +760,38 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   Timer? holdTimer;
 
   void handleLongPressStart() {
-    if(StorageHelper.getUserId() == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const LoginPage();
-      }));
-    } else {
-      sosNotifier.pulseController!.forward();
+    if(context.watch<WebSocketsService>().isConnected) {
+      if(StorageHelper.getUserId() == null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return const LoginPage();
+        }));
+      } else {
+        sosNotifier.pulseController!.forward();
 
-      holdTimer = Timer(const Duration(milliseconds: 2000), () {
-        sosNotifier.pulseController!.reverse();
-        if (mounted) {
-          startTimer();
-        }
-      });
+        holdTimer = Timer(const Duration(milliseconds: 2000), () {
+          sosNotifier.pulseController!.reverse();
+          if (mounted) {
+            startTimer();
+          }
+        });
+      }
+    } else {
+      GeneralModal.info(msg: "The connection is unstable. Please wait a moment...");
     }
   }
 
   void handleLongPressEnd() {
-    if(context.watch<WebSocketsService>().isConnected) {
-      if(StorageHelper.getUserId() == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {  
-          return const LoginPage();
-        }));
-      } else {
-        if (holdTimer?.isActive ?? false) {
-          holdTimer?.cancel();
-          sosNotifier.pulseController!.reverse();
-        } else if (!sosNotifier.isPressed) {
-          setState(() => sosNotifier.isPressed = false);
-        }
-      }
+    if(StorageHelper.getUserId() == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {  
+        return const LoginPage();
+      }));
     } else {
-      GeneralModal.info(msg: "Connection is unstable, please wait...");
-      return;
+      if (holdTimer?.isActive ?? false) {
+        holdTimer?.cancel();
+        sosNotifier.pulseController!.reverse();
+      } else if (!sosNotifier.isPressed) {
+        setState(() => sosNotifier.isPressed = false);
+      }
     }
   }
 
