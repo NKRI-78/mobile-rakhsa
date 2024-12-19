@@ -26,7 +26,7 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
+class DashboardScreenState extends State<DashboardScreen> {
 
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
@@ -127,39 +127,19 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     }
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-    /* Lifecycle */
-    // - Resumed (App in Foreground)
-    // - Inactive (App Partially Visible - App not focused)
-    // - Paused (App in Background)
-    // - Detached (View Destroyed - App Closed)
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("=== APP RESUME ===");
-      // getCurrentLocation();
-    }
-    if (state == AppLifecycleState.inactive) {
-      debugPrint("=== APP INACTIVE ===");
-    }
-    if (state == AppLifecycleState.paused) {
-      debugPrint("=== APP PAUSED ===");
-    }
-    if (state == AppLifecycleState.detached) {
-      debugPrint("=== APP CLOSED ===");
-    }
-  }
-
   @override 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
     profileNotifier = context.read<ProfileNotifier>();
 
     Future.microtask(() => getData());
   }
-  
+
+  @override 
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
 

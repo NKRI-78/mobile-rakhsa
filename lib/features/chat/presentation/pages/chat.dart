@@ -48,7 +48,7 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => ChatPageState();
 }
 
-class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
+class ChatPageState extends State<ChatPage> {
 
   Timer? debounce;
 
@@ -68,7 +68,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
     showAutoGreetings = widget.autoGreetings;
 
@@ -84,29 +83,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override 
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    
     messageC.dispose();
 
     debounce?.cancel();
 
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("resumed chat page");
-    }
-    if(state == AppLifecycleState.paused) {
-      debugPrint("paused chat page");
-    }
-    if(state == AppLifecycleState.inactive) {
-      debugPrint("inactive chat page");
-    }
-    if(state == AppLifecycleState.detached) {
-      debugPrint("detached chat page");
-    }
   }
 
   @override

@@ -33,6 +33,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void toggleConnection(bool connection) {
     isConnected = connection;
+
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
@@ -42,6 +43,7 @@ class WebSocketsService extends ChangeNotifier {
 
       channelSubscription = channel!.stream.listen(
         (message) async {
+          debugPrint("=== MESSAGE ${message.toString()} ===");
           toggleConnection(true);
           final data = jsonDecode(message);
           onMessageReceived(data);
@@ -55,6 +57,8 @@ class WebSocketsService extends ChangeNotifier {
           handleError(error);
         },
       );
+
+      debugPrint(channel.toString());
 
       join();
       debugPrint("Connected to socket.");
@@ -71,6 +75,11 @@ class WebSocketsService extends ChangeNotifier {
         connect();
       }
     });
+  }
+
+  void handleError(dynamic error) {
+    debugPrint("WebSocket Error: $error");
+    reconnect();
   }
 
   void join() {
@@ -174,35 +183,30 @@ class WebSocketsService extends ChangeNotifier {
       String status = message["status"];
 
       Future.delayed(const Duration(seconds: 1), () {
+        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
+          return ChatPage(
+            chatId: chatId,
+            status: status,
+            recipientId: recipientId,
+            sosId: sosId,
+            autoGreetings: true,
+          );
+        }));
+      });
+
+      Future.delayed(const Duration(seconds: 1), () {
         navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
       });
 
       getMessagesNotifier.resetTimer();
       getMessagesNotifier.startTimer();
-
-      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
-        return ChatPage(
-          chatId: chatId,
-          status: status,
-          recipientId: recipientId,
-          sosId: sosId,
-          autoGreetings: true,
-        );
-      }));
     }
-
-    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void disposeChannel() {
     channelSubscription?.cancel();
     channel?.sink.close();
     channel = null;
-  }
-
-  void handleError(dynamic error) {
-    debugPrint("WebSocket Error: $error");
-    reconnect();
   }
 
   @override

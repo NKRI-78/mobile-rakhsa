@@ -6,8 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:uuid/uuid.dart';
@@ -56,9 +54,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
-
-  late StreamSubscription<ConnectivityResult> connectivitySubscription;
-  String connectionStatus = 'Unknown';
 
   late WebSocketsService webSocketsService;
 
@@ -200,35 +195,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     dashboardNotifier = context.read<DashboardNotifier>();
 
     Future.microtask(() => getData());
-
-    connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(() {
-        switch (result) {
-          case ConnectivityResult.mobile:
-            connectionStatus = 'Connected to Mobile Network';
-            webSocketsService.connect();
-            getData();
-            break;
-          case ConnectivityResult.wifi:
-            connectionStatus = 'Connected to WiFi';
-            webSocketsService.connect();
-            getData();
-            break;
-          case ConnectivityResult.none:
-            connectionStatus = 'No Internet Connection';
-            webSocketsService.reconnect();
-            break;
-          default:
-            connectionStatus = 'Unknown Connection Status';
-             webSocketsService.reconnect();
-        }
-      });
-    });
   }
 
   @override
   void dispose() {
-    connectivitySubscription.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    
     super.dispose();
   }
 
@@ -816,7 +788,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
           });
         }
       } else {
-        GeneralModal.info(msg: "The connection is unstable. Please wait a moment...");
+        GeneralModal.info(msg: "Koneksi belum stabil. Silahkan tunggu...");
       }
     }
   }
