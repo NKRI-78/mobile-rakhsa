@@ -207,23 +207,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           case ConnectivityResult.mobile:
             connectionStatus = 'Connected to Mobile Network';
             webSocketsService.connect();
-            webSocketsService.toggleConnection(true);
             getData();
             break;
           case ConnectivityResult.wifi:
             connectionStatus = 'Connected to WiFi';
             webSocketsService.connect();
-            webSocketsService.toggleConnection(true);
             getData();
             break;
           case ConnectivityResult.none:
             connectionStatus = 'No Internet Connection';
-            webSocketsService.toggleConnection(false);
             webSocketsService.reconnect();
             break;
           default:
             connectionStatus = 'Unknown Connection Status';
-            webSocketsService.toggleConnection(false);
              webSocketsService.reconnect();
         }
       });
@@ -794,6 +790,15 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   Future<void> handleLongPressStart() async {
     await Geolocator.requestPermission();
+
+    final status = await [Permission.camera, Permission.microphone].request();
+    if (status[Permission.camera] != PermissionStatus.granted || status[Permission.microphone] != PermissionStatus.granted) {
+      GeneralModal.info(msg: 'Camera and microphone permissions are required.');
+      if(mounted) {
+        Navigator.pop(context);
+      }
+    }
+    
     if(mounted) {
       if(context.read<WebSocketsService>().isConnected) {
         if(StorageHelper.getUserId() == null) {
@@ -831,46 +836,48 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     }
   }
 
-  void startTimer() {
+  Future<void> startTimer() async {
     DateTime now = DateTime.now();
     String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
 
     String sosId = const Uuid().v4();
 
-    Navigator.push(context, 
-      MaterialPageRoute(builder: (context) {
-        return CameraPage(
-          sosId: sosId,
-          location: widget.location, 
-          country: widget.country, 
-          lat: widget.lat, 
-          lng: widget.lng, 
-          time: time
-        ); 
-      })
-    ).then((value) {
+    if(mounted) {
+      Navigator.push(context, 
+        MaterialPageRoute(builder: (context) {
+          return CameraPage(
+            sosId: sosId,
+            location: widget.location, 
+            country: widget.country, 
+            lat: widget.lat, 
+            lng: widget.lng, 
+            time: time
+          ); 
+        })
+      ).then((value) {
 
-      if(value != null) {
-        setState(() {
-          sosNotifier.isPressed = true;
-          sosNotifier.countdownTime = 60; 
-        });
-
-        sosNotifier.timerController!
-        ..reset()
-        ..forward().whenComplete(() {
-          setState(() => sosNotifier.isPressed = false);
-          sosNotifier.pulseController!.reverse();
-        });
-
-        sosNotifier.timerController!.addListener(() {
+        if(value != null) {
           setState(() {
-            sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
+            sosNotifier.isPressed = true;
+            sosNotifier.countdownTime = 60; 
           });
-        });
-      }
 
-    });
+          sosNotifier.timerController!
+          ..reset()
+          ..forward().whenComplete(() {
+            setState(() => sosNotifier.isPressed = false);
+            sosNotifier.pulseController!.reverse();
+          });
+
+          sosNotifier.timerController!.addListener(() {
+            setState(() {
+              sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
+            });
+          });
+        }
+      });
+  
+    }
 
   }
 

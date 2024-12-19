@@ -42,11 +42,18 @@ class WebSocketsService extends ChangeNotifier {
 
       channelSubscription = channel!.stream.listen(
         (message) async {
+          toggleConnection(true);
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
-        onDone: () => reconnect(),
-        onError: (error) => handleError(error),
+        onDone: () {
+          toggleConnection(false);
+          reconnect();
+        },
+        onError: (error) {
+          toggleConnection(false);
+          handleError(error);
+        },
       );
 
       join();
