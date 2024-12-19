@@ -44,7 +44,6 @@ class WebSocketsService extends ChangeNotifier {
       channelSubscription = channel!.stream.listen(
         (message) async {
           debugPrint("=== MESSAGE ${message.toString()} ===");
-          toggleConnection(true);
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
@@ -58,9 +57,8 @@ class WebSocketsService extends ChangeNotifier {
         },
       );
 
-      debugPrint(channel.toString());
-
       join();
+      toggleConnection(true);
       debugPrint("Connected to socket.");
     } catch (e) {
       debugPrint("Connection error: $e");

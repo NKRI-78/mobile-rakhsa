@@ -350,6 +350,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     country: currentCountry,
                     lat: currentLat,
                     lng: currentLng,
+                    isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
                   )
                 ),
 
@@ -737,12 +738,14 @@ class SosButton extends StatefulWidget {
   final String country;
   final String lat;
   final String lng;
+  final bool isConnected;
 
   const SosButton({
     required this.location,
     required this.country,
     required this.lat, 
     required this.lng,
+    required this.isConnected,
     super.key
   });
 
@@ -757,37 +760,25 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   Timer? holdTimer;
 
   Future<void> handleLongPressStart() async {
-    await Geolocator.requestPermission();
-
-    // final status = await [Permission.camera, Permission.microphone].request();
-    // if (status[Permission.camera] != PermissionStatus.granted || status[Permission.microphone] != PermissionStatus.granted) {
-    //   GeneralModal.info(msg: 'Camera and microphone permissions are required.');
-    //   if(mounted) {
-    //     Navigator.pop(context);
-    //   }
-    // }
+    // await Geolocator.requestPermission();
     
-    if(context.read<WebSocketsService>().isConnected) {
-      if(StorageHelper.getUserId() == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const LoginPage();
-        }));
-      } else {
-        sosNotifier.pulseController!.forward();
-
-        holdTimer = Timer(const Duration(milliseconds: 2000), () {
-          sosNotifier.pulseController!.reverse();
-          if (mounted) {
-            startTimer();
-          }
-        });
-      }
+    if(StorageHelper.getUserId() == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const LoginPage();
+      }));
     } else {
-      GeneralModal.info(msg: "Koneksi belum stabil. Silahkan tunggu...");
+      sosNotifier.pulseController!.forward();
+
+      holdTimer = Timer(const Duration(milliseconds: 2000), () {
+        sosNotifier.pulseController!.reverse();
+        if (mounted) {
+          startTimer();
+        }
+      });
     }
   }
 
-  void handleLongPressEnd() {
+  Future<void> handleLongPressEnd() async {
     if(StorageHelper.getUserId() == null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {  
         return const LoginPage();
@@ -851,6 +842,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    debugPrint(widget.isConnected.toString());
+
     sosNotifier = context.read<SosNotifier>();
 
     sosNotifier.initializePulse(this);
@@ -889,7 +882,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                     height: 55,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor),
+                      color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
                     ),
                   ),
                 );
@@ -907,8 +900,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
               ),
             ),
           GestureDetector(
-            onLongPressStart: (_) async => await handleLongPressStart(),
-            onLongPressEnd: (_) => handleLongPressEnd(),
+            onLongPressStart: (_) async => widget.isConnected ? await handleLongPressStart() : () {},
+            onLongPressEnd: (_)  async => await handleLongPressEnd(),
             child: AnimatedBuilder(
               animation: sosNotifier.timerController!,
               builder: (BuildContext context, Widget? child) {
@@ -917,10 +910,14 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   height: 130,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFFE1717),
+                     color: widget.isConnected 
+                      ? const Color(0xFFFE1717)
+                      : const Color(0xFF7A7A7A),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFE1717).withOpacity(0.5),
+                        color: widget.isConnected 
+                        ? const Color(0xFFFE1717).withOpacity(0.5) 
+                        : const Color(0xFF7A7A7A).withOpacity(0.5),
                         blurRadius: 10,
                         spreadRadius: 5,
                       ),
