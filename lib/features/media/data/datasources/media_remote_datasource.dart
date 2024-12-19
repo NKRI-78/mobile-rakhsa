@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
 
 import 'package:rakhsa/features/media/data/models/media.dart';
@@ -32,8 +31,10 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
           filename: fileName,
         ),
         "folder": folderName,
+        "subfolder": "broadcast-raksha"
       });
-      final res = await client.post('${RemoteDataSourceConsts.baseUrlProd}/api/v1/media',
+      
+      final res = await client.post('https://api-media.inovatiftujuh8.com/api/v1/media/upload',
         data: formData
       );
       Map<String, dynamic> data = res.data;

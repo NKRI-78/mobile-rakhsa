@@ -86,7 +86,7 @@ class WebSocketsService extends ChangeNotifier {
     required String time
   }) async {
     final userId = StorageHelper.getUserId();
-    
+
     channel?.sink.add(jsonEncode({
       "sos_id": sosId,
       "type": "sos",
