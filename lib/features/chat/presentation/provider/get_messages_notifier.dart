@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
@@ -163,36 +162,40 @@ class GetMessagesNotifier with ChangeNotifier {
   void appendMessage({required Map<String, dynamic> data}) {
     bool isRead = data["data"]["is_read"];
     String incomingMessageId = data["data"]["id"];
+    String incomingChatId = data["data"]["chat_id"];
 
     if (_messages.any((message) => message.id == incomingMessageId)) {
       return;
     }
 
-    _messages.insert(0, MessageData(
-      id: data["data"]["id"],
-      chatId: data["data"]["chat_id"],
-      user: MessageUser(
-        id: data["data"]["user"]["id"],
-        isMe: data["data"]["user"]["is_me"],
-        avatar: data["data"]["user"]["avatar"],
-        name: data["data"]["user"]["name"]
-      ), 
-      isRead: isRead, 
-      sentTime: data["data"]["sent_time"], 
-      text: data["data"]["text"], 
-      createdAt: DateTime.now()
-    ));
+    if(activeChatId == incomingChatId) {
+      _messages.insert(0, MessageData(
+        id: data["data"]["id"],
+        chatId: data["data"]["chat_id"],
+        user: MessageUser(
+          id: data["data"]["user"]["id"],
+          isMe: data["data"]["user"]["is_me"],
+          avatar: data["data"]["user"]["avatar"],
+          name: data["data"]["user"]["name"]
+        ), 
+        isRead: isRead, 
+        sentTime: data["data"]["sent_time"], 
+        text: data["data"]["text"], 
+        createdAt: DateTime.now()
+      ));
 
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (sC.hasClients) {
-        sC.animateTo(
-          sC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300), 
-          curve: Curves.easeOut, 
-        );
-      }
-    });
-  
-    Future.delayed(Duration.zero, () => notifyListeners());
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (sC.hasClients) {
+          sC.animateTo(
+            sC.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300), 
+            curve: Curves.easeOut, 
+          );
+        }
+      });
+    
+      Future.delayed(Duration.zero, () => notifyListeners());
+    }
+
   } 
 }

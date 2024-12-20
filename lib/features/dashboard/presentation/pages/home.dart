@@ -898,7 +898,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
             ),
           GestureDetector(
             onLongPressStart: (_) async => widget.isConnected ? await handleLongPressStart() : () {},
-            onLongPressEnd: (_)  async => await handleLongPressEnd(),
+            onLongPressEnd: (_)  async => widget.isConnected ? await handleLongPressEnd() : () {},
             child: AnimatedBuilder(
               animation: sosNotifier.timerController!,
               builder: (BuildContext context, Widget? child) {

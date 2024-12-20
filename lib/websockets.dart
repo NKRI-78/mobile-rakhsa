@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
@@ -44,6 +43,7 @@ class WebSocketsService extends ChangeNotifier {
       channelSubscription = channel!.stream.listen(
         (message) async {
           debugPrint("=== MESSAGE ${message.toString()} ===");
+          toggleConnection(true);
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
@@ -57,8 +57,9 @@ class WebSocketsService extends ChangeNotifier {
         },
       );
 
+      debugPrint(channel.toString());
+
       join();
-      toggleConnection(true);
       debugPrint("Connected to socket.");
     } catch (e) {
       debugPrint("Connection error: $e");
@@ -68,6 +69,14 @@ class WebSocketsService extends ChangeNotifier {
 
   void reconnect() {
     debugPrint("Attempting to reconnect...");
+    
+    reconnectTimer?.cancel();
+
+    if (isConnected) {
+      debugPrint("Already connected, skipping reconnection.");
+      return;
+    }
+
     reconnectTimer = Timer(const Duration(seconds: 5), () {
       if (channel == null || !isConnected) {
         connect();
@@ -151,7 +160,7 @@ class WebSocketsService extends ChangeNotifier {
   void onMessageReceived(Map<String, dynamic> message) {
     String? userId = StorageHelper.getUserId();
 
-    if (message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
+    if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
       getMessagesNotifier.appendMessage(data: message);
     }
@@ -179,22 +188,18 @@ class WebSocketsService extends ChangeNotifier {
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
       String status = message["status"];
+    
+      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
+        return ChatPage(
+          chatId: chatId,
+          status: status,
+          recipientId: recipientId,
+          sosId: sosId,
+          autoGreetings: true,
+        );
+      }));
 
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
-          return ChatPage(
-            chatId: chatId,
-            status: status,
-            recipientId: recipientId,
-            sosId: sosId,
-            autoGreetings: true,
-          );
-        }));
-      });
-
-      Future.delayed(const Duration(seconds: 1), () {
-        navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
-      });
+      navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
       getMessagesNotifier.resetTimer();
       getMessagesNotifier.startTimer();
