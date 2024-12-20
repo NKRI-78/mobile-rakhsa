@@ -15,8 +15,13 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+enum ConnectionIndicator { red, yellow, green }
+
 class WebSocketsService extends ChangeNotifier {
   final GetMessagesNotifier getMessagesNotifier;
+
+  ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
+  ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
   WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
@@ -28,6 +33,12 @@ class WebSocketsService extends ChangeNotifier {
     required this.getMessagesNotifier,
   }) {
     connect();
+  }
+
+  void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
+    _connectionIndicator = connectionIndicators;
+    
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void toggleConnection(bool connection) {
@@ -43,7 +54,13 @@ class WebSocketsService extends ChangeNotifier {
       channelSubscription = channel!.stream.listen(
         (message) async {
           debugPrint("=== MESSAGE ${message.toString()} ===");
-          toggleConnection(true);
+          setStateConnectionIndicator(ConnectionIndicator.yellow);
+
+          Future.delayed(const Duration(seconds: 1), () {
+            setStateConnectionIndicator(ConnectionIndicator.green);
+            toggleConnection(true);
+          });
+
           final data = jsonDecode(message);
           onMessageReceived(data);
         },
@@ -69,6 +86,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void reconnect() {
     debugPrint("Attempting to reconnect...");
+
     
     reconnectTimer?.cancel();
 
@@ -76,6 +94,8 @@ class WebSocketsService extends ChangeNotifier {
       debugPrint("Already connected, skipping reconnection.");
       return;
     }
+
+    setStateConnectionIndicator(ConnectionIndicator.red);
 
     reconnectTimer = Timer(const Duration(seconds: 5), () {
       if (channel == null || !isConnected) {

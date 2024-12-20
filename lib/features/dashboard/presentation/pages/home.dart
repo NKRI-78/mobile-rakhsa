@@ -261,7 +261,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       width: 12.0,
                       height: 12.0,
                       decoration: BoxDecoration(
-                        color: context.watch<WebSocketsService>().isConnected ? ColorResources.green : ColorResources.error,
+                        color: context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.green 
+                        ?ColorResources.green 
+                        : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.yellow 
+                        ?ColorResources.yellow 
+                        : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.red 
+                        ?ColorResources.error 
+                        : ColorResources.transparent,
                         shape: BoxShape.circle,
                       ),                      
                     ),
