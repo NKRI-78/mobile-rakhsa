@@ -81,6 +81,9 @@ class DashboardNotifier with ChangeNotifier {
     required double lng
   }) async {
 
+    debugPrint(lat.toString());
+    debugPrint(lng.toString());
+
     final result = await useCase.execute(
       type: type,
       lat: lat,

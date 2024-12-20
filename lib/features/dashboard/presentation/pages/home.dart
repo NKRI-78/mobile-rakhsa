@@ -127,12 +127,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           lng: position.longitude
         );
 
-        if(!mounted) return;
-          dashboardNotifier.getEws(
-            type: "ews",
-            lat: position.latitude,
-            lng: position.longitude
-          );
+        dashboardNotifier.getEws(
+          type: "ews",
+          lat: position.latitude,
+          lng: position.longitude
+        );
       });
     } catch(e) {
 
@@ -841,8 +840,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
-    debugPrint(widget.isConnected.toString());
 
     sosNotifier = context.read<SosNotifier>();
 

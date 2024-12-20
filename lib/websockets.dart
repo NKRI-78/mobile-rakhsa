@@ -151,7 +151,7 @@ class WebSocketsService extends ChangeNotifier {
   void onMessageReceived(Map<String, dynamic> message) {
     String? userId = StorageHelper.getUserId();
 
-    if (message["type"] == "fetch-message") {
+    if (message["type"] == "fetch-message-${getMessagesNotifier.activeChatId}") {
       debugPrint("=== FETCH MESSAGE ===");
       getMessagesNotifier.appendMessage(data: message);
     }
