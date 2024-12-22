@@ -32,6 +32,24 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override 
+  Future<Either<Failure, void>> updateIsLoggedIn({
+    required String userId,
+    required String type
+  }) async {
+    try {
+      var result = await remoteDataSource.updateIsLoggedIn(
+        userId: userId,
+        type: type
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
  @override 
   Future<Either<Failure, ProfileModel>> getProfile() async {
     try {

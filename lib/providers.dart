@@ -9,6 +9,7 @@ import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
@@ -54,6 +55,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<UpdateEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateAddressNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UpdateProfileNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<UpdateIsLoggedinNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UploadMediaNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<KbriNotifier>()),

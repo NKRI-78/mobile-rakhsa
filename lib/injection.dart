@@ -7,7 +7,9 @@ import 'package:rakhsa/features/administration/data/datasources/administration_r
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
@@ -41,7 +43,7 @@ import 'package:rakhsa/features/event/data/repositories/event_remote_datasource_
 import 'package:rakhsa/features/administration/domain/usecases/get_continent.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/domain/usecases/resendOtp.dart';
-import 'package:rakhsa/features/auth/domain/usecases/verifyOtp.dart';
+import 'package:rakhsa/features/auth/domain/usecases/verify_otp.dart';
 import 'package:rakhsa/features/event/domain/usecases/list_event.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
@@ -116,11 +118,10 @@ void init() {
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
   locator.registerLazySingleton(() => ResendOtpUseCase(locator()));
   locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
-
   locator.registerLazySingleton(() => UpdateProfileUseCase(locator()));
   locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
   locator.registerLazySingleton(() => UpdateAddressUseCase(locator()));
-
+  locator.registerLazySingleton(() => UpdateIsLoggedinUseCase(locator()));
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => GetVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriUseCase(locator()));
@@ -160,6 +161,7 @@ void init() {
   locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
   locator.registerLazySingleton(() => UpdateAddressNotifier(useCase: locator()));
+  locator.registerLazySingleton(() => UpdateIsLoggedinNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetCountryNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetStateNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));

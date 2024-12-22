@@ -13,6 +13,10 @@ abstract class AuthRemoteDataSource {
     required String value, 
     required String password
   });
+  Future<void> updateIsLoggedIn({
+    required String userId,
+    required String type
+  });
   Future<ProfileModel> getProfile();
   Future<void> updateProfile({
     required String avatar
@@ -62,6 +66,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     } 
+  }
+
+  @override 
+  Future<void> updateIsLoggedIn({
+    required String userId,
+    required String type
+  }) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/is-logged-in",
+        data: {
+          "user_id": userId,
+          "type": type
+        }
+      );
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
   }
 
   @override 

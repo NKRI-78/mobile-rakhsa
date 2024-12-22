@@ -9,6 +9,10 @@ abstract class AuthRepository {
     required String value,
     required String password
   });
+  Future<Either<Failure, void>> updateIsLoggedIn({
+    required String userId,
+    required String type
+  });
   Future<Either<Failure, ProfileModel>> getProfile();
   Future<Either<Failure, void>> updateProfile({
     required String avatar

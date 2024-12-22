@@ -12,6 +12,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
@@ -30,6 +31,7 @@ class LoginPageState extends State<LoginPage> {
   bool isObscure = false;
 
   late LoginNotifier loginNotifier;
+  late UpdateIsLoggedinNotifier updateIsLoggedinNotifier;
 
   late TextEditingController valC; 
   late TextEditingController passwordC; 
@@ -72,6 +74,16 @@ class LoginPageState extends State<LoginPage> {
       ShowSnackbar.snackbarErr(loginNotifier.message);
       return;
     }
+
+    await updateIsLoggedinNotifier.updateIsLoggedIn(
+      userId: loginNotifier.authModel.data!.user.id, 
+      type: "login"
+    );
+
+    if(updateIsLoggedinNotifier.message != "") {
+      ShowSnackbar.snackbarErr(updateIsLoggedinNotifier.message);
+      return;
+    }
   }
 
   @override 
@@ -82,6 +94,7 @@ class LoginPageState extends State<LoginPage> {
     passwordC = TextEditingController();
 
     loginNotifier = context.read<LoginNotifier>();
+    updateIsLoggedinNotifier = context.read<UpdateIsLoggedinNotifier>();
   }
 
   @override 
