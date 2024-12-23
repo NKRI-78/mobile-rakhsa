@@ -21,6 +21,7 @@ dependencies:
   cached_network_image: ^3.2.3
   cupertino_icons: ^1.0.6
   connectivity_plus: ^3.0.0
+  circular_countdown_timer: ^0.2.3
 
   # D
   dio: ^5.4.1

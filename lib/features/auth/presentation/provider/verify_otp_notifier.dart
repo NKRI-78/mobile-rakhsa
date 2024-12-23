@@ -9,11 +9,14 @@ import 'package:rakhsa/global.dart';
 class VerifyOtpNotifier with ChangeNotifier {
   final VerifyOtpUseCase useCase;
 
-  AuthModel _authModel = AuthModel();
+  final AuthModel _authModel = AuthModel();
   AuthModel get authModel => _authModel;
 
   String _message = "";
   String get message => _message;
+
+  bool _onCompletedOtp = false;
+  bool get onCompletedOtp => _onCompletedOtp;
 
   String valueOtp = "";
 
@@ -26,6 +29,18 @@ class VerifyOtpNotifier with ChangeNotifier {
 
   void setStateProviderState(ProviderState param) {
     _providerState = param;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  void onStartTimerOtp() {
+    _onCompletedOtp = false;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  void onCompletedTimerOtp() {
+    _onCompletedOtp = true;
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }

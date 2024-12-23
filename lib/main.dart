@@ -39,7 +39,9 @@ Future<void> main() async {
         channelName: 'notification_channel',
         channelDescription: 'Notification',
         playSound: true,
+        channelShowBadge: true,
         onlyAlertOnce: true,
+        criticalAlerts: true,
         groupAlertBehavior: an.GroupAlertBehavior.Children,
         importance: an.NotificationImportance.High,
         defaultPrivacy: an.NotificationPrivacy.Private,
@@ -47,7 +49,7 @@ Future<void> main() async {
         ledColor: Colors.deepPurple
       )
     ],
-    debug: true
+    debug: false
   );
 
 

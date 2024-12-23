@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
+import 'package:rakhsa/global.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/global.dart';
 
 class ShowSnackbar {
   ShowSnackbar._();
@@ -11,7 +13,7 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
     ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
         backgroundColor: Colors.green,
         content: Text(
@@ -35,7 +37,7 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
     ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
         backgroundColor: const Color(0xFF303030),
         content: Text(
@@ -59,7 +61,7 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
     ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
       SnackBar(
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
         backgroundColor: Colors.red,
         content: Text(

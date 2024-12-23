@@ -1,13 +1,18 @@
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
-import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:provider/provider.dart';
 
 class RegisterOtp extends StatefulWidget {
   const RegisterOtp({super.key, required this.email});
@@ -19,14 +24,11 @@ class RegisterOtp extends StatefulWidget {
 }
 
 class RegisterOtpState extends State<RegisterOtp> {
-  bool startTimer = false;
+
+  final CountDownController controller = CountDownController();
+  
   late VerifyOtpNotifier verifyOtpNotifier;
   late ResendOtpNotifier resendOtpNotifier;
-
-  final StopWatchTimer timer = StopWatchTimer(
-    mode: StopWatchMode.countDown,
-    presetMillisecond: StopWatchTimer.getMinute(2),
-  );
 
   String parseSeconds(int value) {
     value++;
@@ -54,12 +56,7 @@ class RegisterOtpState extends State<RegisterOtp> {
   @override
   void initState() {
     super.initState();
-
-    timer.fetchEnded.listen((value) {
-      startTimer = false;
-      timer.onResetTimer();
-      setState(() {});
-    });
+    
     verifyOtpNotifier = context.read<VerifyOtpNotifier>();
     resendOtpNotifier = context.read<ResendOtpNotifier>();
   }
@@ -67,13 +64,10 @@ class RegisterOtpState extends State<RegisterOtp> {
   @override
   void dispose() {
     super.dispose();
-
-    timer.dispose();
   }
   
   @override
   Widget build(BuildContext context) {
-    debugPrint("Email : ${widget.email}");
     return Scaffold(
       backgroundColor: primaryColor,
       body: SafeArea(
@@ -95,13 +89,12 @@ class RegisterOtpState extends State<RegisterOtp> {
                           )
                         ),
                       ),
-                      const Align(
+                      Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 30),
-                          child: Text(
-                            "Kode OTP",
-                            style: TextStyle(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: Text("Kode OTP",
+                            style: robotoRegular.copyWith(
                               color: whiteColor,
                               fontSize: fontSizeOverLarge
                             ),
@@ -112,9 +105,7 @@ class RegisterOtpState extends State<RegisterOtp> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30),
-                          child: Image.asset(
-                            "assets/images/forward.png"
-                          ),
+                          child: Image.asset("assets/images/forward.png"),
                         ),
                       )
                     ],
@@ -125,96 +116,133 @@ class RegisterOtpState extends State<RegisterOtp> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          "Masukan Kode OTP pada kolom yang tersedia",
-                          style: TextStyle(
-                            fontSize: fontSizeDefault,
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold,
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: "Silahkan periksa E-mail Anda ",
+                            style: robotoRegular.copyWith(
+                              fontSize: fontSizeDefault,
+                              color: whiteColor,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: widget.email,
+                                style: robotoRegular.copyWith(
+                                  fontSize: fontSizeDefault,
+                                  color: yellowColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " untuk mengisi Kode OTP pada kolom yang tersedia",
+                                style: robotoRegular.copyWith(
+                                  fontSize: fontSizeDefault,
+                                  color: whiteColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+
                         const SizedBox(
-                      height: 20,
-                      ),
-                      OtpTextField(
-                        fieldWidth: 55,
-                        fieldHeight: 55,
-                        numberOfFields: 4,
-                        borderColor: const Color(0xFF512DA8),
-                        //set to true to show as box or false to show as dash
-                        showFieldAsBox: true,
-                        textStyle: const TextStyle(
-                          color: whiteColor,
-                          fontSize: 25
+                          height: 20,
                         ),
-                        //runs when a code is typed in
-                        onCodeChanged: (String code) {
-                          verifyOtpNotifier.valueOtp = code;
-                        },
-                        
-                        contentPadding: const EdgeInsets.only(top: 10),
-                        //runs when every textfield is filled
-                        onSubmit: (String verificationCode) {
-                          verifyOtpNotifier.valueOtp = verificationCode;
-                        }, // end onSubmit
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      startTimer
-                    ? StreamBuilder<int>(
-                        stream: timer.secondTime,
-                        initialData: timer.initialPresetTime,
-                        builder: (context, snap) {
-                          final value = snap.data ?? 0;
-                          return Text(
-                            parseSeconds(value),
-                            style: const TextStyle(color: whiteColor),
-                          );
-                        })
-                      : RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: 'Klik disini',
-                              style: const TextStyle(
-                                color: yellowColor,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                await resendOtpNotifier.resendOtp(
-                                  email: widget.email, 
-                                );
-                                startTimer = true;
-                                timer.onStartTimer();
-                                setState(() {});
-                              },
+
+                        OtpTextField(
+                          fieldWidth: 55,
+                          fieldHeight: 55,
+                          numberOfFields: 4,
+                          borderColor: yellowColor,
+                          showFieldAsBox: true,
+                          textStyle: robotoRegular.copyWith(
+                            color: whiteColor,
+                            fontSize: 25.0
+                          ),
+                          cursorColor: ColorResources.white,
+                          focusedBorderColor: yellowColor,
+                          onCodeChanged: (String code) {
+                            verifyOtpNotifier.valueOtp = code;
+                          },
+                          contentPadding: const EdgeInsets.only(top: 10.0),
+                          onSubmit: (String verificationCode) async {
+                            verifyOtpNotifier.valueOtp = verificationCode;
+                            await submitVerifyOtp();
+                          }, 
+                        ),
+
+                        const SizedBox(height: 10.0),
+
+                        context.watch<VerifyOtpNotifier>().onCompletedOtp 
+                        ? RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Klik disini',
+                                  style: robotoRegular.copyWith(
+                                    color: yellowColor,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    await resendOtpNotifier.resendOtp(
+                                      email: widget.email, 
+                                    );
+                                    controller.restart(duration: 120);
+                                    verifyOtpNotifier.onStartTimerOtp();
+                                  },
+                                ),
+                                const TextSpan(text: " apabila belum mendapatkan Kode OTP"),
+                              ]
                             ),
-                            const TextSpan(
-                                text:
-                                    " apabila belum mendapatkan Kode OTP"),
-                          ]),
-                        ),
+                          ) 
+                        : const SizedBox()
+
                       ],
                     ),
                   ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      right: 20.0,
+                      left: 20.0,
+                      bottom: 20.0
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CircularCountDownTimer(
+                          duration: 120,
+                          initialDuration: 0,
+                          width: 40.0,
+                          height: 40.0,
+                          ringColor: Colors.transparent,
+                          ringGradient: null,
+                          fillColor: yellowColor.withOpacity(0.4),
+                          fillGradient: null,
+                          backgroundColor: yellowColor,
+                          backgroundGradient: null,
+                          strokeWidth: 10.0,
+                          strokeCap: StrokeCap.round,
+                          textStyle: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            color: ColorResources.white,
+                            fontWeight: FontWeight.bold
+                          ),
+                          textFormat: CountdownTextFormat.S,
+                          isReverse: true,
+                          isReverseAnimation: true,
+                          isTimerTextShown: true,
+                          autoStart: true,
+                          controller: controller,
+                          onStart: () {},
+                          onComplete: () {
+                            verifyOtpNotifier.onCompletedTimerOtp();
+                          },
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                child: CustomButton(
-                  onTap: submitVerifyOtp,
-                  isBorder: false,
-                  isBorderRadius: true,
-                  isBoxShadow: false,
-                  btnColor: whiteColor,
-                  btnTxt: verifyOtpNotifier.valueOtp == "" ? "Daftar" : "Masuk",
-                  btnTextColor: blackColor,
-                ),
-              ),
-            )
           ],
         )
       ),

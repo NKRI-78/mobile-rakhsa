@@ -5,11 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
+import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
@@ -35,47 +39,47 @@ class RegisterPageState extends State<RegisterPage> {
 
   Future<void> submitRegister() async {
     bool submissionValidation(
-    BuildContext context,
-    String fullname,
-    String phone,
-    String email,
-    String passport,
-    String emergencyContact,
-    String password,
-    String confirmPassword,
-  ) {
-    if (fullname.isEmpty) {
-      ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
-      return false;
-    } else if (phone.length < 10 || phone.length > 13) {
-      ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
-      return false;
-    } else if (email.isEmpty) {
-      ShowSnackbar.snackbarErr("Email tidak boleh kosong");
-      return false;
-    } else if (!email.isValidEmail()) {
-      ShowSnackbar.snackbarErr("Email tidak valid");
-      return false;
-    } else if (passport.isEmpty) {
-      ShowSnackbar.snackbarErr("Passport tidak boleh kosong");
-      return false;
-    } else if(emergencyContact.isEmpty) {
-      ShowSnackbar.snackbarErr("Nomor Darurat tidak boleh kosong");
-    } else if (password.isEmpty) {
-      ShowSnackbar.snackbarErr("Password tidak boleh kosong");
-      return false;
-    } else if (confirmPassword.isEmpty) {
-      ShowSnackbar.snackbarErr("Password Konfirmasi tidak boleh kosong");
-      return false;
-    } else if (password != confirmPassword) {
-      ShowSnackbar.snackbarErr("Password tidak sama");
-      return false;
-    } else if (confirmPassword != password) {
-      ShowSnackbar.snackbarErr("Password tidak sama");
-      return false;
+      BuildContext context,
+      String fullname,
+      String phone,
+      String email,
+      String passport,
+      String emergencyContact,
+      String password,
+      String confirmPassword,
+    ) {
+      if (fullname.isEmpty) {
+        ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
+        return false;
+      } else if (phone.length < 10 || phone.length > 13) {
+        ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
+        return false;
+      } else if (email.isEmpty) {
+        ShowSnackbar.snackbarErr("Email tidak boleh kosong");
+        return false;
+      } else if (!email.isValidEmail()) {
+        ShowSnackbar.snackbarErr("Email tidak valid");
+        return false;
+      } else if (passport.isEmpty) {
+        ShowSnackbar.snackbarErr("Passport tidak boleh kosong");
+        return false;
+      } else if(emergencyContact.length < 10 || emergencyContact.length > 13) {
+        ShowSnackbar.snackbarErr("No Darurat harus antara 10 hingga 13 digit");
+      } else if (password.isEmpty) {
+        ShowSnackbar.snackbarErr("Password tidak boleh kosong");
+        return false;
+      } else if (confirmPassword.isEmpty) {
+        ShowSnackbar.snackbarErr("Password Konfirmasi tidak boleh kosong");
+        return false;
+      } else if (password != confirmPassword) {
+        ShowSnackbar.snackbarErr("Password tidak sama");
+        return false;
+      } else if (confirmPassword != password) {
+        ShowSnackbar.snackbarErr("Password tidak sama");
+        return false;
+      }
+      return true;
     }
-    return true;
-  }
     String fullname = fullnameC.text.trim();
     String email = emailC.text.trim();
     String phone = phoneC.text.trim();
@@ -110,6 +114,17 @@ class RegisterPageState extends State<RegisterPage> {
       ShowSnackbar.snackbarErr(registerNotifier.message);
       return;
     }
+
+    ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail reihanagam7@gmail.com untuk mengisi kode otp yang telah dikirimkan");
+
+    Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
+      MaterialPageRoute(builder: (context) {
+        return const RegisterOtp(email: "reihanagam7@gmail.com");
+      }),
+      (route) => false,
+    );
+
+    
 
   }
 
