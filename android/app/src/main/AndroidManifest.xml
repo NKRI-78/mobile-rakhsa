@@ -19,10 +19,12 @@
         android:label="Raksha"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
-
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:enableOnBackInvokedCallback="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -45,10 +47,13 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+
+        <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- Flutter Local Notifications Configuration -->
         <service
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"        
             android:exported="false"

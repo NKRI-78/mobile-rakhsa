@@ -50,6 +50,8 @@ class LoginNotifier with ChangeNotifier {
         setStateProviderState(ProviderState.error);
       }, (r) {
 
+        _message = "";
+
         _authModel = r;
 
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");

@@ -128,6 +128,7 @@ class EventCreatePageState extends State<EventCreatePage> {
   @override 
   void dispose() {
     titleC.dispose();
+    descC.dispose();
 
     super.dispose();
   }
@@ -177,8 +178,7 @@ class EventCreatePageState extends State<EventCreatePage> {
           const SizedBox(
             height: 12,
           ),
-          const Text(
-            'Pilih Tanggal Berangkat - Tanggal Kepulangan',
+          const Text('Pilih Tanggal Berangkat - Tanggal Kepulangan',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,

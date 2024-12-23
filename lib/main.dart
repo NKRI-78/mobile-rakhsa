@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:awesome_notifications/awesome_notifications.dart' as an;
+
 import 'package:provider/provider.dart';
+import 'package:rakhsa/awesome_notification.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
@@ -14,10 +17,39 @@ import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
 
+void initializeNotifications() {
+  an.AwesomeNotifications().setListeners(
+    onActionReceivedMethod: AwesomeNotificationController.onActionReceivedMethod,
+    onNotificationCreatedMethod: AwesomeNotificationController.onNotificationCreated,
+    onNotificationDisplayedMethod: AwesomeNotificationController.onNotificationDisplay,
+    onDismissActionReceivedMethod: AwesomeNotificationController.onDismissAction,
+  );
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting('id_ID', null);
+
+  await an.AwesomeNotifications().initialize(
+    null, 
+    [
+      an.NotificationChannel(
+        channelKey: 'notification',
+        channelName: 'notification_channel',
+        channelDescription: 'Notification',
+        playSound: true,
+        onlyAlertOnce: true,
+        groupAlertBehavior: an.GroupAlertBehavior.Children,
+        importance: an.NotificationImportance.High,
+        defaultPrivacy: an.NotificationPrivacy.Private,
+        defaultColor: Colors.deepPurple,
+        ledColor: Colors.deepPurple
+      )
+    ],
+    debug: true
+  );
+
 
   await StorageHelper.init();
 
@@ -64,6 +96,8 @@ class MyAppState extends State<MyApp> {
   @override 
   void initState() {
     super.initState();
+
+    initializeNotifications();
 
     Future.microtask(() => getData());
   }

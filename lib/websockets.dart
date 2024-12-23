@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -187,7 +189,17 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "resolved-sos-$userId") {
       debugPrint("=== RESOLVED SOS ===");
+      
       String msg = message["message"];
+      
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: Random().nextInt(100),
+          channelKey: 'notification',
+          title: msg,
+        ),
+      );
+
       Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoResolvedSos(msg: msg);
       });

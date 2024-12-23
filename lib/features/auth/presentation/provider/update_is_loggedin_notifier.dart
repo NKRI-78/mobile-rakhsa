@@ -44,6 +44,7 @@ class UpdateIsLoggedinNotifier with ChangeNotifier {
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
+        _message = "";
         setStateProviderState(ProviderState.loaded);
       }
     );
