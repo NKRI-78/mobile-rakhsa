@@ -92,7 +92,6 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -110,18 +109,41 @@ class ChatPageState extends State<ChatPage> {
             top: 20.0,
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFEAEAEA),
-              boxShadow: kElevationToShadow[2]
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
+          child: widget.status == "CLOSED" || context.watch<GetMessagesNotifier>().isCaseClosed
+          ? Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFEAEAEA),
+              ),
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(context.read<GetMessagesNotifier>().note,
+                    textAlign: TextAlign.center,
+                    style: robotoRegular.copyWith(
+                      color: ColorResources.black,
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                ],
+              ) 
+            )
+          : Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFEAEAEA),
+                boxShadow: kElevationToShadow[2]
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                context.watch<GetMessagesNotifier>().isBtnSessionEnd 
+                
+                context.watch<GetMessagesNotifier>().isCaseClosed 
+                ? const SizedBox()
+                : context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? widget.status != "CLOSED" 
-                ? CustomButton(
+                  ? CustomButton(
                     onTap: () async {
                       GeneralModal.ratingSos(
                         sosId: widget.sosId
@@ -136,13 +158,13 @@ class ChatPageState extends State<ChatPage> {
                     isBorderRadius: true,
                     btnTxt: "Apa keluhan sudah ditangani ?",
                   ) 
-                : const SizedBox() 
-                : const SizedBox(), 
-
+                  : const SizedBox() 
+                : const SizedBox(),
+                
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? const SizedBox(height: 10.0)
                 : const SizedBox(),
-
+                
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -350,8 +372,8 @@ class ChatPageState extends State<ChatPage> {
                       
                       if(notifier.state == ProviderState.loaded)
                         SliverToBoxAdapter(
-                          child: showAutoGreetings 
-                          ? Column(
+                          child: showAutoGreetings ? 
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -396,36 +418,7 @@ class ChatPageState extends State<ChatPage> {
                                   ),
                                 ),
                               ],
-                            ) 
-                          : notifier.note.isNotEmpty 
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 30.0,
-                                    horizontal: 12.0,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: primaryColor,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12.0),
-                                      topRight: Radius.circular(12.0),
-                                      bottomLeft: Radius.circular(12.0),
-                                      bottomRight: Radius.circular(12.0),
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text("Information : ${notifier.note}",
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.white,
-                                    ),
-                                  )
-                                ),
-                            ],
-                          ) : const SizedBox(),
+                          ) : const SizedBox()
                         ),
                           
                      if(notifier.state == ProviderState.loaded)

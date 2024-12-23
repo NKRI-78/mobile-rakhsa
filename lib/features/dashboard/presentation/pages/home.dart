@@ -393,6 +393,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     
                     return CarouselSlider(
                       options: CarouselOptions(
+                        autoPlayInterval: const Duration(seconds: 6),
                         autoPlay: true,
                         viewportFraction: 1.0,
                         height: 280.0 

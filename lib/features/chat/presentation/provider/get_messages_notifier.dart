@@ -25,6 +25,9 @@ class GetMessagesNotifier with ChangeNotifier {
 
   bool _isRunning = false;
   bool get isRunning => _isRunning;
+
+  bool _isCaseClosed = false;
+  bool get isCaseClosed => _isCaseClosed;
   
   int _time = 5;
   int get time => _time;
@@ -82,6 +85,18 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void clearActiveChatId() {
     _activeChatId = "";
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  void setStateIsCaseClosed() {
+    _isCaseClosed = true;
+    
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  void setStateNote({required String val}) {
+    _note = val;
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }

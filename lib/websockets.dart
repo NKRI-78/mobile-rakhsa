@@ -88,7 +88,6 @@ class WebSocketsService extends ChangeNotifier {
 
   void reconnect() {
     debugPrint("Attempting to reconnect...");
-
     
     reconnectTimer?.cancel();
 
@@ -198,7 +197,7 @@ class WebSocketsService extends ChangeNotifier {
           channelKey: 'notification',
           title: msg,
         ),
-      );
+      );  
 
       Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoResolvedSos(msg: msg);
@@ -207,8 +206,12 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
-      
+
       String msg = message["message"];
+
+      getMessagesNotifier.setStateIsCaseClosed();
+
+      getMessagesNotifier.setStateNote(val: msg);
 
       AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -218,9 +221,9 @@ class WebSocketsService extends ChangeNotifier {
         ),
       );
 
-      Future.delayed(const Duration(seconds: 2), () {
-        GeneralModal.infoClosedSos(msg: msg);
-      });
+      // Future.delayed(const Duration(seconds: 2), () {
+      //   GeneralModal.infoClosedSos(msg: msg);
+      // });
     }
 
     if (message["type"] == "confirm-sos") {
