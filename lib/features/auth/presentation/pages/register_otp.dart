@@ -101,13 +101,6 @@ class RegisterOtpState extends State<RegisterOtp> {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Image.asset("assets/images/forward.png"),
-                        ),
-                      )
                     ],
                   ),
                   Padding(
@@ -149,8 +142,8 @@ class RegisterOtpState extends State<RegisterOtp> {
                         ),
 
                         OtpTextField(
-                          fieldWidth: 55,
-                          fieldHeight: 55,
+                          fieldWidth: 55.0,
+                          fieldHeight: 55.0,
                           numberOfFields: 4,
                           borderColor: yellowColor,
                           showFieldAsBox: true,

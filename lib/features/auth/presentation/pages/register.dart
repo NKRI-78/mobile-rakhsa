@@ -98,7 +98,7 @@ class RegisterPageState extends State<RegisterPage> {
       password,
       passConfirm
     );
-    
+
     if(isClear) {
       await registerNotifier.register(
         fullname: fullname,
@@ -113,18 +113,7 @@ class RegisterPageState extends State<RegisterPage> {
     if(registerNotifier.message != "") {
       ShowSnackbar.snackbarErr(registerNotifier.message);
       return;
-    }
-
-    ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail reihanagam7@gmail.com untuk mengisi kode otp yang telah dikirimkan");
-
-    Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-      MaterialPageRoute(builder: (context) {
-        return const RegisterOtp(email: "reihanagam7@gmail.com");
-      }),
-      (route) => false,
-    );
-
-    
+    } 
 
   }
 

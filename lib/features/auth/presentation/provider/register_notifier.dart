@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 
@@ -65,9 +66,11 @@ class RegisterNotifier with ChangeNotifier {
 
         webSocketsService.join();
 
+        ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
+
         Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
           MaterialPageRoute(builder: (context) {
-            return RegisterOtp(email: email,);
+            return RegisterOtp(email: email);
           }),
           (route) => false,
         );

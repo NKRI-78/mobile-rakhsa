@@ -73,16 +73,16 @@ class LoginPageState extends State<LoginPage> {
     if(loginNotifier.message != "") {
       ShowSnackbar.snackbarErr(loginNotifier.message);
       return;
-    }
+    } else {
+      await updateIsLoggedinNotifier.updateIsLoggedIn(
+        userId: loginNotifier.authModel.data!.user.id, 
+        type: "login"
+      );
 
-    await updateIsLoggedinNotifier.updateIsLoggedIn(
-      userId: loginNotifier.authModel.data!.user.id, 
-      type: "login"
-    );
-
-    if(updateIsLoggedinNotifier.message != "") {
-      ShowSnackbar.snackbarErr(updateIsLoggedinNotifier.message);
-      return;
+      if(updateIsLoggedinNotifier.message != "") {
+        ShowSnackbar.snackbarErr(updateIsLoggedinNotifier.message);
+        return;
+      }
     }
   }
 
