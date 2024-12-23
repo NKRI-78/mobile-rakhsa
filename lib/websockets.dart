@@ -20,7 +20,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 enum ConnectionIndicator { red, yellow, green }
 
 class WebSocketsService extends ChangeNotifier {
-  final GetMessagesNotifier getMessagesNotifier;
+  final GetMessagesNotifier messagesNotifier;
 
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
@@ -32,7 +32,7 @@ class WebSocketsService extends ChangeNotifier {
   bool isConnected = false;
 
   WebSocketsService({
-    required this.getMessagesNotifier,
+    required this.messagesNotifier,
   }) {
     connect();
   }
@@ -183,7 +183,7 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
-      getMessagesNotifier.appendMessage(data: message);
+      messagesNotifier.appendMessage(data: message);
     }
 
     if (message["type"] == "resolved-sos-$userId") {
@@ -191,7 +191,7 @@ class WebSocketsService extends ChangeNotifier {
       
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 2), () async {
+      Future.delayed(const Duration(seconds: 1), () async {
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: Random().nextInt(100),
@@ -209,7 +209,7 @@ class WebSocketsService extends ChangeNotifier {
 
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 2), () async {
+      Future.delayed(const Duration(seconds: 1), () async {
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: Random().nextInt(100),
@@ -218,8 +218,8 @@ class WebSocketsService extends ChangeNotifier {
           ),
         );
 
-        getMessagesNotifier.setStateIsCaseClosed();
-        getMessagesNotifier.setStateNote(val: msg);
+        messagesNotifier.setStateIsCaseClosed(true);
+        messagesNotifier.setStateNote(val: msg);
       });
     }
 
@@ -230,8 +230,18 @@ class WebSocketsService extends ChangeNotifier {
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
       String status = message["status"];
+
+      Future.delayed(const Duration(seconds: 1), () async {
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: Random().nextInt(100),
+            channelKey: 'notification',
+            title: "Anda sudah terhubung dengan admin",
+          ),
+        );
+      });
     
-      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) {
+      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) {
         return ChatPage(
           chatId: chatId,
           status: status,
@@ -243,8 +253,8 @@ class WebSocketsService extends ChangeNotifier {
 
       navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
-      getMessagesNotifier.resetTimer();
-      getMessagesNotifier.startTimer();
+      messagesNotifier.resetTimer();
+      messagesNotifier.startTimer();
     }
   }
 

@@ -169,7 +169,7 @@ void init() {
   locator.registerLazySingleton(() => GetContinentNotifier(useCase: locator()));
   
   locator.registerFactory(() => WebSocketsService(
-    getMessagesNotifier: locator()
+    messagesNotifier: locator()
   ));
 
   DioHelper dio = DioHelper();

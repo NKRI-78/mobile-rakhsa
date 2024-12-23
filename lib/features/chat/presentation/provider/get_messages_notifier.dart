@@ -89,8 +89,8 @@ class GetMessagesNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateIsCaseClosed() {
-    _isCaseClosed = true;
+  void setStateIsCaseClosed(bool val) {
+    _isCaseClosed = val;
     
     Future.delayed(Duration.zero, () => notifyListeners());
   }

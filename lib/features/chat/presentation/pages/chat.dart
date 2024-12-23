@@ -75,6 +75,7 @@ class ChatPageState extends State<ChatPage> {
     webSocketService = context.read<WebSocketsService>();
 
     messageNotifier.startTimer();
+    messageNotifier.setStateIsCaseClosed(false);
 
     messageC = TextEditingController();
 
@@ -94,7 +95,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvoked: (bool didPop) {
         if (didPop) {
           return;
         }
@@ -136,14 +137,11 @@ class ChatPageState extends State<ChatPage> {
               ),
               padding: const EdgeInsets.all(10.0),
               child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+                mainAxisSize: MainAxisSize.min,
+                children: [
                 
-                context.watch<GetMessagesNotifier>().isCaseClosed 
-                ? const SizedBox()
-                : context.watch<GetMessagesNotifier>().isBtnSessionEnd 
-                ? widget.status != "CLOSED" 
-                  ? CustomButton(
+                context.watch<GetMessagesNotifier>().isBtnSessionEnd 
+                ? CustomButton(
                     onTap: () async {
                       GeneralModal.ratingSos(
                         sosId: widget.sosId
@@ -158,7 +156,6 @@ class ChatPageState extends State<ChatPage> {
                     isBorderRadius: true,
                     btnTxt: "Apa keluhan sudah ditangani ?",
                   ) 
-                  : const SizedBox() 
                 : const SizedBox(),
                 
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
@@ -177,9 +174,6 @@ class ChatPageState extends State<ChatPage> {
                         style: robotoRegular.copyWith(
                           fontSize: 12.0
                         ),
-                        readOnly: widget.status == "CLOSED"
-                        ? true 
-                        : false,
                         decoration: InputDecoration(
                           isDense: true,
                           filled: true,
@@ -209,9 +203,7 @@ class ChatPageState extends State<ChatPage> {
               
                     Flexible(
                       child: IconButton(
-                        onPressed: widget.status == "CLOSED" 
-                        ? () {} 
-                        : () async {
+                        onPressed: () async {
                           if (messageC.text.trim().isEmpty) {
                             return;
                           }
