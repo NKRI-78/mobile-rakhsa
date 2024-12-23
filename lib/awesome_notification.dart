@@ -4,10 +4,6 @@ class AwesomeNotificationController {
 
   static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
 
-    // String chatId = receivedAction.payload!["chat_id"] ?? "-";
-    // String sender = receivedAction.payload!["sender"] ?? "-";
-    // String recipient = receivedAction.payload!["recipient"] ?? "-";
-
   }
 
   static Future<void> onNotificationCreated(ReceivedNotification receivedNotification) async {

@@ -207,7 +207,17 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
+      
       String msg = message["message"];
+
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: Random().nextInt(100),
+          channelKey: 'notification',
+          title: msg,
+        ),
+      );
+
       Future.delayed(const Duration(seconds: 2), () {
         GeneralModal.infoClosedSos(msg: msg);
       });
