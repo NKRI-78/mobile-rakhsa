@@ -189,17 +189,17 @@ class WebSocketsService extends ChangeNotifier {
     if (message["type"] == "resolved-sos-$userId") {
       debugPrint("=== RESOLVED SOS ===");
       
-      String msg = message["message"];
-      
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: Random().nextInt(100),
-          channelKey: 'notification',
-          title: msg,
-        ),
-      );  
+      String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () async {
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: Random().nextInt(100),
+            channelKey: 'notification',
+            title: msg,
+          ),
+        );  
+
         GeneralModal.infoResolvedSos(msg: msg);
       });
     }
@@ -207,23 +207,20 @@ class WebSocketsService extends ChangeNotifier {
     if (message["type"] == "closed-sos-$userId") {
       debugPrint("=== CLOSED SOS ===");
 
-      String msg = message["message"];
+      String msg = message["message"].toString();
 
-      getMessagesNotifier.setStateIsCaseClosed();
+      Future.delayed(const Duration(seconds: 2), () async {
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: Random().nextInt(100),
+            channelKey: 'notification',
+            title: msg,
+          ),
+        );
 
-      getMessagesNotifier.setStateNote(val: msg);
-
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: Random().nextInt(100),
-          channelKey: 'notification',
-          title: msg,
-        ),
-      );
-
-      // Future.delayed(const Duration(seconds: 2), () {
-      //   GeneralModal.infoClosedSos(msg: msg);
-      // });
+        getMessagesNotifier.setStateIsCaseClosed();
+        getMessagesNotifier.setStateNote(val: msg);
+      });
     }
 
     if (message["type"] == "confirm-sos") {

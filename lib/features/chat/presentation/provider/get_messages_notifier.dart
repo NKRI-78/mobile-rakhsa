@@ -179,17 +179,14 @@ class GetMessagesNotifier with ChangeNotifier {
     String incomingMessageId = data["data"]["id"];
     bool isRead = data["data"]["is_read"];
 
-    // Ensure the message belongs to the current chat
     if (incomingChatId != activeChatId) {
-      return; // Ignore messages for other chats
+      return;
     }
 
-    // Check for duplicate messages
     if (_messages.any((message) => message.id == incomingMessageId)) {
       return;
     }
 
-    // Add the new message at the beginning of the messages list
     _messages.insert(
       0,
       MessageData(
@@ -208,7 +205,6 @@ class GetMessagesNotifier with ChangeNotifier {
       ),
     );
 
-    // Scroll to the bottom of the chat after adding the message
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
         sC.animateTo(
@@ -219,7 +215,6 @@ class GetMessagesNotifier with ChangeNotifier {
       }
     });
 
-    // Notify listeners of the state change
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
