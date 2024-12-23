@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_html/flutter_html.dart' as fh;
+
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:uuid/uuid.dart';
@@ -570,14 +572,36 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                         ),
                                                       ),
                                                       const SizedBox(height: 4.0),
-                                                      Text(
-                                                        item.desc.toString(),
-                                                        maxLines: 4,
-                                                        style: robotoRegular.copyWith(
-                                                          overflow: TextOverflow.ellipsis,
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeSmall,
-                                                        ),
+                                                      fh.Html(
+                                                        data: item.desc.toString(),
+                                                        style: {
+                                                          'body': fh.Style(
+                                                            maxLines: 4,
+                                                            margin: fh.Margins.zero,
+                                                            textOverflow: TextOverflow.ellipsis,
+                                                            color: ColorResources.white,
+                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                          ),
+                                                          'p': fh.Style(
+                                                            maxLines: 2,
+                                                            textOverflow: TextOverflow.ellipsis,
+                                                            margin: fh.Margins.zero,
+                                                            color: ColorResources.white,
+                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                          ),
+                                                          'span': fh.Style(
+                                                            maxLines: 2,
+                                                            textOverflow: TextOverflow.ellipsis,
+                                                            color: ColorResources.white,
+                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                          ),
+                                                          'div': fh.Style(
+                                                            maxLines: 2,
+                                                            textOverflow: TextOverflow.ellipsis,
+                                                            color: ColorResources.white,
+                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                          )
+                                                        },
                                                       ),
                                                       const SizedBox(height: 4.0),
                                                        Text("Baca selengkapnya",

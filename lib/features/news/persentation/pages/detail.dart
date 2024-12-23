@@ -2,6 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_html/flutter_html.dart' as fh;
+
 import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
@@ -102,11 +105,24 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             const SizedBox(
               height: 18,
             ),
-            Text(widget.desc,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-                color: ColorResources.black
-              ),
+            fh.Html(
+              data: widget.desc,
+              style: {
+                'body': fh.Style(
+                  margin: fh.Margins.zero,
+                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                ),
+                'p': fh.Style(
+                  margin: fh.Margins.zero,
+                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                ),
+                'span': fh.Style(
+                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                ),
+                'div': fh.Style(
+                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                )
+              },
             ),
             const SizedBox(
               height: 18,
@@ -196,16 +212,31 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                         fontSize: Dimensions.fontSizeDefault,
                                       ),
                                     ),
+                                    
                                     const SizedBox(
                                       height: 6.0,
                                     ),
-                                    Text(notifier.news[i].desc.toString(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: Dimensions.fontSizeSmall,
-                                      ),
-                                    )
+
+                                    fh.Html(
+                                      data: notifier.news[i].desc.toString(),
+                                      style: {
+                                        'body': fh.Style(
+                                          margin: fh.Margins.zero,
+                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        ),
+                                        'p': fh.Style(
+                                          margin: fh.Margins.zero,
+                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        ),
+                                        'span': fh.Style(
+                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        ),
+                                        'div': fh.Style(
+                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        )
+                                      },
+                                    ),
+
                                   ],
                                 ),
                               ))
