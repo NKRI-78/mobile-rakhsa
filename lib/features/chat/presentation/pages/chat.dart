@@ -190,7 +190,7 @@ class ChatPageState extends State<ChatPage> {
                         onPressed: widget.status == "CLOSED" 
                         ? () {} 
                         : () async {
-                          if (messageC.text.isEmpty) {
+                          if (messageC.text.trim().isEmpty) {
                             return;
                           }
 
@@ -429,42 +429,46 @@ class ChatPageState extends State<ChatPage> {
                         ),
                           
                      if(notifier.state == ProviderState.loaded)
-                       SliverToBoxAdapter(
-                         child: GroupedListView<MessageData, DateTime>(
-                          shrinkWrap: true,
-                          elements: notifier.messages,
-                          groupBy: (MessageData item) => DateTime(item.createdAt.year, item.createdAt.month, item.createdAt.day),
-                          groupComparator: (DateTime value1, DateTime value2) => value2.compareTo(value1),
-                          order: GroupedListOrder.DESC,
-                          useStickyGroupSeparators: true,
-                          groupSeparatorBuilder: (DateTime groupByValue) => Center(
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(8.0),
-                              margin: const EdgeInsets.only(
-                                top: 10.0,
-                                bottom: 10.0
-                              ),
-                              child: Center(
-                                child: Text(DateFormat("MMMM dd, yyyy").format(groupByValue),
-                                  style: robotoRegular.copyWith(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold
+                        SliverToBoxAdapter(
+                          child: GroupedListView<MessageData, DateTime>(
+                            shrinkWrap: true,
+                            elements: notifier.messages,
+                            groupBy: (MessageData item) => DateTime(
+                              item.createdAt.year, 
+                              item.createdAt.month, 
+                              item.createdAt.day,
+                            ),
+                            itemComparator: (item1, item2) => item2.createdAt.compareTo(item1.createdAt),
+                            groupComparator: (DateTime value1, DateTime value2) => value2.compareTo(value1),
+                            order: GroupedListOrder.DESC,
+                            useStickyGroupSeparators: true,
+                            groupSeparatorBuilder: (DateTime groupByValue) => Center(
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                                child: Center(
+                                  child: Text(
+                                    DateFormat("MMMM dd, yyyy").format(groupByValue),
+                                    style: robotoRegular.copyWith(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                            itemBuilder: (BuildContext context, MessageData item) => ListTile(
+                              title: ChatBubble(
+                                text: item.text,
+                                time: item.sentTime,
+                                isMe: item.user.isMe!,
+                                isRead: item.isRead,
+                              ),
+                            ),
                           ),
-                          itemBuilder: (BuildContext context, MessageData item) => ListTile(
-                            title: ChatBubble(
-                              text: item.text, 
-                              time: item.sentTime,
-                              isMe: item.user.isMe!,
-                              isRead: item.isRead
-                            )
-                          ),
-                        ),
-                      )
+                        )
+
                   ],
                 ),
               );

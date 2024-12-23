@@ -160,42 +160,52 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void appendMessage({required Map<String, dynamic> data}) {
-    bool isRead = data["data"]["is_read"];
-    String incomingMessageId = data["data"]["id"];
     String incomingChatId = data["data"]["chat_id"];
+    String incomingMessageId = data["data"]["id"];
+    bool isRead = data["data"]["is_read"];
 
+    // Ensure the message belongs to the current chat
+    if (incomingChatId != activeChatId) {
+      return; // Ignore messages for other chats
+    }
+
+    // Check for duplicate messages
     if (_messages.any((message) => message.id == incomingMessageId)) {
       return;
     }
 
-    if(activeChatId == incomingChatId) {
-      _messages.insert(0, MessageData(
-        id: data["data"]["id"],
-        chatId: data["data"]["chat_id"],
+    // Add the new message at the beginning of the messages list
+    _messages.insert(
+      0,
+      MessageData(
+        id: incomingMessageId,
+        chatId: incomingChatId,
         user: MessageUser(
           id: data["data"]["user"]["id"],
           isMe: data["data"]["user"]["is_me"],
           avatar: data["data"]["user"]["avatar"],
-          name: data["data"]["user"]["name"]
-        ), 
-        isRead: isRead, 
-        sentTime: data["data"]["sent_time"], 
-        text: data["data"]["text"], 
-        createdAt: DateTime.now()
-      ));
+          name: data["data"]["user"]["name"],
+        ),
+        isRead: isRead,
+        sentTime: data["data"]["sent_time"],
+        text: data["data"]["text"],
+        createdAt: DateTime.now(),
+      ),
+    );
 
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (sC.hasClients) {
-          sC.animateTo(
-            sC.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300), 
-            curve: Curves.easeOut, 
-          );
-        }
-      });
-    
-      Future.delayed(Duration.zero, () => notifyListeners());
-    }
+    // Scroll to the bottom of the chat after adding the message
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (sC.hasClients) {
+        sC.animateTo(
+          sC.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
 
-  } 
+    // Notify listeners of the state change
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
 }
