@@ -29,6 +29,7 @@ class ProfileData {
   String contact;
   String emergencyContact;
   String createdAt;
+  ProfileSos sos;
 
   ProfileData({
     required this.id,
@@ -40,6 +41,7 @@ class ProfileData {
     required this.contact,
     required this.emergencyContact,
     required this.createdAt,
+    required this.sos,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
@@ -52,5 +54,21 @@ class ProfileData {
     contact: json["contact"],
     emergencyContact: json["emergency_contact"],
     createdAt: json["created_at"],
+    sos: ProfileSos.fromJson(json["sos"]),
+  );
+}
+
+class ProfileSos {
+  String id;
+  bool running;
+
+  ProfileSos({
+    required this.id,
+    required this.running,
+  });
+
+  factory ProfileSos.fromJson(Map<String, dynamic> json) => ProfileSos(
+    id: json["id"],
+    running: json["running"],
   );
 }

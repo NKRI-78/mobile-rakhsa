@@ -169,7 +169,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    // WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     
     webSocketsService = context.read<WebSocketsService>();
 
@@ -183,29 +183,29 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    // WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     
     super.dispose();
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   super.didChangeAppLifecycleState(state);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
 
-  //   if (state == AppLifecycleState.resumed) {
-  //     debugPrint("=== APP RESUME ===");
-  //     getCurrentLocation();
-  //   }
-  //   if (state == AppLifecycleState.inactive) {
-  //     debugPrint("=== APP INACTIVE ===");
-  //   }
-  //   if (state == AppLifecycleState.paused) {
-  //     debugPrint("=== APP PAUSED ===");
-  //   }
-  //   if (state == AppLifecycleState.detached) {
-  //     debugPrint("=== APP CLOSED ===");
-  //   }
-  // }
+    if (state == AppLifecycleState.resumed) {
+      debugPrint("=== APP RESUME ===");
+      checkLocationPermission();
+    }
+    if (state == AppLifecycleState.inactive) {
+      debugPrint("=== APP INACTIVE ===");
+    }
+    if (state == AppLifecycleState.paused) {
+      debugPrint("=== APP PAUSED ===");
+    }
+    if (state == AppLifecycleState.detached) {
+      debugPrint("=== APP CLOSED ===");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -397,124 +397,228 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       );
                     }
                     
-                    return CarouselSlider(
+                    return notifier.ews.isEmpty 
+                    ? Card(
+                        color: ColorResources.white,
+                        surfaceTintColor: ColorResources.white,
+                        elevation: 1.0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                                      
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                      
+                                    context.watch<ProfileNotifier>().state == ProviderState.error 
+                                    ? const SizedBox()
+                                    : context.watch<ProfileNotifier>().state == ProviderState.loading 
+                                    ? const SizedBox() 
+                                    : CachedNetworkImage(
+                                        imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                                        imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                        return CircleAvatar(
+                                          backgroundImage: imageProvider,
+                                        );
+                                      },
+                                      placeholder: (BuildContext context, String url) {
+                                        return const CircleAvatar(
+                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                        );
+                                      },
+                                      errorWidget: (BuildContext context, String url, Object error) {
+                                        return const CircleAvatar(
+                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                        );
+                                      },
+                                    ),
+                                                      
+                                    const SizedBox(width: 15.0),
+                                                      
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                                      
+                                          Text("Posisi Anda saat ini",
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold
+                                            ),
+                                          ),
+                                                      
+                                          const SizedBox(height: 4.0),
+                                      
+                                          Text(loadingGmaps 
+                                            ? "Mohon tunggu..." 
+                                            : currentAddress,
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall,
+                                              color: ColorResources.black
+                                            ),
+                                          )
+                                      
+                                        ],
+                                      ),
+                                    )
+                                                      
+                                  ],
+                                ),
+                            
+                                Container(
+                                  width: double.infinity,
+                                  height: 120.0,
+                                  margin: const EdgeInsets.only(
+                                    top: 16.0,
+                                    left: 16.0, 
+                                    right: 16.0
+                                  ),
+                                  child: loadingGmaps 
+                                  ? const SizedBox() 
+                                  : GoogleMap(
+                                      mapType: MapType.normal,
+                                      gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                                      myLocationEnabled: false,
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          double.parse(currentLat), 
+                                          double.parse(currentLng)
+                                        ),
+                                        zoom: 12.0,
+                                      ),
+                                      markers: Set.from(markers),
+                                    ),
+                                  )
+                                                      
+                              ],
+                            ),
+                          ),
+                        )
+                      )
+                    : CarouselSlider(
                       options: CarouselOptions(
-                        autoPlayInterval: const Duration(seconds: 6),
+                        autoPlayInterval: const Duration(seconds: 10),
                         autoPlay: true,
                         viewportFraction: 1.0,
                         height: 280.0 
                       ),
                       items: notifier.ews.map((item) {
-                        if(item.id == 0) {
-                          return Card(
-                            color: ColorResources.white,
-                            surfaceTintColor: ColorResources.white,
-                            elevation: 1.0,
-                            child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
+                        // if(item.id == 0) {
+                        //   return Card(
+                        //     color: ColorResources.white,
+                        //     surfaceTintColor: ColorResources.white,
+                        //     elevation: 1.0,
+                        //     child: Container(
+                        //       padding: const EdgeInsets.all(8.0),
+                        //       child: SingleChildScrollView(
+                        //         child: Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.center,
+                        //           mainAxisAlignment: MainAxisAlignment.center,
+                        //           mainAxisSize: MainAxisSize.min,
+                        //           children: [
                                                           
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
+                        //             Row(
+                        //               mainAxisAlignment: MainAxisAlignment.center,
+                        //               mainAxisSize: MainAxisSize.max,
+                        //               children: [
                           
-                                        context.watch<ProfileNotifier>().state == ProviderState.error 
-                                        ? const SizedBox()
-                                        : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                                        ? const SizedBox() 
-                                        : CachedNetworkImage(
-                                            imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                            return CircleAvatar(
-                                              backgroundImage: imageProvider,
-                                            );
-                                          },
-                                          placeholder: (BuildContext context, String url) {
-                                            return const CircleAvatar(
-                                              backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                            );
-                                          },
-                                          errorWidget: (BuildContext context, String url, Object error) {
-                                            return const CircleAvatar(
-                                              backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                            );
-                                          },
-                                        ),
+                        //                 context.watch<ProfileNotifier>().state == ProviderState.error 
+                        //                 ? const SizedBox()
+                        //                 : context.watch<ProfileNotifier>().state == ProviderState.loading 
+                        //                 ? const SizedBox() 
+                        //                 : CachedNetworkImage(
+                        //                     imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                        //                     imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                        //                     return CircleAvatar(
+                        //                       backgroundImage: imageProvider,
+                        //                     );
+                        //                   },
+                        //                   placeholder: (BuildContext context, String url) {
+                        //                     return const CircleAvatar(
+                        //                       backgroundImage: AssetImage('assets/images/default.jpeg'),
+                        //                     );
+                        //                   },
+                        //                   errorWidget: (BuildContext context, String url, Object error) {
+                        //                     return const CircleAvatar(
+                        //                       backgroundImage: AssetImage('assets/images/default.jpeg'),
+                        //                     );
+                        //                   },
+                        //                 ),
                                                           
-                                        const SizedBox(width: 15.0),
+                        //                 const SizedBox(width: 15.0),
                                                           
-                                        Flexible(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
+                        //                 Flexible(
+                        //                   child: Column(
+                        //                     crossAxisAlignment: CrossAxisAlignment.start,
+                        //                     mainAxisSize: MainAxisSize.min,
+                        //                     children: [
                                                           
-                                              Text("Posisi Anda saat ini",
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeDefault,
-                                                  fontWeight: FontWeight.bold
-                                                ),
-                                              ),
+                        //                       Text("Posisi Anda saat ini",
+                        //                         style: robotoRegular.copyWith(
+                        //                           fontSize: Dimensions.fontSizeDefault,
+                        //                           fontWeight: FontWeight.bold
+                        //                         ),
+                        //                       ),
                                                           
-                                              const SizedBox(height: 4.0),
+                        //                       const SizedBox(height: 4.0),
                                           
-                                              Text(loadingGmaps 
-                                                ? "Mohon tunggu..." 
-                                                : currentAddress,
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeSmall,
-                                                  color: ColorResources.black
-                                                ),
-                                              )
+                        //                       Text(loadingGmaps 
+                        //                         ? "Mohon tunggu..." 
+                        //                         : currentAddress,
+                        //                         style: robotoRegular.copyWith(
+                        //                           fontSize: Dimensions.fontSizeSmall,
+                        //                           color: ColorResources.black
+                        //                         ),
+                        //                       )
                                           
-                                            ],
-                                          ),
-                                        )
+                        //                     ],
+                        //                   ),
+                        //                 )
                                                           
-                                      ],
-                                    ),
+                        //               ],
+                        //             ),
                                 
-                                    Container(
-                                      width: double.infinity,
-                                      height: 120.0,
-                                      margin: const EdgeInsets.only(
-                                        top: 16.0,
-                                        left: 16.0, 
-                                        right: 16.0
-                                      ),
-                                      child: loadingGmaps 
-                                      ? const SizedBox() 
-                                      : GoogleMap(
-                                          mapType: MapType.normal,
-                                          gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                          myLocationEnabled: false,
-                                          initialCameraPosition: CameraPosition(
-                                            target: LatLng(
-                                              double.parse(currentLat), 
-                                              double.parse(currentLng)
-                                            ),
-                                            zoom: 12.0,
-                                          ),
-                                          markers: Set.from(markers),
-                                        ),
-                                      )
+                        //             Container(
+                        //               width: double.infinity,
+                        //               height: 120.0,
+                        //               margin: const EdgeInsets.only(
+                        //                 top: 16.0,
+                        //                 left: 16.0, 
+                        //                 right: 16.0
+                        //               ),
+                        //               child: loadingGmaps 
+                        //               ? const SizedBox() 
+                        //               : GoogleMap(
+                        //                   mapType: MapType.normal,
+                        //                   gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                        //                   myLocationEnabled: false,
+                        //                   initialCameraPosition: CameraPosition(
+                        //                     target: LatLng(
+                        //                       double.parse(currentLat), 
+                        //                       double.parse(currentLng)
+                        //                     ),
+                        //                     zoom: 12.0,
+                        //                   ),
+                        //                   markers: Set.from(markers),
+                        //                 ),
+                        //               )
                                                           
-                                  ],
-                                ),
-                              ),
-                            )
-                          );
-                        }
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     )
+                        //   );
+                        // }
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(context, 
-                              MaterialPageRoute(
+                            Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return NewsDetailPage(
                                   title: item.title.toString(), 
@@ -583,7 +687,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                         data: item.desc.toString(),
                                                         style: {
                                                           'body': fh.Style(
-                                                            maxLines: 4,
+                                                            maxLines: 2,
                                                             margin: fh.Margins.zero,
                                                             textOverflow: TextOverflow.ellipsis,
                                                             color: ColorResources.white,
@@ -796,25 +900,31 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   Timer? holdTimer;
 
   Future<void> handleLongPressStart() async {
-    // await Geolocator.requestPermission();
-    
-    if(StorageHelper.getUserId() == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const LoginPage();
-      }));
+    if(context.read<ProfileNotifier>().entity.data!.sos.running) {
+      GeneralModal.infoEndSos(
+        sosId: context.read<ProfileNotifier>().entity.data!.sos.id,
+        msg: "Apa kamu ingin mengakhiri sesi sekarang ?",
+      );
     } else {
-      sosNotifier.pulseController!.forward();
+      if(StorageHelper.getUserId() == null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return const LoginPage();
+        }));
+      } else {
+        sosNotifier.pulseController!.forward();
 
-      holdTimer = Timer(const Duration(milliseconds: 2000), () {
-        sosNotifier.pulseController!.reverse();
-        if (mounted) {
-          startTimer();
-        }
-      });
+        holdTimer = Timer(const Duration(milliseconds: 2000), () {
+          sosNotifier.pulseController!.reverse();
+          if (mounted) {
+            startTimer();
+          }
+        });
+      }
     }
   }
 
   Future<void> handleLongPressEnd() async {
+
     if(StorageHelper.getUserId() == null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {  
         return const LoginPage();
@@ -827,6 +937,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         setState(() => sosNotifier.isPressed = false);
       }
     }
+    
   }
 
   Future<void> startTimer() async {

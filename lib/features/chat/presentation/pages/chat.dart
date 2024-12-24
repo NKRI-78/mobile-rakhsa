@@ -344,18 +344,6 @@ class ChatPageState extends State<ChatPage> {
                       
                                 ],
                               ),
-
-                              Consumer<GetMessagesNotifier>(
-                                builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
-                                  return Text(notifier.time.toString(),
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge,
-                                      fontWeight: FontWeight.bold,
-                                      color: ColorResources.white,
-                                    ),
-                                  );
-                                },
-                              )
                               
                             ],
                           ),

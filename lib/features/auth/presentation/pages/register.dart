@@ -58,8 +58,8 @@ class RegisterPageState extends State<RegisterPage> {
       } else if (!email.isValidEmail()) {
         ShowSnackbar.snackbarErr("Email tidak valid");
         return false;
-      } else if (passport.isEmpty) {
-        ShowSnackbar.snackbarErr("Passport tidak boleh kosong");
+      } else if (passport.length < 9) {
+        ShowSnackbar.snackbarErr("Passport harus 9 digit");
         return false;
       } else if(emergencyContact.length < 10 || emergencyContact.length > 13) {
         ShowSnackbar.snackbarErr("No Darurat harus antara 10 hingga 13 digit");

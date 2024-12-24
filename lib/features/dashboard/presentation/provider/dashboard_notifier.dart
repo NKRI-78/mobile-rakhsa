@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
@@ -54,20 +53,9 @@ class DashboardNotifier with ChangeNotifier {
 
       _news = [];
 
-      if(StorageHelper.getUserId() != null) {
-        _news.insert(0, NewsData(
-          id: 0, 
-          title: "", 
-          img: "", 
-          desc: "", 
-          type: "",
-          createdAt: ""
-        ));
-      }
-
       _news.addAll(r.data);
 
-      if(news.length == 1) {
+      if(news.isEmpty) {
         setStateProvider(ProviderState.empty);
       }
 
@@ -97,20 +85,9 @@ class DashboardNotifier with ChangeNotifier {
 
       _ews = [];
 
-      if(StorageHelper.getUserId() != null) {
-        _ews.insert(0, NewsData(
-          id: 0, 
-          title: "", 
-          img: "", 
-          desc: "", 
-          type: "",
-          createdAt: ""
-        ));
-      }
-
       _ews.addAll(r.data);
 
-      if(ews.length == 1) {
+      if(ews.isEmpty) {
         setStateProvider(ProviderState.empty);
       }
 

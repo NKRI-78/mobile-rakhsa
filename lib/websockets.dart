@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -192,14 +192,6 @@ class WebSocketsService extends ChangeNotifier {
       String msg = message["message"].toString();
 
       Future.delayed(const Duration(seconds: 1), () async {
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: Random().nextInt(100),
-            channelKey: 'notification',
-            title: msg,
-          ),
-        );  
-
         GeneralModal.infoResolvedSos(msg: msg);
       });
     }
@@ -209,18 +201,10 @@ class WebSocketsService extends ChangeNotifier {
 
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 1), () async {
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: Random().nextInt(100),
-            channelKey: 'notification',
-            title: msg,
-          ),
-        );
+      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
-        messagesNotifier.setStateIsCaseClosed(true);
-        messagesNotifier.setStateNote(val: msg);
-      });
+      messagesNotifier.setStateIsCaseClosed(true);
+      messagesNotifier.setStateNote(val: msg);
     }
 
     if (message["type"] == "confirm-sos") {
@@ -230,16 +214,6 @@ class WebSocketsService extends ChangeNotifier {
       String recipientId = message["recipient_id"];
       String sosId = message["sos_id"];
       String status = message["status"];
-
-      Future.delayed(const Duration(seconds: 1), () async {
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: Random().nextInt(100),
-            channelKey: 'notification',
-            title: "Anda sudah terhubung dengan admin",
-          ),
-        );
-      });
     
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) {
         return ChatPage(
@@ -252,6 +226,7 @@ class WebSocketsService extends ChangeNotifier {
       }));
 
       navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
+      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
       messagesNotifier.resetTimer();
       messagesNotifier.startTimer();

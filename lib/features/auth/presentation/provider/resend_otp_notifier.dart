@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/resendOtp.dart';
 
@@ -34,12 +35,13 @@ class ResendOtpNotifier with ChangeNotifier {
     final resendOtp = await useCase.execute(
       email: email,
     );
-    
+
     resendOtp.fold(
       (l) { 
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
+        ShowSnackbar.snackbarOk("Kode OTP telah dikirim ulang kepada E-mail $email");
         setStateProviderState(ProviderState.loaded);
       }
     );
