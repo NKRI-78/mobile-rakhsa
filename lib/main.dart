@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -8,6 +13,8 @@ import 'package:rakhsa/awesome_notification.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/firebase.dart';
+import 'package:rakhsa/firebase_options.dart';
 
 import 'package:rakhsa/global.dart';
 
@@ -28,6 +35,10 @@ void initializeNotifications() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   await initializeDateFormatting('id_ID', null);
 
@@ -38,15 +49,11 @@ Future<void> main() async {
         channelKey: 'notification',
         channelName: 'notification_channel',
         channelDescription: 'Notification',
-        playSound: true,
+        playSound: false,
         channelShowBadge: true,
         onlyAlertOnce: true,
         criticalAlerts: true,
-        groupAlertBehavior: an.GroupAlertBehavior.Children,
         importance: an.NotificationImportance.High,
-        defaultPrivacy: an.NotificationPrivacy.Private,
-        defaultColor: Colors.deepPurple,
-        ledColor: Colors.deepPurple
       )
     ],
     debug: false
@@ -93,6 +100,9 @@ class MyAppState extends State<MyApp> {
       }
 
     }
+
+    if (!mounted) return;
+      await context.read<FirebaseProvider>().setupInteractedMessage(context);
   }
 
   @override 
@@ -100,6 +110,8 @@ class MyAppState extends State<MyApp> {
     super.initState();
 
     initializeNotifications();
+
+    context.read<FirebaseProvider>().listenNotification(context);
 
     Future.microtask(() => getData());
   }

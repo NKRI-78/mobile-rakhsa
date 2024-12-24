@@ -79,6 +79,7 @@ import 'package:rakhsa/features/media/presentation/provider/upload_media_notifie
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 
 import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
+import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -167,6 +168,10 @@ void init() {
   locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
   locator.registerLazySingleton(() => GetContinentNotifier(useCase: locator()));
+
+  locator.registerFactory(() => FirebaseProvider(
+    dio: locator()
+  ));
   
   locator.registerFactory(() => WebSocketsService(
     messagesNotifier: locator()

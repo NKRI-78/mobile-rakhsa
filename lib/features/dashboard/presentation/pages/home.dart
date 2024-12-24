@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart' as fh;
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rakhsa/firebase.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -59,6 +60,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   late WebSocketsService webSocketsService;
 
+  late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
@@ -77,6 +79,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
+
+    if(!mounted) return;
+      firebaseProvider.initFcm();
 
     if(!mounted) return;
       getCurrentLocation();
@@ -168,6 +173,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     
     webSocketsService = context.read<WebSocketsService>();
 
+    firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();

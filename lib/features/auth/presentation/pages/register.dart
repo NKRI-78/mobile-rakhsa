@@ -10,10 +10,8 @@ import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
-import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 

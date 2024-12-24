@@ -18,7 +18,19 @@
     <application
         android:label="Raksha"
         android:name="${applicationName}"
+        android:usesCleartextTraffic="true"
+        android:showWhenLocked="true"
+        android:turnScreenOn="true"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcher_icon">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
         
         <activity
             android:name=".MainActivity"

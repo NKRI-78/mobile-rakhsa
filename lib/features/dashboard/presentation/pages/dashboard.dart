@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -30,11 +32,15 @@ class DashboardScreenState extends State<DashboardScreen> {
   
   int selectedPageIndex = 0;
 
+  late FirebaseProvider firebaseProvider;
   late ProfileNotifier profileNotifier;
 
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
+
+    if(!mounted) return;
+      firebaseProvider.initFcm();
   } 
 
   List<Map<String, dynamic>> pages = [
@@ -128,7 +134,9 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override 
   void initState() {
     super.initState();
+
     profileNotifier = context.read<ProfileNotifier>();
+    firebaseProvider = context.read<FirebaseProvider>();
 
     Future.microtask(() => getData());
   }

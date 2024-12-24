@@ -27,6 +27,7 @@ import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/websockets.dart';
@@ -36,6 +37,7 @@ List<SingleChildWidget> providers = [
 ];
 
 List<SingleChildWidget> independentServices = [
+  ChangeNotifierProvider(create: (_) => di.locator<FirebaseProvider>()),
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosRatingNotifier>()),
