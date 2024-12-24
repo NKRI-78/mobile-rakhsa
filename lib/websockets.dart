@@ -215,15 +215,22 @@ class WebSocketsService extends ChangeNotifier {
       String sosId = message["sos_id"];
       String status = message["status"];
     
-      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) {
-        return ChatPage(
-          chatId: chatId,
-          status: status,
-          recipientId: recipientId,
-          sosId: sosId,
-          autoGreetings: true,
-        );
-      }));
+      Future.delayed(Duration.zero, () {
+        if (navigatorKey.currentContext != null) {
+          Navigator.push(
+            navigatorKey.currentContext!,
+            MaterialPageRoute(builder: (BuildContext context) {
+              return ChatPage(
+                chatId: chatId,
+                status: status,
+                recipientId: recipientId,
+                sosId: sosId,
+                autoGreetings: true,
+              );
+            }),
+          );
+        }
+      });
 
       Future.delayed(const Duration(seconds: 1), () {
         navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
