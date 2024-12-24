@@ -74,8 +74,6 @@ class WebSocketsService extends ChangeNotifier {
         },
       );
 
-      debugPrint(channel.toString());
-
       join();
       debugPrint("Connected to socket.");
     } catch (e) {
@@ -86,7 +84,7 @@ class WebSocketsService extends ChangeNotifier {
 
   void reconnect() {
     debugPrint("Attempting to reconnect...");
-    
+
     reconnectTimer?.cancel();
 
     if (isConnected) {

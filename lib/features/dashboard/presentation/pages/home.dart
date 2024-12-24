@@ -190,6 +190,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if (state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
+
+      
       checkLocationPermission();
     }
     if (state == AppLifecycleState.inactive) {
