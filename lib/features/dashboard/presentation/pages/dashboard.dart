@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
-
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
-
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';

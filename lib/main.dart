@@ -19,6 +19,7 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
+import 'package:rakhsa/websockets.dart';
 
 void initializeNotifications() {
   an.AwesomeNotifications().setListeners(
@@ -72,6 +73,8 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
 
+  late WebSocketsService webSocketsService;
+
   Widget home = const SizedBox();
 
   Future<void> getData() async {
@@ -99,6 +102,7 @@ class MyAppState extends State<MyApp> {
 
     if (!mounted) return;
       await context.read<FirebaseProvider>().setupInteractedMessage(context);
+
   }
 
   @override 
@@ -106,6 +110,9 @@ class MyAppState extends State<MyApp> {
     super.initState();
 
     initializeNotifications();
+
+    webSocketsService = context.read<WebSocketsService>();
+    webSocketsService.connect();
 
     context.read<FirebaseProvider>().listenNotification(context);
 

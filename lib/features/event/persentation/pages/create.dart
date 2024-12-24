@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 
@@ -164,6 +165,9 @@ class EventCreatePageState extends State<EventCreatePage> {
         children: [
           TextField(
             controller: titleC,
+            inputFormatters: [
+              UpperCaseTextFormatter()
+            ],
             decoration: InputDecoration(
               fillColor: const Color(0xffF4F4F7),
               filled: true,

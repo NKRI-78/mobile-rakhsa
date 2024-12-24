@@ -105,7 +105,8 @@ class CameraPageState extends State<CameraPage> {
         country: widget.country, 
         media: media,
         ext: ext,
-        lat: widget.lat, lng: widget.lng, 
+        lat: widget.lat, 
+        lng: widget.lng, 
         time: widget.time
       );
       

@@ -12,9 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
-
 import 'package:rakhsa/common/helpers/enum.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -243,7 +241,7 @@ class ChatPageState extends State<ChatPage> {
         ),
         body: SafeArea(
           child: Consumer<GetMessagesNotifier>(
-            builder: (__, notifier, _) {
+            builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
               return RefreshIndicator(
                 onRefresh: () {
                   return Future.sync(() {
@@ -262,11 +260,6 @@ class ChatPageState extends State<ChatPage> {
                         child: SizedBox()
                       ),
                     
-                    if(notifier.state == ProviderState.error)
-                      const SliverFillRemaining(
-                        child: SizedBox()
-                      ),
-                
                     if(notifier.state == ProviderState.loaded)
                       SliverAppBar(
                         pinned: true,

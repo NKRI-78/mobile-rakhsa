@@ -17,6 +17,7 @@ import 'package:rakhsa/features/administration/presentation/provider/get_state_n
 import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 
@@ -210,6 +211,9 @@ class EventEditPageState extends State<EventEditPage> {
             children: [
               TextField(
                 controller: titleC,
+                inputFormatters: [
+                  UpperCaseTextFormatter()
+                ],
                 decoration: InputDecoration(
                   fillColor: const Color(0xffF4F4F7),
                   filled: true,

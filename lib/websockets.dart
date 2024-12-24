@@ -33,9 +33,7 @@ class WebSocketsService extends ChangeNotifier {
 
   WebSocketsService({
     required this.messagesNotifier,
-  }) {
-    connect();
-  }
+  });
 
   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
     _connectionIndicator = connectionIndicators;
@@ -201,7 +199,9 @@ class WebSocketsService extends ChangeNotifier {
 
       String msg = message["message"].toString();
 
-      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      Future.delayed(const Duration(seconds: 1), () async {
+        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      });
 
       messagesNotifier.setStateIsCaseClosed(true);
       messagesNotifier.setStateNote(val: msg);
@@ -225,8 +225,11 @@ class WebSocketsService extends ChangeNotifier {
         );
       }));
 
+      Future.delayed(const Duration(seconds: 1), () {
+        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      });
+
       navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
-      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
       messagesNotifier.resetTimer();
       messagesNotifier.startTimer();
