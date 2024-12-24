@@ -191,10 +191,10 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                 child: CachedNetworkImage(
                                   fit: BoxFit.fitWidth,
                                   imageUrl: notifier.news[i].img.toString(),
-                                  placeholder: (context, url) {
+                                  placeholder: (BuildContext context, String url) {
                                     return Image.asset('assets/images/default.jpeg');
                                   },
-                                  errorWidget: (context, url, error) {
+                                  errorWidget: (BuildContext context, String url, Object error) {
                                     return Image.asset('assets/images/default.jpeg');
                                   },
                                 )
@@ -221,17 +221,21 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                       data: notifier.news[i].desc.toString(),
                                       style: {
                                         'body': fh.Style(
+                                          maxLines: 1,
                                           margin: fh.Margins.zero,
                                           fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                         ),
                                         'p': fh.Style(
+                                          maxLines: 1,
                                           margin: fh.Margins.zero,
                                           fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                         ),
                                         'span': fh.Style(
+                                           maxLines: 1,
                                           fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                         ),
                                         'div': fh.Style(
+                                         maxLines: 1,
                                           fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                         )
                                       },

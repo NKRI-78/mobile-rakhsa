@@ -264,7 +264,7 @@ class RegisterPageState extends State<RegisterPage> {
                           labelText: "Nomor Passport",
                           isPhoneNumber: false,
                           isAllowedSymbol: true,
-                          maxLength: 8,
+                          maxLength: 9,
                           hintText: "Nomor Passport",
                           fillColor: Colors.transparent,
                           emptyText: "Nomor Passport wajib di isi",

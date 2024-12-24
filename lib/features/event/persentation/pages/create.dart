@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 
@@ -149,10 +150,10 @@ class EventCreatePageState extends State<EventCreatePage> {
           child: Padding(
             padding: EdgeInsets.only(left: 16.0, right: 32, bottom: 10),
             child: Text(
-              'Buat Rencana Perjalanan mu ke Luar Negri',
+              'Buat Rencana Perjalananmu ke Luar Negri',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontSize: Dimensions.fontSizeOverLarge,
               ),
             ),
           )

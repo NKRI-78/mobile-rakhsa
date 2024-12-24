@@ -37,13 +37,12 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
           },
         ),
         bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: Size.fromHeight(55.0),
           child: Padding(
             padding: EdgeInsets.only(
-              top: 16.0,
               left: 16.0, 
-              right: 32, 
-              bottom: 10
+              right: 16.0, 
+              bottom: 10.0
             ),
             child: Text('Panduan Hukum',
               style: TextStyle(
