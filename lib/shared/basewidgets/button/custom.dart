@@ -14,6 +14,7 @@ class CustomButton extends StatelessWidget {
   final double width;
   final double height;
   final double sizeBorderRadius;
+  final BorderRadiusGeometry borderRadiusGeometry;
   final Color loadingColor;
   final Color btnColor;
   final Color btnTextColor;
@@ -27,7 +28,7 @@ class CustomButton extends StatelessWidget {
   final bool isPrefixIcon;
 
   const CustomButton({
-    Key? key, 
+    super.key, 
     required this.onTap, 
     this.btnTxt, 
     this.customText = false,
@@ -37,6 +38,7 @@ class CustomButton extends StatelessWidget {
     this.fontSize = 14.0,
     this.sizeBorderRadius = 10.0,
     this.isLoading = false,
+    this.borderRadiusGeometry = BorderRadius.zero,
     this.loadingColor = ColorResources.white,
     this.btnColor = ColorResources.primary,
     this.btnTextColor = ColorResources.white,
@@ -46,7 +48,7 @@ class CustomButton extends StatelessWidget {
     this.isBoxShadow = false,
     this.isBackgroundImage = false,
     this.isPrefixIcon = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class CustomButton extends StatelessWidget {
           ),
           borderRadius: isBorderRadius 
           ? BorderRadius.circular(sizeBorderRadius)
-          : null
+          : borderRadiusGeometry
         ),
         child: isLoading 
         ? Center(

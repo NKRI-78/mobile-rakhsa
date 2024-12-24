@@ -66,7 +66,6 @@ class WebSocketsService extends ChangeNotifier {
         },
         onDone: () {
           toggleConnection(false);
-          leave();
           reconnect();
         },
         onError: (error) {
@@ -153,6 +152,7 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void sendMessage({
+    required String chatId,
     required String recipientId,
     required String message,
   }) {
@@ -160,6 +160,7 @@ class WebSocketsService extends ChangeNotifier {
 
     channel?.sink.add(jsonEncode({
       "type": "message",
+      "chat_id": chatId,
       "sender": userId,
       "recipient": recipientId,
       "text": message,
@@ -252,6 +253,7 @@ class WebSocketsService extends ChangeNotifier {
   void dispose() {
     reconnectTimer?.cancel();
     disposeChannel();
+
     super.dispose();
   }
 }

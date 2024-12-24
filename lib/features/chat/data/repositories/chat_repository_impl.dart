@@ -28,9 +28,9 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override 
-  Future<Either<Failure, MessageModel>> getMessages({required String chatId}) async {
+  Future<Either<Failure, MessageModel>> getMessages({required String chatId, required String status}) async {
     try {
-      var result = await remoteDataSource.getMessages(chatId: chatId);
+      var result = await remoteDataSource.getMessages(chatId: chatId, status: status);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

@@ -11,7 +11,7 @@ class GetMessagesUseCase {
 
   GetMessagesUseCase(this.repository);
 
-  Future<Either<Failure, MessageModel>> execute({required String chatId}) {
-    return repository.getMessages(chatId: chatId);
+  Future<Either<Failure, MessageModel>> execute({required String chatId, required String status}) {
+    return repository.getMessages(chatId: chatId, status: status);
   }
 }

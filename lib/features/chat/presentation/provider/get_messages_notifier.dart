@@ -143,8 +143,8 @@ class GetMessagesNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> getMessages({required String chatId}) async {
-    final result = await useCase.execute(chatId: chatId);
+  Future<void> getMessages({required String chatId, required String status}) async {
+    final result = await useCase.execute(chatId: chatId, status: status);
     
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {

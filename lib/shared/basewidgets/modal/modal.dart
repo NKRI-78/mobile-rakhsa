@@ -75,7 +75,7 @@ class GeneralModal {
                             ),
                           )
                         ),
-          
+
                         Positioned(
                           bottom: 0.0,
                           left: 80.0,
@@ -130,7 +130,7 @@ class GeneralModal {
                   
                   SizedBox(
                     width: 300.0,
-                    height: 330.0,
+                    height: 300.0,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -140,7 +140,7 @@ class GeneralModal {
                           right: 20.0,
                           bottom: 20.0,
                           child: Container(
-                            height: 200.0,
+                            height: 150.0,
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
@@ -155,7 +155,6 @@ class GeneralModal {
                                   textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.w600,
                                     color: Colors.black
                                   ),
                                 )
@@ -164,11 +163,23 @@ class GeneralModal {
                             ),
                           )
                         ),
+
+                        Positioned(
+                          top: 50.0,
+                          left: 0.0, 
+                          right: 0.0,
+                          child: Align(
+                            child: Image.asset('assets/images/ic-alert.png',
+                              width: 130.0,
+                              height: 130.0,
+                            ),
+                          )
+                        ),
           
                         Positioned(
-                          bottom: 50.0,
-                          left: 80.0,
-                          right: 80.0,
+                          bottom: 20.0,
+                          left: 20.0,
+                          right: 20.0,
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -176,30 +187,28 @@ class GeneralModal {
                               Expanded(
                                 child: CustomButton(
                                   isBorder: false,
-                                  btnColor: const Color(0xFF17B5FE),
+                                  btnColor: const Color(0xFFC90900),
                                   btnTextColor: ColorResources.white,
-                                  sizeBorderRadius: 8.0,
                                   fontSize: Dimensions.fontSizeSmall,
-                                  isBorderRadius: true,
-                                  height: 30.0,
+                                  isBorderRadius: false,
+                                  borderRadiusGeometry: const BorderRadius.only(bottomLeft: Radius.circular(25.0)),
+                                  height: 35.0,
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
-                                  btnTxt: "Batal",
+                                  btnTxt: "Belum",
                                 ),
                               ),
-
-                              const SizedBox(width: 10.0),
 
                               Expanded(
                                 child: CustomButton(
                                   isBorder: false,
-                                  btnColor: ColorResources.error,
-                                  btnTextColor: ColorResources.white,
-                                  sizeBorderRadius: 8.0,
+                                  btnColor: ColorResources.white,
+                                  btnTextColor: ColorResources.black,
                                   fontSize: Dimensions.fontSizeSmall,
-                                  isBorderRadius: true,
-                                  height: 30.0,
+                                  isBorderRadius: false,
+                                  borderRadiusGeometry: const BorderRadius.only(bottomRight: Radius.circular(25.0)),
+                                  height: 35.0,
                                   onTap: () async {
 
                                     await ratingSos(sosId: sosId).then((_) {
@@ -207,7 +216,7 @@ class GeneralModal {
                                     });
 
                                   },
-                                  btnTxt: "Ya",
+                                  btnTxt: "Sudah",
                                 ),
                               )
                             ],

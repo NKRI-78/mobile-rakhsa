@@ -60,7 +60,7 @@ class ChatPageState extends State<ChatPage> {
   
   Future<void> getData() async {
     if(!mounted) return;
-      messageNotifier.getMessages(chatId: widget.chatId);
+      messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
   }
 
   @override 
@@ -207,6 +207,7 @@ class ChatPageState extends State<ChatPage> {
                           }
 
                           webSocketService.sendMessage(
+                            chatId: widget.chatId,
                             recipientId: widget.recipientId, 
                             message: messageC.text,
                           );

@@ -10,7 +10,7 @@ import 'package:rakhsa/features/chat/data/models/messages.dart';
 
 abstract class ChatRemoteDataSource {
   Future<ChatsModel> getChats();
-  Future<MessageModel> getMessages({required String chatId});
+  Future<MessageModel> getMessages({required String chatId, required String status});
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -41,13 +41,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override 
-  Future<MessageModel> getMessages({required String chatId}) async {
+  Future<MessageModel> getMessages({required String chatId, required String status}) async {
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
         data: {
           "sender_id": StorageHelper.getUserId(),
           "chat_id": chatId,
-          "is_agent": false
+          "is_agent": false,
+          "status": status
         }
       );
       Map<String, dynamic> data = response.data;
