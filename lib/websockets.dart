@@ -66,6 +66,7 @@ class WebSocketsService extends ChangeNotifier {
         },
         onDone: () {
           toggleConnection(false);
+          leave();
           reconnect();
         },
         onError: (error) {
@@ -119,7 +120,7 @@ class WebSocketsService extends ChangeNotifier {
     final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
-      "type": "leave",
+      "type": "user_offline",
       "user_id": userId,
     }));
   }
