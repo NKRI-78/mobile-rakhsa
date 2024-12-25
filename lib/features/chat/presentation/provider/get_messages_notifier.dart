@@ -6,6 +6,8 @@ import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/global.dart';
 
 class GetMessagesNotifier with ChangeNotifier {
   final GetMessagesUseCase useCase;
@@ -174,6 +176,26 @@ class GetMessagesNotifier with ChangeNotifier {
 
   }
 
+  void navigateToChat({
+    required String chatId,
+    required String status, 
+    required String recipientId,
+    required String sosId
+  }) {
+    Navigator.push(
+      navigatorKey.currentContext!,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return ChatPage(
+          chatId: chatId,
+          status: status,
+          recipientId: recipientId,
+          sosId: sosId,
+          autoGreetings: true,
+        );
+      })
+    );
+  }
+
   void appendMessage({required Map<String, dynamic> data}) {
     String incomingChatId = data["data"]["chat_id"];
     String incomingMessageId = data["data"]["id"];
@@ -187,8 +209,7 @@ class GetMessagesNotifier with ChangeNotifier {
       return;
     }
 
-    _messages.insert(
-      0,
+    _messages.insert(0,
       MessageData(
         id: incomingMessageId,
         chatId: incomingChatId,

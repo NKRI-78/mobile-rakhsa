@@ -8,7 +8,6 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -176,7 +175,7 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
-       navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
     if (message["type"] == "resolved-sos-$userId") {
@@ -205,32 +204,21 @@ class WebSocketsService extends ChangeNotifier {
     if (message["type"] == "confirm-sos") {
       debugPrint("=== CONFIRM SOS ===");
 
-      String chatId = message["chat_id"];
-      String recipientId = message["recipient_id"];
-      String sosId = message["sos_id"];
-      String status = message["status"];
-    
-      Future.delayed(const Duration(seconds: 1), () {
-        if (navigatorKey.currentContext != null) {
-          Navigator.push(
-            navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (BuildContext context) {
-              return ChatPage(
-                chatId: chatId,
-                status: status,
-                recipientId: recipientId,
-                sosId: sosId,
-                autoGreetings: true,
-              );
-            }),
-          );
-        }
-      });
+      String chatId = message["chat_id"].toString();
+      String recipientId = message["recipient_id"].toString();
+      String sosId = message["sos_id"].toString();
+
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().navigateToChat(
+        chatId: chatId, 
+        status: "NONE",
+        recipientId: recipientId, 
+        sosId: sosId
+      );
 
       Future.delayed(const Duration(seconds: 1), () {
         navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
       });
-
+      
       navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
       navigatorKey.currentContext!.read<GetMessagesNotifier>().resetTimer();
