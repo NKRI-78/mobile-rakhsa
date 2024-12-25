@@ -173,9 +173,7 @@ void init() {
     dio: locator()
   ));
   
-  locator.registerFactory(() => WebSocketsService(
-    messagesNotifier: locator()
-  ));
+  locator.registerFactory(() => WebSocketsService());
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();

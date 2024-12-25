@@ -20,7 +20,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 enum ConnectionIndicator { red, yellow, green }
 
 class WebSocketsService extends ChangeNotifier {
-  final GetMessagesNotifier messagesNotifier;
 
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
@@ -30,10 +29,6 @@ class WebSocketsService extends ChangeNotifier {
   Timer? reconnectTimer;
 
   bool isConnected = false;
-
-  WebSocketsService({
-    required this.messagesNotifier,
-  });
 
   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
     _connectionIndicator = connectionIndicators;
@@ -181,7 +176,7 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
-      messagesNotifier.appendMessage(data: message);
+       navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
     if (message["type"] == "resolved-sos-$userId") {
@@ -203,8 +198,8 @@ class WebSocketsService extends ChangeNotifier {
         navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
       });
 
-      messagesNotifier.setStateIsCaseClosed(true);
-      messagesNotifier.setStateNote(val: msg);
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().setStateNote(val: msg);
     }
 
     if (message["type"] == "confirm-sos") {
@@ -215,7 +210,7 @@ class WebSocketsService extends ChangeNotifier {
       String sosId = message["sos_id"];
       String status = message["status"];
     
-      Future.delayed(Duration.zero, () {
+      Future.delayed(const Duration(seconds: 1), () {
         if (navigatorKey.currentContext != null) {
           Navigator.push(
             navigatorKey.currentContext!,
@@ -238,8 +233,8 @@ class WebSocketsService extends ChangeNotifier {
 
       navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
-      messagesNotifier.resetTimer();
-      messagesNotifier.startTimer();
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().resetTimer();
+      navigatorKey.currentContext!.read<GetMessagesNotifier>().startTimer();
     }
   }
 

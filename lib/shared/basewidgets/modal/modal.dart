@@ -157,7 +157,7 @@ class GeneralModal {
                                 Text(msg, 
                                   textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
+                                    fontSize: Dimensions.fontSizeSmall,
                                     color: Colors.black
                                   ),
                                 )
@@ -916,10 +916,12 @@ class GeneralModal {
 
                                   globalKey.currentState?.closeDrawer();
 
-                                  Navigator.pushReplacement(
+                                  Navigator.pushAndRemoveUntil(
                                     context, MaterialPageRoute(builder: (BuildContext context) {
                                       return const LoginPage();
-                                    })
+                                    }), (route) {
+                                      return false;
+                                    },
                                   );
                                 },
                                 btnTxt: "Ya",

@@ -60,11 +60,10 @@ class LoginNotifier with ChangeNotifier {
         webSocketsService.join();
 
         if(authModel.data!.user.enabled){  
-          Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
+          Navigator.pushReplacement(navigatorKey.currentContext!,
             MaterialPageRoute(builder: (context) {
               return const DashboardScreen();
             }),
-            (route) => false,
           );
         } else {
           Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
