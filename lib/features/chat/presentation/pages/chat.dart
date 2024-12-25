@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,15 +8,12 @@ import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:grouped_list/grouped_list.dart';
-
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -344,98 +340,81 @@ class ChatPageState extends State<ChatPage> {
                         ),
                       ),
                       
-                      if(notifier.state == ProviderState.loaded)
-                        SliverToBoxAdapter(
-                          child: showAutoGreetings ? 
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 30.0,
-                                    horizontal: 12.0,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: primaryColor,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12.0),
-                                      topRight: Radius.circular(12.0),
-                                      bottomLeft: Radius.circular(12.0),
-                                      bottomRight: Radius.circular(12.0),
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        color: ColorResources.white,
-                                      ),
-                                      children: [
-                                        const TextSpan(
-                                          text: "Terima kasih telah menghubungi kami di ",
-                                        ),
-                                        TextSpan(
-                                          text: "Raksha",
-                                          style: robotoRegular.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: ColorResources.white,
-                                          ),
-                                        ),
-                                        const TextSpan(
-                                          text: ". Apakah yang bisa kami bantu atas keluhan anda?",
-                                        ),
-                                      ],
-                                    ),
+                    if(notifier.state == ProviderState.loaded)
+                      SliverToBoxAdapter(
+                        child: showAutoGreetings ? 
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 30.0,
+                                  horizontal: 12.0,
+                                ),
+                                decoration: const BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.0),
+                                    topRight: Radius.circular(12.0),
+                                    bottomLeft: Radius.circular(12.0),
+                                    bottomRight: Radius.circular(12.0),
                                   ),
                                 ),
-                              ],
+                                padding: const EdgeInsets.all(10.0),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      color: ColorResources.white,
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text: "Terima kasih telah menghubungi kami di ",
+                                      ),
+                                      TextSpan(
+                                        text: "Raksha",
+                                        style: robotoRegular.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorResources.white,
+                                        ),
+                                      ),
+                                      const TextSpan(
+                                        text: ". Apakah yang bisa kami bantu atas keluhan anda?",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ) : const SizedBox()
                         ),
-                          
-                     if(notifier.state == ProviderState.loaded)
-                        SliverToBoxAdapter(
-                          child: GroupedListView<MessageData, DateTime>(
-                            shrinkWrap: true,
-                            elements: notifier.messages,
-                            groupBy: (MessageData item) => DateTime(
-                              item.createdAt.year, 
-                              item.createdAt.month, 
-                              item.createdAt.day,
-                            ),
-                            itemComparator: (item1, item2) => item2.createdAt.compareTo(item1.createdAt),
-                            groupComparator: (DateTime value1, DateTime value2) => value2.compareTo(value1),
-                            order: GroupedListOrder.DESC,
-                            useStickyGroupSeparators: true,
-                            groupSeparatorBuilder: (DateTime groupByValue) => Center(
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                child: Center(
-                                  child: Text(
-                                    DateFormat("MMMM dd, yyyy").format(groupByValue),
-                                    style: robotoRegular.copyWith(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            itemBuilder: (BuildContext context, MessageData item) => ListTile(
-                              title: ChatBubble(
-                                text: item.text,
-                                time: item.sentTime,
-                                isMe: item.user.isMe!,
-                                isRead: item.isRead,
-                              ),
-                            ),
+                        
+                    if(notifier.state == ProviderState.loaded)
+                      SliverToBoxAdapter(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(
+                            top: 20.0,
+                            left: 16.0,
+                            right: 16.0,
+                            bottom: 20.0
                           ),
-                        )
-
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          reverse: true,
+                          itemBuilder: (BuildContext context, int i) {
+                          final item = notifier.messages[i];
+                          return ChatBubble(
+                            text: item.text,
+                            time: item.sentTime,
+                            isMe: item.user.isMe!,
+                            isRead: item.isRead,
+                          );
+                        },
+                        itemCount: notifier.messages.length,
+                      ),
+                    )
                   ],
                 ),
               );

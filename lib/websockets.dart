@@ -171,29 +171,28 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void onMessageReceived(Map<String, dynamic> message) {
-    String? userId = StorageHelper.getUserId();
 
     if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
       navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
-    if (message["type"] == "resolved-sos-$userId") {
+    if (message["type"] == "resolved-sos") {
       debugPrint("=== RESOLVED SOS ===");
       
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 1), () async {
+      Future.delayed(const Duration(seconds: 1), () {
         GeneralModal.infoResolvedSos(msg: msg);
       });
     }
 
-    if (message["type"] == "closed-sos-$userId") {
+    if (message["type"] == "closed-sos") {
       debugPrint("=== CLOSED SOS ===");
 
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 1), () async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
       });
 
@@ -208,22 +207,30 @@ class WebSocketsService extends ChangeNotifier {
       String recipientId = message["recipient_id"].toString();
       String sosId = message["sos_id"].toString();
 
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().navigateToChat(
-        chatId: chatId, 
-        status: "NONE",
-        recipientId: recipientId, 
-        sosId: sosId
-      );
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        context.read<GetMessagesNotifier>().navigateToChat(
+          chatId: chatId, 
+          status: "NONE",
+          recipientId: recipientId, 
+          sosId: sosId,
+        );
+      }
 
-      Future.delayed(const Duration(seconds: 1), () {
-        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final postContext = navigatorKey.currentContext;
+        if (postContext != null) {
+          postContext.read<ProfileNotifier>().getProfile();
+        }
       });
-      
-      navigatorKey.currentContext!.read<SosNotifier>().stopTimer();
 
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().resetTimer();
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().startTimer();
+      if (context != null) {
+        context.read<SosNotifier>().stopTimer();
+        context.read<GetMessagesNotifier>().resetTimer();
+        context.read<GetMessagesNotifier>().startTimer();
+      }
     }
+
   }
 
   void disposeChannel() {

@@ -190,8 +190,8 @@ class GeneralModal {
                               Expanded(
                                 child: CustomButton(
                                   isBorder: false,
-                                  btnColor: const Color(0xFFC90900),
-                                  btnTextColor: ColorResources.white,
+                                  btnColor: ColorResources.white,
+                                  btnTextColor: ColorResources.black,
                                   fontSize: Dimensions.fontSizeSmall,
                                   isBorderRadius: false,
                                   borderRadiusGeometry: const BorderRadius.only(bottomLeft: Radius.circular(25.0)),
@@ -220,8 +220,8 @@ class GeneralModal {
                               Expanded(
                                 child: CustomButton(
                                   isBorder: false,
-                                  btnColor: ColorResources.white,
-                                  btnTextColor: ColorResources.black,
+                                  btnColor: const Color(0xFFC90900),
+                                  btnTextColor: ColorResources.white,
                                   fontSize: Dimensions.fontSizeSmall,
                                   isBorderRadius: false,
                                   borderRadiusGeometry: const BorderRadius.only(bottomRight: Radius.circular(25.0)),
