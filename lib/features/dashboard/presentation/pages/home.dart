@@ -899,6 +899,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     if(context.read<ProfileNotifier>().entity.data!.sos.running) {
       GeneralModal.infoEndSos(
         sosId: context.read<ProfileNotifier>().entity.data!.sos.id,
+        chatId: context.read<ProfileNotifier>().entity.data!.sos.chatId,
+        recipientId: context.read<ProfileNotifier>().entity.data!.sos.recipientId,
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
       );
     } else {

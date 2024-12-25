@@ -14,6 +14,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
@@ -113,6 +114,8 @@ class GeneralModal {
 
   static Future<void> infoEndSos({
     required String sosId,
+    required String chatId, 
+    required String recipientId,
     required String msg,
   }) {
     return showDialog(
@@ -195,6 +198,20 @@ class GeneralModal {
                                   height: 35.0,
                                   onTap: () {
                                     Navigator.pop(context);
+
+                                    Future.delayed(const Duration(seconds: 1), () {
+                                      Navigator.push(navigatorKey.currentContext!, 
+                                        MaterialPageRoute(builder: (BuildContext context) {
+                                          return ChatPage(
+                                            sosId: sosId, 
+                                            chatId: chatId, 
+                                            status: "NONE", 
+                                            recipientId: recipientId, 
+                                            autoGreetings: false
+                                          ); 
+                                        })
+                                      );
+                                    });
                                   },
                                   btnTxt: "Belum",
                                 ),

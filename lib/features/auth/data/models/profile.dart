@@ -60,15 +60,21 @@ class ProfileData {
 
 class ProfileSos {
   String id;
+  String chatId;
+  String recipientId;
   bool running;
 
   ProfileSos({
     required this.id,
+    required this.chatId,
+    required this.recipientId,
     required this.running,
   });
 
   factory ProfileSos.fromJson(Map<String, dynamic> json) => ProfileSos(
     id: json["id"],
+    chatId: json["chat_id"],
     running: json["running"],
+    recipientId: json["recipient_id"]
   );
 }
