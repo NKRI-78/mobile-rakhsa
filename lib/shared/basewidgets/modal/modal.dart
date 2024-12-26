@@ -313,6 +313,7 @@ class GeneralModal {
                           child: CustomButton(
                             isBorder: false,
                             btnTextColor: Colors.white,
+                            btnColor: const Color(0xFFC82927),
                             fontSize: Dimensions.fontSizeDefault,
                             sizeBorderRadius: 20.0,
                             isBorderRadius: true,
