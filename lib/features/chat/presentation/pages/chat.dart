@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/connection.dart';
+import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +15,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -48,15 +54,90 @@ class ChatPageState extends State<ChatPage> {
 
   bool showAutoGreetings = false;
 
+  List<Map<String, dynamic>> unsentMessages = [];
+
   late TextEditingController messageC;
 
+  late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier; 
-
   late WebSocketsService webSocketService;
-  
+
+  void monitorConnection() {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
+      if (result != ConnectivityResult.none) {
+        await resendUnsentMessages();
+      }
+    });
+  }
+
+  Future<void> resendUnsentMessages() async {
+    for (var message in List<Map<String, dynamic>>.from(unsentMessages)) {
+      try {
+        String text = message["data"]["text"]; 
+        await insertMessageNotifier.insertMessage(
+          chatId: widget.chatId, 
+          recipient: widget.recipientId, 
+          text: text
+        );
+      } catch (e) {
+        debugPrint("Failed to resend message: $e");
+      }
+    }
+  }
+    
   Future<void> getData() async {
     if(!mounted) return;
       messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
+  }
+
+  Future<void> sendMessageOffline() async {
+    bool isConnected = await ConnectionHelper.isConnected();
+
+    if(!isConnected) {
+      DateTime now = DateTime.now();
+      String sentTime = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+
+      Map<String, dynamic> message = {
+        "data": {
+          "id": const Uuid().v4(),
+          "chat_id": widget.chatId,
+          "user": {
+            "id": StorageHelper.getUserId(),
+            "is_me": true,
+            "avatar": "-",
+            "name": "-",
+          },
+          "is_read": false,
+          "sent_time": sentTime,
+          "text": messageC.text,
+        }
+      };
+
+      unsentMessages.add(message);
+
+      messageNotifier.appendMessage(
+        data: message
+      );
+    }
+  }
+
+  Future<void> sendMessage() async {
+    if (messageC.text.trim().isEmpty) {
+      return;
+    }
+
+    await sendMessageOffline();
+
+    webSocketService.sendMessage(
+      chatId: widget.chatId,
+      recipientId: widget.recipientId, 
+      message: messageC.text,
+    );
+
+    setState(() {
+      messageC.clear();
+      showAutoGreetings = false;
+    });
   }
 
   @override 
@@ -66,12 +147,15 @@ class ChatPageState extends State<ChatPage> {
     showAutoGreetings = widget.autoGreetings;
 
     messageNotifier = context.read<GetMessagesNotifier>();
+    insertMessageNotifier = context.read<InsertMessageNotifier>();
     webSocketService = context.read<WebSocketsService>();
 
     messageNotifier.startTimer();
     messageNotifier.setStateIsCaseClosed(false);
 
     messageC = TextEditingController();
+
+    monitorConnection();
 
     Future.microtask(() => getData());
   }
@@ -105,25 +189,50 @@ class ChatPageState extends State<ChatPage> {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: widget.status == "CLOSED" || context.watch<GetMessagesNotifier>().isCaseClosed
-          ? Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFEAEAEA),
-              ),
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(context.read<GetMessagesNotifier>().note,
-                    textAlign: TextAlign.center,
-                    style: robotoRegular.copyWith(
-                      color: ColorResources.black,
-                      fontSize: Dimensions.fontSizeDefault,
-                      fontWeight: FontWeight.bold
-                    ),
-                  )
-                ],
-              ) 
-            )
+          ? Consumer<GetMessagesNotifier>(
+            builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
+              if(notifier.state == ProviderState.loading) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFEAEAEA),
+                  ),
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("...",
+                        textAlign: TextAlign.center,
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.black,
+                          fontSize: Dimensions.fontSizeDefault,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                    ],
+                  ) 
+                );
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFEAEAEA),
+                ),
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(notifier.note,
+                      textAlign: TextAlign.center,
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black,
+                        fontSize: Dimensions.fontSizeDefault,
+                        fontWeight: FontWeight.bold
+                      ),
+                    )
+                  ],
+                ) 
+              );
+            },
+          )
           : Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFEAEAEA),
@@ -197,22 +306,7 @@ class ChatPageState extends State<ChatPage> {
               
                     Flexible(
                       child: IconButton(
-                        onPressed: () async {
-                          if (messageC.text.trim().isEmpty) {
-                            return;
-                          }
-
-                          webSocketService.sendMessage(
-                            chatId: widget.chatId,
-                            recipientId: widget.recipientId, 
-                            message: messageC.text,
-                          );
-                      
-                          setState(() {
-                            messageC.clear();
-                            showAutoGreetings = false;
-                          });
-                        }, 
+                        onPressed: sendMessage, 
                         icon: Container(
                           padding: const EdgeInsets.all(8.0),
                           decoration: const BoxDecoration(

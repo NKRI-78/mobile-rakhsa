@@ -11,6 +11,7 @@ import 'package:rakhsa/features/chat/data/models/messages.dart';
 abstract class ChatRemoteDataSource {
   Future<ChatsModel> getChats();
   Future<MessageModel> getMessages({required String chatId, required String status});
+  Future<void> insertMessage({required String chatId, required String recipient, required String text});
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -62,5 +63,26 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       throw Exception(e.toString());
     } 
   }
+
+  @override 
+  Future<void> insertMessage({required String chatId, required String recipient, required String text}) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/insert-message",
+        data: {
+          "chat_id": chatId,
+          "sender": StorageHelper.getUserId(),
+          "recipient": recipient,
+          "text": text
+        }
+      );
+    } on DioException catch(e) {
+      debugPrint(e.response.toString());
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  } 
 
 }

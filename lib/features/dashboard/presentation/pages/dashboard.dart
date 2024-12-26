@@ -17,6 +17,7 @@ import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/websockets.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -31,6 +32,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   
   int selectedPageIndex = 0;
 
+  late WebSocketsService webSocketsService;
   late FirebaseProvider firebaseProvider;
   late ProfileNotifier profileNotifier;
 
@@ -40,6 +42,8 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     if(!mounted) return;
       firebaseProvider.initFcm();
+    if(!mounted) return;
+      webSocketsService.connect();
   } 
 
   List<Map<String, dynamic>> pages = [
@@ -136,6 +140,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     profileNotifier = context.read<ProfileNotifier>();
     firebaseProvider = context.read<FirebaseProvider>();
+    webSocketsService = context.read<WebSocketsService>();
 
     Future.microtask(() => getData());
   }

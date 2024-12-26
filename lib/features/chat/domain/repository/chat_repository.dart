@@ -8,4 +8,5 @@ import 'package:rakhsa/features/chat/data/models/messages.dart';
 abstract class ChatRepository {
   Future<Either<Failure, ChatsModel>> getChats();
   Future<Either<Failure, MessageModel>> getMessages({required String chatId, required String status});
+  Future<Either<Failure, void>> insertMessage({required String chatId, required String recipient, required String text});
 }

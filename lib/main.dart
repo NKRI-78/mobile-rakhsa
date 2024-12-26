@@ -9,6 +9,7 @@ import 'package:rakhsa/awesome_notification.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
 
@@ -19,7 +20,6 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
-import 'package:rakhsa/websockets.dart';
 
 void initializeNotifications() {
   an.AwesomeNotifications().setListeners(
@@ -73,7 +73,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
 
-  late WebSocketsService webSocketsService;
+  late FirebaseProvider firebaseProvider;
 
   Widget home = const SizedBox();
 
@@ -103,6 +103,8 @@ class MyAppState extends State<MyApp> {
     if (!mounted) return;
       await context.read<FirebaseProvider>().setupInteractedMessage(context);
 
+    if(!mounted) return;
+      firebaseProvider.listenNotification(context);
   }
 
   @override 
@@ -111,10 +113,7 @@ class MyAppState extends State<MyApp> {
 
     initializeNotifications();
 
-    webSocketsService = context.read<WebSocketsService>();
-    webSocketsService.connect();
-
-    context.read<FirebaseProvider>().listenNotification(context);
+    firebaseProvider = context.read<FirebaseProvider>();
 
     Future.microtask(() => getData());
   }

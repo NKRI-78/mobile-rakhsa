@@ -174,30 +174,46 @@ class WebSocketsService extends ChangeNotifier {
 
     if (message["type"] == "fetch-message") {
       debugPrint("=== FETCH MESSAGE ===");
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().appendMessage(data: message);
+
+      final context = navigatorKey.currentContext;
+
+      if (context == null) {
+        return;
+      }
+
+      context.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
     if (message["type"] == "resolved-sos") {
       debugPrint("=== RESOLVED SOS ===");
+         
+      final context = navigatorKey.currentContext;
       
+      if (context == null) {
+        return;
+      }
+
       String msg = message["message"].toString();
 
-      Future.delayed(const Duration(seconds: 1), () {
-        GeneralModal.infoResolvedSos(msg: msg);
-      });
+      context.read<ProfileNotifier>().getProfile();
+
+      GeneralModal.infoResolvedSos(msg: msg);
     }
 
     if (message["type"] == "closed-sos") {
       debugPrint("=== CLOSED SOS ===");
-
+      
+      final context = navigatorKey.currentContext;
+      
+      if (context == null) {
+        return;
+      }
+      
       String msg = message["message"].toString();
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
-      });
-
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
-      navigatorKey.currentContext!.read<GetMessagesNotifier>().setStateNote(val: msg);
+      context.read<ProfileNotifier>().getProfile();
+      context.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
+      context.read<GetMessagesNotifier>().setStateNote(val: msg);
     }
 
     if (message["type"] == "confirm-sos") {
@@ -208,27 +224,23 @@ class WebSocketsService extends ChangeNotifier {
       String sosId = message["sos_id"].toString();
 
       final context = navigatorKey.currentContext;
-      if (context != null) {
-        context.read<GetMessagesNotifier>().navigateToChat(
-          chatId: chatId, 
-          status: "NONE",
-          recipientId: recipientId, 
-          sosId: sosId,
-        );
+
+      if (context == null) {
+        return;
       }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final postContext = navigatorKey.currentContext;
-        if (postContext != null) {
-          postContext.read<ProfileNotifier>().getProfile();
-        }
-      });
+      context.read<GetMessagesNotifier>().navigateToChat(
+        chatId: chatId, 
+        status: "NONE",
+        recipientId: recipientId, 
+        sosId: sosId,
+      );
 
-      if (context != null) {
-        context.read<SosNotifier>().stopTimer();
-        context.read<GetMessagesNotifier>().resetTimer();
-        context.read<GetMessagesNotifier>().startTimer();
-      }
+      context.read<ProfileNotifier>().getProfile();
+      
+      context.read<SosNotifier>().stopTimer();
+      context.read<GetMessagesNotifier>().resetTimer();
+      context.read<GetMessagesNotifier>().startTimer();
     }
 
   }
@@ -236,6 +248,7 @@ class WebSocketsService extends ChangeNotifier {
   void disposeChannel() {
     channelSubscription?.cancel();
     channel?.sink.close();
+    
     channel = null;
   }
 

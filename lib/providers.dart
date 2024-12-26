@@ -14,6 +14,7 @@ import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifi
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
@@ -62,6 +63,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<KbriNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<VisaNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>()),
+  ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),  
+  ChangeNotifierProvider(create: (_) => di.locator<InsertMessageNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>(), lazy: false),
 ];

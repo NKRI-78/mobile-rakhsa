@@ -12,6 +12,8 @@ import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:rakhsa/features/chat/domain/usecases/insert_message.dart';
+import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
@@ -131,6 +133,7 @@ void init() {
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
   locator.registerLazySingleton(() => GetContinentUseCase(locator()));
   locator.registerLazySingleton(() => GetStateUseCase(locator()));
+  locator.registerLazySingleton(() => InsertMessageUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -138,36 +141,37 @@ void init() {
     profileNotifier: locator(),
     useCase: locator()
   ));
-  locator.registerLazySingleton(() => ProfileNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => UpdateProfileNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => SosNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => SosRatingNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => ListEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => SaveEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => UpdateEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => DetailEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => DeleteEventNotifier(useCase: locator()));
+  locator.registerFactory(() => ProfileNotifier(useCase: locator()));
+  locator.registerFactory(() => UpdateProfileNotifier(useCase: locator()));
+  locator.registerFactory(() => SosNotifier(useCase: locator()));
+  locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
+  locator.registerFactory(() => ListEventNotifier(useCase: locator()));
+  locator.registerFactory(() => SaveEventNotifier(useCase: locator()));
+  locator.registerFactory(() => UpdateEventNotifier(useCase: locator()));
+  locator.registerFactory(() => DetailEventNotifier(useCase: locator()));
+  locator.registerFactory(() => DeleteEventNotifier(useCase: locator()));
   locator.registerLazySingleton(() => LoginNotifier(
     webSocketsService: locator(),
     useCase: locator()
   ));
-  locator.registerLazySingleton(() => VisaNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => PassportNotifier(useCase: locator()));
+  locator.registerFactory(() => VisaNotifier(useCase: locator()));
+  locator.registerFactory(() => PassportNotifier(useCase: locator()));
   locator.registerLazySingleton(() => RegisterNotifier(
     webSocketsService: locator(),
     useCase: locator(),
   ));
-  locator.registerLazySingleton(() => KbriNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => VerifyOtpNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => ResendOtpNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => UploadMediaNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => UpdateAddressNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => UpdateIsLoggedinNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetCountryNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetStateNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetChatsNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetMessagesNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => GetContinentNotifier(useCase: locator()));
+  locator.registerFactory(() => KbriNotifier(useCase: locator()));
+  locator.registerFactory(() => VerifyOtpNotifier(useCase: locator()));
+  locator.registerFactory(() => ResendOtpNotifier(useCase: locator()));
+  locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
+  locator.registerFactory(() => UpdateAddressNotifier(useCase: locator()));
+  locator.registerFactory(() => UpdateIsLoggedinNotifier(useCase: locator()));
+  locator.registerFactory(() => GetCountryNotifier(useCase: locator()));
+  locator.registerFactory(() => GetStateNotifier(useCase: locator()));
+  locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
+  locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
+  locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
+  locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
 
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()

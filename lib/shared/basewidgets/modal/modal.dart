@@ -706,9 +706,6 @@ class GeneralModal {
                                   Future.delayed(Duration.zero, () {
                                     context.read<SosRatingNotifier>().sosRating(sosId: sosId);
                                     Navigator.pop(context);
-                                    Future.delayed(const Duration(seconds: 1), () {
-                                      feedbackSos(selectedRating);
-                                    });
                                   });
 
                                   context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
@@ -767,6 +764,7 @@ class GeneralModal {
                             children: [
                         
                               Text("Terimakasih, Atas feedback dari Anda",
+                                textAlign: TextAlign.center,
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge,
                                   fontWeight: FontWeight.bold,
@@ -781,6 +779,7 @@ class GeneralModal {
                                 minRating: 1,
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
+                                ignoreGestures: true,
                                 itemCount: 5,
                                 itemSize: 25.0,
                                 itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),

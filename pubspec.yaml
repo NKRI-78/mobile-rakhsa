@@ -64,6 +64,10 @@ dependencies:
   
   # P
   permission_handler: ^11.3.1
+  provider: ^6.1.2
+
+  # U
+  uuid: ^4.5.1
 
   # T
   table_calendar: ^3.1.2
