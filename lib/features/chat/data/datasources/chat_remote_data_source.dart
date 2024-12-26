@@ -11,7 +11,7 @@ import 'package:rakhsa/features/chat/data/models/messages.dart';
 abstract class ChatRemoteDataSource {
   Future<ChatsModel> getChats();
   Future<MessageModel> getMessages({required String chatId, required String status});
-  Future<void> insertMessage({required String chatId, required String recipient, required String text});
+  Future<void> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt});
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
@@ -65,13 +65,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }
 
   @override 
-  Future<void> insertMessage({required String chatId, required String recipient, required String text}) async {
+  Future<void> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt}) async {
     try {
       await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/insert-message",
         data: {
           "chat_id": chatId,
           "sender": StorageHelper.getUserId(),
           "recipient": recipient,
+          "created_at": createdAt.toLocal().toIso8601String(),
           "text": text
         }
       );

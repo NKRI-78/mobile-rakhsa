@@ -23,11 +23,12 @@ class InsertMessageNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> insertMessage({required String chatId, required String recipient, required String text}) async {
+  Future<void> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt}) async {
     final result = await useCase.execute(
       chatId: chatId, 
       recipient: recipient, 
-      text: text
+      text: text,
+      createdAt: createdAt
     );
 
     result.fold((l) {

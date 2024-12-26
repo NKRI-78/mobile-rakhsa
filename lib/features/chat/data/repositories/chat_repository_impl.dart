@@ -40,9 +40,9 @@ class ChatRepositoryImpl implements ChatRepository {
   }
   
   @override
-  Future<Either<Failure, void>> insertMessage({required String chatId, required String recipient, required String text}) async {
+  Future<Either<Failure, void>> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt}) async {
     try {
-      var result = await remoteDataSource.insertMessage(chatId: chatId, recipient: recipient, text: text);
+      var result = await remoteDataSource.insertMessage(chatId: chatId, recipient: recipient, text: text, createdAt: createdAt);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

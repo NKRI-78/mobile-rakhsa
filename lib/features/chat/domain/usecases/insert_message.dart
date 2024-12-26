@@ -9,7 +9,7 @@ class InsertMessageUseCase {
 
   InsertMessageUseCase(this.repository);
 
-  Future<Either<Failure, void>> execute({required String chatId, required String recipient, required String text}) {
-    return repository.insertMessage(chatId: chatId, recipient: recipient, text: text);
+  Future<Either<Failure, void>> execute({required String chatId, required String recipient, required String text, required DateTime createdAt}) {
+    return repository.insertMessage(chatId: chatId, recipient: recipient, text: text, createdAt: createdAt);
   }
 }

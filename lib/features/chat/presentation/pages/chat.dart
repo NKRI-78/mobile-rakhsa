@@ -74,10 +74,12 @@ class ChatPageState extends State<ChatPage> {
     for (var message in List<Map<String, dynamic>>.from(unsentMessages)) {
       try {
         String text = message["data"]["text"]; 
+        DateTime createdAt = message["data"]["created_at"];
         await insertMessageNotifier.insertMessage(
           chatId: widget.chatId, 
           recipient: widget.recipientId, 
-          text: text
+          text: text,
+          createdAt: createdAt
         );
       } catch (e) {
         debugPrint("Failed to resend message: $e");
@@ -109,6 +111,7 @@ class ChatPageState extends State<ChatPage> {
           },
           "is_read": false,
           "sent_time": sentTime,
+          "created_at": DateTime.now(),
           "text": messageC.text,
         }
       };
