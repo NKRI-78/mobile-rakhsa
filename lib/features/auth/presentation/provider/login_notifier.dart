@@ -54,12 +54,13 @@ class LoginNotifier with ChangeNotifier {
 
         _authModel = r;
 
-        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+        if(authModel.data!.user.enabled) {  
 
-        webSocketsService.join();
+          StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+          StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        if(authModel.data!.user.enabled){  
+          webSocketsService.join();
+
           Navigator.pushReplacement(navigatorKey.currentContext!,
             MaterialPageRoute(builder: (context) {
               return const DashboardScreen();

@@ -25,7 +25,7 @@ abstract class AuthRepository {
     required String emergencyContact,
     required String password
   });
-  Future<Either<Failure, void>> verifyOtp({
+  Future<Either<Failure, AuthModel>> verifyOtp({
     required String email,
     required String otp,
   });

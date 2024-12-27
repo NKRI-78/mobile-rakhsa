@@ -101,7 +101,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> verifyOtp({
+  Future<Either<Failure, AuthModel>> verifyOtp({
     required String email,
     required String otp,
   }) async {

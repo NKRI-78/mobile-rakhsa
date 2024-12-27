@@ -29,7 +29,7 @@ abstract class AuthRemoteDataSource {
     required String emergencyContact,
     required String password
   });
-  Future<void> verifyOtp({
+  Future<AuthModel> verifyOtp({
     required String email,
     required String otp,
   });
@@ -157,14 +157,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
   
   @override
-  Future<void> verifyOtp({required String email, required String otp}) async {
+  Future<AuthModel> verifyOtp({required String email, required String otp}) async {
     try {
-      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/verify-otp",
+      final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/verify-otp",
         data: {
           "email": email,
           "otp": otp,
         }
       );
+      Map<String, dynamic> data = response.data;
+      AuthModel authModel = AuthModel.fromJson(data);
+      return authModel;
     } on DioException catch(e) {
       String message = handleDioException(e);
       throw ServerException(message);

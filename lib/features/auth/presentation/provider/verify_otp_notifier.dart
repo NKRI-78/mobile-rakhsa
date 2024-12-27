@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/features/auth/data/models/auth.dart';
 
+import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
+
+import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/verify_otp.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+
 import 'package:rakhsa/global.dart';
 
 class VerifyOtpNotifier with ChangeNotifier {
@@ -61,6 +64,8 @@ class VerifyOtpNotifier with ChangeNotifier {
         _message = l.message;
         setStateProviderState(ProviderState.error);
       }, (r) {
+
+        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
         Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
           MaterialPageRoute(builder: (context) {

@@ -7,12 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/global.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -184,64 +181,64 @@ class WebSocketsService extends ChangeNotifier {
       context.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
-    if (message["type"] == "resolved-sos") {
-      debugPrint("=== RESOLVED SOS ===");
+    // if (message["type"] == "resolved-sos") {
+    //   debugPrint("=== RESOLVED SOS ===");
          
-      final context = navigatorKey.currentContext;
+    //   final context = navigatorKey.currentContext;
       
-      if (context == null) {
-        return;
-      }
+    //   if (context == null) {
+    //     return;
+    //   }
 
-      String msg = message["message"].toString();
+    //   String msg = message["message"].toString();
 
-      context.read<ProfileNotifier>().getProfile();
+    //   context.read<ProfileNotifier>().getProfile();
 
-      GeneralModal.infoResolvedSos(msg: msg);
-    }
+    //   GeneralModal.infoResolvedSos(msg: msg);
+    // }
 
-    if (message["type"] == "closed-sos") {
-      debugPrint("=== CLOSED SOS ===");
+    // if (message["type"] == "closed-sos") {
+    //   debugPrint("=== CLOSED SOS ===");
       
-      final context = navigatorKey.currentContext;
+    //   final context = navigatorKey.currentContext;
       
-      if (context == null) {
-        return;
-      }
+    //   if (context == null) {
+    //     return;
+    //   }
       
-      String msg = message["message"].toString();
+    //   String msg = message["message"].toString();
 
-      context.read<ProfileNotifier>().getProfile();
-      context.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
-      context.read<GetMessagesNotifier>().setStateNote(val: msg);
-    }
+    //   context.read<ProfileNotifier>().getProfile();
+    //   context.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
+    //   context.read<GetMessagesNotifier>().setStateNote(val: msg);
+    // }
 
-    if (message["type"] == "confirm-sos") {
-      debugPrint("=== CONFIRM SOS ===");
+    // if (message["type"] == "confirm-sos") {
+    //   debugPrint("=== CONFIRM SOS ===");
 
-      String chatId = message["chat_id"].toString();
-      String recipientId = message["recipient_id"].toString();
-      String sosId = message["sos_id"].toString();
+    //   String chatId = message["chat_id"].toString();
+    //   String recipientId = message["recipient_id"].toString();
+    //   String sosId = message["sos_id"].toString();
 
-      final context = navigatorKey.currentContext;
+    //   final context = navigatorKey.currentContext;
 
-      if (context == null) {
-        return;
-      }
+    //   if (context == null) {
+    //     return;
+    //   }
 
-      context.read<GetMessagesNotifier>().navigateToChat(
-        chatId: chatId, 
-        status: "NONE",
-        recipientId: recipientId, 
-        sosId: sosId,
-      );
+    //   context.read<GetMessagesNotifier>().navigateToChat(
+    //     chatId: chatId, 
+    //     status: "NONE",
+    //     recipientId: recipientId, 
+    //     sosId: sosId,
+    //   );
 
-      context.read<ProfileNotifier>().getProfile();
+    //   context.read<ProfileNotifier>().getProfile();
       
-      context.read<SosNotifier>().stopTimer();
-      context.read<GetMessagesNotifier>().resetTimer();
-      context.read<GetMessagesNotifier>().startTimer();
-    }
+    //   context.read<SosNotifier>().stopTimer();
+    //   context.read<GetMessagesNotifier>().resetTimer();
+    //   context.read<GetMessagesNotifier>().startTimer();
+    // }
 
   }
 

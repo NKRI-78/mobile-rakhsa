@@ -62,7 +62,6 @@ class RegisterNotifier with ChangeNotifier {
         _authModel = r;
 
         StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
         webSocketsService.join();
 

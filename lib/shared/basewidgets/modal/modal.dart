@@ -704,10 +704,9 @@ class GeneralModal {
                                 onRatingUpdate: (double selectedRating) {
                                   context.read<SosRatingNotifier>().onChangeRating(selectedRating: selectedRating);
 
-                                  Future.delayed(Duration.zero, () {
-                                    context.read<SosRatingNotifier>().sosRating(sosId: sosId);
-                                    Navigator.pop(context);
-                                  });
+                                  context.read<SosRatingNotifier>().sosRating(sosId: sosId);
+
+                                  Navigator.pop(context);
 
                                   context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
                                 },
