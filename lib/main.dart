@@ -37,6 +37,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await FirebaseProvider.registerBackgroundHandler();
+
   await initializeDateFormatting('id_ID', null);
 
   await an.AwesomeNotifications().initialize(

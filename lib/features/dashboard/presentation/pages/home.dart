@@ -498,119 +498,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         )
                       )
                     : CarouselSlider(
-                      options: CarouselOptions(
-                        autoPlayInterval: const Duration(seconds: 10),
-                        autoPlay: true,
-                        viewportFraction: 1.0,
-                        height: 280.0 
-                      ),
-                      items: notifier.ews.map((item) {
-                        // if(item.id == 0) {
-                        //   return Card(
-                        //     color: ColorResources.white,
-                        //     surfaceTintColor: ColorResources.white,
-                        //     elevation: 1.0,
-                        //     child: Container(
-                        //       padding: const EdgeInsets.all(8.0),
-                        //       child: SingleChildScrollView(
-                        //         child: Column(
-                        //           crossAxisAlignment: CrossAxisAlignment.center,
-                        //           mainAxisAlignment: MainAxisAlignment.center,
-                        //           mainAxisSize: MainAxisSize.min,
-                        //           children: [
-                                                          
-                        //             Row(
-                        //               mainAxisAlignment: MainAxisAlignment.center,
-                        //               mainAxisSize: MainAxisSize.max,
-                        //               children: [
-                          
-                        //                 context.watch<ProfileNotifier>().state == ProviderState.error 
-                        //                 ? const SizedBox()
-                        //                 : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                        //                 ? const SizedBox() 
-                        //                 : CachedNetworkImage(
-                        //                     imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                        //                     imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                        //                     return CircleAvatar(
-                        //                       backgroundImage: imageProvider,
-                        //                     );
-                        //                   },
-                        //                   placeholder: (BuildContext context, String url) {
-                        //                     return const CircleAvatar(
-                        //                       backgroundImage: AssetImage('assets/images/default.jpeg'),
-                        //                     );
-                        //                   },
-                        //                   errorWidget: (BuildContext context, String url, Object error) {
-                        //                     return const CircleAvatar(
-                        //                       backgroundImage: AssetImage('assets/images/default.jpeg'),
-                        //                     );
-                        //                   },
-                        //                 ),
-                                                          
-                        //                 const SizedBox(width: 15.0),
-                                                          
-                        //                 Flexible(
-                        //                   child: Column(
-                        //                     crossAxisAlignment: CrossAxisAlignment.start,
-                        //                     mainAxisSize: MainAxisSize.min,
-                        //                     children: [
-                                                          
-                        //                       Text("Posisi Anda saat ini",
-                        //                         style: robotoRegular.copyWith(
-                        //                           fontSize: Dimensions.fontSizeDefault,
-                        //                           fontWeight: FontWeight.bold
-                        //                         ),
-                        //                       ),
-                                                          
-                        //                       const SizedBox(height: 4.0),
-                                          
-                        //                       Text(loadingGmaps 
-                        //                         ? "Mohon tunggu..." 
-                        //                         : currentAddress,
-                        //                         style: robotoRegular.copyWith(
-                        //                           fontSize: Dimensions.fontSizeSmall,
-                        //                           color: ColorResources.black
-                        //                         ),
-                        //                       )
-                                          
-                        //                     ],
-                        //                   ),
-                        //                 )
-                                                          
-                        //               ],
-                        //             ),
-                                
-                        //             Container(
-                        //               width: double.infinity,
-                        //               height: 120.0,
-                        //               margin: const EdgeInsets.only(
-                        //                 top: 16.0,
-                        //                 left: 16.0, 
-                        //                 right: 16.0
-                        //               ),
-                        //               child: loadingGmaps 
-                        //               ? const SizedBox() 
-                        //               : GoogleMap(
-                        //                   mapType: MapType.normal,
-                        //                   gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                        //                   myLocationEnabled: false,
-                        //                   initialCameraPosition: CameraPosition(
-                        //                     target: LatLng(
-                        //                       double.parse(currentLat), 
-                        //                       double.parse(currentLng)
-                        //                     ),
-                        //                     zoom: 12.0,
-                        //                   ),
-                        //                   markers: Set.from(markers),
-                        //                 ),
-                        //               )
-                                                          
-                        //           ],
-                        //         ),
-                        //       ),
-                        //     )
-                        //   );
-                        // }
+                        options: CarouselOptions(
+                          autoPlayInterval: const Duration(seconds: 10),
+                          autoPlay: true,
+                          viewportFraction: 1.0,
+                          height: 280.0 
+                        ),
+                        items: notifier.ews.map((item) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
@@ -1042,8 +936,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
               ),
             ),
           GestureDetector(
-            onLongPressStart: (_) async => widget.isConnected ? await handleLongPressStart() : () {},
-            onLongPressEnd: (_)  async => widget.isConnected ? await handleLongPressEnd() : () {},
+            onLongPressStart: (_) async => widget.isConnected ? context.read<SosNotifier>().isTimerRunning ? () {} : await handleLongPressStart() : () {},
+            onLongPressEnd: (_)  async => widget.isConnected ?  context.read<SosNotifier>().isTimerRunning ? () {} : await handleLongPressEnd() : () {},
             child: AnimatedBuilder(
               animation: sosNotifier.timerController!,
               builder: (BuildContext context, Widget? child) {
@@ -1052,7 +946,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   height: 130,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                     color: widget.isConnected 
+                     color: widget.isConnected
                       ? const Color(0xFFFE1717)
                       : const Color(0xFF7A7A7A),
                     boxShadow: [

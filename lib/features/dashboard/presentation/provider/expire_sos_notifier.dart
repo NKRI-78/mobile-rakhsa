@@ -19,12 +19,17 @@ class SosNotifier with ChangeNotifier {
   late int countdownTime;
 
   bool isPressed = false;
+  
 
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
 
   String _message = "";
   String get message => _message;
+
+  bool get isTimerRunning {
+    return timerController?.isAnimating ?? false;
+  }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;

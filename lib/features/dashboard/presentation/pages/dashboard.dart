@@ -39,7 +39,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   Future<void> getData() async {
     if(!mounted) return;
       profileNotifier.getProfile();
-
     if(!mounted) return;
       firebaseProvider.initFcm();
     if(!mounted) return;

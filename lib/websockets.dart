@@ -181,65 +181,6 @@ class WebSocketsService extends ChangeNotifier {
       context.read<GetMessagesNotifier>().appendMessage(data: message);
     }
 
-    // if (message["type"] == "resolved-sos") {
-    //   debugPrint("=== RESOLVED SOS ===");
-         
-    //   final context = navigatorKey.currentContext;
-      
-    //   if (context == null) {
-    //     return;
-    //   }
-
-    //   String msg = message["message"].toString();
-
-    //   context.read<ProfileNotifier>().getProfile();
-
-    //   GeneralModal.infoResolvedSos(msg: msg);
-    // }
-
-    // if (message["type"] == "closed-sos") {
-    //   debugPrint("=== CLOSED SOS ===");
-      
-    //   final context = navigatorKey.currentContext;
-      
-    //   if (context == null) {
-    //     return;
-    //   }
-      
-    //   String msg = message["message"].toString();
-
-    //   context.read<ProfileNotifier>().getProfile();
-    //   context.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
-    //   context.read<GetMessagesNotifier>().setStateNote(val: msg);
-    // }
-
-    // if (message["type"] == "confirm-sos") {
-    //   debugPrint("=== CONFIRM SOS ===");
-
-    //   String chatId = message["chat_id"].toString();
-    //   String recipientId = message["recipient_id"].toString();
-    //   String sosId = message["sos_id"].toString();
-
-    //   final context = navigatorKey.currentContext;
-
-    //   if (context == null) {
-    //     return;
-    //   }
-
-    //   context.read<GetMessagesNotifier>().navigateToChat(
-    //     chatId: chatId, 
-    //     status: "NONE",
-    //     recipientId: recipientId, 
-    //     sosId: sosId,
-    //   );
-
-    //   context.read<ProfileNotifier>().getProfile();
-      
-    //   context.read<SosNotifier>().stopTimer();
-    //   context.read<GetMessagesNotifier>().resetTimer();
-    //   context.read<GetMessagesNotifier>().startTimer();
-    // }
-
   }
 
   void disposeChannel() {

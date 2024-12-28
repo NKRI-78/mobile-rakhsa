@@ -5,109 +5,150 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:soundpool/soundpool.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-
-import 'package:soundpool/soundpool.dart';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+
+class NotificationType {
+  static const resolvedSos = "resolved-sos";
+  static const closedSos = "closed-sos";
+  static const confirmSos = "confirm-sos";
+}
+
+Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
+  final Soundpool soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
+  try {
+    int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
+      return soundpool.load(soundData);
+    });
+    await soundpool.play(soundId);
+  } catch (e) {
+    debugPrint("Error playing notification sound: $e");
+  }
+  if (message.notification != null) {
+    
+  }
+  return;
+}
 
 class FirebaseProvider with ChangeNotifier {
   final Dio dio;
 
-  FirebaseProvider({
-    required this.dio,
-  });
+  FirebaseProvider({required this.dio});
 
-  final soundpool = Soundpool.fromOptions(
-    options: SoundpoolOptions.kDefault,
-  );
+  final Soundpool _soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
+
+  Future<void> initFcm() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      await dio.post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
+        data: {
+          "user_id": StorageHelper.getUserId(),
+          "token": token,
+        },
+      );
+    } catch (e) {
+      debugPrint("Error initializing FCM: $e");
+    }
+  }
+
+  static Future<void> registerBackgroundHandler() async {
+    FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
+  }
 
   Future<void> setupInteractedMessage(BuildContext context) async {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if(message != null) {
-        handleMessage(message);
+      if (message != null) {
+        _handleMessage(context, message);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      handleMessage(message);
+      _handleMessage(context, message);
     });
-  }
-
-  Future<void> handleMessage(message) async {}
-
-  Future<void> initFcm() async {
-    await dio.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm", 
-      data: {
-        "user_id": StorageHelper.getUserId(),
-        "token": await FirebaseMessaging.instance.getToken(),
-      }
-    );
   }
 
   void listenNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      RemoteNotification notification = message.notification!;
+      try {
+        await _playNotificationSound();
+        _processMessage(context, message.data);
+        _showNotification(message.notification);
+      } catch (e) {
+        debugPrint("Error processing notification: $e");
+      }
+    });
+  }
 
-      Map<String, dynamic> payload = message.data;
-      
+  Future<void> _playNotificationSound() async {
+    try {
       int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-        return soundpool.load(soundData);
+        return _soundpool.load(soundData);
       });
-      
-      await soundpool.play(soundId);
-      
-      if(payload["type"] == "resolved-sos") {
-        String msg = payload["message"].toString();
+      await _soundpool.play(soundId);
+    } catch (e) {
+      debugPrint("Error playing notification sound: $e");
+    }
+  }
 
-        Future.delayed(Duration.zero, () {
-          context.read<ProfileNotifier>().getProfile();
+  void _processMessage(BuildContext context, Map<String, dynamic> payload) {
+    switch (payload["type"]) {
+      case NotificationType.resolvedSos:
+        _handleResolvedSos(context, payload);
+        break;
+      case NotificationType.closedSos:
+        _handleClosedSos(context, payload);
+        break;
+      case NotificationType.confirmSos:
+        _handleConfirmSos(context, payload);
+        break;
+      default:
+        debugPrint("Unhandled notification type: ${payload["type"]}");
+    }
+  }
 
-          GeneralModal.infoResolvedSos(msg: msg);
-        });
-      }
+  void _handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
+    String msg = payload["message"].toString();
+    Future.microtask(() {
+      context.read<ProfileNotifier>().getProfile();
+      GeneralModal.infoResolvedSos(msg: msg);
+    });
+  }
 
-      if(payload["type"] == "closed-sos") {
-        String msg = payload["message"].toString();
+  void _handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
+    String msg = payload["message"].toString();
+    Future.microtask(() {
+      context.read<ProfileNotifier>().getProfile();
+      var messageNotifier = context.read<GetMessagesNotifier>();
+      messageNotifier.setStateNote(val: msg);
+    });
+  }
 
-        Future.delayed(Duration.zero, () {
-          context.read<ProfileNotifier>().getProfile();
+  void _handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
+    Future.microtask(() {
+      var messageNotifier = context.read<GetMessagesNotifier>();
+      messageNotifier.navigateToChat(
+        chatId: payload["chat_id"].toString(),
+        status: "NONE",
+        recipientId: payload["recipient_id"].toString(),
+        sosId: payload["sos_id"].toString(),
+      );
+      context.read<ProfileNotifier>().getProfile();
+      context.read<SosNotifier>().stopTimer();
+      messageNotifier.resetTimer();
+      messageNotifier.startTimer();
+    });
+  }
 
-          context.read<GetMessagesNotifier>().setStateIsCaseClosed(true);
-          context.read<GetMessagesNotifier>().setStateNote(val: msg);
-        });
-      }
-
-      if(payload["type"] == "confirm-sos") {
-        String chatId = payload["chat_id"].toString();
-        String recipientId = payload["recipient_id"].toString();
-        String sosId = payload["sos_id"].toString();
-
-        Future.delayed(Duration.zero, () {
-          context.read<GetMessagesNotifier>().navigateToChat(
-            chatId: chatId, 
-            status: "NONE",
-            recipientId: recipientId, 
-            sosId: sosId,
-          );
-
-          context.read<ProfileNotifier>().getProfile();
-          
-          context.read<SosNotifier>().stopTimer();
-
-          context.read<GetMessagesNotifier>().resetTimer();
-          context.read<GetMessagesNotifier>().startTimer();
-        });
-      }
-
+  Future<void> _showNotification(RemoteNotification? notification) async {
+    if (notification != null) {
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: Random().nextInt(100),
@@ -116,7 +157,10 @@ class FirebaseProvider with ChangeNotifier {
           body: notification.body,
         ),
       );
-    });
+    }
   }
 
+  void _handleMessage(BuildContext context, RemoteMessage message) {
+    _processMessage(context, message.data);
+  }
 }
