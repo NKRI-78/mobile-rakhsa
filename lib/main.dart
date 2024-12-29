@@ -37,16 +37,14 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await FirebaseProvider.registerBackgroundHandler();
-
   await initializeDateFormatting('id_ID', null);
 
   await an.AwesomeNotifications().initialize(
-    null, 
+    'resource://drawable/ic_notification',
     [
       an.NotificationChannel(
         channelKey: 'notification',
-        channelName: 'notification_channel',
+        channelName: 'notification',
         channelDescription: 'Notification',
         playSound: false,
         channelShowBadge: true,
@@ -58,6 +56,7 @@ Future<void> main() async {
     debug: false
   );
 
+  await FirebaseProvider.registerBackgroundHandler();
 
   await StorageHelper.init();
 

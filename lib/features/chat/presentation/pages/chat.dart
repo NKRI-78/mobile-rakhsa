@@ -144,8 +144,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-      switch (state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
       case AppLifecycleState.resumed:
         Future.microtask(() => getData());
       break;
@@ -153,7 +153,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-       
+        
       break;
     }
   }

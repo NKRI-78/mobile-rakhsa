@@ -151,7 +151,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
     result.fold((l) {
       _message = l.message;
-      setStateProvider(ProviderState.error);
+      setStateProvider(ProviderState.loaded);
     }, (r) {
       _recipient = r.data.recipient;
 
@@ -173,8 +173,7 @@ class GetMessagesNotifier with ChangeNotifier {
     required String recipientId,
     required String sosId
   }) {
-    Navigator.push(
-      navigatorKey.currentContext!,
+    Navigator.push(navigatorKey.currentContext!,
       MaterialPageRoute(builder: (BuildContext context) {
         return ChatPage(
           chatId: chatId,

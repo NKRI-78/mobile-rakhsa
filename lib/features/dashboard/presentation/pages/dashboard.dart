@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-
-import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -17,7 +13,6 @@ import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/websockets.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -31,19 +26,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
   int selectedPageIndex = 0;
-
-  late WebSocketsService webSocketsService;
-  late FirebaseProvider firebaseProvider;
-  late ProfileNotifier profileNotifier;
-
-  Future<void> getData() async {
-    if(!mounted) return;
-      profileNotifier.getProfile();
-    if(!mounted) return;
-      firebaseProvider.initFcm();
-    if(!mounted) return;
-      webSocketsService.connect();
-  } 
 
   List<Map<String, dynamic>> pages = [
     {
@@ -136,12 +118,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override 
   void initState() {
     super.initState();
-
-    profileNotifier = context.read<ProfileNotifier>();
-    firebaseProvider = context.read<FirebaseProvider>();
-    webSocketsService = context.read<WebSocketsService>();
-
-    Future.microtask(() => getData());
   }
 
   @override 

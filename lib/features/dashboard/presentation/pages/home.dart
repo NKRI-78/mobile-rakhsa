@@ -164,6 +164,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      debugPrint("=== APP RESUME ===");
+      
+      checkLocationPermission();
+      return;
+    }
+    if (state == AppLifecycleState.inactive) {}
+    if (state == AppLifecycleState.paused) {}
+    if (state == AppLifecycleState.detached) {}
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -182,26 +195,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("=== APP RESUME ===");
-      
-      checkLocationPermission();
-    }
-    if (state == AppLifecycleState.inactive) {
-      debugPrint("=== APP INACTIVE ===");
-    }
-    if (state == AppLifecycleState.paused) {
-      debugPrint("=== APP PAUSED ===");
-    }
-    if (state == AppLifecycleState.detached) {
-      debugPrint("=== APP CLOSED ===");
-    }
   }
 
   @override

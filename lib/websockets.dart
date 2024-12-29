@@ -17,6 +17,10 @@ enum ConnectionIndicator { red, yellow, green }
 
 class WebSocketsService extends ChangeNotifier {
 
+  WebSocketsService() {
+    connect();
+  }
+
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
@@ -110,7 +114,7 @@ class WebSocketsService extends ChangeNotifier {
     final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
-      "type": "user_offline",
+      "type": "leave",
       "user_id": userId,
     }));
   }
