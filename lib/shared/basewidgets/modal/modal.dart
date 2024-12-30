@@ -253,91 +253,91 @@ class GeneralModal {
     );
   }
 
-  static Future<void> infoResolvedSos({
-    required String msg,
-  }) {
-    return showDialog(
-      context: navigatorKey.currentContext!,
-      builder: (context) {
-        return PopScope(
-          canPop: false,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+  // static Future<void> infoResolvedSos({
+  //   required String msg,
+  // }) {
+  //   return showDialog(
+  //     context: navigatorKey.currentContext!,
+  //     builder: (context) {
+  //       return PopScope(
+  //         canPop: false,
+  //         child: Scaffold(
+  //           backgroundColor: Colors.transparent,
+  //           body: Center(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
                   
-                  SizedBox(
-                    width: 300.0,
-                    height: 330.0,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
+  //                 SizedBox(
+  //                   width: 300.0,
+  //                   height: 330.0,
+  //                   child: Stack(
+  //                     clipBehavior: Clip.none,
+  //                     children: [
           
-                        Positioned(
-                          left: 20.0,
-                          right: 20.0,
-                          bottom: 20.0,
-                          child: Container(
-                            height: 200.0,
-                            padding: const EdgeInsets.all(12.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              color: Colors.white
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+  //                       Positioned(
+  //                         left: 20.0,
+  //                         right: 20.0,
+  //                         bottom: 20.0,
+  //                         child: Container(
+  //                           height: 200.0,
+  //                           padding: const EdgeInsets.all(12.0),
+  //                           decoration: BoxDecoration(
+  //                             borderRadius: BorderRadius.circular(25.0),
+  //                             color: Colors.white
+  //                           ),
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             mainAxisSize: MainAxisSize.min,
+  //                             children: [
                             
-                                Text(msg, 
-                                  textAlign: TextAlign.center,
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black
-                                  ),
-                                )
+  //                               Text(msg, 
+  //                                 textAlign: TextAlign.center,
+  //                                 style: robotoRegular.copyWith(
+  //                                   fontSize: Dimensions.fontSizeDefault,
+  //                                   fontWeight: FontWeight.w600,
+  //                                   color: Colors.black
+  //                                 ),
+  //                               )
                             
-                              ],
-                            ),
-                          )
-                        ),
+  //                             ],
+  //                           ),
+  //                         )
+  //                       ),
           
-                        Positioned(
-                          bottom: 0.0,
-                          left: 80.0,
-                          right: 80.0,
-                          child: CustomButton(
-                            isBorder: false,
-                            btnTextColor: Colors.white,
-                            btnColor: const Color(0xFFC82927),
-                            fontSize: Dimensions.fontSizeDefault,
-                            sizeBorderRadius: 20.0,
-                            isBorderRadius: true,
-                            height: 40.0,
-                            onTap: () {
-                              Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
-                              MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
-                            },
-                            btnTxt: "Ok",
-                          )
-                        ),
+  //                       Positioned(
+  //                         bottom: 0.0,
+  //                         left: 80.0,
+  //                         right: 80.0,
+  //                         child: CustomButton(
+  //                           isBorder: false,
+  //                           btnTextColor: Colors.white,
+  //                           btnColor: const Color(0xFFC82927),
+  //                           fontSize: Dimensions.fontSizeDefault,
+  //                           sizeBorderRadius: 20.0,
+  //                           isBorderRadius: true,
+  //                           height: 40.0,
+  //                           onTap: () {
+  //                             Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
+  //                             MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
+  //                           },
+  //                           btnTxt: "Ok",
+  //                         )
+  //                       ),
                         
-                      ],  
-                    )
+  //                     ],  
+  //                   )
                     
-                  ) 
-                ] 
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //                 ) 
+  //               ] 
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   static Future<void> infoClosedSos({
     required String msg,
@@ -405,7 +405,7 @@ class GeneralModal {
                             height: 40.0,
                             onTap: () {
                               Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
-                              MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
+                              MaterialPageRoute(builder: (context) => const DashboardScreen(index: 0)), (route) => false);
                             },
                             btnTxt: "Ok",
                           )
@@ -706,9 +706,9 @@ class GeneralModal {
 
                                   context.read<SosRatingNotifier>().sosRating(sosId: sosId);
 
-                                  Navigator.pop(context);
-
                                   context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
+
+                                  Navigator.pop(context);
                                 },
                               ),
 
@@ -728,83 +728,83 @@ class GeneralModal {
     });
   }
 
-  static Future<void> feedbackSos(double rating) {
-     return showDialog(
-      context: navigatorKey.currentContext!,
-      builder: (context) {
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                
-                SizedBox(
-                  width: 350.0,
-                  height: 380.0,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
+  // static Future<void> feedbackSos(double rating) {
+  //   return showDialog(
+  //   context: navigatorKey.currentContext!,
+  //   builder: (context) {
+  //     return Scaffold(
+  //       backgroundColor: Colors.transparent,
+  //       body: Center(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+              
+  //             SizedBox(
+  //               width: 350.0,
+  //               height: 380.0,
+  //               child: Stack(
+  //                 clipBehavior: Clip.none,
+  //                 children: [
 
-                      Positioned(
-                        left: 20.0,
-                        right: 20.0,
-                        bottom: 20.0,
-                        child: Container(
-                          height: 150.0,
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            color: Colors.white
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                        
-                              Text("Terimakasih, Atas feedback dari Anda",
-                                textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeLarge,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorResources.black
-                                ),
-                              ),
-                        
-                              const SizedBox(height: 15.0),
-                              
-                              RatingBar.builder(
-                                initialRating: rating,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                ignoreGestures: true,
-                                itemCount: 5,
-                                itemSize: 25.0,
-                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (BuildContext context, int i) => const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                onRatingUpdate: (double selectedRating) {},
-                              ),
-                        
-                            ],
-                          )
-                        )
-                      ),
+  //                   Positioned(
+  //                     left: 20.0,
+  //                     right: 20.0,
+  //                     bottom: 20.0,
+  //                     child: Container(
+  //                       height: 150.0,
+  //                       padding: const EdgeInsets.all(12.0),
+  //                       decoration: BoxDecoration(
+  //                         borderRadius: BorderRadius.circular(25.0),
+  //                         color: Colors.white
+  //                       ),
+  //                       child: Column(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         mainAxisSize: MainAxisSize.min,
+  //                         children: [
                       
-                    ],  
-                  )
-                  
-                ) 
-              ] 
-            ),
-          ),
-        );
-    });
-  }
+  //                           Text("Terimakasih, Atas feedback dari Anda",
+  //                             textAlign: TextAlign.center,
+  //                             style: robotoRegular.copyWith(
+  //                               fontSize: Dimensions.fontSizeLarge,
+  //                               fontWeight: FontWeight.bold,
+  //                               color: ColorResources.black
+  //                             ),
+  //                           ),
+                      
+  //                           const SizedBox(height: 15.0),
+                            
+  //                           RatingBar.builder(
+  //                             initialRating: rating,
+  //                             minRating: 1,
+  //                             direction: Axis.horizontal,
+  //                             allowHalfRating: true,
+  //                             ignoreGestures: true,
+  //                             itemCount: 5,
+  //                             itemSize: 25.0,
+  //                             itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+  //                             itemBuilder: (BuildContext context, int i) => const Icon(
+  //                               Icons.star,
+  //                               color: Colors.amber,
+  //                             ),
+  //                             onRatingUpdate: (double selectedRating) {},
+  //                           ),
+                      
+  //                         ],
+  //                       )
+  //                     )
+  //                   ),
+                    
+  //                 ],  
+  //               )
+                
+  //             ) 
+  //           ] 
+  //         ),
+  //       ),
+  //     );
+  //   });
+  // }
   
   static Future<void> logout({required GlobalKey<ScaffoldState> globalKey}) {
     return showDialog(

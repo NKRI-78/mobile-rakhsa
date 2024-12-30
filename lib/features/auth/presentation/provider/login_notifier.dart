@@ -63,7 +63,7 @@ class LoginNotifier with ChangeNotifier {
 
           Navigator.pushReplacement(navigatorKey.currentContext!,
             MaterialPageRoute(builder: (context) {
-              return const DashboardScreen();
+              return const DashboardScreen(index: 0);
             }),
           );
         } else {

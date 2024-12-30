@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
+import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
@@ -15,13 +18,20 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final int index;
+  const DashboardScreen({
+    required this.index,
+    super.key
+  });
 
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
 }
 
 class DashboardScreenState extends State<DashboardScreen> {
+
+  late FirebaseProvider firebaseProvider;
+  late ProfileNotifier profileNotifier;
 
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
@@ -115,9 +125,24 @@ class DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Future<void> getData() async {
+    if(!mounted) return;
+      profileNotifier.getProfile();
+
+    if(!mounted) return;
+      firebaseProvider.initFcm();
+  }
+
   @override 
   void initState() {
     super.initState();
+
+    selectedPageIndex = widget.index;
+
+    firebaseProvider = context.read<FirebaseProvider>();
+    profileNotifier = context.read<ProfileNotifier>();
+
+    Future.microtask(() => getData());
   }
 
   @override 
@@ -129,7 +154,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      key: globalKey,
       endDrawer: SafeArea(
         child: DrawerWidget(globalKey: globalKey)
       ),

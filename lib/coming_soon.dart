@@ -66,7 +66,7 @@ class ComingSoonPage extends StatelessWidget {
                 CustomButton(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return const DashboardScreen();
+                      return const DashboardScreen(index: 0);
                     }));
                   },
                   width: 200.0,

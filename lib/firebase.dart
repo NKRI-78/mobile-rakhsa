@@ -5,13 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/global.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
+
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
@@ -115,11 +117,9 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void _handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
-    String msg = payload["message"].toString();
-    Future.microtask(() {
-      context.read<ProfileNotifier>().getProfile();
-      GeneralModal.infoResolvedSos(msg: msg);
-    });
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => const DashboardScreen(index: 0)), (route) => false);
+    }); 
   }
 
   void _handleClosedSos(BuildContext context, Map<String, dynamic> payload) {

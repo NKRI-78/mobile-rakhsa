@@ -69,7 +69,7 @@ class VerifyOtpNotifier with ChangeNotifier {
 
         Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
           MaterialPageRoute(builder: (context) {
-            return const DashboardScreen();
+            return const DashboardScreen(index: 0);
           }),
           (route) => false,
         );
