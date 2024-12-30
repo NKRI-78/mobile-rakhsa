@@ -161,7 +161,7 @@ class WebSocketsService extends ChangeNotifier {
       "sender": userId,
       "recipient": recipientId,
       "text": message,
-      "created_at": DateFormat('yyyy-MM-dd hh:mm').format(createdAt)
+      "created_at": DateFormat('yyyy-MM-dd hh:mm:ss').format(createdAt)
     }));
   }
 
