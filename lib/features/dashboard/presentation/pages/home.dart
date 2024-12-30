@@ -71,7 +71,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String currentLat = "";
   String currentLng = "";
 
-  bool isDialogShowing = false;
+  bool isDialogLocationShowing = false;
+  bool isDialogNotificationShowing = false;
+  
   bool loadingGmaps = true;
 
   Future<void> getData() async {
@@ -83,6 +85,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       getCurrentLocation();
+
+    if(!mounted) return;
+      checkNotificationPermission();
   }
 
   Future<void> getCurrentLocation() async {
@@ -145,19 +150,36 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> checkNotificationPermission() async {
+    bool notificationReq = await Permission.notification.isDenied;
+    if(notificationReq) {
+      if (!isDialogNotificationShowing) {
+        setState(() => isDialogNotificationShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Perizinan akses notifikasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type: "notification"
+        );
+
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogNotificationShowing = false);
+        });
+      }
+    }
+  }
+
   Future<void> checkLocationPermission() async {
     var locationReq = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
 
     if(locationReq) {
-      if (!isDialogShowing) {
-        setState(() => isDialogShowing = true);
+      if (!isDialogLocationShowing) {
+        setState(() => isDialogLocationShowing = true);
         await GeneralModal.dialogRequestPermission(
           msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
           type: "notification"
         );
 
         Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogShowing = false);
+          setState(() => isDialogLocationShowing = false);
         });
       }
     }
@@ -168,6 +190,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
       
+      checkNotificationPermission();
       checkLocationPermission();
       return;
     }
