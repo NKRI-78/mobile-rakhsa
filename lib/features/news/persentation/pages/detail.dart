@@ -143,7 +143,6 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             : const SizedBox(
               height: 18,
             ),
-            
             widget.type == "ews" 
             ? const SizedBox() 
             : Consumer<DashboardNotifier>(

@@ -14,6 +14,7 @@ dependencies:
 
   # A
   awesome_notifications: ^0.9.3+1
+  app_settings: ^5.1.1
 
   # C
   carousel_slider: ^5.0.0
