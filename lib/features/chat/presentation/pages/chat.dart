@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/connection.dart';
-import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +11,14 @@ import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
+import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -70,15 +69,23 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     });
   }
 
+  Future<void> getData() async {
+    if(!mounted) return;
+      messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
+  }
+
   Future<void> resendUnsentMessages() async {
     for (var message in List<Map<String, dynamic>>.from(unsentMessages)) {
       try {
         String text = message["data"]["text"]; 
         DateTime createdAt = message["data"]["created_at"];
-        await insertMessageNotifier.insertMessage(
-          chatId: widget.chatId, 
-          recipient: widget.recipientId, 
-          text: text,
+
+        webSocketService.connect();
+        
+        webSocketService.sendMessage(
+          chatId: widget.chatId,
+          recipientId: widget.recipientId, 
+          message: text,
           createdAt: createdAt
         );
       } catch (e) {
@@ -86,18 +93,16 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       }
     }
   }
-    
-  Future<void> getData() async {
-    if(!mounted) return;
-      messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
-  }
 
   Future<void> sendMessageOffline() async {
     bool isConnected = await ConnectionHelper.isConnected();
 
     if(!isConnected) {
+
       DateTime now = DateTime.now();
       String sentTime = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+      
+      DateTime createdAt = DateTime.now();
 
       Map<String, dynamic> message = {
         "data": {
@@ -111,7 +116,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           },
           "is_read": false,
           "sent_time": sentTime,
-          "created_at": DateTime.now(),
+          "created_at": createdAt,
           "text": messageC.text,
         }
       };
@@ -131,10 +136,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     await sendMessageOffline();
 
+    DateTime createdAt = DateTime.now();
+
     webSocketService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId, 
       message: messageC.text,
+      createdAt: createdAt
     );
 
     setState(() {

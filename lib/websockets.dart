@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
@@ -150,6 +151,7 @@ class WebSocketsService extends ChangeNotifier {
     required String chatId,
     required String recipientId,
     required String message,
+    required DateTime createdAt
   }) {
     final userId = StorageHelper.getUserId();
 
@@ -159,6 +161,7 @@ class WebSocketsService extends ChangeNotifier {
       "sender": userId,
       "recipient": recipientId,
       "text": message,
+      "created_at": DateFormat('yyyy-MM-dd hh:mm').format(createdAt)
     }));
   }
 
