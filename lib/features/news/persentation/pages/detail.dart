@@ -124,21 +124,30 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 )
               },
             ),
-            const SizedBox(
-              height: 18,
-            ),
-            const Text(
-              'Baca Berita Lainnya',
+            
+            widget.type == "ews" 
+            ? const SizedBox()  
+            : const SizedBox(
+                height: 18,
+              ),
+            widget.type == "ews"  
+            ? const SizedBox()
+            : const Text('Baca Berita Lainnya',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 17,
               ),
             ),
-            const SizedBox(
+            widget.type == "ews" 
+            ? const SizedBox() 
+            : const SizedBox(
               height: 18,
             ),
-            Consumer<DashboardNotifier>(
-              builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
+            
+            widget.type == "ews" 
+            ? const SizedBox() 
+            : Consumer<DashboardNotifier>(
+                builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
                 if(notifier.state == ProviderState.loading) {
                   return const Center(
                     child: SizedBox(

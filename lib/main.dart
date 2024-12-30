@@ -85,7 +85,7 @@ class MyAppState extends State<MyApp> {
 
       if(isLoggedIn) {
         if(mounted) {
-          setState(() => home = const DashboardScreen(index: 0)); 
+          setState(() => home = const DashboardScreen()); 
         }
       } else {
         if(mounted) {

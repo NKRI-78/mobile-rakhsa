@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
@@ -18,11 +17,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 class DashboardScreen extends StatefulWidget {
-  final int index;
-  const DashboardScreen({
-    required this.index,
-    super.key
-  });
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
@@ -32,10 +27,18 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   late FirebaseProvider firebaseProvider;
   late ProfileNotifier profileNotifier;
-
+  
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
   int selectedPageIndex = 0;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      profileNotifier.getProfile();
+
+    if(!mounted) return;
+      firebaseProvider.initFcm();
+  }
 
   List<Map<String, dynamic>> pages = [
     {
@@ -125,20 +128,10 @@ class DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> getData() async {
-    if(!mounted) return;
-      profileNotifier.getProfile();
-
-    if(!mounted) return;
-      firebaseProvider.initFcm();
-  }
-
   @override 
   void initState() {
     super.initState();
-
-    selectedPageIndex = widget.index;
-
+        
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
 
@@ -154,6 +147,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      key: globalKey,
       endDrawer: SafeArea(
         child: DrawerWidget(globalKey: globalKey)
       ),

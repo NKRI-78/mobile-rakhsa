@@ -546,68 +546,60 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item.title.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeDefault,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 4.0),
-                                                      fh.Html(
-                                                        data: item.desc.toString(),
-                                                        style: {
-                                                          'body': fh.Style(
-                                                            maxLines: 2,
-                                                            margin: fh.Margins.zero,
-                                                            textOverflow: TextOverflow.ellipsis,
-                                                            color: ColorResources.white,
-                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                          ),
-                                                          'p': fh.Style(
-                                                            maxLines: 2,
-                                                            textOverflow: TextOverflow.ellipsis,
-                                                            margin: fh.Margins.zero,
-                                                            color: ColorResources.white,
-                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                          ),
-                                                          'span': fh.Style(
-                                                            maxLines: 2,
-                                                            textOverflow: TextOverflow.ellipsis,
-                                                            color: ColorResources.white,
-                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                          ),
-                                                          'div': fh.Style(
-                                                            maxLines: 2,
-                                                            textOverflow: TextOverflow.ellipsis,
-                                                            color: ColorResources.white,
-                                                            fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                          )
-                                                        },
-                                                      ),
-                                                      const SizedBox(height: 4.0),
-                                                       Text("Baca selengkapnya",
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: Dimensions.fontSizeDefault,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                Text(
+                                                  item.title.toString(),
+                                                  style: robotoRegular.copyWith(
+                                                    color: ColorResources.white,
+                                                    fontSize: Dimensions.fontSizeDefault,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
+                                                fh.Html(
+                                                  data: item.desc.toString(),
+                                                  style: {
+                                                    'body': fh.Style(
+                                                      maxLines: 2,
+                                                      margin: fh.Margins.zero,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      color: ColorResources.white,
+                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                    ),
+                                                    'p': fh.Style(
+                                                      maxLines: 2,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      margin: fh.Margins.zero,
+                                                      color: ColorResources.white,
+                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                    ),
+                                                    'span': fh.Style(
+                                                      maxLines: 2,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      color: ColorResources.white,
+                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                    ),
+                                                    'div': fh.Style(
+                                                      maxLines: 2,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      color: ColorResources.white,
+                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                    )
+                                                  },
+                                                ),
                                               ],
+                                              
+                                            ),
+                                            Text("Baca selengkapnya",
+                                              style: robotoRegular.copyWith(
+                                                color: ColorResources.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: Dimensions.fontSizeDefault,
+                                              ),
                                             ),
                                           ],
                                         ),

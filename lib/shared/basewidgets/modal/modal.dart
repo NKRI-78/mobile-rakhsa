@@ -405,7 +405,7 @@ class GeneralModal {
                             height: 40.0,
                             onTap: () {
                               Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, 
-                              MaterialPageRoute(builder: (context) => const DashboardScreen(index: 0)), (route) => false);
+                              MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
                             },
                             btnTxt: "Ok",
                           )

@@ -49,9 +49,7 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> initFcm() async {
     try {
       String? token = await FirebaseMessaging.instance.getToken();
-      await dio.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
-        data: {
+      await dio.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm", data: {
           "user_id": StorageHelper.getUserId(),
           "token": token,
         },
@@ -118,7 +116,7 @@ class FirebaseProvider with ChangeNotifier {
 
   void _handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
     Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => const DashboardScreen(index: 0)), (route) => false);
+      Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
     }); 
   }
 
