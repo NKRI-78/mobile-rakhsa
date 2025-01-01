@@ -267,7 +267,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             color: ColorResources.hintColor
                           ),
                         ), 
-                        Text(context.read<ProfileNotifier>().entity.data?.username ?? "-",
+                        Text(profileNotifier.entity.data?.username ?? "-",
                           style: robotoRegular.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeExtraLarge
@@ -301,7 +301,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         children: [
                           
                           CachedNetworkImage(
-                            imageUrl: context.read<ProfileNotifier>().entity.data?.avatar ?? "-",
+                            imageUrl: profileNotifier.entity.data?.avatar ?? "-",
                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
@@ -793,15 +793,14 @@ class SosButton extends StatefulWidget {
 class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   late SosNotifier sosNotifier;
-
-  Timer? holdTimer;
+  late ProfileNotifier profileNotifier;
 
   Future<void> handleLongPressStart() async {
-    if(context.read<ProfileNotifier>().entity.data!.sos.running) {
+    if(profileNotifier.entity.data!.sos.running) {
       GeneralModal.infoEndSos(
-        sosId: context.read<ProfileNotifier>().entity.data!.sos.id,
-        chatId: context.read<ProfileNotifier>().entity.data!.sos.chatId,
-        recipientId: context.read<ProfileNotifier>().entity.data!.sos.recipientId,
+        sosId: profileNotifier.entity.data!.sos.id,
+        chatId: profileNotifier.entity.data!.sos.chatId,
+        recipientId: profileNotifier.entity.data!.sos.recipientId,
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
       );
     } else {
@@ -811,32 +810,12 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         }));
       } else {
         sosNotifier.pulseController!.forward();
-
-        holdTimer = Timer(const Duration(milliseconds: 2000), () {
+        sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
+          startTimer();
           sosNotifier.pulseController!.reverse();
-          if (mounted) {
-            startTimer();
-          }
         });
       }
     }
-  }
-
-  Future<void> handleLongPressEnd() async {
-
-    if(StorageHelper.getUserId() == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {  
-        return const LoginPage();
-      }));
-    } else {
-      if (holdTimer?.isActive ?? false) {
-        holdTimer?.cancel();
-        sosNotifier.pulseController!.reverse();
-      } else if (!sosNotifier.isPressed) {
-        setState(() => sosNotifier.isPressed = false);
-      }
-    }
-    
   }
 
   Future<void> startTimer() async {
@@ -858,28 +837,10 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
           ); 
         })
       ).then((value) {
-
         if(value != null) {
-          setState(() {
-            sosNotifier.isPressed = true;
-            sosNotifier.countdownTime = 60; 
-          });
-
-          sosNotifier.timerController!
-          ..reset()
-          ..forward().whenComplete(() {
-            setState(() => sosNotifier.isPressed = false);
-            sosNotifier.pulseController!.reverse();
-          });
-
-          sosNotifier.timerController!.addListener(() {
-            setState(() {
-              sosNotifier.countdownTime = (60 - (sosNotifier.timerController!.value * 60)).round();
-            });
-          });
+          sosNotifier.startTimer();
         }
       });
-  
     }
 
   }
@@ -889,14 +850,15 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     super.initState();
 
     sosNotifier = context.read<SosNotifier>();
-
+    profileNotifier = context.read<ProfileNotifier>();
+    
+    sosNotifier.initializeTimer(this);
+  
     sosNotifier.initializePulse(this);
 
-    sosNotifier.pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: sosNotifier.pulseController!, curve: Curves.easeOut),
-    );
-
-    sosNotifier.initializeTimer(this);
+    if (sosNotifier.isPressed) {
+      sosNotifier.resumeTimer();
+    }
   }
 
   @override
@@ -904,84 +866,87 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     sosNotifier.pulseController?.dispose();
     sosNotifier.timerController?.dispose();
     
-    holdTimer?.cancel();
+    sosNotifier.holdTimer?.cancel();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          for (double scaleFactor in [0.8, 1.2, 1.4])
-            AnimatedBuilder(
-              animation: sosNotifier.pulseAnimation,
-              builder: (BuildContext context, Widget? child) {
-                return Transform.scale(
-                  scale: sosNotifier.pulseAnimation.value * scaleFactor,
-                  child: Container(
-                    width: 55, 
-                    height: 55,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
-                    ),
-                  ),
-                );
-              },
-            ),
-          if (sosNotifier.isPressed)
-            SizedBox(
-              width: 145,
-              height: 145,
-              child: CircularProgressIndicator(
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
-                strokeWidth: 6,
-                value: 1 - sosNotifier.timerController!.value,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          GestureDetector(
-            onLongPressStart: (_) async => widget.isConnected ? context.read<SosNotifier>().isTimerRunning ? () {} : await handleLongPressStart() : () {},
-            onLongPressEnd: (_)  async => widget.isConnected ?  context.read<SosNotifier>().isTimerRunning ? () {} : await handleLongPressEnd() : () {},
-            child: AnimatedBuilder(
-              animation: sosNotifier.timerController!,
-              builder: (BuildContext context, Widget? child) {
-                return Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                     color: widget.isConnected
-                      ? const Color(0xFFFE1717)
-                      : const Color(0xFF7A7A7A),
-                    boxShadow: [
-                      BoxShadow(
-                        color: widget.isConnected 
-                        ? const Color(0xFFFE1717).withOpacity(0.5) 
-                        : const Color(0xFF7A7A7A).withOpacity(0.5),
-                        blurRadius: 10,
-                        spreadRadius: 5,
+    return Consumer<SosNotifier>(
+      builder: (BuildContext context, SosNotifier notifier, Widget? child) {
+        return Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              for (double scaleFactor in [0.8, 1.2, 1.4])
+                AnimatedBuilder(
+                  animation: notifier.pulseAnimation,
+                  builder: (BuildContext context, Widget? child) {
+                    return Transform.scale(
+                      scale: notifier.pulseAnimation.value * scaleFactor,
+                      child: Container(
+                        width: 55, 
+                        height: 55,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
+                        ),
                       ),
-                    ],
+                    );
+                  },
+                ),
+              if (notifier.isPressed)
+                SizedBox(
+                  width: 145,
+                  height: 145,
+                  child: CircularProgressIndicator(
+                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
+                    strokeWidth: 6,
+                    value: 1 - notifier.timerController!.value,
+                    backgroundColor: Colors.transparent,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    sosNotifier.isPressed ? "${sosNotifier.countdownTime}" : "SOS",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              },
-            ),
+                ),
+              GestureDetector(
+                onLongPressStart: (_) async => widget.isConnected ? notifier.isTimerRunning ? () {} : await handleLongPressStart() : () {},
+                child: AnimatedBuilder(
+                  animation: notifier.timerController!,
+                  builder: (BuildContext context, Widget? child) {
+                    return Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: widget.isConnected
+                          ? const Color(0xFFFE1717)
+                          : const Color(0xFF7A7A7A),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.isConnected 
+                            ? const Color(0xFFFE1717).withOpacity(0.5) 
+                            : const Color(0xFF7A7A7A).withOpacity(0.5),
+                            blurRadius: 10,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        sosNotifier.isPressed ? "${notifier.countdownTime}" : "SOS",
+                        style: robotoRegular.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

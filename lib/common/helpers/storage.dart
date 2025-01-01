@@ -40,8 +40,22 @@ class StorageHelper {
     return userId;
   }
 
+  static int? getElapsedTime() {
+    int? elapsedTime = sharedPreferences.getInt("elapsedtime") ?? 60;
+
+    return elapsedTime;
+  }
+
   static void saveUserId({required String userId}) async {
     await sharedPreferences.setString("user_id", userId);
+  }
+
+  static void saveElapsedTime({required int elapsedtime}) async {
+    await sharedPreferences.setInt("elapsedtime", elapsedtime);
+  }
+
+  static void clearElapsedTime() async {
+    await sharedPreferences.remove("elapsedtime");
   }
 
   static void removeSosId() async {
