@@ -166,6 +166,28 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     }
   }
 
+  void handleTyping() {
+    if(messageC.text.isNotEmpty) {
+      webSocketService.typing(
+        chatId: widget.chatId, 
+        recipientId: widget.recipientId,
+        isTyping: true,
+      );
+
+      if (debounce != null) {
+        debounce!.cancel();
+      }
+
+      debounce = Timer(const Duration(seconds: 1), () {
+        webSocketService.typing(
+          chatId: widget.chatId, 
+          recipientId: widget.recipientId,
+          isTyping: false,
+        );
+      });
+    }
+  }
+
   @override 
   void initState() {
     super.initState();
@@ -181,6 +203,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     messageNotifier.startTimer();
 
     messageC = TextEditingController();
+    messageC.addListener(handleTyping);
 
     monitorConnection();
 
@@ -191,6 +214,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
 
+    messageC.removeListener(handleTyping);
     messageC.dispose();
 
     debounce?.cancel();
@@ -219,7 +243,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           ),
           child: widget.status == "CLOSED" || context.watch<GetMessagesNotifier>().note.isNotEmpty
           ? Consumer<GetMessagesNotifier>(
-            builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
+              builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
               if(notifier.state == ProviderState.loading) {
                 return Container(
                   decoration: const BoxDecoration(
@@ -260,8 +284,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   ],
                 ) 
               );
-            },
-          )
+              },
+            )
           : Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFEAEAEA),
@@ -440,6 +464,17 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
+
+                                    const SizedBox(height: 4.0),
+                      
+                                    notifier.isTyping(widget.chatId)
+                                    ? Text("Sedang mengetik...",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: 10.0,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const SizedBox()
                             
                                   ],
                                 ),
@@ -454,8 +489,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     
                   if(notifier.state == ProviderState.loaded)
                     SliverToBoxAdapter(
-                      child: showAutoGreetings ? 
-                        Column(
+                      child: showAutoGreetings 
+                      ? Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -500,8 +535,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                               ),
                             ),
                           ],
-                        ) : const SizedBox()
-                      ),
+                        ) 
+                      : const SizedBox()
+                    ),
                       
                   if(notifier.state == ProviderState.loaded)
                     SliverToBoxAdapter(
@@ -516,7 +552,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         shrinkWrap: true,
                         reverse: true,
                         itemBuilder: (BuildContext context, int i) {
+                        
                         final item = notifier.messages[i];
+
                         return ChatBubble(
                           text: item.text,
                           time: item.sentTime,
@@ -527,6 +565,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       itemCount: notifier.messages.length,
                     ),
                   )
+
                 ],
               );
             },

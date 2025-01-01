@@ -31,6 +31,23 @@ class GetMessagesNotifier with ChangeNotifier {
   int _time = 5;
   int get time => _time;
 
+  ScrollController sC = ScrollController();
+
+  RecipientUser _recipient = RecipientUser();
+  RecipientUser get recipient => _recipient;
+
+  List<MessageData> _messages = [];
+  List<MessageData> get messages => [..._messages];
+
+  ProviderState _state = ProviderState.loading;
+  ProviderState get state => _state;
+
+  String _message = "";
+  String get message => _message;
+
+  Map<String, bool> onlineStatus = {};
+  Map<String, bool> typingStatus = {};
+
   late Timer _timer;
 
   void startTimer() {
@@ -65,23 +82,6 @@ class GetMessagesNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  ScrollController sC = ScrollController();
-
-  RecipientUser _recipient = RecipientUser();
-  RecipientUser get recipient => _recipient;
-
-  List<MessageData> _messages = [];
-  List<MessageData> get messages => [..._messages];
-
-  ProviderState _state = ProviderState.loading;
-  ProviderState get state => _state;
-
-  String _message = "";
-  String get message => _message;
-
-  Map<String, bool> onlineStatus = {};
-  Map<String, String?> typingStatus = {};
-
   void clearActiveChatId() {
     _activeChatId = "";
 
@@ -94,28 +94,21 @@ class GetMessagesNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void updateUserStatus({required Map<String, dynamic> data}) {
-    onlineStatus[data["recipient"]] = data["type"] == "online" ? true : false;
-  
-    Future.delayed(Duration.zero, () => notifyListeners());
-  }
-
-  bool isOnline(String userId) {
-    return onlineStatus[userId] ?? false;
+  bool isTyping(String chatId) {
+    return typingStatus[chatId] ?? false;
   }
 
   void updateUserTyping({required Map<String, dynamic> data}) {
-    if (data["is_typing"]) {
-      typingStatus[data["chat_id"]] = data["sender"];
-    } else {
-      typingStatus.remove(data["chat_id"]);
-    }
-    
-    Future.delayed(Duration.zero, () => notifyListeners());
-  }
+    String chatId = data["data"]["chat_id"];
+    bool isTyping = data["data"]["is_typing"];
 
-  bool isTyping(String chatId) {
-    return typingStatus.containsKey(chatId);
+    if (isTyping) {
+      typingStatus[chatId] = true; 
+    } else {
+      typingStatus.remove(chatId); 
+    }
+
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void setStateProvider(ProviderState newState) {

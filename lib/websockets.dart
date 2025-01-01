@@ -102,6 +102,22 @@ class WebSocketsService extends ChangeNotifier {
     reconnect();
   }
 
+  void typing({
+    required String recipientId,
+    required String chatId,
+    required bool isTyping
+  }) {
+    final userId = StorageHelper.getUserId();
+
+    channel?.sink.add(jsonEncode({
+      "type": "typing",
+      "chat_id": chatId,
+      "sender": userId,
+      "recipient": recipientId,
+      "is_typing": isTyping
+    }));
+  }
+
   void join() {
     final userId = StorageHelper.getUserId();
 
@@ -186,6 +202,18 @@ class WebSocketsService extends ChangeNotifier {
       }
 
       context.read<GetMessagesNotifier>().appendMessage(data: message);
+    }
+
+    if(message["type"] == "typing") {
+      debugPrint("=== TYPING ===");
+
+      final context = navigatorKey.currentContext;
+
+      if (context == null) {
+        return;
+      }
+
+      context.read<GetMessagesNotifier>().updateUserTyping(data: message);
     }
 
   }
