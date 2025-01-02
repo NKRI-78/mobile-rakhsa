@@ -2,10 +2,14 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:rakhsa/connection.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
 
 import 'package:provider/provider.dart';
 
@@ -78,8 +82,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     for (var message in List<Map<String, dynamic>>.from(unsentMessages)) {
       try {
         String text = message["data"]["text"]; 
-        DateTime createdAt = message["data"]["created_at"];
+        var createdAt = message["data"]["created_at"];
 
+     
         webSocketService.connect();
         
         webSocketService.sendMessage(
@@ -88,6 +93,15 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           message: text,
           createdAt: createdAt
         );
+
+        // await insertMessageNotifier.insertMessage(
+        //   chatId: widget.chatId,
+        //   recipient: widget.recipientId,
+        //   text: text,
+        //   createdAt: createdAt
+        // );
+        
+        unsentMessages.clear();
       } catch (e) {
         debugPrint("Failed to resend message: $e");
       }
@@ -102,7 +116,10 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       DateTime now = DateTime.now();
       String sentTime = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
       
-      DateTime createdAt = DateTime.now();
+      final jakartaTimeZone = tz.getLocation('Asia/Jakarta');
+      final jakartaTime = tz.TZDateTime.now(jakartaTimeZone);
+
+      String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(jakartaTime);
 
       Map<String, dynamic> message = {
         "data": {
@@ -116,16 +133,14 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           },
           "is_read": false,
           "sent_time": sentTime,
-          "created_at": createdAt,
+          "created_at": formattedDate,
           "text": messageC.text,
         }
       };
 
       unsentMessages.add(message);
 
-      messageNotifier.appendMessage(
-        data: message
-      );
+      messageNotifier.appendMessage(data: message);
     }
   }
 
@@ -136,13 +151,16 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     await sendMessageOffline();
 
-    DateTime createdAt = DateTime.now();
+    final jakartaTimeZone = tz.getLocation('Asia/Jakarta');
+    final jakartaTime = tz.TZDateTime.now(jakartaTimeZone);
+
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(jakartaTime);
 
     webSocketService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId, 
       message: messageC.text,
-      createdAt: createdAt
+      createdAt: formattedDate
     );
 
     setState(() {

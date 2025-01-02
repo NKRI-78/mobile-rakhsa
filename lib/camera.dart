@@ -24,7 +24,6 @@ class CameraPage extends StatefulWidget {
   final String country;
   final String lat;
   final String lng;
-  final String time;
   
   const CameraPage({
     required this.sosId,
@@ -32,7 +31,6 @@ class CameraPage extends StatefulWidget {
     required this.country,
     required this.lat,
     required this.lng,
-    required this.time,
     super.key
   });
 
@@ -107,7 +105,6 @@ class CameraPageState extends State<CameraPage> {
         ext: ext,
         lat: widget.lat, 
         lng: widget.lng, 
-        time: widget.time
       );
       
       if(mounted) {
@@ -168,7 +165,6 @@ class CameraPageState extends State<CameraPage> {
         media: media,
         ext: ext,
         lat: widget.lat, lng: widget.lng, 
-        time: widget.time
       );
 
       if(mounted) {

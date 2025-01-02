@@ -72,6 +72,7 @@ dependencies:
 
   # T
   table_calendar: ^3.1.2
+  timezone: ^0.8.0
 
   # W
   web_socket_channel: ^2.4.4

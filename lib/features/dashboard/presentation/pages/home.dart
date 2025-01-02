@@ -819,9 +819,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   Future<void> startTimer() async {
-    DateTime now = DateTime.now();
-    String time = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-
     String sosId = const Uuid().v4();
 
     if(mounted) {
@@ -833,7 +830,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
             country: widget.country, 
             lat: widget.lat, 
             lng: widget.lng, 
-            time: time
           ); 
         })
       ).then((value) {
