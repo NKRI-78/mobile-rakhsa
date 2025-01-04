@@ -812,7 +812,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         sosNotifier.pulseController!.forward();
         sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
           startTimer();
-          sosNotifier.pulseController!.reverse();
         });
       }
     }
