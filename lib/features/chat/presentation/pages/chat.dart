@@ -83,7 +83,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       try {
         String text = message["data"]["text"]; 
         var createdAt = message["data"]["created_at"];
-
      
         webSocketService.connect();
         
@@ -112,14 +111,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     bool isConnected = await ConnectionHelper.isConnected();
 
     if(!isConnected) {
-
-      DateTime now = DateTime.now();
-      String sentTime = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
       
-      final jakartaTimeZone = tz.getLocation('Asia/Jakarta');
-      final jakartaTime = tz.TZDateTime.now(jakartaTimeZone);
-
-      String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(jakartaTime);
+      String sentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+      String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
       Map<String, dynamic> message = {
         "data": {
@@ -133,7 +127,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           },
           "is_read": false,
           "sent_time": sentTime,
-          "created_at": formattedDate,
+          "created_at": createdAt,
           "text": messageC.text,
         }
       };
@@ -151,16 +145,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     await sendMessageOffline();
 
-    final jakartaTimeZone = tz.getLocation('Asia/Jakarta');
-    final jakartaTime = tz.TZDateTime.now(jakartaTimeZone);
-
-    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(jakartaTime);
+    String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     webSocketService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId, 
       message: messageC.text,
-      createdAt: formattedDate
+      createdAt: createdAt
     );
 
     setState(() {

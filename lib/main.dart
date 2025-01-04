@@ -2,8 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/standalone.dart' as tz;
 
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
@@ -62,8 +60,6 @@ Future<void> main() async {
   await FirebaseProvider.registerBackgroundHandler();
 
   await StorageHelper.init();
-
-  tz.initializeTimeZones();
 
   di.init();
 
