@@ -48,31 +48,32 @@ class RegisterPageState extends State<RegisterPage> {
     if (fullname.isEmpty) {
       ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
       return;
-    } else if (phone.length < 10 || phone.length > 13) {
+    } 
+    if (phone.length < 10 || phone.length > 13) {
       ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
       return;
-    } else if (email.isEmpty) {
+    } 
+    if (email.isEmpty) {
       ShowSnackbar.snackbarErr("Email tidak boleh kosong");
       return;
-    } else if (!email.isValidEmail()) {
+    } 
+    if (!email.isValidEmail()) {
       ShowSnackbar.snackbarErr("Email tidak valid");
       return;
-    } else if (passport.length < 9) {
+    } if (passport.length < 9) {
       ShowSnackbar.snackbarErr("Passport harus 9 digit");
       return;
-    } else if(emergencyContact.length < 10 || emergencyContact.length > 13) {
+    } if(emergencyContact.length < 10 || emergencyContact.length > 13) {
       ShowSnackbar.snackbarErr("No Darurat harus antara 10 hingga 13 digit");
-    } else if (password.isEmpty) {
+      return;
+    } if (password.isEmpty) {
       ShowSnackbar.snackbarErr("Password tidak boleh kosong");
       return;
-    } else if (passConfirm.isEmpty) {
+    } if (passConfirm.isEmpty) {
       ShowSnackbar.snackbarErr("Password Konfirmasi tidak boleh kosong");
       return;
-    } else if (password != passConfirm) {
-      ShowSnackbar.snackbarErr("Password tidak sama");
-      return;
-    } else if (passConfirm != password) {
-      ShowSnackbar.snackbarErr("Password tidak sama");
+    } if (password != passConfirm)  {
+      ShowSnackbar.snackbarErr("Password Konfirmasi tidak sama");
       return;
     }
 

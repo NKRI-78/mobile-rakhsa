@@ -53,6 +53,12 @@ class SosNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  void resetAnimation() {
+    pulseController!.reset();
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void initializeTimer(TickerProvider vsync) {
     timerController = AnimationController(
       duration: const Duration(seconds: 60),
@@ -90,7 +96,7 @@ class SosNotifier with ChangeNotifier {
 
     pulseController!.reverse();
     Future.delayed(Duration.zero, () => notifyListeners());
-
+    
     timerController!
     ..reset()
     ..forward().whenComplete(() {

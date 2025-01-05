@@ -137,7 +137,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           lng: position.longitude
         );
 
-        dashboardNotifier.getEws(
+        await dashboardNotifier.getEws(
           type: "ews",
           lat: position.latitude,
           lng: position.longitude
@@ -518,7 +518,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           autoPlayInterval: const Duration(seconds: 10),
                           autoPlay: true,
                           viewportFraction: 1.0,
-                          height: 280.0 
+                          height: 250.0 
                         ),
                         items: notifier.ews.map((item) {
                         return GestureDetector(
@@ -569,53 +569,47 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  item.title.toString(),
-                                                  style: robotoRegular.copyWith(
-                                                    color: ColorResources.white,
-                                                    fontSize: Dimensions.fontSizeDefault,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                            Text(
+                                              item.title.toString(),
+                                              style: robotoRegular.copyWith(
+                                                color: ColorResources.white,
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            fh.Html(
+                                              data: item.desc.toString(),
+                                              shrinkWrap: true,
+                                              style: {
+                                                'body': fh.Style(
+                                                  maxLines: 2,
+                                                  margin: fh.Margins.zero,
+                                                  textOverflow: TextOverflow.ellipsis,
+                                                  color: ColorResources.white,
+                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                 ),
-                                                fh.Html(
-                                                  data: item.desc.toString(),
-                                                  style: {
-                                                    'body': fh.Style(
-                                                      maxLines: 2,
-                                                      margin: fh.Margins.zero,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                      color: ColorResources.white,
-                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                    ),
-                                                    'p': fh.Style(
-                                                      maxLines: 2,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                      margin: fh.Margins.zero,
-                                                      color: ColorResources.white,
-                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                    ),
-                                                    'span': fh.Style(
-                                                      maxLines: 2,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                      color: ColorResources.white,
-                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                    ),
-                                                    'div': fh.Style(
-                                                      maxLines: 2,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                      color: ColorResources.white,
-                                                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                    )
-                                                  },
+                                                'p': fh.Style(
+                                                  maxLines: 2,
+                                                  textOverflow: TextOverflow.ellipsis,
+                                                  margin: fh.Margins.symmetric(vertical: 10.0),
+                                                  color: ColorResources.white,
+                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                 ),
-                                              ],
-                                              
+                                                'span': fh.Style(
+                                                  maxLines: 2,
+                                                  textOverflow: TextOverflow.ellipsis,
+                                                  color: ColorResources.white,
+                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                ),
+                                                'div': fh.Style(
+                                                  maxLines: 2,
+                                                  textOverflow: TextOverflow.ellipsis,
+                                                  color: ColorResources.white,
+                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                )
+                                              },
                                             ),
                                             Text("Baca selengkapnya",
                                               style: robotoRegular.copyWith(
@@ -649,44 +643,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                           borderRadius: BorderRadius.circular(10.0),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item.title.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeDefault,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 4.0),
-                                                      Text(
-                                                        item.desc.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 );
@@ -707,44 +663,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         decoration: BoxDecoration(
                                           color: Colors.black.withOpacity(0.5),
                                           borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Flexible(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item.title.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeDefault,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 4.0),
-                                                      Text(
-                                                        item.desc.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          color: ColorResources.white,
-                                                          fontSize: Dimensions.fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
                                         ),
                                       ),
                                     ],
@@ -834,6 +752,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
       ).then((value) {
         if(value != null) {
           sosNotifier.startTimer();
+        } else {
+          sosNotifier.resetAnimation();
         }
       });
     }
