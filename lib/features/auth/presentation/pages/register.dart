@@ -36,48 +36,7 @@ class RegisterPageState extends State<RegisterPage> {
   late TextEditingController passwordConfirmC;
 
   Future<void> submitRegister() async {
-    bool submissionValidation(
-      BuildContext context,
-      String fullname,
-      String phone,
-      String email,
-      String passport,
-      String emergencyContact,
-      String password,
-      String confirmPassword,
-    ) {
-      if (fullname.isEmpty) {
-        ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
-        return false;
-      } else if (phone.length < 10 || phone.length > 13) {
-        ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
-        return false;
-      } else if (email.isEmpty) {
-        ShowSnackbar.snackbarErr("Email tidak boleh kosong");
-        return false;
-      } else if (!email.isValidEmail()) {
-        ShowSnackbar.snackbarErr("Email tidak valid");
-        return false;
-      } else if (passport.length < 9) {
-        ShowSnackbar.snackbarErr("Passport harus 9 digit");
-        return false;
-      } else if(emergencyContact.length < 10 || emergencyContact.length > 13) {
-        ShowSnackbar.snackbarErr("No Darurat harus antara 10 hingga 13 digit");
-      } else if (password.isEmpty) {
-        ShowSnackbar.snackbarErr("Password tidak boleh kosong");
-        return false;
-      } else if (confirmPassword.isEmpty) {
-        ShowSnackbar.snackbarErr("Password Konfirmasi tidak boleh kosong");
-        return false;
-      } else if (password != confirmPassword) {
-        ShowSnackbar.snackbarErr("Password tidak sama");
-        return false;
-      } else if (confirmPassword != password) {
-        ShowSnackbar.snackbarErr("Password tidak sama");
-        return false;
-      }
-      return true;
-    }
+
     String fullname = fullnameC.text.trim();
     String email = emailC.text.trim();
     String phone = phoneC.text.trim();
@@ -86,27 +45,45 @@ class RegisterPageState extends State<RegisterPage> {
     String password = passwordC.text.trim();
     String passConfirm = passwordConfirmC.text.trim();
 
-    final isClear = submissionValidation(
-      context,
-      fullname,
-      phone,
-      email,
-      passport,
-      emergencyContact,
-      password,
-      passConfirm
-    );
-
-    if(isClear) {
-      await registerNotifier.register(
-        fullname: fullname,
-        email: email,
-        phone: phone,
-        passport: passport,
-        emergencyContact: emergencyContact,
-        password: password,
-      );
+    if (fullname.isEmpty) {
+      ShowSnackbar.snackbarErr("Nama Lengkap tidak boleh kosong");
+      return;
+    } else if (phone.length < 10 || phone.length > 13) {
+      ShowSnackbar.snackbarErr("No Telepon harus antara 10 hingga 13 digit");
+      return;
+    } else if (email.isEmpty) {
+      ShowSnackbar.snackbarErr("Email tidak boleh kosong");
+      return;
+    } else if (!email.isValidEmail()) {
+      ShowSnackbar.snackbarErr("Email tidak valid");
+      return;
+    } else if (passport.length < 9) {
+      ShowSnackbar.snackbarErr("Passport harus 9 digit");
+      return;
+    } else if(emergencyContact.length < 10 || emergencyContact.length > 13) {
+      ShowSnackbar.snackbarErr("No Darurat harus antara 10 hingga 13 digit");
+    } else if (password.isEmpty) {
+      ShowSnackbar.snackbarErr("Password tidak boleh kosong");
+      return;
+    } else if (passConfirm.isEmpty) {
+      ShowSnackbar.snackbarErr("Password Konfirmasi tidak boleh kosong");
+      return;
+    } else if (password != passConfirm) {
+      ShowSnackbar.snackbarErr("Password tidak sama");
+      return;
+    } else if (passConfirm != password) {
+      ShowSnackbar.snackbarErr("Password tidak sama");
+      return;
     }
+
+    await registerNotifier.register(
+      fullname: fullname,
+      email: email,
+      phone: phone,
+      passport: passport,
+      emergencyContact: emergencyContact,
+      password: password,
+    );
     
     if(registerNotifier.message != "") {
       ShowSnackbar.snackbarErr(registerNotifier.message);
