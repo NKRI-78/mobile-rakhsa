@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
+
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/shared/basewidgets/dashboard/bottom_navybar.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -27,6 +30,8 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   late FirebaseProvider firebaseProvider;
   late ProfileNotifier profileNotifier;
+
+  DateTime? lastTap;
   
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   
@@ -146,70 +151,86 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: globalKey,
-      endDrawer: SafeArea(
-        child: DrawerWidget(globalKey: globalKey)
-      ),
-      body: pages[selectedPageIndex]['page'],
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: selectedPageIndex,
-        showElevation: false, 
-        onItemSelected: (int index) => selectPage(index),
-        items: [
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.home,
-              size: 20.0,
-            ),
-            title: Text('Home',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeSmall,
-                color: ColorResources.white
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if(lastTap == null) {
+          lastTap = DateTime.now();
+          ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+        } else {
+          if (DateTime.now().difference(lastTap!) < const Duration(seconds: 2)) {
+            SystemNavigator.pop();
+          } else {
+            lastTap = DateTime.now();
+            ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+          }
+        }
+      },
+      child: Scaffold(
+        key: globalKey,
+        endDrawer: SafeArea(
+          child: DrawerWidget(globalKey: globalKey)
+        ),
+        body: pages[selectedPageIndex]['page'],
+        bottomNavigationBar: BottomNavyBar(
+          selectedIndex: selectedPageIndex,
+          showElevation: false, 
+          onItemSelected: (int index) => selectPage(index),
+          items: [
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.home,
+                size: 20.0,
               ),
-            ),
-            activeColor: const Color(0xFFFE1717),
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.info,
-              size: 20.0,
-            ),
-            title: Text('Info',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
+              title: Text('Home',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeSmall,
+                  color: ColorResources.white
+                ),
               ),
+              activeColor: const Color(0xFFFE1717),
             ),
-            activeColor: const Color(0xFFFE1717)
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.call,
-              size: 20.0,
-            ),
-            title: Text('Call',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.info,
+                size: 20.0,
               ),
-            ),
-            activeColor: const Color(0xFFFE1717),
-          ),
-          BottomNavyBarItem(
-            icon: const Icon(
-              Icons.event,
-              size: 20.0,
-            ),
-            title: Text('Event',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
+              title: Text('Info',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.white
+                ),
               ),
+              activeColor: const Color(0xFFFE1717)
             ),
-            activeColor: const Color(0xFFFE1717),
-          ),
-        ],
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.call,
+                size: 20.0,
+              ),
+              title: Text('Call',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.white
+                ),
+              ),
+              activeColor: const Color(0xFFFE1717),
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.event,
+                size: 20.0,
+              ),
+              title: Text('Event',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.white
+                ),
+              ),
+              activeColor: const Color(0xFFFE1717),
+            ),
+          ],
+        ),
       ),
     ); 
   }

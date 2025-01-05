@@ -8,9 +8,6 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/standalone.dart' as tz;
-
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -78,34 +75,45 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
   }
 
-  Future<void> resendUnsentMessages() async {
-    for (var message in List<Map<String, dynamic>>.from(unsentMessages)) {
-      try {
-        String text = message["data"]["text"]; 
-        var createdAt = message["data"]["created_at"];
-     
-        webSocketService.connect();
-        
-        webSocketService.sendMessage(
-          chatId: widget.chatId,
-          recipientId: widget.recipientId, 
-          message: text,
-          createdAt: createdAt
-        );
+ Future<void> resendUnsentMessages() async {
+  // Sort unsentMessages by created_at in ascending order
+  var sortedMessages = List<Map<String, dynamic>>.from(unsentMessages)
+    ..sort((a, b) {
+      var createdAtA = DateTime.parse(a["data"]["created_at"]);
+      var createdAtB = DateTime.parse(b["data"]["created_at"]);
+      return createdAtB.compareTo(createdAtA);
+    });
 
-        // await insertMessageNotifier.insertMessage(
-        //   chatId: widget.chatId,
-        //   recipient: widget.recipientId,
-        //   text: text,
-        //   createdAt: createdAt
-        // );
-        
-        unsentMessages.clear();
-      } catch (e) {
-        debugPrint("Failed to resend message: $e");
-      }
+  for (var message in sortedMessages) {
+    try {
+      String text = message["data"]["text"]; 
+      var createdAt = message["data"]["created_at"];
+      
+      webSocketService.connect();
+
+      webSocketService.sendMessage(
+        chatId: widget.chatId,
+        recipientId: widget.recipientId, 
+        message: text,
+        createdAt: createdAt,
+      );
+
+      // Uncomment if needed to insert sent messages into a notifier
+      // await insertMessageNotifier.insertMessage(
+      //   chatId: widget.chatId,
+      //   recipient: widget.recipientId,
+      //   text: text,
+      //   createdAt: createdAt,
+      // );
+    } catch (e) {
+      debugPrint("Failed to resend message: $e");
     }
   }
+
+  // Clear the unsentMessages only after successfully processing all
+  unsentMessages.clear();
+}
+
 
   Future<void> sendMessageOffline() async {
     bool isConnected = await ConnectionHelper.isConnected();

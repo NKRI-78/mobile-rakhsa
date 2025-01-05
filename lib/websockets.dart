@@ -138,7 +138,6 @@ class WebSocketsService extends ChangeNotifier {
   }
 
   void sos({
-    required String sosId,
     required String location,
     required String country,
     required String media,
@@ -149,7 +148,6 @@ class WebSocketsService extends ChangeNotifier {
     final userId = StorageHelper.getUserId();
 
     channel?.sink.add(jsonEncode({
-      "sos_id": sosId,
       "type": "sos",
       "user_id": userId,
       "location": location,

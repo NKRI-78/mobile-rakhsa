@@ -19,14 +19,12 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/websockets.dart';
 
 class CameraPage extends StatefulWidget {
-  final String sosId;
   final String location;
   final String country;
   final String lat;
   final String lng;
   
   const CameraPage({
-    required this.sosId,
     required this.location,
     required this.country,
     required this.lat,
@@ -98,7 +96,6 @@ class CameraPageState extends State<CameraPage> {
       String ext = media.split('/').last.split('.').last;
 
       webSocketsService.sos(
-        sosId: widget.sosId,
         location: widget.location,
         country: widget.country, 
         media: media,
@@ -159,7 +156,6 @@ class CameraPageState extends State<CameraPage> {
       String ext = media.split('/').last.split('.').last;
       
       webSocketsService.sos(
-        sosId: widget.sosId,
         location: widget.location,
         country: widget.country,
         media: media,
