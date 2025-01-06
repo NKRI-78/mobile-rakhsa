@@ -76,10 +76,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> getData() async {
     if(!mounted) return;
-      profileNotifier.getProfile();
+      await profileNotifier.getProfile();
 
     if(!mounted) return;
-      firebaseProvider.initFcm();
+      await firebaseProvider.initFcm();
 
     if(!mounted) return;
       getCurrentLocation();
@@ -136,7 +136,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         );
 
         await dashboardNotifier.getEws(
-          type: "ews",
           lat: position.latitude,
           lng: position.longitude
         );
@@ -185,18 +184,25 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("=== APP RESUME ===");
-      
-      profileNotifier.getProfile();
-      
-      checkNotificationPermission();
-      checkLocationPermission();
-      return;
+    switch (state) {
+      case AppLifecycleState.resumed:
+        debugPrint("=== APP RESUME ===");
+        await checkNotificationPermission();
+        await getCurrentLocation();
+      break;
+      case AppLifecycleState.inactive:
+        debugPrint("=== APP INACTIVE ===");
+      break;
+      case AppLifecycleState.paused:
+        debugPrint("=== APP PAUSED ===");
+      break;
+      case AppLifecycleState.detached:
+        debugPrint("=== APP DETACHED ===");
+      break;
+      case AppLifecycleState.hidden:
+        debugPrint("=== APP HIDDEN ===");
+      break;
     }
-    if (state == AppLifecycleState.inactive) {}
-    if (state == AppLifecycleState.paused) {}
-    if (state == AppLifecycleState.detached) {}
   }
 
   @override
@@ -517,7 +523,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             ),
                           )
                         ),
-                    )
+                      )
                     : Container(
                         margin: const EdgeInsets.only(
                           top: 30.0

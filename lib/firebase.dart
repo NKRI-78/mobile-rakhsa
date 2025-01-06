@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/global.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -82,7 +80,7 @@ class FirebaseProvider with ChangeNotifier {
       try {
         await _playNotificationSound();
         _processMessage(context, message.data);
-        _showNotification(message.notification);
+        _showNotification(message.notification, message.data);
       } catch (e) {
         debugPrint("Error processing notification: $e");
       }
@@ -120,17 +118,14 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void _handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushAndRemoveUntil(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false);
-    }); 
+    Future.microtask(() {
+      context.read<ProfileNotifier>().getProfile();
+    });
   }
 
   void _handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
-    String msg = payload["message"].toString();
     Future.microtask(() {
       context.read<ProfileNotifier>().getProfile();
-      var messageNotifier = context.read<GetMessagesNotifier>();
-      messageNotifier.setStateNote(val: msg);
     });
   }
 
@@ -140,7 +135,6 @@ class FirebaseProvider with ChangeNotifier {
 
     Future.microtask(() {
       context.read<DashboardNotifier>().getEws(
-        type: "ews", 
         lat: lat, 
         lng: lng
       );
@@ -150,12 +144,6 @@ class FirebaseProvider with ChangeNotifier {
   void _handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
     Future.microtask(() {
       var messageNotifier = context.read<GetMessagesNotifier>();
-      messageNotifier.navigateToChat(
-        chatId: payload["chat_id"].toString(),
-        status: "NONE",
-        recipientId: payload["recipient_id"].toString(),
-        sosId: payload["sos_id"].toString(),
-      );
       context.read<ProfileNotifier>().getProfile();
       context.read<SosNotifier>().stopTimer();
       messageNotifier.resetTimer();
@@ -163,10 +151,16 @@ class FirebaseProvider with ChangeNotifier {
     });
   }
 
-  Future<void> _showNotification(RemoteNotification? notification) async {
-    if (notification != null) {
+  Future<void> _showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
+    if (notification != null) {      
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
+          payload: {
+            "type": payload["type"].toString(),
+            "chat_id": payload["chat_id"].toString(),
+            "recipient_id": payload["recipient_id"].toString(),
+            "sos_id": payload["sos_id"].toString()
+          },
           id: Random().nextInt(100),
           channelKey: 'notification',
           title: notification.title,

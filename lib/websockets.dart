@@ -10,6 +10,7 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/global.dart';
 
@@ -211,6 +212,53 @@ class WebSocketsService extends ChangeNotifier {
       }
 
       context.read<GetMessagesNotifier>().updateUserTyping(data: message);
+    }
+
+    if(message["type"] == "resolved-by-user") {
+      debugPrint("=== RESOLVED BY USER ===");
+
+      final context = navigatorKey.currentContext;
+
+      if(context == null) {
+        return;
+      }
+
+      Navigator.pushAndRemoveUntil(
+        navigatorKey.currentContext!, 
+        MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false
+      );
+    }
+
+    if(message["type"] == "closed-by-agent") { 
+      debugPrint("=== CLOSED BY AGENT ===");
+
+      final context = navigatorKey.currentContext;
+
+      if(context == null) {
+        return;
+      }
+
+      var messageNotifier = context.read<GetMessagesNotifier>();
+      messageNotifier.setStateNote(val: message["note"].toString());
+    }
+
+    if(message["type"] == "confirmed-by-agent") {
+      debugPrint("=== CONFIRMED BY AGENT ===");
+
+      final context = navigatorKey.currentContext;
+
+      if(context == null) {
+        return;
+      }
+
+      var messageNotifier = context.read<GetMessagesNotifier>();
+
+      messageNotifier.navigateToChat(
+        chatId: message["chat_id"].toString(),
+        status: "NONE",
+        recipientId: message["recipient_id"].toString(),
+        sosId: message["sos_id"].toString(),
+      );
     }
 
   }

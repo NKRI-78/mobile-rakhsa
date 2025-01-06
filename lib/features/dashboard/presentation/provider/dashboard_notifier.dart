@@ -34,14 +34,13 @@ class DashboardNotifier with ChangeNotifier {
   }
 
   Future<void> getNews({
-    required String type, 
     required double lat,
     required double lng
   }) async {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(
-      type: type,
+      type: "ews",
       lat: lat,
       lng: lng
     );
@@ -64,13 +63,12 @@ class DashboardNotifier with ChangeNotifier {
   }
 
   Future<void> getEws({
-    required String type, 
     required double lat,
     required double lng
   }) async {
 
     final result = await useCase.execute(
-      type: type,
+      type: "ews",
       lat: lat,
       lng: lng
     );

@@ -39,10 +39,10 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      profileNotifier.getProfile();
+      await profileNotifier.getProfile();
 
     if(!mounted) return;
-      firebaseProvider.initFcm();
+      await firebaseProvider.initFcm();
   }
 
   List<Map<String, dynamic>> pages = [
@@ -153,7 +153,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvoked: (bool didPop) {
         if(lastTap == null) {
           lastTap = DateTime.now();
           ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
