@@ -76,7 +76,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   }
 
  Future<void> resendUnsentMessages() async {
-  // Sort unsentMessages by created_at in ascending order
   var sortedMessages = List<Map<String, dynamic>>.from(unsentMessages)
     ..sort((a, b) {
       var createdAtA = DateTime.parse(a["data"]["created_at"]);
