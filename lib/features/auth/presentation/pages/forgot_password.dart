@@ -118,7 +118,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
 
-                    Text("Forgot Password",
+                    Text("Lupa kata sandi",
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         fontWeight: FontWeight.bold,
@@ -142,7 +142,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         margin: const EdgeInsets.only(
                           left: 8.0
                         ),
-                        child: Text("Email Registered",
+                        child: Text("Email terdaftar",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.white
@@ -170,7 +170,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         margin: const EdgeInsets.only(
                           left: 8.0
                         ),
-                        child: Text("Old Password",
+                        child: Text("Kata sandi lama",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.white
@@ -197,7 +197,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         margin: const EdgeInsets.only(
                           left: 8.0
                         ),
-                        child: Text("New Password",
+                        child: Text("Kata sandi baru",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
                             color: ColorResources.white
