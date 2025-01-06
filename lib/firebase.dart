@@ -5,11 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/global.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -21,6 +22,7 @@ class NotificationType {
   static const resolvedSos = "resolved-sos";
   static const closedSos = "closed-sos";
   static const confirmSos = "confirm-sos";
+  static const ews = "ews";
 }
 
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
@@ -102,12 +104,15 @@ class FirebaseProvider with ChangeNotifier {
     switch (payload["type"]) {
       case NotificationType.resolvedSos:
         _handleResolvedSos(context, payload);
-        break;
+      break;
       case NotificationType.closedSos:
         _handleClosedSos(context, payload);
-        break;
+      break;
       case NotificationType.confirmSos:
         _handleConfirmSos(context, payload);
+      break;
+      case NotificationType.ews: 
+        _handleEws(context, payload);
         break;
       default:
         debugPrint("Unhandled notification type: ${payload["type"]}");
@@ -126,6 +131,19 @@ class FirebaseProvider with ChangeNotifier {
       context.read<ProfileNotifier>().getProfile();
       var messageNotifier = context.read<GetMessagesNotifier>();
       messageNotifier.setStateNote(val: msg);
+    });
+  }
+
+  void _handleEws(BuildContext context, Map<String, dynamic> payload) {
+    double lat = payload["lat"];
+    double lng = payload["lng"];
+
+    Future.microtask(() {
+      context.read<DashboardNotifier>().getEws(
+        type: "ews", 
+        lat: lat, 
+        lng: lng
+      );
     });
   }
 

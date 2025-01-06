@@ -35,17 +35,12 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } 
 
     if (passwordC.text.isEmpty) {
-      ShowSnackbar.snackbarErr("Kata sandi tidak boleh kosong");
+      ShowSnackbar.snackbarErr("Kata sandi lama tidak boleh kosong");
       return;
     }
 
     if(passwordNewC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Kata sandi baru tidak boleh kosong");
-      return;
-    }
-
-    if(passwordC.text != passwordNewC.text) {
-      ShowSnackbar.snackbarErr("Kata sandi lama tidak sama dengan Kata sandi baru");
       return;
     }
 

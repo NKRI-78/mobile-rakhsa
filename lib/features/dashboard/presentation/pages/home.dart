@@ -188,6 +188,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
       
+      profileNotifier.getProfile();
+      
       checkNotificationPermission();
       checkLocationPermission();
       return;
@@ -364,8 +366,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
 
                 Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 16.0
+                  margin: const EdgeInsets.only(
+                    top: 30.0
                   ),
                   child: SosButton(
                     location: currentAddress,
@@ -511,166 +513,164 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           ),
                         )
                       )
-                    : CarouselSlider(
-                        options: CarouselOptions(
-                          autoPlayInterval: const Duration(seconds: 10),
-                          autoPlay: true,
-                          viewportFraction: 1.0,
-                          height: 250.0 
+                    : Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0
                         ),
-                        items: notifier.ews.map((item) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return NewsDetailPage(
-                                  title: item.title.toString(), 
-                                  img: item.img.toString(), 
-                                  desc: item.desc.toString(),
-                                  type: item.type.toString(),
-                                );
-                              },
-                            )).then((value) {
-                              if(value != null) {
-                                getData();
-                              }
-                            });
-                          },
-                          child: Card(
-                            color: ColorResources.redHealth,
-                            surfaceTintColor: ColorResources.redHealth,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            elevation: 1.0,
-                            child: CachedNetworkImage(
-                              imageUrl: item.img.toString(),
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitHeight,
-                                      image: imageProvider,
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              item.title.toString(),
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.white,
-                                                fontSize: Dimensions.fontSizeDefault,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            fh.Html(
-                                              data: item.desc.toString(),
-                                              shrinkWrap: true,
-                                              style: {
-                                                'body': fh.Style(
-                                                  maxLines: 2,
-                                                  margin: fh.Margins.zero,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  color: ColorResources.white,
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'p': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  margin: fh.Margins.symmetric(vertical: 10.0),
-                                                  color: ColorResources.white,
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'span': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  color: ColorResources.white,
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'div': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  color: ColorResources.white,
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                )
-                                              },
-                                            ),
-                                            Text("Baca selengkapnya",
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: Dimensions.fontSizeDefault,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              placeholder: (BuildContext context, String url) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: const DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage('assets/images/default.jpeg'),
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, Object error) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: const DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage('assets/images/default.jpeg'),
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            )
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            autoPlayInterval: const Duration(seconds: 5),
+                            autoPlay: true,
+                            viewportFraction: 1.0,
+                            height: 200.0 
                           ),
-                        );
-                      }).toList(),
+                          items: notifier.ews.map((item) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return NewsDetailPage(
+                                    title: item.title.toString(), 
+                                    img: item.img.toString(), 
+                                    desc: item.desc.toString(),
+                                    type: item.type.toString(),
+                                  );
+                                },
+                              )).then((value) {
+                                if(value != null) {
+                                  getData();
+                                }
+                              });
+                            },
+                            child: Card(
+                              color: ColorResources.redHealth,
+                              surfaceTintColor: ColorResources.redHealth,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              elevation: 1.0,
+                              child: CachedNetworkImage(
+                                imageUrl: item.img.toString(),
+                                imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: imageProvider,
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                item.title.toString(),
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.white,
+                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              fh.Html(
+                                                data: item.desc.toString(),
+                                                shrinkWrap: true,
+                                                style: {
+                                                  'body': fh.Style(
+                                                    maxLines: 2,
+                                                    margin: fh.Margins.zero,
+                                                    textOverflow: TextOverflow.ellipsis,
+                                                    color: ColorResources.white,
+                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                  ),
+                                                  'p': fh.Style(
+                                                    maxLines: 4,
+                                                    textOverflow: TextOverflow.ellipsis,
+                                                    margin: fh.Margins.symmetric(vertical: 10.0),
+                                                    color: ColorResources.white,
+                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                  ),
+                                                  'span': fh.Style(
+                                                    maxLines: 2,
+                                                    textOverflow: TextOverflow.ellipsis,
+                                                    color: ColorResources.white,
+                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                  ),
+                                                  'div': fh.Style(
+                                                    maxLines: 2,
+                                                    textOverflow: TextOverflow.ellipsis,
+                                                    color: ColorResources.white,
+                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                                  )
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                placeholder: (BuildContext context, String url) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      image: const DecorationImage(
+                                        fit: BoxFit.fitWidth,
+                                        image: AssetImage('assets/images/default.jpeg'),
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                errorWidget: (BuildContext context, String url, Object error) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      image: const DecorationImage(
+                                        fit: BoxFit.fitWidth,
+                                        image: AssetImage('assets/images/default.jpeg'),
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     );
                   }
                 )
@@ -796,8 +796,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                     return Transform.scale(
                       scale: notifier.pulseAnimation.value * scaleFactor,
                       child: Container(
-                        width: 55, 
-                        height: 55,
+                        width: 70, 
+                        height: 70,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
@@ -823,8 +823,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   animation: notifier.timerController!,
                   builder: (BuildContext context, Widget? child) {
                     return Container(
-                      width: 130,
-                      height: 130,
+                      width: 180,
+                      height: 180,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: widget.isConnected
