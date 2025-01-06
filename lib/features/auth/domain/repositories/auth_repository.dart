@@ -9,6 +9,11 @@ abstract class AuthRepository {
     required String value,
     required String password
   });
+  Future<Either<Failure, void>> forgotPassword({
+    required String email,
+    required String oldPassword,
+    required String newPassword
+  });
   Future<Either<Failure, void>> updateIsLoggedIn({
     required String userId,
     required String type

@@ -4,6 +4,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
@@ -63,6 +64,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<KbriNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<VisaNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<ForgotPasswordNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),  
   ChangeNotifierProvider(create: (_) => di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>(), lazy: false),

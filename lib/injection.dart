@@ -7,8 +7,10 @@ import 'package:rakhsa/features/administration/data/datasources/administration_r
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
+import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
@@ -44,7 +46,7 @@ import 'package:rakhsa/features/event/data/repositories/event_remote_datasource_
 
 import 'package:rakhsa/features/administration/domain/usecases/get_continent.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
-import 'package:rakhsa/features/auth/domain/usecases/resendOtp.dart';
+import 'package:rakhsa/features/auth/domain/usecases/resend_otp.dart';
 import 'package:rakhsa/features/auth/domain/usecases/verify_otp.dart';
 import 'package:rakhsa/features/event/domain/usecases/list_event.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
@@ -134,6 +136,7 @@ void init() {
   locator.registerLazySingleton(() => GetContinentUseCase(locator()));
   locator.registerLazySingleton(() => GetStateUseCase(locator()));
   locator.registerLazySingleton(() => InsertMessageUseCase(locator()));
+  locator.registerLazySingleton(() => ForgotPasswordUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -172,6 +175,7 @@ void init() {
   locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
   locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
+  locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
 
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()

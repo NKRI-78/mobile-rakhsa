@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
-import 'package:rakhsa/features/auth/domain/usecases/resendOtp.dart';
+import 'package:rakhsa/features/auth/domain/usecases/resend_otp.dart';
 
 
 class ResendOtpNotifier with ChangeNotifier {

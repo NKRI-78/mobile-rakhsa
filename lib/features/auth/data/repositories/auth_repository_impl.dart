@@ -133,5 +133,25 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, void>> forgotPassword({
+    required String email, 
+    required String oldPassword, 
+    required String newPassword
+  }) async {
+    try {
+      var result = await remoteDataSource.forgotPassword(
+        email: email,
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
 
 }

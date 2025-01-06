@@ -21,6 +21,11 @@ abstract class AuthRemoteDataSource {
   Future<void> updateProfile({
     required String avatar
   });
+  Future<void> forgotPassword({
+    required String email,
+    required String oldPassword,
+    required String newPassword
+  });
   Future<AuthModel> register({
     required String fullname,
     required String email,
@@ -192,6 +197,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     }
+  }
+  
+  @override
+  Future<void> forgotPassword({
+    required String email, 
+    required String oldPassword, 
+    required String newPassword
+  }) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/change-password",
+        data: {
+          "email": email,
+          "old_password": oldPassword, 
+          "new_password": newPassword
+        }
+      );
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  
   }
 
 }
