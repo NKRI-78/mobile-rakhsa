@@ -281,11 +281,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       height: 12.0,
                       decoration: BoxDecoration(
                         color: context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.green 
-                        ?ColorResources.green 
+                        ? ColorResources.green 
                         : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.yellow 
-                        ?ColorResources.yellow 
+                        ? ColorResources.yellow 
                         : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.red 
-                        ?ColorResources.error 
+                        ? ColorResources.error 
                         : ColorResources.transparent,
                         shape: BoxShape.circle,
                       ),                      
@@ -409,110 +409,115 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     }
                     
                     return notifier.ews.isEmpty 
-                    ? Card(
-                        color: ColorResources.white,
-                        surfaceTintColor: ColorResources.white,
-                        elevation: 1.0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                                      
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                      
-                                    context.watch<ProfileNotifier>().state == ProviderState.error 
-                                    ? const SizedBox()
-                                    : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                                    ? const SizedBox() 
-                                    : CachedNetworkImage(
-                                        imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                                        imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                        return CircleAvatar(
-                                          backgroundImage: imageProvider,
-                                        );
-                                      },
-                                      placeholder: (BuildContext context, String url) {
-                                        return const CircleAvatar(
-                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                        );
-                                      },
-                                      errorWidget: (BuildContext context, String url, Object error) {
-                                        return const CircleAvatar(
-                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                        );
-                                      },
+                    ? Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0
+                        ),
+                        child: Card(
+                          color: ColorResources.white,
+                          surfaceTintColor: ColorResources.white,
+                          elevation: 1.0,
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                                        
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                        
+                                      context.watch<ProfileNotifier>().state == ProviderState.error 
+                                      ? const SizedBox()
+                                      : context.watch<ProfileNotifier>().state == ProviderState.loading 
+                                      ? const SizedBox() 
+                                      : CachedNetworkImage(
+                                          imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                                          imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                          return CircleAvatar(
+                                            backgroundImage: imageProvider,
+                                          );
+                                        },
+                                        placeholder: (BuildContext context, String url) {
+                                          return const CircleAvatar(
+                                            backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                          );
+                                        },
+                                        errorWidget: (BuildContext context, String url, Object error) {
+                                          return const CircleAvatar(
+                                            backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                          );
+                                        },
+                                      ),
+                                                        
+                                      const SizedBox(width: 15.0),
+                                                        
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                                        
+                                            Text("Posisi Anda saat ini",
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                                        
+                                            const SizedBox(height: 4.0),
+                                        
+                                            Text(loadingGmaps 
+                                              ? "Mohon tunggu..." 
+                                              : currentAddress,
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeSmall,
+                                                color: ColorResources.black
+                                              ),
+                                            )
+                                        
+                                          ],
+                                        ),
+                                      )
+                                                        
+                                    ],
+                                  ),
+                              
+                                  Container(
+                                    width: double.infinity,
+                                    height: 120.0,
+                                    margin: const EdgeInsets.only(
+                                      top: 16.0,
+                                      left: 16.0, 
+                                      right: 16.0
                                     ),
-                                                      
-                                    const SizedBox(width: 15.0),
-                                                      
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                                      
-                                          Text("Posisi Anda saat ini",
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeDefault,
-                                              fontWeight: FontWeight.bold
-                                            ),
+                                    child: loadingGmaps 
+                                    ? const SizedBox() 
+                                    : GoogleMap(
+                                        mapType: MapType.normal,
+                                        gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                                        myLocationEnabled: false,
+                                        initialCameraPosition: CameraPosition(
+                                          target: LatLng(
+                                            double.parse(currentLat), 
+                                            double.parse(currentLng)
                                           ),
-                                                      
-                                          const SizedBox(height: 4.0),
-                                      
-                                          Text(loadingGmaps 
-                                            ? "Mohon tunggu..." 
-                                            : currentAddress,
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeSmall,
-                                              color: ColorResources.black
-                                            ),
-                                          )
-                                      
-                                        ],
+                                          zoom: 12.0,
+                                        ),
+                                        markers: Set.from(markers),
                                       ),
                                     )
-                                                      
-                                  ],
-                                ),
-                            
-                                Container(
-                                  width: double.infinity,
-                                  height: 120.0,
-                                  margin: const EdgeInsets.only(
-                                    top: 16.0,
-                                    left: 16.0, 
-                                    right: 16.0
-                                  ),
-                                  child: loadingGmaps 
-                                  ? const SizedBox() 
-                                  : GoogleMap(
-                                      mapType: MapType.normal,
-                                      gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                      myLocationEnabled: false,
-                                      initialCameraPosition: CameraPosition(
-                                        target: LatLng(
-                                          double.parse(currentLat), 
-                                          double.parse(currentLng)
-                                        ),
-                                        zoom: 12.0,
-                                      ),
-                                      markers: Set.from(markers),
-                                    ),
-                                  )
-                                                      
-                              ],
+                                                        
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                      )
+                          )
+                        ),
+                    )
                     : Container(
                         margin: const EdgeInsets.only(
                           top: 30.0

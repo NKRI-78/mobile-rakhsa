@@ -408,154 +408,157 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   parent: AlwaysScrollableScrollPhysics()
                 ),
                 slivers: [
-
-                  if(notifier.state == ProviderState.loading)
-                    const SizedBox(),
+                  SliverAppBar(
+                    pinned: true,
+                    backgroundColor: const Color(0xFFC82927),
+                    automaticallyImplyLeading: false,
+                    forceElevated: true,
+                    elevation: 1.0,
+                    title: Container(
+                      margin: const EdgeInsets.only(
+                        top: 20.0,
+                        bottom: 20.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
                   
-                  if(notifier.state == ProviderState.loaded)
-                    SliverAppBar(
-                      pinned: true,
-                      backgroundColor: const Color(0xFFC82927),
-                      automaticallyImplyLeading: false,
-                      forceElevated: true,
-                      elevation: 1.0,
-                      title: Container(
-                        margin: const EdgeInsets.only(
-                          top: 20.0,
-                          bottom: 20.0,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                    
-                                CupertinoButton(
-                                  color: Colors.transparent,
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    messageNotifier.clearActiveChatId();
-                                    Navigator.pop(context, "refetch");
-                                  },
-                                  child: const Icon(Icons.chevron_left,
-                                    color: Colors.white,
-                                  ),
+                              CupertinoButton(
+                                color: Colors.transparent,
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  messageNotifier.clearActiveChatId();
+                                  Navigator.pop(context, "refetch");
+                                },
+                                child: const Icon(Icons.chevron_left,
+                                  color: Colors.white,
                                 ),
-              
-                                CachedNetworkImage(
-                                  imageUrl: notifier.recipient.avatar?.toString() ?? '-',
-                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                    return CircleAvatar(
-                                      backgroundImage: imageProvider,
-                                      radius: 16.0,
-                                    );
-                                  },
-                                  placeholder: (BuildContext context, String url) {
-                                    return const CircleAvatar(
-                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      radius: 16.0,
-                                    );
-                                  },
-                                  errorWidget: (BuildContext context, String url, Object error) {
-                                    return const CircleAvatar(
-                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      radius: 16.0,
-                                    );
-                                  },
-                                ),
-                                
-                                const SizedBox(width: 12.0),
-                                
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    
-                                    Text(
-                                      notifier.recipient.name?.toString() ?? 'User',
-                                      style: robotoRegular.copyWith(
-                                        fontSize: 16.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              ),
+            
+                              CachedNetworkImage(
+                                imageUrl: notifier.recipient.avatar?.toString() ?? '-',
+                                imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                  return CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                    radius: 16.0,
+                                  );
+                                },
+                                placeholder: (BuildContext context, String url) {
+                                  return const CircleAvatar(
+                                    backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    radius: 16.0,
+                                  );
+                                },
+                                errorWidget: (BuildContext context, String url, Object error) {
+                                  return const CircleAvatar(
+                                    backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    radius: 16.0,
+                                  );
+                                },
+                              ),
+                              
+                              const SizedBox(width: 12.0),
+                              
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  
+                                  Text(
+                                    notifier.recipient.name?.toString() ?? 'User',
+                                    style: robotoRegular.copyWith(
+                                      fontSize: 16.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
+                                  ),
 
-                                    const SizedBox(height: 4.0),
-                      
-                                    notifier.isTyping(widget.chatId)
-                                    ? Text("Sedang mengetik...",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: 10.0,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : const SizedBox()
-                            
-                                  ],
-                                ),
+                                  const SizedBox(height: 4.0),
                     
-                              ],
-                            ),
-                            
-                          ],
-                        ),
+                                  notifier.isTyping(widget.chatId)
+                                  ? Text("Sedang mengetik...",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: 10.0,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const SizedBox()
+                          
+                                ],
+                              ),
+                  
+                            ],
+                          ),
+                          
+                        ],
                       ),
                     ),
-                    
-                  if(notifier.state == ProviderState.loaded)
-                    SliverToBoxAdapter(
-                      child: showAutoGreetings 
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 30.0,
-                                horizontal: 12.0,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0),
-                                  bottomLeft: Radius.circular(12.0),
-                                  bottomRight: Radius.circular(12.0),
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(10.0),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    color: ColorResources.white,
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text: "Terima kasih telah menghubungi kami di ",
-                                    ),
-                                    TextSpan(
-                                      text: "Raksha",
-                                      style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorResources.white,
-                                      ),
-                                    ),
-                                    const TextSpan(
-                                      text: ". Apakah yang bisa kami bantu atas keluhan anda?",
-                                    ),
-                                  ],
-                                ),
+                  ),
+                  
+          
+                  SliverToBoxAdapter(
+                    child: showAutoGreetings 
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 30.0,
+                              horizontal: 12.0,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(12.0),
+                                topRight: Radius.circular(12.0),
+                                bottomLeft: Radius.circular(12.0),
+                                bottomRight: Radius.circular(12.0),
                               ),
                             ),
-                          ],
-                        ) 
-                      : const SizedBox()
+                            padding: const EdgeInsets.all(10.0),
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  color: ColorResources.white,
+                                ),
+                                children: [
+                                  const TextSpan(
+                                    text: "Terima kasih telah menghubungi kami di ",
+                                  ),
+                                  TextSpan(
+                                    text: "Raksha",
+                                    style: robotoRegular.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorResources.white,
+                                    ),
+                                  ),
+                                  const TextSpan(
+                                    text: ". Apakah yang bisa kami bantu atas keluhan anda?",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ) 
+                    : const SizedBox()
+                  ),
+
+                  if(notifier.state == ProviderState.loading)
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: SizedBox()
+                      ),
                     ),
                       
                   if(notifier.state == ProviderState.loaded)
