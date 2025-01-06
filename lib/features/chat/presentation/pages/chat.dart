@@ -408,6 +408,9 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   parent: AlwaysScrollableScrollPhysics()
                 ),
                 slivers: [
+
+                  if(notifier.state == ProviderState.loading)
+                    const SizedBox(),
                   
                   if(notifier.state == ProviderState.loaded)
                     SliverAppBar(
