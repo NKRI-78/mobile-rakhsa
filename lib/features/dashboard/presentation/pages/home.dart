@@ -594,8 +594,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                               Text(
                                                 item.createdAt.toString(),
                                                 style: robotoRegular.copyWith(
-                                                  color: ColorResources.white,
-                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  color: ColorResources.white.withOpacity(0.8),
+                                                  fontSize: Dimensions.fontSizeSmall,
                                                 ),
                                               ),
                                               const SizedBox(height: 8.0),
@@ -615,28 +615,28 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                     maxLines: 2,
                                                     margin: fh.Margins.zero,
                                                     textOverflow: TextOverflow.ellipsis,
-                                                    color: ColorResources.white,
+                                                    color: ColorResources.white.withOpacity(0.8),
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'p': fh.Style(
                                                     maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
                                                     margin: fh.Margins.zero,
-                                                    color: ColorResources.white,
+                                                    color: ColorResources.white.withOpacity(0.8),
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'span': fh.Style(
                                                     maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
                                                     margin: fh.Margins.zero,
-                                                    color: ColorResources.white,
+                                                    color: ColorResources.white.withOpacity(0.8),
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'div': fh.Style(
                                                     maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
                                                     margin: fh.Margins.zero,
-                                                    color: ColorResources.white,
+                                                    color: ColorResources.white.withOpacity(0.8),
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   )
                                                 },

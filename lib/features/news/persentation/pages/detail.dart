@@ -109,6 +109,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             Text(widget.location,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeSmall,
+                fontWeight: FontWeight.bold,
                 color: ColorResources.black
               ),
             ),
@@ -117,8 +118,8 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             ),
             Text(widget.createdAt,
               style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeSmall,
-                color: ColorResources.black
+                fontSize: Dimensions.fontSizeExtraSmall,
+                color: ColorResources.grey
               ),
             ),
             const SizedBox(
