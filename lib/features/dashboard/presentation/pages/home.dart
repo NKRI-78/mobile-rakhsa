@@ -538,6 +538,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     title: item.title.toString(), 
                                     img: item.img.toString(), 
                                     desc: item.desc.toString(),
+                                    location: item.desc.toString(),
                                     type: item.type.toString(),
                                   );
                                 },
@@ -582,7 +583,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             children: [
                                               Text(
                                                 item.location.toString(),
-                                                maxLines: 2,
+                                                maxLines: 1,
                                                 style: robotoRegular.copyWith(
                                                   color: ColorResources.white,
                                                   fontSize: Dimensions.fontSizeDefault,
@@ -617,21 +618,23 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'p': fh.Style(
-                                                    maxLines: 4,
+                                                    maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
-                                                    margin: fh.Margins.symmetric(vertical: 8.0),
+                                                    margin: fh.Margins.zero,
                                                     color: ColorResources.white,
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'span': fh.Style(
                                                     maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
+                                                    margin: fh.Margins.zero,
                                                     color: ColorResources.white,
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),
                                                   'div': fh.Style(
                                                     maxLines: 2,
                                                     textOverflow: TextOverflow.ellipsis,
+                                                    margin: fh.Margins.zero,
                                                     color: ColorResources.white,
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   )
@@ -697,12 +700,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   }
                 )
             
-              ],
-            ),
-          )
+                ],
+              ),
+            )
+          ),
         ),
-      ),
-    )
+      )
     ); 
   
   }
@@ -830,8 +833,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                 ),
               if (notifier.isPressed)
                 SizedBox(
-                  width: 145,
-                  height: 145,
+                  width: 180,
+                  height: 180,
                   child: CircularProgressIndicator(
                     valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
                     strokeWidth: 6,

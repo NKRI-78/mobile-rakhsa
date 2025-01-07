@@ -17,12 +17,14 @@ class NewsDetailPage extends StatefulWidget {
   final String title; 
   final String img; 
   final String desc;
+  final String location;
   final String type;
 
   const NewsDetailPage({
     required this.title, 
     required this.img,
     required this.desc,
+    required this.location,
     required this.type,
     super.key
   });
@@ -88,7 +90,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
               ),
             ),
             const SizedBox(
-              height: 12,
+              height: 12.0,
             ),
             Container(
               clipBehavior: Clip.antiAlias,
@@ -101,8 +103,9 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 fit: BoxFit.cover,
               ),
             ),
+            Text(widget.location),
             const SizedBox(
-              height: 18,
+              height: 18.0,
             ),
             fh.Html(
               data: widget.desc,
@@ -179,6 +182,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                               title: notifier.news[i].title,
                               img: notifier.news[i].img,
                               desc: notifier.news[i].desc,
+                              location: notifier.news[i].location,
                               type: notifier.news[i].type,
                             )
                           ));
