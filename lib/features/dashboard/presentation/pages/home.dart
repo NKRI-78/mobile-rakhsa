@@ -373,7 +373,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
                 Container(
                   margin: const EdgeInsets.only(
-                    top: 30.0
+                    top: 40.0
                   ),
                   child: SosButton(
                     location: currentAddress,
@@ -526,7 +526,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       )
                     : Container(
                         margin: const EdgeInsets.only(
-                          top: 30.0
+                          top: 45.0
                         ),
                         child: CarouselSlider(
                           options: CarouselOptions(
@@ -587,6 +587,23 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text(
+                                                item.location.toString(),
+                                                maxLines: 2,
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.white,
+                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                item.createdAt.toString(),
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.white,
+                                                  fontSize: Dimensions.fontSizeDefault,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8.0),
+                                              Text(
                                                 item.title.toString(),
                                                 style: robotoRegular.copyWith(
                                                   color: ColorResources.white,
@@ -608,7 +625,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                   'p': fh.Style(
                                                     maxLines: 4,
                                                     textOverflow: TextOverflow.ellipsis,
-                                                    margin: fh.Margins.symmetric(vertical: 10.0),
+                                                    margin: fh.Margins.symmetric(vertical: 8.0),
                                                     color: ColorResources.white,
                                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                                   ),

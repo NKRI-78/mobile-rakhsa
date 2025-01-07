@@ -252,7 +252,6 @@ class WebSocketsService extends ChangeNotifier {
       }
 
       var messageNotifier = context.read<GetMessagesNotifier>();
-
       messageNotifier.navigateToChat(
         chatId: message["chat_id"].toString(),
         status: "NONE",
