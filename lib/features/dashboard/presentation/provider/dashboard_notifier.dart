@@ -40,7 +40,7 @@ class DashboardNotifier with ChangeNotifier {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(
-      type: "ews",
+      type: "news",
       lat: lat,
       lng: lng
     );
@@ -51,7 +51,6 @@ class DashboardNotifier with ChangeNotifier {
     }, (r) {
 
       _news = [];
-
       _news.addAll(r.data);
 
       if(news.isEmpty) {

@@ -91,8 +91,10 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 fontSize: Dimensions.fontSizeLarge,
               ),
             ),
-            const SizedBox(
-              height: 12.0,
+            SizedBox(
+              height: widget.location.isNotEmpty 
+              ? 12.0 
+              : 0.0,
             ),
             Container(
               clipBehavior: Clip.antiAlias,
@@ -105,7 +107,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 18.0),
+            SizedBox(height: widget.location.isNotEmpty ? 18.0 : 0.0),
             Text(widget.location,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeSmall,
@@ -113,8 +115,10 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 color: ColorResources.black
               ),
             ),
-            const SizedBox(
-              height: 10.0,
+           SizedBox(
+              height: widget.location.isNotEmpty 
+              ? 10.0 
+              : 0.0,
             ),
             Text(widget.createdAt,
               style: robotoRegular.copyWith(

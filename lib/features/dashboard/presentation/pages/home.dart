@@ -576,6 +576,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             borderRadius: BorderRadius.circular(10.0),
                                           ),
                                         ),
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                            top: 12.0,
+                                            left: 10.0
+                                          ),
+                                          child: Text("Info Kejadian di sekitar Anda",
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              color: ColorResources.white
+                                            ),
+                                          ),
+                                        ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(

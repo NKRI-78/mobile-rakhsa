@@ -25,7 +25,10 @@ class NewsListPageState extends State<NewsListPage> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews(lat: 0.0, lng: 0.0);
+      await dashboardNotifier.getNews(
+        lat: 0.0, 
+        lng: 0.0
+      );
   }
 
   @override 
@@ -108,12 +111,12 @@ class NewsListPageState extends State<NewsListPage> {
                       MaterialPageRoute(
                         builder: (context) {
                           return NewsDetailPage(
-                            title: notifier.news[1].title.toString(), 
-                            img: notifier.news[1].img.toString(), 
-                            desc: notifier.news[1].desc.toString(),
-                            location: notifier.news[1].location.toString(),
-                            createdAt: notifier.news[1].createdAt.toString(),
-                            type: notifier.news[1].type.toString(),
+                            title: notifier.news[0].title.toString(), 
+                            img: notifier.news[0].img.toString(), 
+                            desc: notifier.news[0].desc.toString(),
+                            location: notifier.news[0].location.toString(),
+                            createdAt: notifier.news[0].createdAt.toString(),
+                            type: notifier.news[0].type.toString(),
                           );
                         },
                       )
@@ -133,7 +136,7 @@ class NewsListPageState extends State<NewsListPage> {
                           width: double.infinity,
                           child: CachedNetworkImage(
                             fit: BoxFit.fitWidth,
-                            imageUrl: notifier.news[1].img.toString(),
+                            imageUrl: notifier.news[0].img.toString(),
                             placeholder: (BuildContext context, String url) {
                               return Image.asset('assets/images/default.jpeg');
                             },
@@ -159,7 +162,7 @@ class NewsListPageState extends State<NewsListPage> {
                           bottom: 8.0,
                           left: 16.0,
                           right: 16.0,
-                          child: Text(notifier.news[1].title.toString(),
+                          child: Text(notifier.news[0].title.toString(),
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeDefault,
                               fontWeight: FontWeight.w500,
