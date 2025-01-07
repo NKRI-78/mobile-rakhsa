@@ -538,7 +538,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     title: item.title.toString(), 
                                     img: item.img.toString(), 
                                     desc: item.desc.toString(),
-                                    location: item.desc.toString(),
+                                    location: item.location.toString(),
+                                    createdAt: item.createdAt.toString(),
                                     type: item.type.toString(),
                                   );
                                 },

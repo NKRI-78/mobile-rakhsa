@@ -112,6 +112,7 @@ class NewsListPageState extends State<NewsListPage> {
                             img: notifier.news[1].img.toString(), 
                             desc: notifier.news[1].desc.toString(),
                             location: notifier.news[1].location.toString(),
+                            createdAt: notifier.news[1].createdAt.toString(),
                             type: notifier.news[1].type.toString(),
                           );
                         },
@@ -196,6 +197,7 @@ class NewsListPageState extends State<NewsListPage> {
                               img: notifier.news[i].img.toString(),
                               desc: notifier.news[i].desc.toString(),
                               location: notifier.news[i].location.toString(),
+                              createdAt: notifier.news[i].createdAt.toString(),
                               type: notifier.news[i].type.toString(),
                             )
                           ));

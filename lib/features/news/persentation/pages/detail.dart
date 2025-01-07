@@ -18,6 +18,7 @@ class NewsDetailPage extends StatefulWidget {
   final String img; 
   final String desc;
   final String location;
+  final String createdAt;
   final String type;
 
   const NewsDetailPage({
@@ -25,6 +26,7 @@ class NewsDetailPage extends StatefulWidget {
     required this.img,
     required this.desc,
     required this.location,
+    required this.createdAt,
     required this.type,
     super.key
   });
@@ -83,7 +85,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(widget.title,
+            Text(widget.title, 
               style: robotoRegular.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeLarge,
@@ -103,9 +105,24 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 fit: BoxFit.cover,
               ),
             ),
-            Text(widget.location),
+            const SizedBox(height: 18.0),
+            Text(widget.location,
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeSmall,
+                color: ColorResources.black
+              ),
+            ),
             const SizedBox(
-              height: 18.0,
+              height: 10.0,
+            ),
+            Text(widget.createdAt,
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeSmall,
+                color: ColorResources.black
+              ),
+            ),
+            const SizedBox(
+              height: 15.0,
             ),
             fh.Html(
               data: widget.desc,
@@ -119,9 +136,11 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                   fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                 ),
                 'span': fh.Style(
+                  margin: fh.Margins.zero,
                   fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                 ),
                 'div': fh.Style(
+                  margin: fh.Margins.zero,
                   fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                 )
               },
@@ -183,6 +202,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                               img: notifier.news[i].img,
                               desc: notifier.news[i].desc,
                               location: notifier.news[i].location,
+                              createdAt: notifier.news[i].createdAt,
                               type: notifier.news[i].type,
                             )
                           ));
