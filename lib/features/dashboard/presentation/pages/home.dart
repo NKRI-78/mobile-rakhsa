@@ -61,6 +61,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
 
+  bool isResumedProcessing = false;
+
   List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
@@ -184,24 +186,16 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        debugPrint("=== APP RESUME ===");
-        await checkNotificationPermission();
-        await getCurrentLocation();
-      break;
-      case AppLifecycleState.inactive:
-        debugPrint("=== APP INACTIVE ===");
-      break;
-      case AppLifecycleState.paused:
-        debugPrint("=== APP PAUSED ===");
-      break;
-      case AppLifecycleState.detached:
-        debugPrint("=== APP DETACHED ===");
-      break;
-      case AppLifecycleState.hidden:
-        debugPrint("=== APP HIDDEN ===");
-      break;
+    if (state == AppLifecycleState.resumed && !isResumedProcessing) {
+      debugPrint("=== APP RESUME ===");
+      
+      isResumedProcessing = true;
+
+      await Future.delayed(const Duration(milliseconds: 500)); 
+      await checkNotificationPermission();
+      await getCurrentLocation();
+
+      isResumedProcessing = false;
     }
   }
 
