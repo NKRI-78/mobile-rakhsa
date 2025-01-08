@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -109,9 +108,6 @@ class FirebaseProvider with ChangeNotifier {
       case NotificationType.confirmSos:
         _handleConfirmSos(context, payload);
       break;
-      case NotificationType.ews: 
-        _handleEws(context, payload);
-        break;
       default:
         debugPrint("Unhandled notification type: ${payload["type"]}");
     }
@@ -126,18 +122,6 @@ class FirebaseProvider with ChangeNotifier {
   void _handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
     Future.microtask(() {
       context.read<ProfileNotifier>().getProfile();
-    });
-  }
-
-  void _handleEws(BuildContext context, Map<String, dynamic> payload) {
-    double lat = payload["lat"];
-    double lng = payload["lng"];
-
-    Future.microtask(() {
-      context.read<DashboardNotifier>().getEws(
-        lat: lat, 
-        lng: lng
-      );
     });
   }
 
@@ -157,6 +141,7 @@ class FirebaseProvider with ChangeNotifier {
         content: NotificationContent(
           payload: {
             "type": payload["type"].toString(),
+            "news_id": payload["news_id"].toString(),
             "chat_id": payload["chat_id"].toString(),
             "recipient_id": payload["recipient_id"].toString(),
             "sos_id": payload["sos_id"].toString()

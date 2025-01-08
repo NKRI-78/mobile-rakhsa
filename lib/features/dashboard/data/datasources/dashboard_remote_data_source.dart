@@ -6,12 +6,16 @@ import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
+import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<NewsModel> getNews({
     required String type,
     required double lat, 
     required double lng
+  });
+  Future<NewsDetailModel> getNewsDetail({
+    required int id
   });
   Future<void> updateAddress({
     required String address, 
@@ -46,6 +50,24 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       String message = handleDioException(e);
       throw ServerException(message);
     } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override 
+  Future<NewsDetailModel> getNewsDetail({
+    required int id
+  }) async {
+    try {
+      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news/$id");
+      Map<String, dynamic> data = response.data;
+      NewsDetailModel newsDetailModel = NewsDetailModel.fromJson(data);
+      return newsDetailModel;
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     }

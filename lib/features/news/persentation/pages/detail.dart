@@ -12,21 +12,14 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 
 class NewsDetailPage extends StatefulWidget {
-  final String title; 
-  final String img; 
-  final String desc;
-  final String location;
-  final String createdAt;
+  final int id;
   final String type;
 
   const NewsDetailPage({
-    required this.title, 
-    required this.img,
-    required this.desc,
-    required this.location,
-    required this.createdAt,
+    required this.id,
     required this.type,
     super.key
   });
@@ -38,13 +31,17 @@ class NewsDetailPage extends StatefulWidget {
 class NewsDetailPageState extends State<NewsDetailPage> {
 
   late DashboardNotifier dashboardNotifier; 
+  late DetailNewsNotifier detailNewsNotifier;
 
   Future<void> getData() async {
     if(!mounted) return;
-      dashboardNotifier.getNews(
+      await dashboardNotifier.getNews(
         lat: 0.0, 
         lng: 0.0
       );
+
+    if(!mounted) return;
+      await detailNewsNotifier.detailNews(id: widget.id);
   }
 
   @override 
@@ -52,6 +49,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
     super.initState();
 
     dashboardNotifier = context.read<DashboardNotifier>();
+    detailNewsNotifier = context.read<DetailNewsNotifier>();
 
     Future.microtask(() => getData());
   }
@@ -82,215 +80,231 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             color: ColorResources.black,
           ),
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(widget.title, 
-              style: robotoRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeLarge,
-              ),
-            ),
-            SizedBox(
-              height: widget.location.isNotEmpty 
-              ? 12.0 
-              : 0.0,
-            ),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              height: MediaQuery.sizeOf(context).width * .6,
-              decoration: BoxDecoration(
-                color: Colors.white, 
-                borderRadius: BorderRadius.circular(9.0)
-              ),
-              child: Image.network(widget.img,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(height: widget.location.isNotEmpty ? 18.0 : 0.0),
-            Text(widget.location,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeSmall,
-                fontWeight: FontWeight.bold,
-                color: ColorResources.black
-              ),
-            ),
-           SizedBox(
-              height: widget.location.isNotEmpty 
-              ? 10.0 
-              : 0.0,
-            ),
-            Text(widget.createdAt,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraSmall,
-                color: ColorResources.grey
-              ),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-            fh.Html(
-              data: widget.desc,
-              style: {
-                'body': fh.Style(
-                  margin: fh.Margins.zero,
-                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                ),
-                'p': fh.Style(
-                  margin: fh.Margins.zero,
-                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                ),
-                'span': fh.Style(
-                  margin: fh.Margins.zero,
-                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                ),
-                'div': fh.Style(
-                  margin: fh.Margins.zero,
-                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                )
-              },
-            ),
+        body: Consumer<DetailNewsNotifier>(
+          builder: (BuildContext context, DetailNewsNotifier notifier, Widget? child) {
             
-            widget.type == "ews" 
-            ? const SizedBox()  
-            : const SizedBox(
-                height: 18,
-              ),
-            widget.type == "ews"  
-            ? const SizedBox()
-            : const Text('Baca Berita Lainnya',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-              ),
-            ),
-            widget.type == "ews" 
-            ? const SizedBox() 
-            : const SizedBox(
-              height: 18,
-            ),
-            widget.type == "ews" 
-            ? const SizedBox() 
-            : Consumer<DashboardNotifier>(
-                builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
-                if(notifier.state == ProviderState.loading) {
-                  return const Center(
-                    child: SizedBox(
-                      width: 16.0, 
-                      height: 16.0,
-                      child: CircularProgressIndicator()
+            if(notifier.state == ProviderState.loading) {
+              return const Center(
+                child: SizedBox(
+                  width: 16.0,
+                  height: 16.0,
+                  child: CircularProgressIndicator()
+                )
+              ); 
+            }
+
+            if(notifier.state == ProviderState.error) {
+              return Container();
+            }
+
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Text(notifier.entity.title.toString(), 
+                  style: robotoRegular.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Dimensions.fontSizeLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: notifier.entity.location.toString().isNotEmpty 
+                  ? 12.0 
+                  : 0.0,
+                ),
+                Container(
+                  clipBehavior: Clip.antiAlias,
+                  height: MediaQuery.sizeOf(context).width * .6,
+                  decoration: BoxDecoration(
+                    color: Colors.white, 
+                    borderRadius: BorderRadius.circular(9.0)
+                  ),
+                  child: Image.network(notifier.entity.img.toString(),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: notifier.entity.location.toString().isNotEmpty ? 18.0 : 0.0),
+                Text(notifier.entity.location.toString(),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeSmall,
+                    fontWeight: FontWeight.bold,
+                    color: ColorResources.black
+                  ),
+                ),
+              SizedBox(
+                  height: notifier.entity.location.toString().isNotEmpty 
+                  ? 10.0 
+                  : 0.0,
+                ),
+                Text(notifier.entity.createdAt.toString(),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraSmall,
+                    color: ColorResources.grey
+                  ),
+                ),
+                const SizedBox(
+                  height: 15.0,
+                ),
+                fh.Html(
+                  data: notifier.entity.desc.toString(),
+                  style: {
+                    'body': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'p': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'span': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'div': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                     )
-                  );
-                } 
-                if(notifier.state == ProviderState.empty) {
-                  return const SizedBox();
-                } 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: notifier.news.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    if(notifier.news[i].id == 0) {
+                  },
+                ),
+                
+                widget.type == "ews" 
+                ? const SizedBox()  
+                : const SizedBox(
+                    height: 18,
+                  ),
+                widget.type == "ews"  
+                ? const SizedBox()
+                : const Text('Baca Berita Lainnya',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+                widget.type == "ews" 
+                ? const SizedBox() 
+                : const SizedBox(
+                  height: 18,
+                ),
+                widget.type == "ews" 
+                ? const SizedBox() 
+                : Consumer<DashboardNotifier>(
+                    builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
+                    if(notifier.state == ProviderState.loading) {
+                      return const Center(
+                        child: SizedBox(
+                          width: 16.0, 
+                          height: 16.0,
+                          child: CircularProgressIndicator()
+                        )
+                      );
+                    } 
+                    if(notifier.state == ProviderState.empty) {
                       return const SizedBox();
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 12,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                            builder: (_) => NewsDetailPage(
-                              title: notifier.news[i].title,
-                              img: notifier.news[i].img,
-                              desc: notifier.news[i].desc,
-                              location: notifier.news[i].location,
-                              createdAt: notifier.news[i].createdAt,
-                              type: notifier.news[i].type,
-                            )
-                          ));
-                        },
-                        child: Container(
-                          clipBehavior: Clip.antiAlias,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(9),
+                    } 
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: notifier.news.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        if(notifier.news[i].id == 0) {
+                          return const SizedBox();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 12,
                           ),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                height: double.infinity,
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.fitWidth,
-                                  imageUrl: notifier.news[i].img.toString(),
-                                  placeholder: (BuildContext context, String url) {
-                                    return Image.asset('assets/images/default.jpeg');
-                                  },
-                                  errorWidget: (BuildContext context, String url, Object error) {
-                                    return Image.asset('assets/images/default.jpeg');
-                                  },
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                builder: (_) => NewsDetailPage(
+                                  id: notifier.news[i].id,
+                                  type: widget.type,
                                 )
+                              ));
+                            },
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(9),
                               ),
-                              Expanded(
-                                child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(notifier.news[i].title.toString(),
-                                      style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: Dimensions.fontSizeDefault,
-                                      ),
-                                    ),
-                                    
-                                    const SizedBox(
-                                      height: 6.0,
-                                    ),
-
-                                    fh.Html(
-                                      data: notifier.news[i].desc.toString(),
-                                      style: {
-                                        'body': fh.Style(
-                                          maxLines: 1,
-                                          margin: fh.Margins.zero,
-                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                        ),
-                                        'p': fh.Style(
-                                          maxLines: 1,
-                                          margin: fh.Margins.zero,
-                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                        ),
-                                        'span': fh.Style(
-                                           maxLines: 1,
-                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                        ),
-                                        'div': fh.Style(
-                                         maxLines: 1,
-                                          fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                        )
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 100,
+                                    height: double.infinity,
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.fitWidth,
+                                      imageUrl: notifier.news[i].img.toString(),
+                                      placeholder: (BuildContext context, String url) {
+                                        return Image.asset('assets/images/default.jpeg');
                                       },
-                                    ),
+                                      errorWidget: (BuildContext context, String url, Object error) {
+                                        return Image.asset('assets/images/default.jpeg');
+                                      },
+                                    )
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(notifier.news[i].title.toString(),
+                                          style: robotoRegular.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: Dimensions.fontSizeDefault,
+                                          ),
+                                        ),
+                                        
+                                        const SizedBox(
+                                          height: 6.0,
+                                        ),
 
-                                  ],
-                                ),
-                              ))
-                            ],
+                                        fh.Html(
+                                          data: notifier.news[i].desc.toString(),
+                                          style: {
+                                            'body': fh.Style(
+                                              maxLines: 1,
+                                              margin: fh.Margins.zero,
+                                              fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                            ),
+                                            'p': fh.Style(
+                                              maxLines: 1,
+                                              margin: fh.Margins.zero,
+                                              fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                            ),
+                                            'span': fh.Style(
+                                              maxLines: 1,
+                                              fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                            ),
+                                            'div': fh.Style(
+                                            maxLines: 1,
+                                              fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                            )
+                                          },
+                                        ),
+
+                                      ],
+                                    ),
+                                  ))
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            )
-          ],
-        ),
+                )
+              ],
+            );
+
+          },
+        )    
       ),
     );
   }

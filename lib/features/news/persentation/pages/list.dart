@@ -110,11 +110,7 @@ class NewsListPageState extends State<NewsListPage> {
                       MaterialPageRoute(
                         builder: (context) {
                           return NewsDetailPage(
-                            title: notifier.news[0].title.toString(), 
-                            img: notifier.news[0].img.toString(), 
-                            desc: notifier.news[0].desc.toString(),
-                            location: notifier.news[0].location.toString(),
-                            createdAt: notifier.news[0].createdAt.toString(),
+                            id: notifier.news[0].id,
                             type: notifier.news[0].type.toString(),
                           );
                         },
@@ -195,11 +191,7 @@ class NewsListPageState extends State<NewsListPage> {
                           Navigator.push(
                             context, MaterialPageRoute(
                             builder: (_) => NewsDetailPage(
-                              title: notifier.news[i].title.toString(),  
-                              img: notifier.news[i].img.toString(),
-                              desc: notifier.news[i].desc.toString(),
-                              location: notifier.news[i].location.toString(),
-                              createdAt: notifier.news[i].createdAt.toString(),
+                              id: notifier.news[0].id,
                               type: notifier.news[i].type.toString(),
                             )
                           ));

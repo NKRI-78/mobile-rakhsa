@@ -17,8 +17,10 @@ import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.da
 import 'package:rakhsa/features/chat/domain/usecases/insert_message.dart';
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/detail_news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
@@ -118,6 +120,7 @@ void init() {
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => ListEventUseCase(locator()));
   locator.registerLazySingleton(() => DetailEventUseCase(locator()));
+  locator.registerLazySingleton(() => DetailNewsUseCase(locator()));
   locator.registerLazySingleton(() => DeleteEventUseCase(locator()));
   locator.registerLazySingleton(() => UpdateEventUseCase(locator()));
   locator.registerLazySingleton(() => RegisterUseCase(locator()));
@@ -176,6 +179,7 @@ void init() {
   locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
+  locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
 
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()

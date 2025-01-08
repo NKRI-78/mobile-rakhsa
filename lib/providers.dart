@@ -17,6 +17,7 @@ import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.da
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
@@ -41,6 +42,7 @@ List<SingleChildWidget> providers = [
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<FirebaseProvider>()),
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<DetailNewsNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosRatingNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ListEventNotifier>()),

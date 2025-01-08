@@ -5,6 +5,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
+import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 import 'package:rakhsa/features/dashboard/domain/repository/dashboard_repository.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
@@ -23,6 +24,22 @@ class DashboardRepositoryImpl implements DashboardRepository {
         type: type, 
         lat: lat, 
         lng: lng
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, NewsDetailModel>> detailNews({
+    required int id,
+  }) async {
+    try {
+      var result = await remoteDataSource.getNewsDetail(
+        id: id, 
       );
       return Right(result);
     } on ServerException catch(e) {
