@@ -23,18 +23,6 @@ class NotificationType {
 }
 
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
-  final Soundpool soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
-  try {
-    int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-      return soundpool.load(soundData);
-    });
-    await soundpool.play(soundId);
-  } catch (e) {
-    debugPrint("Error playing notification sound: $e");
-  }
-  if (message.notification != null) {
-    
-  }
   return;
 }
 
@@ -65,28 +53,28 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> setupInteractedMessage(BuildContext context) async {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        _handleMessage(context, message);
+        handleMessage(context, message);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleMessage(context, message);
+      handleMessage(context, message);
     });
   }
 
   void listenNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       try {
-        await _playNotificationSound();
-        _processMessage(context, message.data);
-        _showNotification(message.notification, message.data);
+        // await playNotificationSound();
+        processMessage(context, message.data);
+        showNotification(message.notification, message.data);
       } catch (e) {
         debugPrint("Error processing notification: $e");
       }
     });
   }
 
-  Future<void> _playNotificationSound() async {
+  Future<void> playNotificationSound() async {
     try {
       int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
         return _soundpool.load(soundData);
@@ -97,35 +85,35 @@ class FirebaseProvider with ChangeNotifier {
     }
   }
 
-  void _processMessage(BuildContext context, Map<String, dynamic> payload) {
+  void processMessage(BuildContext context, Map<String, dynamic> payload) {
     switch (payload["type"]) {
       case NotificationType.resolvedSos:
-        _handleResolvedSos(context, payload);
+        handleResolvedSos(context, payload);
       break;
       case NotificationType.closedSos:
-        _handleClosedSos(context, payload);
+        handleClosedSos(context, payload);
       break;
       case NotificationType.confirmSos:
-        _handleConfirmSos(context, payload);
+        handleConfirmSos(context, payload);
       break;
       default:
         debugPrint("Unhandled notification type: ${payload["type"]}");
     }
   }
 
-  void _handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
+  void handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
     Future.microtask(() {
       context.read<ProfileNotifier>().getProfile();
     });
   }
 
-  void _handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
+  void handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
     Future.microtask(() {
       context.read<ProfileNotifier>().getProfile();
     });
   }
 
-  void _handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
+  void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
     Future.microtask(() {
       var messageNotifier = context.read<GetMessagesNotifier>();
       context.read<ProfileNotifier>().getProfile();
@@ -135,7 +123,11 @@ class FirebaseProvider with ChangeNotifier {
     });
   }
 
-  Future<void> _showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
+  void handleMessage(BuildContext context, RemoteMessage message) {
+    processMessage(context, message.data);
+  }
+
+  Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
     if (notification != null) {      
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -153,9 +145,5 @@ class FirebaseProvider with ChangeNotifier {
         ),
       );
     }
-  }
-
-  void _handleMessage(BuildContext context, RemoteMessage message) {
-    _processMessage(context, message.data);
   }
 }

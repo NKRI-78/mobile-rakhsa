@@ -47,7 +47,7 @@ Future<void> main() async {
         channelKey: 'notification',
         channelName: 'notification',
         channelDescription: 'Notification',
-        playSound: false,
+        playSound: true,
         channelShowBadge: true,
         onlyAlertOnce: true,
         criticalAlerts: true,
@@ -56,6 +56,13 @@ Future<void> main() async {
     ],
     debug: false
   );
+
+  // Listen for initial action (when app is terminated)
+  an.AwesomeNotifications().getInitialNotificationAction().then((receivedAction) {
+    if (receivedAction != null) {
+      AwesomeNotificationController.onActionReceivedMethod(receivedAction);
+    }
+  });
 
   await FirebaseProvider.registerBackgroundHandler();
 
