@@ -62,6 +62,7 @@ class CameraPageState extends State<CameraPage> {
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
+    
     if (cameras != null && cameras!.isNotEmpty) {
       controller = CameraController(cameras![0], ResolutionPreset.high);
       await controller!.initialize();
@@ -70,9 +71,7 @@ class CameraPageState extends State<CameraPage> {
   }
 
   void toggleMode() {
-    setState(() {
-      isVideoMode = !isVideoMode;
-    });
+    setState(() => isVideoMode = !isVideoMode);
   }
 
   Future<void> takePicture() async {

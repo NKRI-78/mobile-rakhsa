@@ -31,12 +31,12 @@ class FirebaseProvider with ChangeNotifier {
 
   FirebaseProvider({required this.dio});
 
-  final Soundpool _soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
+  final Soundpool soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
 
   Future<void> initFcm() async {
     try {
       String? token = await FirebaseMessaging.instance.getToken();
-      await dio.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm", data: {
+        await dio.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm", data: {
           "user_id": StorageHelper.getUserId(),
           "token": token,
         },
@@ -77,9 +77,9 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> playNotificationSound() async {
     try {
       int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-        return _soundpool.load(soundData);
+        return soundpool.load(soundData);
       });
-      await _soundpool.play(soundId);
+      await soundpool.play(soundId);
     } catch (e) {
       debugPrint("Error playing notification sound: $e");
     }
@@ -118,6 +118,7 @@ class FirebaseProvider with ChangeNotifier {
       var messageNotifier = context.read<GetMessagesNotifier>();
       context.read<ProfileNotifier>().getProfile();
       context.read<SosNotifier>().stopTimer();
+      
       messageNotifier.resetTimer();
       messageNotifier.startTimer();
     });
