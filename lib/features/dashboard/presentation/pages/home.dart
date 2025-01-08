@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_html/flutter_html.dart' as fh;
@@ -261,7 +259,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("Selamat datang",
+                        Text("Selamat Datang",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeLarge,
                             color: ColorResources.hintColor
@@ -576,24 +574,20 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             borderRadius: BorderRadius.circular(10.0),
                                           ),
                                         ),
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                            top: 12.0,
-                                            left: 10.0
-                                          ),
-                                          child: Text("Info Kejadian di sekitar Anda",
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeDefault,
-                                              color: ColorResources.white
-                                            ),
-                                          ),
-                                        ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
+                                              Text("Info Kejadian di sekitar Anda",
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeLarge,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: ColorResources.white
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8.0),
                                               Text(
                                                 item.location.toString(),
                                                 maxLines: 1,
