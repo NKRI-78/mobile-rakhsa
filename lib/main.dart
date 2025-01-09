@@ -2,11 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/awesome_notification.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
@@ -137,11 +138,9 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
-      title: 'Home',
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
+      onGenerateRoute: RoutesNavigation.onGenerateRoute,
       home: home,
     );
   }

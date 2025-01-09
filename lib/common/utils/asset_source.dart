@@ -8,4 +8,14 @@ class AssetSource {
   static const String iconHukum = "assets/images/icon-hukum.png";
   static const String iconFamilyCall = "assets/images/icon-familycall.png";
   static const String iconInfoBottom = "assets/images/icon-info-bottom.png";
+ 
+  // dashboard bottom nav bar
+  static const String iconNavBarHome = "assets/images/icon-bottom-nav-bar-home.png";
+  static const String iconNavBarMainMenu = "assets/images/icon-bottom-nav-bar-main-menu.png";
+  static const String iconNavBarWallet = "assets/images/icon-bottom-nav-bar-wallet.png";
+  static const String iconMenuInformation = "assets/images/icon-menu-information.png";
+  static const String iconMenuItinerary = "assets/images/icon-menu-itinerary.png";
+  static const String iconMenuMart = "assets/images/icon-menu-mart.png";
+  static const String iconMenuNearme = "assets/images/icon-menu-nearme.png";
+  static const String iconMenuNews = "assets/images/icon-menu-news.png";
 }

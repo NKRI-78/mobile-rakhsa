@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,6 +26,42 @@ import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
+
+  static void showMainMenu(
+    BuildContext context, {
+    required Widget content,
+    required double bottom,
+    Alignment showAlignment = Alignment.bottomCenter,
+  }) async {
+    await showGeneralDialog(
+      context: context,
+      barrierLabel: '',
+      barrierDismissible: true,
+      barrierColor: Colors.black38,
+      transitionBuilder: (context, a1, a2, child) => ScaleTransition(
+        scale: a1,
+        alignment: showAlignment,
+        child: child,
+      ),
+      pageBuilder: (context, a1, a2) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: bottom),
+            child: AlertDialog(
+              elevation: 3,
+              alignment: Alignment.bottomCenter,
+              contentPadding: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              content: content,
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   static Future<void> info({
     required String msg,
