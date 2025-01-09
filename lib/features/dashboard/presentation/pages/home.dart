@@ -190,6 +190,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       isResumedProcessing = true;
 
       await Future.delayed(const Duration(milliseconds: 500)); 
+      await getData();
       await checkNotificationPermission();
       await getCurrentLocation();
 
