@@ -57,7 +57,7 @@ class NearMeListTypePage extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Text(
-                "Mencari lokasi terdekat dari anda...",
+                "Mencari lokasi terdekat dari Anda...",
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeOverLarge,
                   fontWeight: FontWeight.bold,

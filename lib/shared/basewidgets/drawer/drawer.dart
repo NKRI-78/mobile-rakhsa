@@ -51,105 +51,111 @@ class DrawerWidgetState extends State<DrawerWidget> {
               mainAxisSize: MainAxisSize.min,
               children: [
 
-                context.watch<ProfileNotifier>().state == ProviderState.loading 
-                ? const SizedBox() 
-                : context.watch<ProfileNotifier>().state == ProviderState.error 
-                ? const SizedBox()
-                : Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0)
+                Consumer<ProfileNotifier>(
+                  builder: (BuildContext context, ProfileNotifier profileNotifier, Widget? child) {
+                    if(profileNotifier.state == ProviderState.error) {
+                      return const SizedBox();
+                    }
+                    return Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0)
+                        ),
+                        color: ColorResources.white
                       ),
-                      color: ColorResources.white
+                      child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+              
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+              
+                            CachedNetworkImage(
+                              imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return CircleAvatar(
+                                  backgroundImage: imageProvider,
+                                );
+                              },
+                              placeholder: (BuildContext context, String url) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url, Object error) {
+                                return const CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                );
+                              },
+                            ),
+              
+                            const SizedBox(width: 15.0),
+              
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+              
+                                Text("Nama",
+                                  style: robotoRegular.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    color: ColorResources.grey
+                                  ),
+                                ),
+              
+                                const SizedBox(height: 2.0),
+              
+                                Text(profileNotifier.entity.data!.username.toString(),
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorResources.black
+                                  ),
+                                ),
+              
+                              ],
+                            ), 
+              
+                          ],
+                        ),
+
+                        const SizedBox(height: 15.0),
+              
+                        CustomButton(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return const ProfilePage();
+                              },
+                            ));
+                          },
+                          isBorder: true,
+                          isBorderRadius: true,
+                          height: 40.0,
+                          sizeBorderRadius: 8.0,
+                          btnBorderColor: ColorResources.greyDarkPrimary,
+                          btnColor: ColorResources.white,
+                          btnTxt: "Profile",
+                          btnTextColor: const Color(0xFFC82927),
+                        ),
+                        
+                      ],
                     ),
-                    child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
+                  );
+                },
+              ),
             
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-            
-                          CachedNetworkImage(
-                            imageUrl: context.read<ProfileNotifier>().entity.data!.avatar.toString(),
-                            imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                              );
-                            },
-                            placeholder: (BuildContext context, String url) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                            errorWidget: (BuildContext context, String url, Object error) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default.jpeg'),
-                              );
-                            },
-                          ),
-            
-                          const SizedBox(width: 15.0),
-            
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-            
-                              Text("Nama",
-                                style: robotoRegular.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.grey
-                                ),
-                              ),
-            
-                              const SizedBox(height: 2.0),
-            
-                              Text(context.read<ProfileNotifier>().entity.data!.username.toString(),
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeLarge,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorResources.black
-                                ),
-                              ),
-            
-                            ],
-                          ), 
-            
-                        ],
-                      ),
+              const SizedBox(height: 10.0),
 
-                      const SizedBox(height: 15.0),
-            
-                      CustomButton(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return const ProfilePage();
-                            },
-                          ));
-                        },
-                        isBorder: true,
-                        isBorderRadius: true,
-                        height: 40.0,
-                        sizeBorderRadius: 8.0,
-                        btnBorderColor: ColorResources.greyDarkPrimary,
-                        btnColor: ColorResources.white,
-                        btnTxt: "Profile",
-                        btnTextColor: const Color(0xFFC82927),
-                      ),
-                      
-                    ],
-                  ),
-                ),
-            
-                const SizedBox(height: 10.0),
-
-                Consumer<EcommerceProvider>(
-                  builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
-                    return CustomButton(
+              Consumer<EcommerceProvider>(
+                builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                  return notifier.ownerModel.data == null 
+                  ? const SizedBox() 
+                  : notifier.ownerModel.data!.haveStore 
+                  ? CustomButton(
                       onTap: () async {
                         if(notifier.ownerModel.data!.haveStore) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => StoreInfoScreen(storeId: notifier.ownerModel.data!.storeId)));
@@ -162,32 +168,30 @@ class DrawerWidgetState extends State<DrawerWidget> {
                       btnColor: ColorResources.transparent,
                       btnBorderColor: ColorResources.white,
                       fontSize: Dimensions.fontSizeDefault,
-                      btnTxt: notifier.ownerModel.data == null 
-                      ? "Buat Toko"
-                      : notifier.ownerModel.data!.haveStore 
-                      ? "Toko Saya" : "Buat Toko"
-                    );
-                  },
-                ),
+                      btnTxt: "Toko Saya"
+                    )
+                  : const SizedBox();
+                },
+              ),
 
-                const SizedBox(height: 10.0),
-            
-                CustomButton(
-                  onTap: () async {
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                      return const ChatsPage();
-                    }));
-                  },
-                  isBorder: true,
-                  isBorderRadius: true,
-                  btnColor: ColorResources.transparent,
-                  btnBorderColor: ColorResources.white,
-                  fontSize: Dimensions.fontSizeDefault,
-                  btnTxt: "Notification",
-                ),
-            
-              ],
-            ),
+              const SizedBox(height: 10.0),
+          
+              CustomButton(
+                onTap: () async {
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return const ChatsPage();
+                  }));
+                },
+                isBorder: true,
+                isBorderRadius: true,
+                btnColor: ColorResources.transparent,
+                btnBorderColor: ColorResources.white,
+                fontSize: Dimensions.fontSizeDefault,
+                btnTxt: "Notification",
+              ),
+          
+            ],
+          ),
 
             Bouncing(
               child: Image.asset(logoutTitle,

@@ -39,10 +39,10 @@ class ProfileNotifier with ChangeNotifier {
         setStateProviderState(ProviderState.error);
       }, (r) {
         _entity = r;
+        setStateProviderState(ProviderState.loaded);
       }
     );
 
-    setStateProviderState(ProviderState.loaded);
   }
 
 }

@@ -48,15 +48,6 @@ class InformationListPage extends StatelessWidget {
           ListCardInformation(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage(info: "passport-visa");
-              }));
-            },
-            image: AssetSource.iconCard, 
-            title: "Passport & VISA"
-          ),
-          ListCardInformation(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return const PanduanHukumPage();
               }));
             },

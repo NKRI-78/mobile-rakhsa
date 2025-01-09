@@ -94,6 +94,16 @@ class NewsListPageState extends State<NewsListPage> {
               )
             );
           }
+          if(notifier.state == ProviderState.error) {
+            return Center(
+              child: Text(notifier.message,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black
+                ),
+              )
+            );
+          }
           return RefreshIndicator.adaptive(
             onRefresh: () {
               return Future.sync(() {
