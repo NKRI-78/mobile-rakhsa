@@ -109,12 +109,13 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
         leading: CupertinoNavigationBarBackButton(
           color: ColorResources.black,
           onPressed: () {
-       Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
         bottom: TabBar(
           isScrollable: true,
           tabAlignment: TabAlignment.center,
+          indicatorColor: const Color(0xFFC82927),
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,

@@ -58,6 +58,8 @@ dependencies:
   get_it: ^7.6.7
   google_api_headers: ^2.0.0
   google_maps_flutter: ^2.2.1
+  googleapis: ^13.1.0
+  googleapis_auth: ^1.6.0
 
   # L
   lecle_flutter_absolute_path: ^0.0.2+1
