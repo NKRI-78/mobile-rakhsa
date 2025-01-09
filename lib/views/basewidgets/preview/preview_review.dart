@@ -1,8 +1,8 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -10,8 +10,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:gallery_saver_plus/gallery_saver.dart';
-
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -96,42 +94,36 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
               backgroundColor: Colors.grey.withOpacity(0.5),
               child: InkWell(
                 onTap: () {
-                  showAnimatedDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (_) {
-                      return Dialog(
-                        child: Container(
-                        height: 50.0,
-                        padding: const EdgeInsets.all(10.0),
-                        margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                        child: StatefulBuilder(
-                          builder: (BuildContext context, Function setStateBuilder) {
-                          return ElevatedButton(
-                            onPressed: () async { 
-                              setStateBuilder(() => loadingBtn = true);
-                              await GallerySaver.saveImage("${widget.medias![current].path}");
-                              setStateBuilder(() => loadingBtn = false);
-                              Navigator.pop(context);
-                              ShowSnackbar.snackbarErr("Gambar telah disimpan pada galeri");
-                            },
-                            child: loadingBtn 
-                            ? Text("Mohon tunggu...", 
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
-                                color: ColorResources.black
-                              ))
-                            : Text("Unduh Gambar", 
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
-                                color: ColorResources.black
-                              ),
-                            )
-                          );
-                        })
-                        )
-                      );
-                    },
+                  Dialog(
+                    child: Container(
+                      height: 50.0,
+                      padding: const EdgeInsets.all(10.0),
+                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                      child: StatefulBuilder(
+                        builder: (BuildContext context, Function setStateBuilder) {
+                        return ElevatedButton(
+                          onPressed: () async { 
+                            setStateBuilder(() => loadingBtn = true);
+                            await GallerySaver.saveImage("${widget.medias![current].path}");
+                            setStateBuilder(() => loadingBtn = false);
+                            Navigator.pop(context);
+                            ShowSnackbar.snackbarErr("Gambar telah disimpan pada galeri");
+                          },
+                          child: loadingBtn 
+                          ? Text("Mohon tunggu...", 
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.black
+                            ))
+                          : Text("Unduh Gambar", 
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.black
+                            ),
+                          )
+                        );
+                      })
+                    )
                   );
                 },
                 child: const Icon(

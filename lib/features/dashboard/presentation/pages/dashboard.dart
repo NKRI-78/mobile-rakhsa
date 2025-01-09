@@ -263,7 +263,7 @@ class DashboardScreenState extends State<DashboardScreen> {
  
   final menus = [
     MainMenu(
-      title: 'Raksa Mart',
+      title: 'Raksha Mart',
       menuIcon: AssetSource.iconMenuMart,
       path: RoutesNavigation.mart,
     ),

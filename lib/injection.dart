@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
 import 'package:rakhsa/data/repository/ecommerce/ecommerce.dart';
+import 'package:rakhsa/data/repository/media/media.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
@@ -113,6 +114,7 @@ void init() {
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
+  locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));

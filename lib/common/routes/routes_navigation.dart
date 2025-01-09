@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
+import 'package:rakhsa/views/screens/ecommerce/product/products.dart';
 
 class RoutesNavigation {
   RoutesNavigation._();
@@ -17,6 +18,8 @@ class RoutesNavigation {
     switch (settings.name) {
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
+      case mart: 
+        return MaterialPageRoute(builder: (_) => const ProductsScreen());
       case news:
         return MaterialPageRoute(builder: (_) => const NewsListPage());
       case itinerary:
