@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
 
 import 'package:rakhsa/data/models/ecommerce/product/all.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/currency.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-
-import 'package:rakhsa/views/basewidgets/bounce/gesture.dart';
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/product/product_detail.dart';
 
@@ -31,9 +28,9 @@ class ProductItem extends StatelessWidget {
     
     return SizedBox(
       width: width,
-      child: GestureBounce(
+      child: Bouncing(
         onPress: () {
-          NS.push(context, ProductDetailScreen(productId: product.id));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailScreen(productId: product.id) ));
         },  
         child: Card(
           elevation: 0.80,
@@ -117,7 +114,7 @@ class ProductItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    Text(CurrencyHelper.formatCurrency(product.price),
+                    Text(formatCurrency(product.price),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: robotoRegular.copyWith(

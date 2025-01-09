@@ -33,16 +33,8 @@ import 'package:rakhsa/data/models/ecommerce/product/detail.dart';
 import 'package:rakhsa/data/models/ecommerce/store/owner.dart';
 import 'package:rakhsa/data/models/ecommerce/store/store.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-
 class EcommerceRepo {
-  final SharedPreferences sp;
   
-  EcommerceRepo({
-    required this.sp
-  });
-
   Future<BalanceModel> getBalance() async {
     try {
       Dio dio = DioManager.shared.getClient();

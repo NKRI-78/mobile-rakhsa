@@ -57,6 +57,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+1"
+  barcode:
+    dependency: transitive
+    description:
+      name: barcode
+      sha256: ab180ce22c6555d77d45f0178a523669db67f95856e3378259ef2ffeb43e6003
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.8"
+  barcode_widget:
+    dependency: "direct main"
+    description:
+      name: barcode_widget
+      sha256: "6f2c5b08659b1a5f4d88d183e6007133ea2f96e50e7b8bb628f03266c3931427"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4"
   boolean_selector:
     dependency: transitive
     description:
@@ -414,6 +430,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animated_dialog_updated:
+    dependency: "direct main"
+    description:
+      name: flutter_animated_dialog_updated
+      sha256: "15d2347ad3095c3eb5c2a8ded07e39c191194172cc7e84d5e01e91d451c580a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -1280,6 +1304,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  qr:
+    dependency: transitive
+    description:
+      name: qr
+      sha256: "64957a3930367bf97cc211a5af99551d630f2f4625e38af10edd6b19131b64b3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
+  readmore:
+    dependency: "direct main"
+    description:
+      name: readmore
+      sha256: "99c2483202f7c7e98c50834d72be2b119aefecf4497ca1960ae9d5f418eb1481"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   rxdart:
     dependency: transitive
     description:
@@ -1352,6 +1392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "1f1009b5845a1f88f1c5630212279540486f97409e9fc3f63883e71070d107bf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   simple_gesture_detector:
     dependency: transitive
     description:
@@ -1501,6 +1549,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  timelines:
+    dependency: "direct main"
+    description:
+      name: timelines
+      sha256: "40214f5ab772ff45459cb8c15e5f60505a6828af0c0eb1eec6f29ed911a4c1c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   tuple:
     dependency: "direct main"
     description:

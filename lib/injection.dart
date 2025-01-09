@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
+import 'package:rakhsa/data/repository/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
@@ -86,6 +87,7 @@ import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.da
 
 import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
 import 'package:rakhsa/firebase.dart';
+import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -110,6 +112,7 @@ void init() {
   locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
+  locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
@@ -180,6 +183,10 @@ void init() {
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
+  locator.registerFactory(() => EcommerceProvider(
+    er: locator(), 
+    mr: locator()
+  ));
 
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()

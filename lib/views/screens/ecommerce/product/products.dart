@@ -207,7 +207,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                NS.push(context, const ListOrderBuyerScreen());
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ListOrderBuyerScreen()));
                               },
                               child: notifier.badgeOrderAllStatus == BadgeOrderAllStatus.loading 
                               ? const Icon(Icons.list)
@@ -262,7 +262,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           if(notifier.getCartStatus == GetCartStatus.loading)
                             Bouncing(
                               onPress: () {
-                                NS.push(context, const CartScreen());
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                               },
                               child: const Icon(
                                 Icons.shopping_cart,
@@ -273,7 +273,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           if(notifier.getCartStatus == GetCartStatus.error)
                             Bouncing(
                               onPress: () {
-                                NS.push(context, const CartScreen());
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                               },
                               child: const Icon(
                                 Icons.shopping_cart,
@@ -284,7 +284,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           if(notifier.getCartStatus == GetCartStatus.empty)
                             Bouncing(
                               onPress: () {
-                                NS.push(context, const CartScreen());
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                               },
                               child: const Icon(
                                 Icons.shopping_cart,
@@ -295,7 +295,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           if(notifier.getCartStatus == GetCartStatus.loaded)
                             Bouncing(
                               onPress: () {
-                                NS.push(context, const CartScreen());
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                               },
                               child: Badge(
                                 label: Text(notifier.cartData.totalItem.toString(),

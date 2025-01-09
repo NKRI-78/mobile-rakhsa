@@ -3,20 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-
-import 'package:rakhsa/services/navigation.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/currency.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/helper.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
-
-import 'package:rakhsa/views/basewidgets/snackbar/snackbar.dart';
-import 'package:rakhsa/views/basewidgets/button/bounce.dart';
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/shipping_address/shipping_address_list.dart';
 
@@ -184,9 +180,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                       
                                 InkWell(
                                   onTap: () {
-                                    NS.push(context, ShippingAddressListScreen(
-                                      from: widget.from,
-                                    ));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingAddressListScreen(from: widget.from)));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
@@ -421,7 +415,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                             Row(
                                                               mainAxisSize: MainAxisSize.max,
                                                               children: [
-                                                                Text(Helper.formatCurrency(notifier.checkoutListData.stores![i].products[z].price),
+                                                                Text(formatCurrency(notifier.checkoutListData.stores![i].products[z].price),
                                                                   style: robotoRegular.copyWith(
                                                                     fontSize: Dimensions.fontSizeDefault,
                                                                     fontWeight: FontWeight.bold
@@ -549,7 +543,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                               child: Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  Text(Helper.formatCurrency(notifier.checkoutListData.stores![i].courier.cost!.value),
+                                                                  Text(formatCurrency(notifier.checkoutListData.stores![i].courier.cost!.value),
                                                                     style: robotoRegular.copyWith(
                                                                       fontSize: 15.0,
                                                                       fontWeight: FontWeight.bold,
@@ -681,7 +675,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                   ),
                                 ),
                             
-                                Text(Helper.formatCurrency(notifier.checkoutListData.totalPriceWithCost! + ep.paymentFee),
+                                Text(formatCurrency(notifier.checkoutListData.totalPriceWithCost! + ep.paymentFee),
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.bold
@@ -857,7 +851,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                                 ),
                                                                               ),
                                                                               const SizedBox(height: 5.0),
-                                                                              Text(Helper.formatCurrency(notifier.checkoutListData.productDetails![k].price),
+                                                                              Text(formatCurrency(notifier.checkoutListData.productDetails![k].price),
                                                                                 style: robotoRegular.copyWith(
                                                                                   fontSize: Dimensions.fontSizeSmall,
                                                                                   color: ColorResources.black
@@ -944,7 +938,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                             ),
                                                                           ),
                                                                           const SizedBox(height: 5.0),
-                                                                          Text(Helper.formatCurrency(ep.paymentFee),
+                                                                          Text(formatCurrency(ep.paymentFee),
                                                                             style: robotoRegular.copyWith(
                                                                               fontSize: Dimensions.fontSizeSmall,
                                                                               color: ColorResources.black
@@ -1009,7 +1003,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                             ),
                                                                           ),
                                                                           const SizedBox(height: 5.0),
-                                                                          Text(Helper.formatCurrency(ep.checkoutListData.totalCost!),
+                                                                          Text(formatCurrency(ep.checkoutListData.totalCost!),
                                                                             style: robotoRegular.copyWith(
                                                                               fontSize: Dimensions.fontSizeSmall,
                                                                               color: ColorResources.black
@@ -1035,7 +1029,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                             ),
                                                                           ),
                                                                           const SizedBox(height: 5.0),
-                                                                          Text(Helper.formatCurrency(ep.checkoutListData.totalPriceWithCost! + ep.paymentFee),
+                                                                          Text(formatCurrency(ep.checkoutListData.totalPriceWithCost! + ep.paymentFee),
                                                                             style: robotoRegular.copyWith(
                                                                               fontSize: Dimensions.fontSizeLarge,
                                                                               fontWeight: FontWeight.bold,
@@ -1081,7 +1075,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             fontWeight: FontWeight.bold
                                           ),
                                         ),
-                                        Text(Helper.formatCurrency(ep.checkoutListData.totalPriceWithCost! + ep.paymentFee),
+                                        Text(formatCurrency(ep.checkoutListData.totalPriceWithCost! + ep.paymentFee),
                                           style: robotoRegular.copyWith(
                                             color: ColorResources.primary,
                                             fontSize: Dimensions.fontSizeLarge,
@@ -1190,7 +1184,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                 notifier.paymentName == "Saldo" 
                                                 ? notifier.getPaymentChannelStatus == GetPaymentChannelStatus.loading  
                                                 ? const SizedBox() 
-                                                :  Text(CurrencyHelper.formatCurrency(notifier.balance),
+                                                :  Text(formatCurrency(notifier.balance),
                                                     style: robotoRegular.copyWith(
                                                       fontSize: Dimensions.fontSizeSmall,
                                                       color: ColorResources.black
@@ -1304,17 +1298,17 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         ? () {} 
                                         : () async {
                                           if(notifier.getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.error) {
-                                            ShowSnackbar.snackbar("Anda belum memilih Alamat Utama", "", ColorResources.error);
+                                            ShowSnackbar.snackbarErr("Anda belum memilih Alamat Utama");
                                             return;
                                           }
 
                                           if(notifier.courierNameSelect == "") {
-                                            ShowSnackbar.snackbar("Anda belum pilih Pengiriman", "", ColorResources.error);
+                                            ShowSnackbar.snackbarErr("Anda belum pilih Pengiriman");
                                             return;
                                           }
                                           
                                           if(notifier.channelId == -1) {
-                                            ShowSnackbar.snackbar("Anda belum memilih Metode Pembayaran", "", ColorResources.error);
+                                            ShowSnackbar.snackbarErr("Anda belum memilih Metode Pembayaran");
                                             return;
                                           }
       

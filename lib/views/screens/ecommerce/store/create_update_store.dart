@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:rakhsa/maps/src/models/pick_result.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -15,18 +13,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/maps/src/place_picker.dart';
+import 'package:rakhsa/maps/src/models/pick_result.dart';
 
-import 'package:rakhsa/views/basewidgets/snackbar/snackbar.dart';
-
-import 'package:rakhsa/maps/src/utils/uuid.dart';
-
-import 'package:rakhsa/common/utils/constant.dart';
+import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
-import 'package:uuid/uuid.dart';
+
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 class CreateStoreOrUpdateScreen extends StatefulWidget {
   const CreateStoreOrUpdateScreen({
@@ -59,7 +56,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
   File? file;
 
   late EcommerceProvider ecommerceProvider;
-  late ProfileProvider profileProvider;
+  late ProfileNotifier profileProvider;
 
   late TextEditingController nameStoreC;
   late TextEditingController descStoreC;
@@ -207,8 +204,8 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     subdistrictC = TextEditingController();
     postCodeC = TextEditingController();
     addressC = TextEditingController();
-    emailC = TextEditingController(text: profileProvider.user?.email ?? "");
-    phoneC = TextEditingController(text: profileProvider.user?.phone ?? "");
+    emailC = TextEditingController(text: profileProvider.entity.data!.email.toString());
+    phoneC = TextEditingController(text: profileProvider.entity.data!.contact.toString());
       
     descStoreC = TextEditingController();
     descStoreC.addListener(() {
@@ -480,6 +477,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       )
                     ),
+                    onPressed: submit,
                     child: Center(
                       child: context.watch<EcommerceProvider>().createStoreStatus == CreateStoreStatus.loading 
                       ? const SizedBox(
@@ -493,8 +491,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                           color: ColorResources.white
                         )
                       ),
-                    ),
-                    onPressed: submit
+                    )
                   ),
                 )
 
@@ -964,8 +961,8 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                   const SizedBox(width: 4.0),
                   GestureDetector(
                     onTap: () async {
-                      NS.push(context, PlacePicker(
-                        apiKey: AppConstants.apiKeyGmaps,
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PlacePicker(
+                        apiKey: RemoteDataSourceConsts.gmaps,
                         useCurrentLocation: true,
                         onPlacePicked: (PickResult result) async {
                           setState(() {
@@ -974,10 +971,10 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                             lat = result.geometry?.location.lat.toString() ?? '-';
                             lng = result.geometry?.location.lng.toString() ?? '-';
                           });
-                     Navigator.pop(context);
+                          Navigator.pop(context);
                         },
                         autocompleteLanguage: "id",
-                      ));
+                      )));
                     },
                     child: Text("Ubah Lokasi",
                       style: robotoRegular.copyWith(

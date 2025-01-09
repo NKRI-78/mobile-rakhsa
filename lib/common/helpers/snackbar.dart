@@ -10,8 +10,8 @@ class ShowSnackbar {
   ShowSnackbar._();
 
   static snackbarOk(String content) {
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
+    ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
@@ -26,7 +26,7 @@ class ShowSnackbar {
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentState!.context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
           }
         ),
       )
@@ -34,8 +34,8 @@ class ShowSnackbar {
   }
 
   static snackbarDefault(String content) {
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
+    ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
@@ -50,7 +50,7 @@ class ShowSnackbar {
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentState!.context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
           }
         ),
       )
@@ -58,8 +58,8 @@ class ShowSnackbar {
   }
 
   static snackbarErr(String content) {
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).clearSnackBars();
-    ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
+    ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,  
@@ -74,7 +74,7 @@ class ShowSnackbar {
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentState!.context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
           }
         ),
       )

@@ -4,6 +4,12 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rakhsa/common/helpers/censored_name.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/helpers/ddmmyyyy.dart';
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/views/basewidgets/preview/preview_review.dart';
 
 import 'package:readmore/readmore.dart';
 
@@ -13,16 +19,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/helper.dart';
-
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
-import 'package:rakhsa/views/basewidgets/button/bounce.dart';
-import 'package:rakhsa/views/basewidgets/preview/preview_review.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/store/edit_product.dart';
 import 'package:rakhsa/views/screens/ecommerce/cart/cart.dart';
@@ -131,7 +130,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                           ),
                           child: Bouncing(
                             onPress: () {
-                              NS.push(context, const CartScreen());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                             },
                             child: const Icon(
                               Icons.shopping_cart,
@@ -148,7 +147,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                           ),
                           child: Bouncing(
                             onPress: () {
-                              NS.push(context, const CartScreen());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                             },
                             child: const Icon(
                               Icons.shopping_cart,
@@ -165,7 +164,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                           ),
                           child: Bouncing(
                             onPress: () {
-                              NS.push(context, const CartScreen());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                             },
                             child: AnimatedBuilder(
                               animation: ep.animation,
@@ -191,7 +190,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                           ),
                           child: Bouncing(
                             onPress: () {
-                              NS.push(context, const CartScreen());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                             },
                             child: Badge(
                               label: Text(notifier.cartData.totalItem.toString(),
@@ -385,7 +384,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
 
                                   SizedBox(
                                     width: double.infinity,
-                                    child: Text(Helper.formatCurrency(notifier.productDetailData.product!.price),
+                                    child: Text(formatCurrency(notifier.productDetailData.product!.price),
                                       textAlign: TextAlign.start,
                                       style: robotoRegular.copyWith(
                                         fontSize: Dimensions.fontSizeOverLarge, 
@@ -535,14 +534,14 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                         mainAxisSize: MainAxisSize.min,
                                                                         children: [
 
-                                                                          Text(Helper.censorName(review.user.fullname),
+                                                                          Text(censorName(review.user.fullname),
                                                                             style: robotoRegular.copyWith(
                                                                               fontWeight: FontWeight.bold,
                                                                               fontSize: Dimensions.fontSizeDefault
                                                                             ),
                                                                           ),
 
-                                                                          Text(Helper.formatDate(review.createdAt),
+                                                                          Text(formatDateDDMMYYYY(review.createdAt),
                                                                             style: robotoRegular.copyWith(
                                                                               color: ColorResources.hintColor,
                                                                               fontSize: Dimensions.fontSizeExtraSmall
@@ -593,10 +592,11 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                   itemBuilder: (context, i) {
                                                                     return InkWell(
                                                                       onTap: () {
-                                                                        NS.push(context, PreviewReviewImageScreen(
+                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => PreviewReviewImageScreen(
                                                                           id: i,
                                                                           medias: review.medias,
-                                                                        ));
+                                                                        )));
+                                                                        
                                                                       },
                                                                       child: ClipRRect(
                                                                         borderRadius: BorderRadius.circular(10.0),
@@ -1042,7 +1042,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                   productId: widget.productId, 
                                   note: ""
                                 );
-                                NS.push(context, const DeliveryScreen(from: "live"));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryScreen(from: "live")));
                               }
                             } 
                           : () {},
@@ -1120,10 +1120,10 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                             : notifier.productDetailData.product!.stock > 0 
                             ? () async {
                                 if(notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id) {
-                                  NS.push(context, EditProductScreen(
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(
                                     storeId: notifier.ownerModel.data?.storeId ?? "-",
                                     productId: widget.productId,
-                                  ));
+                                  )));
                                 } else {
                                   await notifier.addToCart(
                                     productId: widget.productId, 

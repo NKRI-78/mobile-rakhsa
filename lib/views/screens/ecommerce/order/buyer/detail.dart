@@ -12,18 +12,16 @@ import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/common/helpers/ddmmyyyy.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/helpers/grams_to_kg.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
-
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/currency.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/helper.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/order/tracking.dart';
 import 'package:rakhsa/views/screens/ecommerce/order/complaint.dart';
@@ -202,7 +200,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                     
-                      Text(Helper.formatDate(notifier.detailOrderData.createdAt!),
+                      Text(formatDateDDMMYYYY(notifier.detailOrderData.createdAt!),
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           fontWeight: FontWeight.bold
@@ -386,7 +384,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                             
                                             const SizedBox(height: 5.0),
                             
-                                            Text("${Helper.formatCurrency(item.product.price)} x ${item.qty}",
+                                            Text("${formatCurrency(item.product.price)} x ${item.qty}",
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 fontWeight: FontWeight.bold
@@ -519,7 +517,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                                         ),
                                       ),
                                               
-                                      Text(Helper.formatCurrency(item.courierPrice),
+                                      Text(formatCurrency(item.courierPrice),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -541,7 +539,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                                         ),
                                       ),
                                                   
-                                      Text(Helper.gramsToKilograms(double.parse(item.courierWeight.toString())),
+                                      Text(gramsToKilograms(double.parse(item.courierWeight.toString())),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -748,7 +746,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                           ? const SizedBox()
                           : CustomButton(
                               onTap: () {
-                                NS.push(context, TrackingScreen(waybill: item.waybill));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => TrackingScreen(waybill: item.waybill)));
                               },
                               isBorderRadius: true,
                               isBoxShadow: false,
@@ -887,7 +885,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                                                         btnColor: ColorResources.success,
                                                         btnTextColor: ColorResources.white,
                                                         onTap: () async {
-                                                          NS.push(context, const ComplaintScreen());
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ComplaintScreen()));
                                                         }, 
                                                         btnTxt: "Ya"
                                                       );
@@ -1080,13 +1078,14 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                                                         btnColor: ColorResources.success,
                                                         btnTextColor: ColorResources.white,
                                                         onTap: () async {
-                                                          NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrderData.transactionId!))
-                                                          .then((_) async {
-                                                       Navigator.pop(context);
+
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProductReviewScreen(transactionId: notifier.detailOrderData.transactionId!))).then((_) async {
+                                                            Navigator.pop(context);
                                                             Future.delayed(const Duration(seconds: 1), () async {
                                                               await ep.detailOrder(transactionId: widget.transactionId);
                                                             });
                                                           });
+
                                                         }, 
                                                         btnTxt: "Ulas"
                                                       );
@@ -1148,7 +1147,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalCost!),
+                    Text(formatCurrency(notifier.detailOrderData.totalCost!),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -1175,8 +1174,8 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                     ),
                     
                     Text(notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" || notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"
-                    ? CurrencyHelper.formatCurrency(1500)
-                    : CurrencyHelper.formatCurrency(6500),
+                    ? formatCurrency(1500)
+                    : formatCurrency(6500),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -1202,7 +1201,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalPrice!),
+                    Text(formatCurrency(notifier.detailOrderData.totalPrice!),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -1229,7 +1228,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalPrice! + notifier.detailOrderData.totalCost! + (notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" || notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"  ? 1500 : 6500)),
+                    Text(formatCurrency(notifier.detailOrderData.totalPrice! + notifier.detailOrderData.totalCost! + (notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" || notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"  ? 1500 : 6500)),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         fontWeight: FontWeight.bold,

@@ -9,13 +9,12 @@ import 'package:date_count_down/date_count_down.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/currency.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/helper.dart';
+
+import 'package:rakhsa/common/helpers/ddmmyyyy.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/order/seller/detail.dart';
 
@@ -213,10 +212,10 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8.0),
                     onTap: () {
-                      NS.push(context, DetailOrderSellerScreen(
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DetailOrderSellerScreen(
                         storeId: notifier.orderSellers[i].store.id,
                         transactionId: notifier.orderSellers[i].transactionId
-                      ));
+                      )));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -303,7 +302,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                              
-                              Text(CurrencyHelper.formatCurrency(notifier.orderSellers[i].totalPrice),
+                              Text(formatCurrency(notifier.orderSellers[i].totalPrice),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   fontWeight: FontWeight.bold,
@@ -320,7 +319,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                                         
-                              Text(Helper.formatDate(notifier.orderSellers[i].createdAt),
+                              Text(formatDateDDMMYYYY(notifier.orderSellers[i].createdAt),
                                 style: robotoRegular.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: Dimensions.fontSizeSmall,

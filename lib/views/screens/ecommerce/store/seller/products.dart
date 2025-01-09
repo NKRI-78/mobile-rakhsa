@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/data/models/ecommerce/product/category.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';

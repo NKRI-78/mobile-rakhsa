@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:rakhsa/data/models/ecommerce/region/city.dart';
@@ -13,22 +14,18 @@ import 'package:rakhsa/data/models/ecommerce/region/subdistrict.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
-import 'package:rakhsa/views/basewidgets/snackbar/snackbar.dart';
-
 import 'package:provider/provider.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class CreateShippingAddressScreen extends StatefulWidget {
 
   const CreateShippingAddressScreen({
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   CreateShippingAddressScreenState createState() => CreateShippingAddressScreenState();
@@ -200,31 +197,31 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                     String postalCode = postalCodeC.text;
 
                     if(detailAddress.trim().isEmpty) { 
-                      ShowSnackbar.snackbar("Detail alamat wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Detail alamat wajib diisi");
                       return;
                     }
                     if(typeAddress.trim().isEmpty) {
-                      ShowSnackbar.snackbar("Lokasi wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Lokasi wajib diisi");
                       return;
                     }
                     if(province.trim().isEmpty) {
-                      ShowSnackbar.snackbar("Provinsi wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Provinsi wajib diisi");
                       return;
                     }
                     if(city.trim().isEmpty){
-                      ShowSnackbar.snackbar("Kota wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Kota wajib diisi");
                       return;
                     }
                     if(postalCodeC.text.trim().isEmpty) {
-                      ShowSnackbar.snackbar("Kode pos wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Kode pos wajib diisi");
                       return;
                     }
                     if(district.trim().isEmpty) {
-                      ShowSnackbar.snackbar("Daerah wajib diiis", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Daerah wajib diiis");
                       return;
                     }
                     if(subdistrict.trim().isEmpty) {
-                      ShowSnackbar.snackbar("Kecamatan wajib diisi", "", ColorResources.success);
+                      ShowSnackbar.snackbarErr("Kecamatan wajib diisi");
                       return;
                     }
                     
@@ -484,7 +481,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
           child: TextFormField(
             onTap: () {
               if (province == "") {
-                ShowSnackbar.snackbar("Pilih Provinsi Anda terlebih dahulu", "", ColorResources.error);
+                ShowSnackbar.snackbarErr("Pilih Provinsi Anda terlebih dahulu");
                 return;
               } else {
                 showModalBottomSheet(
@@ -694,7 +691,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
           child: TextFormField(
             onTap: () {
               if (city == "") {
-                ShowSnackbar.snackbar("Pilih Kota Anda Terlebih Dahulu", "", ColorResources.error);
+                ShowSnackbar.snackbarErr("Pilih Kota Anda Terlebih Dahulu");
               } else {
                 showModalBottomSheet(
                   isScrollControlled: true,
@@ -896,7 +893,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
           child: TextFormField(
             onTap: () {
               if (district == "") {
-                ShowSnackbar.snackbar("Pilih Daerah Anda Terlebih Dahulu", "", ColorResources.error);
+                ShowSnackbar.snackbarErr("Pilih Daerah Anda Terlebih Dahulu");
               } else {
                 showModalBottomSheet(
                   isScrollControlled: true,

@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
@@ -24,6 +23,9 @@ import 'package:rakhsa/maps/src/utils/uuid.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
+
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String storeId;
@@ -178,12 +180,12 @@ class AddProductScreenState extends State<AddProductScreen> {
     }
 
     if(descC.text.isEmpty) {
-      ShowSnackbar.snackbarErr("Deskripsi wajib diisi", "", ColorResources.error);
+      ShowSnackbar.snackbarErr("Deskripsi wajib diisi");
       return;
     }
 
     if(files.isEmpty) {
-      ShowSnackbar.snackbarErr("Gambar wajib diisi", "", ColorResources.error);
+      ShowSnackbar.snackbarErr("Gambar wajib diisi");
       return;
     }
 

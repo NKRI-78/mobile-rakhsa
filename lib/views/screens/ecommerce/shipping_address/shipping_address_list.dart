@@ -5,13 +5,10 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/shipping_address/create_shipping_address.dart';
 import 'package:rakhsa/views/screens/ecommerce/shipping_address/edit_shipping_address.dart';
@@ -224,9 +221,9 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                           flex: 5,
                                           child: GestureDetector(
                                             onTap: () {
-                                              NS.push(context, EditShippingAddressScreen(
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => EditShippingAddressScreen(
                                                 id: notifier.shippingAddress[i].id!
-                                              ));
+                                              )));
                                             },
                                             child: Container(
                                               padding: const EdgeInsets.all(8.0),
@@ -424,7 +421,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
               ),
               child: CustomButton(
                 onTap: () {
-                  NS.push(context, const CreateShippingAddressScreen());
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateShippingAddressScreen()));
                 },
                 btnTxt: "Tambah Alamat Baru",
                 isBorder: false,

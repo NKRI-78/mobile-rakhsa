@@ -33,6 +33,7 @@ import 'package:rakhsa/features/media/presentation/provider/upload_media_notifie
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
+import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/websockets.dart';
 
 List<SingleChildWidget> providers = [
@@ -69,5 +70,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<ForgotPasswordNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),  
   ChangeNotifierProvider(create: (_) => di.locator<InsertMessageNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<EcommerceProvider>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>(), lazy: false),
 ];

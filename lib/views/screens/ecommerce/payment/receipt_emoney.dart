@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:rakhsa/data/models/ecommerce/payment/response_emoney.dart';
 
-import 'package:rakhsa/services/navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/currency.dart';
-
-import 'package:rakhsa/views/basewidgets/button/custom.dart';
-
-import 'package:rakhsa/views/screens/home/home.dart';
 
 class PaymentReceiptEmoney extends StatefulWidget {
   final int amount;
@@ -44,7 +40,7 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
         if (didPop) {
           return;
         }
-        NS.push(context, const DashboardScreen());
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
       },
       child: Scaffold(
         appBar: AppBar(
@@ -61,7 +57,6 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             Text('Order ID : ${widget.responseMidtransEmoneyData.data.orderId}',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault
@@ -72,24 +67,24 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
                 fontSize: Dimensions.fontSizeDefault
               ),
             ),
-            Text('Jumlah Pembelian : ${CurrencyHelper.formatCurrency(widget.amount)}',
+            Text('Jumlah Pembelian : ${formatCurrency(widget.amount)}',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault
               ),
             ),
             widget.cost == 0 
             ? const SizedBox() 
-            : Text('Biaya Kurir : ${CurrencyHelper.formatCurrency(widget.cost)}',
+            : Text('Biaya Kurir : ${formatCurrency(widget.cost)}',
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
               ),
-            Text('Admin : ${CurrencyHelper.formatCurrency(widget.responseMidtransEmoneyData.data.channel.fee)}',
+            Text('Admin : ${formatCurrency(widget.responseMidtransEmoneyData.data.channel.fee)}',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault
               ),
             ),
-            Text('Total Pembayaran : ${CurrencyHelper.formatCurrency(widget.responseMidtransEmoneyData.data.totalAmount)}',
+            Text('Total Pembayaran : ${formatCurrency(widget.responseMidtransEmoneyData.data.totalAmount)}',
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault
               ),
@@ -123,7 +118,7 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
                   flex: 4,
                   child: CustomButton(
                     onTap: () {
-                      NS.pushReplacement(context, const DashboardScreen());
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
                     },
                     isBorderRadius: true,
                     isBoxShadow: false,

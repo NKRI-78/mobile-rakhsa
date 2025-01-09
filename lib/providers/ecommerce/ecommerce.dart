@@ -52,6 +52,8 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/data/repository/media/media.dart';
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
+import 'package:rakhsa/views/screens/ecommerce/payment/receipt_emoney.dart';
+import 'package:rakhsa/views/screens/ecommerce/payment/receipt_va.dart';
 
 
 enum CreateStoreStatus { idle, loading, loaded, empty, error }
@@ -1546,7 +1548,7 @@ class EcommerceProvider extends ChangeNotifier {
       });
 
       Future.delayed(Duration.zero, () {
-        Navigator.pop(navigatorKey.currentState!.context);
+        Navigator.pop(navigatorKey.currentContext!);
       });
 
       setStateCreateShippingAddress(CreateShippingAddressStatus.loaded);
@@ -1604,7 +1606,7 @@ class EcommerceProvider extends ChangeNotifier {
       });
       
       Future.delayed(Duration.zero, () {
-        Navigator.pop(navigatorKey.currentState!.context);
+        Navigator.pop(navigatorKey.currentContext!);
       });
 
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.loaded);
@@ -2424,15 +2426,12 @@ class EcommerceProvider extends ChangeNotifier {
           paymentCode: paymentCode
         );
 
-        NS.pushReplacement(
-          navigatorKey.currentContext!, 
-          PaymentReceiptEmoney(
-            amount: selectedTopupPrice,
-            cost: 0,
-            responseMidtransEmoneyData: responseMidtransEmoney.data,
-            type: paymentName,
-          )
-        );
+        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) =>  PaymentReceiptEmoney(
+          amount: selectedTopupPrice,
+          cost: 0,
+          responseMidtransEmoneyData: responseMidtransEmoney.data,
+          type: paymentName,
+        )));
 
       } else {
        
@@ -2444,14 +2443,11 @@ class EcommerceProvider extends ChangeNotifier {
           paymentCode: paymentCode
         );
 
-        NS.pushReplacement(
-          navigatorKey.currentContext!, 
-          PaymentReceiptVaScreen(
-            amount: selectedTopupPrice,
-            cost: 0,
-            responseMidtransVaData: responseMidtransVa.data,
-          )
-        );
+        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => PaymentReceiptVaScreen(
+          amount: selectedTopupPrice,
+          cost: 0,
+          responseMidtransVaData: responseMidtransVa.data,
+        )));
 
       }
 

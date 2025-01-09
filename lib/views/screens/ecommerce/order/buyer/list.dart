@@ -6,18 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:date_count_down/date_count_down.dart';
+import 'package:rakhsa/common/helpers/ddmmyyyy.dart';
+import 'package:rakhsa/common/helpers/format_currency.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
-
-import 'package:rakhsa/services/navigation.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/order/buyer/detail.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/currency.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/common/utils/helper.dart';
 
 class ListOrderBuyerScreen extends StatefulWidget {
   const ListOrderBuyerScreen({super.key});
@@ -230,7 +228,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8.0),
                     onTap: () {
-                      NS.push(context, DetailOrderBuyerScreen(transactionId: notifier.orders[i].transactionId));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DetailOrderBuyerScreen(transactionId: notifier.orders[i].transactionId)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -319,7 +317,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                              
-                              Text(CurrencyHelper.formatCurrency(notifier.orders[i].totalPrice),
+                              Text(formatCurrency(notifier.orders[i].totalPrice),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   fontWeight: FontWeight.bold,
@@ -336,7 +334,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                                         
-                              Text(Helper.formatDate(notifier.orders[i].createdAt),
+                              Text(formatDateDDMMYYYY(notifier.orders[i].createdAt),
                                 style: robotoRegular.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: Dimensions.fontSizeSmall,
