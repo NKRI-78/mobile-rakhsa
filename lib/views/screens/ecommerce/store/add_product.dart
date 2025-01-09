@@ -499,7 +499,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                       isLoading: context.watch<EcommerceProvider>().createProductStatus == CreateProductStatus.loading 
                       ? true 
                       : false,
-                      btnColor: ColorResources.primary,
+                      btnColor: const Color(0xFFC82927),
                       btnTextColor: ColorResources.white,
                       onTap: submit, 
                       btnTxt: "Submit"

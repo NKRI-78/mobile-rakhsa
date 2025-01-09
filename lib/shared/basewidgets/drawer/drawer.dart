@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
@@ -12,11 +13,14 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/pages/profile.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
+import 'package:rakhsa/views/screens/ecommerce/store/create_update_store.dart';
+import 'package:rakhsa/views/screens/ecommerce/store/store_info.dart';
 
 class DrawerWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -68,7 +72,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         children: [
             
                           CachedNetworkImage(
-                            imageUrl: context.read<ProfileNotifier>().entity.data?.avatar ?? "-",
+                            imageUrl: context.read<ProfileNotifier>().entity.data!.avatar.toString(),
                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                               return CircleAvatar(
                                 backgroundImage: imageProvider,
@@ -103,7 +107,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             
                               const SizedBox(height: 2.0),
             
-                              Text(context.read<ProfileNotifier>().entity.data?.username ?? "-",
+                              Text(context.read<ProfileNotifier>().entity.data!.username.toString(),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge,
                                   fontWeight: FontWeight.bold,
@@ -116,7 +120,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             
                         ],
                       ),
-            
+
                       const SizedBox(height: 15.0),
             
                       CustomButton(
@@ -141,6 +145,31 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 ),
             
+                const SizedBox(height: 10.0),
+
+                Consumer<EcommerceProvider>(
+                  builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                    return CustomButton(
+                      onTap: () async {
+                        if(notifier.ownerModel.data!.haveStore) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => StoreInfoScreen(storeId: notifier.ownerModel.data!.storeId)));
+                        } else {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateStoreOrUpdateScreen()));
+                        }
+                      },
+                      isBorder: true,
+                      isBorderRadius: true,
+                      btnColor: ColorResources.transparent,
+                      btnBorderColor: ColorResources.white,
+                      fontSize: Dimensions.fontSizeDefault,
+                      btnTxt: notifier.ownerModel.data == null 
+                      ? "Buat Toko"
+                      : notifier.ownerModel.data!.haveStore 
+                      ? "Toko Saya" : "Buat Toko"
+                    );
+                  },
+                ),
+
                 const SizedBox(height: 10.0),
             
                 CustomButton(

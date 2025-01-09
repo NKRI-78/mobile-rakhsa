@@ -310,7 +310,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
-        backgroundColor: ColorResources.primary,
+        backgroundColor: const Color(0xFFC82927),
         centerTitle: true,
         elevation: 0.0,
         leading: CupertinoNavigationBarBackButton(
@@ -364,7 +364,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                               child: Icon(
                                 Icons.store,
                                 size: 80.0,
-                                color: ColorResources.primary,
+                                color: Color(0xFFC82927)
                               ),
                             ); 
                           },
@@ -375,7 +375,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                               child: Icon(
                                 Icons.store,
                                 size: 80.0,
-                                color: ColorResources.primary,
+                                color: Color(0xFFC82927),
                               ),
                             ); 
                           },
@@ -387,7 +387,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                           child: Icon(
                             Icons.store,
                             size: 80.0,
-                            color: ColorResources.primary,
+                            color: Color(0xFFC82927),
                           ),
                         )  
                       : CircleAvatar(
@@ -408,7 +408,6 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                       )
                     ),
 
-                    
                   ]
                 ),
                 
@@ -472,7 +471,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                   width: double.infinity,
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: ColorResources.primary,
+                      backgroundColor: const Color(0xFFC82927),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       )
@@ -483,7 +482,9 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                       ? const SizedBox(
                           width: 16.0,
                           height: 16.0,
-                          child: CircularProgressIndicator()
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
                         ) 
                       : Text("Submit",
                         style: robotoRegular.copyWith(
@@ -1109,12 +1110,11 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                                             districtName = notifier.district[i].districtName;
                                             districtC.text = districtName;
                                           });
-                                     Navigator.pop(context);
+                                          Navigator.pop(context);
                                           await ecommerceProvider.getSubdistrict(districtName: districtName, search: "");
-                                        },
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
+                                        });
+                                      },
+                                      separatorBuilder: (context, index) {
                                       return const Divider(
                                         thickness: 1,
                                       );
@@ -1492,11 +1492,10 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
           color: ColorResources.black
         ),
       ),
+      activeColor: const Color(0xFFC82927),
       value: isOpen,
       onChanged: (bool val) {
-        setState(() {
-          isOpen = val;
-        });
+        setState(() => isOpen = val);
       },
     );
   }

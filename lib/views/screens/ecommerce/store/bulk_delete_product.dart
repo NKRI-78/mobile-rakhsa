@@ -68,9 +68,17 @@ class BulkDeleteProductScreenState extends State<BulkDeleteProductScreen> {
           ),
         ),
       ),
-      body: Consumer<EcommerceProvider>(
-        builder: (_, notifier, __) {
-          return SingleChildScrollView(
+      body:  Consumer<EcommerceProvider>(
+        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+          return notifier.listProductStatus == ListProductStatus.empty 
+          ? Center(
+              child: Text("Produk belum tersedia",
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault
+                ),
+              )
+            ) 
+          : SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

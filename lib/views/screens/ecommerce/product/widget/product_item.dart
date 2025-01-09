@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
@@ -67,7 +68,7 @@ class ProductItem extends StatelessWidget {
                           ),
                         );
                       },
-                      placeholder: (_, __) {
+                      placeholder: (BuildContext context, String placeholder) {
                         return const Center(
                           child: SizedBox(
                             width: 32.0,
@@ -76,7 +77,7 @@ class ProductItem extends StatelessWidget {
                           )
                         );
                       },
-                      errorWidget: (_, __, ___) {
+                      errorWidget: (BuildContext context, String error, Object err) {
                         return Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -113,7 +114,7 @@ class ProductItem extends StatelessWidget {
                         fontSize: Dimensions.fontSizeDefault,
                       ),
                     ),
-                    const SizedBox(height: 8.0),
+                    const SizedBox(height: 4.0),
                     Text(formatCurrency(product.price),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -130,7 +131,7 @@ class ProductItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8.0,
-                  vertical: 10.0
+                  vertical: 6.0
                 ),
                 child: Text(product.store.province,
                   style: robotoRegular.copyWith(
@@ -226,7 +227,6 @@ class ProductItem extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 38.0,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8.0,

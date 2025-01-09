@@ -100,19 +100,19 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         color: ColorResources.black
                       ),
                     ),
-                    toolbarHeight: 120.0,
+                    toolbarHeight: 150.0,
                     centerTitle: true,
                     leading: CupertinoNavigationBarBackButton(
                       color: ColorResources.black,
                       onPressed: () {
-                   Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                     ),
                     bottom: PreferredSize(
                      preferredSize: const Size.fromHeight(80.0),
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: ColorResources.primary,
+                          color: Color(0xFFC82927),
                         ),
                         padding: const EdgeInsets.all(15.0),
                         child: Row(
@@ -128,7 +128,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                             Expanded(
                               flex: 6,
                               child: CachedNetworkImage(
-                                imageUrl: notifier.store!.data?.logo ?? "-",
+                                imageUrl: notifier.store!.data!.logo.toString(),
                                 imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                   return CircleAvatar(
                                     maxRadius: 30.0,
@@ -174,7 +174,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
 
                                   SelectableText(notifier.store!.data?.address ?? "-",
                                     style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontSize: Dimensions.fontSizeSmall,
                                       color: ColorResources.white
                                     ),
                                   ),
@@ -183,16 +183,16 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
 
                                   SelectableText(notifier.store!.data?.phone ?? "-",
                                     style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontSize: Dimensions.fontSizeSmall,
                                       color: ColorResources.white
                                     ),
                                   ),
 
-                                  const SizedBox(height: 8.0),
+                                  const SizedBox(height: 4.0),
 
                                    SelectableText(notifier.store!.data?.email ?? "-",
                                     style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontSize: Dimensions.fontSizeSmall,
                                       color: ColorResources.white
                                     ),
                                   ),
@@ -205,54 +205,56 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                       ),
                     ),
                   ),
+
+                  SliverToBoxAdapter(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+
+                        IconButton(
+                          splashRadius: 20.0,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) =>  const CreateStoreOrUpdateScreen()));
+                          },
+                          icon: const Icon(Icons.edit,
+                            color: ColorResources.blue,
+                            size: 16.0,
+                          )
+                        ),
+
+                        IconButton(
+                          splashRadius: 20.0,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => BulkDeleteProductScreen(storeId: widget.storeId)));
+                          },
+                          icon: const Icon(Icons.delete,
+                            color: ColorResources.error,
+                            size: 16.0,
+                          )
+                        ),
+
+                        IconButton(
+                          splashRadius: 20.0,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(storeId: widget.storeId)));
+                          },
+                          icon: const Icon(Icons.add,
+                            color: ColorResources.success,
+                            size: 16.0,
+                          )
+                        ),
+
+                      ],
+                    ),
+                  ),
             
                 SliverPadding(
-                  padding: const EdgeInsets.only(
-                    top: 16.0,
-                    bottom: 16.0
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0
                   ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
 
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-
-                          IconButton(
-                            splashRadius: 20.0,
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) =>  const CreateStoreOrUpdateScreen()));
-                            },
-                            icon: const Icon(Icons.edit,
-                              color: ColorResources.blue,
-                            )
-                          ),
-
-                          IconButton(
-                            splashRadius: 20.0,
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => BulkDeleteProductScreen(storeId: widget.storeId)));
-                            },
-                            icon: const Icon(Icons.delete,
-                              color: ColorResources.error,
-                            )
-                          ),
-
-                          IconButton(
-                            splashRadius: 20.0,
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(storeId: widget.storeId)));
-                            },
-                            icon: const Icon(Icons.add,
-                              color: ColorResources.success,
-                            )
-                          ),
-
-                        ],
-                      ),
-
-                      const SizedBox(height: 14.0),
-                          
                       const Divider(
                         height: 1.0,
                         color: ColorResources.black,
@@ -297,44 +299,6 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         height: 1.0,
                         color: ColorResources.black,
                       ),
-
-                      if(notifier.listProductStatus == ListProductStatus.loading)
-                        const SizedBox(
-                          height: 300.0,
-                          child: Center(
-                            child: SizedBox(
-                              width: 16.0,
-                              height: 16.0,
-                              child: CircularProgressIndicator(
-                                color: ColorResources.primary,
-                              )
-                            )
-                          ),
-                        ),
-
-                      if(notifier.listProductStatus == ListProductStatus.empty)
-                        SizedBox(
-                          height: 300.0,
-                          child: Center(
-                            child: Text("Yaa.. Produk tidak ditemukan",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
-                              ),
-                            )
-                          ),
-                        ),
-
-                      if(notifier.listProductStatus == ListProductStatus.error)
-                        SizedBox(
-                          height: 300.0,
-                          child: Center(
-                            child: Text("Hmm... Mohon tunggu yaa",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
-                              ),
-                            )
-                          )
-                        ),
                                                     
                     ])
                   ),

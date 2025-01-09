@@ -108,6 +108,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
         bottom: TabBar(
           isScrollable: true,
           tabAlignment: TabAlignment.center,
+          indicatorColor: const Color(0xFFC82927),
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,

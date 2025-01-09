@@ -937,7 +937,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                           margin: const EdgeInsets.all(20.0),
                                           height: 250.0,
                                           decoration: BoxDecoration(
-                                            color: ColorResources.primary, 
+                                            color: const Color(0xFFC82927), 
                                             borderRadius: BorderRadius.circular(20.0)
                                           ),
                                           child: Stack(
@@ -994,14 +994,14 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                   isLoading: notifier.deleteProductStatus == DeleteProductStatus.loading 
                                                                   ? true 
                                                                   : false,
-                                                                  btnColor: ColorResources.error,
+                                                                  btnColor: ColorResources.blue,
                                                                   btnTextColor: ColorResources.white,
                                                                   onTap: () async {
                                                                     await notifier.deleteProduct(
                                                                       storeId: notifier.ownerModel.data?.storeId ?? "-", 
                                                                       productId: widget.productId
                                                                     );
-                                                               Navigator.pop(context);
+                                                                    Navigator.pop(context);
                                                                   }, 
                                                                   btnTxt: "OK"
                                                                 );
@@ -1137,7 +1137,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               height: 40.0,
                               decoration: BoxDecoration(
                                 color: notifier.productDetailData.product!.stock > 0 
-                                ? ColorResources.primary 
+                                ? ColorResources.blue
                                 : ColorResources.hintColor,
                                 borderRadius: BorderRadius.circular(10.0)
                               ),
