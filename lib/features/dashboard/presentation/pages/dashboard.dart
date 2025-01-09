@@ -61,7 +61,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     MainMenu(
       title: 'Near Me',
       menuIcon: AssetSource.iconMenuNearme,
-      path: RoutesNavigation.nearMe,
+      path: RoutesNavigation.nearMeTypeList,
     ),
     MainMenu(
       title: 'Information',
@@ -186,7 +186,10 @@ class DashboardScreenState extends State<DashboardScreen> {
         itemBuilder: (context, index) {
           final menu = menus[index];
           return InkWell(
-            onTap: () => Navigator.pushNamed(context, menu.path),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, menu.path);
+            },
             borderRadius: BorderRadius.circular(6),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

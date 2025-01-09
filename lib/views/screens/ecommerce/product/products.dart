@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'dart:async';
 
@@ -13,6 +14,7 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/cart/cart.dart';
 import 'package:rakhsa/views/screens/ecommerce/order/buyer/list.dart';
@@ -85,7 +87,7 @@ class ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<EcommerceProvider>(
-        builder: (_, notifier, __) {
+        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
           return NotificationListener(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
@@ -121,7 +123,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                     leading: CupertinoNavigationBarBackButton(
                       color: ColorResources.black,
                       onPressed: () {
-                   Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                     ),
                     actions: [
@@ -191,7 +193,33 @@ class ProductsScreenState extends State<ProductsScreen> {
                       )
                     ],
                   ),
-              
+
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Expanded(
+                            flex: 2,
+                            child: SizedBox(),
+                          ),
+                          Expanded(
+                            child: CustomButton(
+                              onTap: () {},
+                              height: 36.0,
+                              isBorderRadius: true,
+                              fontSize: Dimensions.fontSizeSmall,
+                              btnColor: const Color(0xFFC82927),
+                              btnTxt: "Pulsa & Tagihan",  
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                 
+                  ),
+
                   SliverToBoxAdapter(
                     child: Container(
                       padding: const EdgeInsets.only(
@@ -364,7 +392,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           crossAxisCount: 2,
                           childAspectRatio: MediaQuery.of(context).size.width > 400 
                           ? 2.0 / 2.6
-                          : 2.0 / 3.0,
+                          : 2.0 / 3.3,
                           mainAxisSpacing: 10.0,
                         ),
                         delegate: SliverChildBuilderDelegate(

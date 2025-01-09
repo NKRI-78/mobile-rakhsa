@@ -18,4 +18,10 @@ class AssetSource {
   static const String iconMenuMart = "assets/images/icon-menu-mart.png";
   static const String iconMenuNearme = "assets/images/icon-menu-nearme.png";
   static const String iconMenuNews = "assets/images/icon-menu-news.png";
+
+  // main menu -> near me
+  static const String iconTempatIbadah = "assets/images/icon-tempat-ibadah.png";
+  static const String iconKantorPolisi = "assets/images/icon-kantor-polisi.png";
+  static const String iconRestoran = "assets/images/icon-hotel.png";
+  static const String iconHotel = "assets/images/icon-restoran.png";
 }
