@@ -25,7 +25,7 @@ extension ToBitDescription on Widget {
       logicalSize: logicalSize,
       imageSize: imageSize
     );
-    return BitmapDescriptor.bytes(pngBytes);
+    return BitmapDescriptor.fromBytes(pngBytes);
   }
 }
 

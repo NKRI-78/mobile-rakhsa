@@ -13,7 +13,7 @@ class NearbyplaceModel {
 
   factory NearbyplaceModel.fromJson(Map<String, dynamic> json) => NearbyplaceModel(
     htmlAttributions: List<dynamic>.from(json["html_attributions"].map((x) => x)),
-    nextPageToken: json["next_page_token"],
+    nextPageToken: json["next_page_token"] ?? "-",
     results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
     status: json["status"],
   );

@@ -5,15 +5,18 @@ import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
 
+import 'package:rakhsa/features/nearme/presentation/widgets/my_marker.dart';
+import 'package:rakhsa/features/nearme/presentation/widgets/widget_to_marker.dart';
+
 class GetNearbyPlacenNotifier extends ChangeNotifier {
   final GetPlaceNearbyUseCase useCase;
 
   GetNearbyPlacenNotifier({required this.useCase});
 
-  List<Map<String, dynamic>> _entity = [];
+  final List<Map<String, dynamic>> _entity = [];
   List<Map<String, dynamic>> get entity => [..._entity];
 
-  List<Marker> _markers = [];
+  final List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
   ProviderState _state = ProviderState.empty;
@@ -22,7 +25,26 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  Future<void> getNearmeReligion({
+  String icon(String type) {
+    switch (type) {
+      case "mosque":
+        return "mosque.png";  
+      case "church":
+        return "church.png"; 
+      case "hindu_temple":
+        return "buddhist_temple.png";  
+      case "lodging":
+        return "lodging.png";  
+      case "restaurant":
+        return "restaurant.png"; 
+      case "police":
+        return "police.png";  
+      default:
+        return "";
+    }
+  }
+
+  Future<void> getNearme({
     required String type,
     required double currentLat,
     required double currentLng,
@@ -30,15 +52,23 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
     _state = ProviderState.loading;
     Future.delayed(Duration.zero, () => notifyListeners());
 
-    _markers = [];
-    _entity = []; 
+    _markers.clear();
+    _entity.clear();
 
     _markers.add(
       Marker(
-        markerId: const MarkerId("CurrentLocation"),
+        markerId: const MarkerId("current_location"),
         position: LatLng(currentLat, currentLng),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      )
+        icon: await const TextOnImage(
+          icon: "current-location.png",
+          text: "Current Location",
+        ).toBitmapDescriptor(
+          logicalSize: const Size(150, 150), imageSize: const Size(150, 150)
+        ),
+        infoWindow: const InfoWindow(
+          title: "Lokasi Anda",
+        ),
+      ),
     );
 
     final result = await useCase.execute(
@@ -50,33 +80,30 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
     result.fold(
       (l) {
         _state = ProviderState.error;
-        
         _message = l.message;
-        notifyListeners();
+        Future.delayed(Duration.zero, () => notifyListeners());
       },
-      (r) {
-
+      (r) async {
         for (var el in r.results) {
           _markers.add(
             Marker(
               markerId: MarkerId(el.placeId),
               position: LatLng(el.geometry.location.lat, el.geometry.location.lng),
+              icon: await TextOnImage(
+                icon: icon(type),
+                text: "Current Location",
+              ).toBitmapDescriptor(
+                logicalSize: const Size(150, 150), 
+                imageSize: const Size(150, 150)
+              ),
               infoWindow: InfoWindow(
                 title: el.name,
-              )
-            )
+              ),
+            ),
           );
-        } 
-
+        }
         _state = ProviderState.loaded;
         Future.delayed(Duration.zero, () => notifyListeners());
-
-        Future.delayed(const Duration(seconds: 1), () {
-          if(markers.isEmpty) {
-            _state = ProviderState.empty;
-            Future.delayed(Duration.zero, () => notifyListeners());
-          }
-        });
       },
     );
   }

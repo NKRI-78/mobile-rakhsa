@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
 
+import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 
@@ -32,11 +33,31 @@ class NearMePageState extends State<NearMePage> {
       await profileNotifier.getProfile();
 
     if(!mounted) return;
-      await getNearbyPlaceReligionNotifier.getNearmeReligion(
-        type: widget.type,
-        currentLat: double.parse(profileNotifier.entity.data!.lat), 
-        currentLng: double.parse(profileNotifier.entity.data!.lng)
-      );
+      if(widget.type == "mosque") {
+        await Future.wait([
+          getNearbyPlaceReligionNotifier.getNearme(
+            type: "mosque",
+            currentLat: double.parse(profileNotifier.entity.data!.lat), 
+            currentLng: double.parse(profileNotifier.entity.data!.lng)
+          ),
+          getNearbyPlaceReligionNotifier.getNearme(
+            type: "church",
+            currentLat: double.parse(profileNotifier.entity.data!.lat), 
+            currentLng: double.parse(profileNotifier.entity.data!.lng)
+          ),
+          getNearbyPlaceReligionNotifier.getNearme(
+            type: "hindu_temple",
+            currentLat: double.parse(profileNotifier.entity.data!.lat), 
+            currentLng: double.parse(profileNotifier.entity.data!.lng)
+          )
+        ]);
+      } else {
+        getNearbyPlaceReligionNotifier.getNearme(
+          type: widget.type,
+          currentLat: double.parse(profileNotifier.entity.data!.lat), 
+          currentLng: double.parse(profileNotifier.entity.data!.lng)
+        );
+      }
   }
 
   @override
@@ -88,23 +109,6 @@ class NearMePageState extends State<NearMePage> {
                 ),
               ),
 
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    top: 25.0,
-                    bottom: 5.0,
-                    left: 16.0, 
-                    right: 16.0
-                  ),
-                  child: Text("Pilih negara terlebih dahulu...",
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeOverLarge,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),  
-
               if(notifier.state == ProviderState.loading)
                 const SliverFillRemaining(
                   hasScrollBody: false,
@@ -115,18 +119,6 @@ class NearMePageState extends State<NearMePage> {
                       child: CircularProgressIndicator()
                     )
                   )
-                ),
-
-              
-              if(notifier.state == ProviderState.empty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                  child: Text("Data tidak ditemukan",
-                    style: robotoRegular.copyWith(
-                      color: ColorResources.black
-                    ),
-                  ))
                 ),
 
               if(notifier.state == ProviderState.error)
@@ -153,9 +145,9 @@ class NearMePageState extends State<NearMePage> {
                         child: GoogleMap(
                           mapType: MapType.normal,
                           gestureRecognizers: {}
-                            ..add(Factory<EagerGestureRecognizer>(() {
-                              return EagerGestureRecognizer();
-                            })),
+                          ..add(Factory<EagerGestureRecognizer>(() {
+                            return EagerGestureRecognizer();
+                          })),
                           myLocationEnabled: false,
                           initialCameraPosition: CameraPosition(
                             target: LatLng(
