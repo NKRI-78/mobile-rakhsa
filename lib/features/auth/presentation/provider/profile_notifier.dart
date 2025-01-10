@@ -29,8 +29,6 @@ class ProfileNotifier with ChangeNotifier {
   }
 
   Future<void> getProfile() async {
-    setStateProviderState(ProviderState.loading);
-
     final profile = await useCase.execute();
     
     profile.fold(

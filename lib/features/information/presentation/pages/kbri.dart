@@ -222,13 +222,13 @@ class KbriPageState extends State<KbriPage> {
                       Container(
                         margin: const EdgeInsets.all(16.0),
                         child: HtmlWidget(notifier.entity.data?.description.toString() ?? "-",
-                          customStylesBuilder: (element) {
+                          customStylesBuilder: (el) {
                             return null;
                           },
-                          customWidgetBuilder: (element) {
+                          customWidgetBuilder: (el) {
                             return null;
                           },
-                          onTapUrl: (url) => Future.value(true),
+                          onTapUrl: (String url) => Future.value(true),
                           renderMode: RenderMode.column,
                           textStyle: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault

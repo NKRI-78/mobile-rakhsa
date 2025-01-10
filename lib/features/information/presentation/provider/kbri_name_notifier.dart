@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/information/data/models/kbri.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_kbri_name.dart';
@@ -19,11 +20,11 @@ class KbriNameNotifier extends ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  Future<void> infoKbri({
-    required String stateName
-  }) async {
+  Future<void> infoKbri() async {
     _state = ProviderState.loading;
     Future.delayed(Duration.zero, () => notifyListeners());
+
+    String stateName = StorageHelper.getUserNationality() ?? "-";
 
     final result = await useCase.execute(
       stateName: stateName

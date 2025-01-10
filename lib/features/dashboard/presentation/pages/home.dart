@@ -135,6 +135,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         //   lng: position.longitude
         // );
 
+        StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
+
         await dashboardNotifier.getEws(
           lat: position.latitude,
           lng: position.longitude

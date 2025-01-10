@@ -46,6 +46,16 @@ class StorageHelper {
     return elapsedTime;
   }
 
+  static String? getUserNationality() {
+    String? nationality = sharedPreferences.getString("nationality") ?? "-";
+
+    return nationality; 
+  }
+
+  static void saveUserNationality({required String nationality}) async {
+    await sharedPreferences.setString("nationality", nationality.toLowerCase());
+  }
+
   static void saveUserId({required String userId}) async {
     await sharedPreferences.setString("user_id", userId);
   }

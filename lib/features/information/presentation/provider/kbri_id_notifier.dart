@@ -6,7 +6,7 @@ import 'package:rakhsa/features/information/data/models/kbri.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_kbri_id.dart';
 
 class KbriIdNotifier extends ChangeNotifier {
-  final GetKbriUseCase useCase;
+  final GetKbriIdUseCase useCase;
 
   KbriIdNotifier({required this.useCase});
 
