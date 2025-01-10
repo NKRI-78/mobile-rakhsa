@@ -391,7 +391,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: MediaQuery.of(context).size.width > 400 
-                          ? 2.0 / 2.6
+                          ? 2.0 / 3.0
                           : 2.0 / 3.3,
                           mainAxisSpacing: 10.0,
                         ),

@@ -160,7 +160,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                               )
                             )
                           ),
-                      )).toList()
+                      ))
                     ],
                   )
                 ),
@@ -237,7 +237,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                   ? true 
                   : false,
                   isBorderRadius: true,
-                  btnColor: ColorResources.primary,
+                  btnColor: const Color(0xFFFE1717),
                   btnTextColor: ColorResources.white,
                   btnTxt: "Simpan",
                 )

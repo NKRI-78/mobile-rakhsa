@@ -33,12 +33,6 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
     _markers = [];
     _entity = []; 
 
-    final result = await useCase.execute(
-      type: type,
-      currentLat: currentLat,
-      currentLng: currentLng,
-    );
-
     _markers.add(
       Marker(
         markerId: const MarkerId("CurrentLocation"),
@@ -47,9 +41,16 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
       )
     );
 
+    final result = await useCase.execute(
+      type: type,
+      currentLat: currentLat,
+      currentLng: currentLng,
+    );
+
     result.fold(
       (l) {
         _state = ProviderState.error;
+        
         _message = l.message;
         notifyListeners();
       },
@@ -61,7 +62,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
               markerId: MarkerId(el.placeId),
               position: LatLng(el.geometry.location.lat, el.geometry.location.lng),
               infoWindow: InfoWindow(
-                title: el.name
+                title: el.name,
               )
             )
           );
@@ -70,11 +71,12 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
         _state = ProviderState.loaded;
         Future.delayed(Duration.zero, () => notifyListeners());
 
-        if(markers.isEmpty) {
-          _state = ProviderState.empty;
-          Future.delayed(Duration.zero, () => notifyListeners());
-        }
-
+        Future.delayed(const Duration(seconds: 1), () {
+          if(markers.isEmpty) {
+            _state = ProviderState.empty;
+            Future.delayed(Duration.zero, () => notifyListeners());
+          }
+        });
       },
     );
   }

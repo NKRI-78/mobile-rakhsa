@@ -139,7 +139,7 @@ class CartScreenState extends State<CartScreen> {
                       isLoading: false,
                       btnColor: notifier.cartData.totalPrice == 0 
                       ? ColorResources.grey 
-                      : ColorResources.primary,
+                      : const Color(0xFFFE1717),
                       btnTxt: "Selanjutnya",
                     ),
                   ),
@@ -308,68 +308,67 @@ class CartScreenState extends State<CartScreen> {
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                     
-                                            CachedNetworkImage(
-                                              imageUrl: notifier.cartData.stores![i].items[z].picture,
-                                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                                return Container(
-                                                  width: 45.0,
-                                                  height: 45.0,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5.0),
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover
-                                                    )
-                                                  ),
-                                                );
-                                              },
-                                              placeholder: (BuildContext context, String url) {
-                                                return const Center(
-                                                  child: SizedBox(
-                                                    width: 32.0,
-                                                    height: 32.0,
-                                                    child: CircularProgressIndicator.adaptive()
-                                                  )
-                                                );
-                                              },
-                                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                                return const CircleAvatar(
-                                                  maxRadius: 20.0,
-                                                  backgroundImage: NetworkImage("https://dummyimage.com/300x300/000/fff"),
-                                                );
-                                              },
-                                            ),
                                     
-                                            const SizedBox(width: 10.0),
-                                            
                                             Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                    
-                                                  SizedBox(
-                                                    width: 180.0,
-                                                    child: Text(notifier.cartData.stores![i].items[z].name,
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: robotoRegular.copyWith(
-                                                        fontSize: Dimensions.fontSizeDefault
+
+                                                CachedNetworkImage(
+                                                  imageUrl: notifier.cartData.stores![i].items[z].picture,
+                                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                                    return Container(
+                                                      width: 30.0,
+                                                      height: 30.0,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(5.0),
+                                                        image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover
+                                                        )
                                                       ),
-                                                    ),
-                                                  ),
-                                                  
-                                                  const SizedBox(height: 5.0),
-                                                  
-                                                  Text(formatCurrency(notifier.cartData.stores![i].items[z].price),
+                                                    );
+                                                  },
+                                                  placeholder: (BuildContext context, String url) {
+                                                    return const Center(
+                                                      child: SizedBox(
+                                                        width: 30.0,
+                                                        height: 30.0,
+                                                        child: CircularProgressIndicator.adaptive()
+                                                      )
+                                                    );
+                                                  },
+                                                  errorWidget: (BuildContext context, String url, dynamic error) {
+                                                    return const CircleAvatar(
+                                                      maxRadius: 30.0,
+                                                      backgroundImage: NetworkImage("https://dummyimage.com/300x300/000/fff"),
+                                                    );
+                                                  },
+                                                ),
+                                    
+                                                SizedBox(
+                                                  width: 180.0,
+                                                  child: Text(notifier.cartData.stores![i].items[z].name,
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeDefault,
-                                                      fontWeight: FontWeight.bold
+                                                      fontSize: Dimensions.fontSizeDefault
                                                     ),
                                                   ),
-                                                  
-                                                  const SizedBox(height: 8.0),
+                                                ),
+                                                
+                                                const SizedBox(height: 5.0),
+                                                
+                                                Text(formatCurrency(notifier.cartData.stores![i].items[z].price),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeDefault,
+                                                    fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                                
+                                                const SizedBox(height: 8.0),
                                     
                                                   SizedBox(
-                                                    width: 220.0,
+                                                    width: 200.0,
                                                     child: Row(
                                                       mainAxisSize: MainAxisSize.max,
                                                       children: [
@@ -779,7 +778,7 @@ class CartScreenState extends State<CartScreen> {
                                             )
                                           ],
                                         )
-                                        );
+                                      );
                                         
                                         
                                 

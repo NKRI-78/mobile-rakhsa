@@ -71,7 +71,7 @@ class NearMePageState extends State<NearMePage> {
         builder: (BuildContext context, GetNearbyPlacenNotifier notifier, Widget? child) {
           return CustomScrollView(
             slivers: [
-              // App bar
+              
               SliverAppBar(
                 title: Text(statusType(widget.type),
                   style: robotoRegular.copyWith(
@@ -88,7 +88,6 @@ class NearMePageState extends State<NearMePage> {
                 ),
               ),
 
-              // Title pilih negara
               SliverToBoxAdapter(
                 child: Container(
                   margin: const EdgeInsets.only(
@@ -97,8 +96,7 @@ class NearMePageState extends State<NearMePage> {
                     left: 16.0, 
                     right: 16.0
                   ),
-                  child: Text(
-                    "Pilih negara terlebih dahulu...",
+                  child: Text("Pilih negara terlebih dahulu...",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeOverLarge,
                       fontWeight: FontWeight.bold,

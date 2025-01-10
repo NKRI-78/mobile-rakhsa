@@ -426,7 +426,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                 btnTxt: "Tambah Alamat Baru",
                 isBorder: false,
                 isBorderRadius: true,
-                btnColor: ColorResources.primary,
+                btnColor: const Color(0xFFFE1717),
               )
             )     
           )

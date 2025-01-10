@@ -1325,7 +1325,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         isLoading: notifier.payStatus == PayStatus.loading 
                                         ? true 
                                         : false,
-                                        btnColor: ColorResources.primary,
+                                        btnColor: const Color(0xFFFE1717),
                                         btnTxt: "Bayar",
                                       );
                                     },

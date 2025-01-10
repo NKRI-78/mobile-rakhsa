@@ -2141,196 +2141,139 @@ class EcommerceProvider extends ChangeNotifier {
 
       setStateGetPaymentChannelStatus(GetPaymentChannelStatus.loaded);
       
-      showModalBottomSheet(
-        context: context, 
-        isDismissible: true,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0)
-          )
-        ),
-        builder: (BuildContext context) {
-          return Container(
-            height: 560.0,
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-            
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-            
-                    Container(
-                      margin: const EdgeInsets.all(15.0),
-                      child: Text("Pilih Pembayaran",
-                        style: robotoRegular.copyWith(
-                          color: ColorResources.black,
-                          fontSize: Dimensions.fontSizeLarge,
-                          fontWeight: FontWeight.bold
-                        ),
-                      )
-                    ),
-            
-                  ],
-                ),
-
-                // Bouncing(
-                //   onPress: () async {
-                //     channelId = 99;
-
-                //     paymentName = "Saldo";
-
-                //     notifyListeners();
-
-                //Navigator.pop(context);
-                //   },
-                //   child: Padding(
-                //     padding: const EdgeInsets.all(12.0),
-                //     child: Container(
-                //       margin: const EdgeInsets.only(
-                //         left: 10.0, 
-                //         right: 10.0
-                //       ),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         mainAxisSize: MainAxisSize.max,
-                //         children: [
-                //           Row(
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //             mainAxisSize: MainAxisSize.max,
-                //             children: [
-
-                //               Icon(
-                //                 Icons.payment,
-                //                 color: ColorResources.purple,
-                //                 size: 30.0,
-                //               ),
-
-                //               const SizedBox(width: 10.0),
-
-                //               Text(Helper.formatCurrency(balanceModel.data.balance),
-                //                 style: robotoRegular.copyWith(
-                //                   fontSize: Dimensions.fontSizeDefault,
-                //                   color: ColorResources.black
-                //                 ),
-                //               ),
-
-                //             ],
-                //           ),
-                //           Text("Pilih",
-                //             style: robotoRegular.copyWith(
-                //               fontSize: Dimensions.fontSizeDefault,
-                //               fontWeight: FontWeight.bold,
-                //               color: ColorResources.black
-                //             ),
-                //           )
-                //         ],
-                //       )
-                //     ),
-                //   ),
-                // ),
-
-                // const Divider(
-                //   thickness: 2.0,
-                // ),
-                                    
-                ListView.separated(
-                  separatorBuilder: (BuildContext context, int i) {
-                    return const Divider(
-                      thickness: 2.0,
-                    );
-                  },
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: paymentChannelModel.data.data.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    PaymentChannelItem payment = paymentChannelModel.data.data[i];
-            
-                    return Bouncing(
-                      onPress: () async {
-                        channelId = payment.id;
-
-                        paymentLogo = payment.logo;
-                        paymentName = payment.name;
-                        paymentCode = payment.nameCode;
-                        platform = payment.platform;
-                        paymentFee = payment.fee;
-
-                        notifyListeners();
-
-                        Navigator.pop(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                            left: 10.0, 
-                            right: 10.0
+      Future.delayed(Duration.zero, () {
+        
+        showModalBottomSheet(
+          context: context, 
+          isDismissible: true,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0)
+            )
+          ),
+          builder: (BuildContext context) {
+            return Container(
+              height: 560.0,
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+              
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+              
+                      Container(
+                        margin: const EdgeInsets.all(15.0),
+                        child: Text("Pilih Pembayaran",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeLarge,
+                            fontWeight: FontWeight.bold
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-
-                                  CachedNetworkImage(
-                                    imageUrl: payment.logo,
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        width: 30.0,
-                                        height: 30.0,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.fitHeight,
-                                            image: imageProvider
-                                          )
-                                        ),
-                                      );
-                                    },
-                                  ),
-
-                                  const SizedBox(width: 10.0),
-
-                                  Text(payment.name,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.black
-                                    ),
-                                  ),
-
-                                ],
-                              ),
-                              Text("Pilih",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorResources.black
-                                ),
-                              )
-                            ],
-                          )
-                        ),
+                        )
                       ),
-                    );
-                    
-                  },
-                )
-            
-              ],
-            ),
-          );
-        }
-      );
+              
+                    ],
+                  ),
+                                      
+                  ListView.separated(
+                    separatorBuilder: (BuildContext context, int i) {
+                      return const Divider(
+                        thickness: 2.0,
+                      );
+                    },
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: paymentChannelModel.data.data.where((el) => el.paymentType == "VIRTUAL_ACCOUNT").length,
+                    itemBuilder: (BuildContext context, int i) {
+                      PaymentChannelItem payment = paymentChannelModel.data.data[i];
+
+                      return Bouncing(
+                        onPress: () async {
+                          channelId = payment.id;
+
+                          paymentLogo = payment.logo;
+                          paymentName = payment.name;
+                          paymentCode = payment.nameCode;
+                          platform = payment.platform;
+                          paymentFee = payment.fee;
+
+                          Future.delayed(Duration.zero, () => notifyListeners());
+
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              left: 10.0, 
+                              right: 10.0
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+
+                                    CachedNetworkImage(
+                                      imageUrl: payment.logo,
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          width: 30.0,
+                                          height: 30.0,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              fit: BoxFit.fitHeight,
+                                              image: imageProvider
+                                            )
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+                                    const SizedBox(width: 10.0),
+
+                                    Text(payment.name,
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.black
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                                Text("Pilih",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorResources.black
+                                  ),
+                                )
+                              ],
+                            )
+                          ),
+                        ),
+                      );
+                      
+                    },
+                  )
+              
+                ],
+              ),
+            );
+          }
+        );
+        
+      });
 
     } catch(_) {
       setStateGetPaymentChannelStatus(GetPaymentChannelStatus.error);
