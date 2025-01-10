@@ -15,10 +15,24 @@ class KbriRepositoryImpl implements KbriRepository {
   KbriRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, KbriInfoModel>> infoKbri({required String stateId}) async {
+  Future<Either<Failure, KbriInfoModel>> infoKbriStateId({required String stateId}) async {
     try {
-      var result = await remoteDataSource.infoKbri(
+      var result = await remoteDataSource.infoKbriStateId(
         stateId: stateId
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, KbriInfoModel>> infoKbriStateName({required String stateName}) async {
+    try {
+      var result = await remoteDataSource.infoKbriStateName(
+        stateName: stateName
       );
       return Right(result);
     } on ServerException catch(e) {

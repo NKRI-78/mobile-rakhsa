@@ -39,10 +39,12 @@ import 'package:rakhsa/features/event/persentation/provider/update_event_notifie
 import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
 import 'package:rakhsa/features/information/data/repositories/information_remote_datasource_impl.dart';
 import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
-import 'package:rakhsa/features/information/domain/usecases/get_kbri.dart';
+import 'package:rakhsa/features/information/domain/usecases/get_kbri_id.dart';
+import 'package:rakhsa/features/information/domain/usecases/get_kbri_name.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_passport.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_visa.dart';
-import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
@@ -145,7 +147,8 @@ void init() {
   locator.registerLazySingleton(() => UpdateIsLoggedinUseCase(locator()));
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => GetVisaUseCase(locator()));
-  locator.registerLazySingleton(() => GetKbriUseCase(locator()));
+  locator.registerLazySingleton(() => GetKbriIdUseCase(locator()));
+  locator.registerLazySingleton(() => GetKbriNameUseCase(locator()));
   locator.registerLazySingleton(() => GetPassportUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
@@ -169,17 +172,10 @@ void init() {
   locator.registerFactory(() => UpdateEventNotifier(useCase: locator()));
   locator.registerFactory(() => DetailEventNotifier(useCase: locator()));
   locator.registerFactory(() => DeleteEventNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => LoginNotifier(
-    webSocketsService: locator(),
-    useCase: locator()
-  ));
   locator.registerFactory(() => VisaNotifier(useCase: locator()));
   locator.registerFactory(() => PassportNotifier(useCase: locator()));
-  locator.registerLazySingleton(() => RegisterNotifier(
-    webSocketsService: locator(),
-    useCase: locator(),
-  ));
-  locator.registerFactory(() => KbriNotifier(useCase: locator()));
+  locator.registerFactory(() => KbriIdNotifier(useCase: locator()));
+  locator.registerFactory(() => KbriNameNotifier(useCase: locator()));
   locator.registerFactory(() => VerifyOtpNotifier(useCase: locator()));
   locator.registerFactory(() => ResendOtpNotifier(useCase: locator()));
   locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
@@ -194,11 +190,20 @@ void init() {
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
+
+  locator.registerLazySingleton(() => LoginNotifier(
+    webSocketsService: locator(),
+    useCase: locator()
+  ));
+  locator.registerLazySingleton(() => RegisterNotifier(
+    webSocketsService: locator(),
+    useCase: locator(),
+  ));
+  
   locator.registerFactory(() => EcommerceProvider(
     er: locator(), 
     mr: locator()
   ));
-
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()
   ));

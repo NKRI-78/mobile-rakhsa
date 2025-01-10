@@ -12,7 +12,7 @@ import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
 
 class KbriPage extends StatefulWidget {
   final int stateId;
@@ -28,7 +28,7 @@ class KbriPage extends StatefulWidget {
 
 class KbriPageState extends State<KbriPage> {
 
-  late KbriNotifier kbriNotifier;
+  late KbriIdNotifier kbriNotifier;
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -39,7 +39,7 @@ class KbriPageState extends State<KbriPage> {
   void initState() {
     super.initState();
 
-    kbriNotifier = context.read<KbriNotifier>();
+    kbriNotifier = context.read<KbriIdNotifier>();
 
     Future.microtask(() => getData());
   }
@@ -59,8 +59,8 @@ class KbriPageState extends State<KbriPage> {
             getData();
           });
         },
-        child: Consumer<KbriNotifier>(
-          builder: (BuildContext context, KbriNotifier notifier, Widget? child) {
+        child: Consumer<KbriIdNotifier>(
+          builder: (BuildContext context, KbriIdNotifier notifier, Widget? child) {
             return CustomScrollView(
               physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               slivers: [

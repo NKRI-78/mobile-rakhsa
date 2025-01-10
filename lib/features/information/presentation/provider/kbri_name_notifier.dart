@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+
 import 'package:rakhsa/features/information/data/models/kbri.dart';
+import 'package:rakhsa/features/information/domain/usecases/get_kbri_name.dart';
 
-import 'package:rakhsa/features/information/domain/usecases/get_kbri.dart';
+class KbriNameNotifier extends ChangeNotifier {
+  final GetKbriNameUseCase useCase;
 
-class KbriNotifier extends ChangeNotifier {
-  final GetKbriUseCase useCase;
-
-  KbriNotifier({required this.useCase});
+  KbriNameNotifier({required this.useCase});
 
   KbriInfoModel _entity = KbriInfoModel();
   KbriInfoModel get entity => _entity;
@@ -20,13 +20,13 @@ class KbriNotifier extends ChangeNotifier {
   String get message => _message;
 
   Future<void> infoKbri({
-    required String stateId
+    required String stateName
   }) async {
     _state = ProviderState.loading;
     Future.delayed(Duration.zero, () => notifyListeners());
 
     final result = await useCase.execute(
-      stateId: stateId
+      stateName: stateName
     );
     result.fold((l) {
       _state = ProviderState.error;

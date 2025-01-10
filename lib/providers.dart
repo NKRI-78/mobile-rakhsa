@@ -4,6 +4,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
@@ -26,7 +27,8 @@ import 'package:rakhsa/features/event/persentation/provider/detail_event_notifie
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
-import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
+import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
@@ -66,7 +68,8 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<UpdateIsLoggedinNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<UploadMediaNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetStateNotifier>()),
-  ChangeNotifierProvider(create: (_) => di.locator<KbriNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<KbriIdNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<KbriNameNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<VisaNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ForgotPasswordNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),  

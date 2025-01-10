@@ -5,15 +5,15 @@ import 'package:rakhsa/features/information/data/models/kbri.dart';
 
 import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
 
-class GetKbriUseCase {
+class GetKbriIdUseCase {
   final KbriRepository repository;
 
-  GetKbriUseCase(this.repository);
+  GetKbriIdUseCase(this.repository);
 
   Future<Either<Failure, KbriInfoModel>> execute({
     required String stateId,
   }) {
-    return repository.infoKbri(
+    return repository.infoKbriStateId(
       stateId: stateId,
     );  
   }

@@ -9,7 +9,8 @@ import 'package:rakhsa/features/information/data/models/passport.dart';
 import 'package:rakhsa/features/information/data/models/visa.dart';
 
 abstract class KbriRemoteDataSource {
-  Future<KbriInfoModel> infoKbri({required String stateId});
+  Future<KbriInfoModel> infoKbriStateId({required String stateId});
+  Future<KbriInfoModel> infoKbriStateName({required String stateName});
   Future<VisaContentModel> infoVisa({required String stateId});
   Future<PassportContentModel> infoPassport({required String stateId});
 }
@@ -20,7 +21,7 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
   KbriRemoteDataSourceImpl({required this.client});
 
   @override 
-  Future<KbriInfoModel> infoKbri({
+  Future<KbriInfoModel> infoKbriStateId({
     required String stateId
   }) async {
     try {
@@ -37,6 +38,25 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
       throw Exception(e.toString());
     }
   }
+
+  @override 
+  Future<KbriInfoModel> infoKbriStateName({
+    required String stateName
+  }) async {  
+    try {
+      Response res = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-kbri-state-name/$stateName");
+      Map<String, dynamic> data = res.data;
+      KbriInfoModel kbriInfoModel = KbriInfoModel.fromJson(data);
+      return kbriInfoModel;
+    } on DioException catch(e) {
+      debugPrint(e.response.toString());
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  } 
   
   @override
   Future<VisaContentModel> infoVisa({
