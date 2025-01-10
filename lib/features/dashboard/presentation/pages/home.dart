@@ -547,6 +547,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                 return Container(
                                   decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(10.0),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -556,12 +557,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(

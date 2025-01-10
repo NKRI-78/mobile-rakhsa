@@ -14,14 +14,12 @@ class NearmeRepositoryImpl implements NearmeRepository {
 
   @override
   Future<Either<Failure, NearbyplaceModel>> getNearme({
-    required String keyword,
     required double currentLat, 
     required double currentLng,
     required String type,
   }) async {
     try {
       var result = await remoteDataSource.getNearme(
-        keyword: keyword,
         currentLat: currentLat,
         currentLng: currentLng,
         type: type, 

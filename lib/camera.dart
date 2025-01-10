@@ -224,18 +224,18 @@ class CameraPageState extends State<CameraPage> {
                   //   ) 
                   // : 
 
-                  isRecording 
-                  ? const SizedBox() 
-                  : IconButton(
-                      icon: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                      onPressed: takePicture,
-                    ),
+                  // isRecording 
+                  // ? const SizedBox() 
+                  // : IconButton(
+                  //     icon: const Icon(
+                  //       Icons.camera_alt,
+                  //       color: Colors.white,
+                  //       size: 28,
+                  //     ),
+                  //     onPressed: takePicture,
+                  //   ),
 
-                  const SizedBox(width: 20.0),
+                  // const SizedBox(width: 20.0),
 
                   IconButton(
                     icon: const Icon(Icons.videocam,

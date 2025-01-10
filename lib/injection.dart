@@ -91,7 +91,7 @@ import 'package:rakhsa/features/nearme/data/datasources/nearme_remote_data_sourc
 import 'package:rakhsa/features/nearme/data/repositories/nearme_repository_impl.dart';
 import 'package:rakhsa/features/nearme/domain/repository/nearme_repository.dart';
 import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
-import 'package:rakhsa/features/nearme/presentation/provider/nearme_religion_notifier.dart';
+import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
@@ -193,7 +193,7 @@ void init() {
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
-  locator.registerFactory(() => GetNearbyPlaceReligionNotifier(useCase: locator()));
+  locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
   locator.registerFactory(() => EcommerceProvider(
     er: locator(), 
     mr: locator()

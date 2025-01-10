@@ -30,7 +30,7 @@ import 'package:rakhsa/features/information/presentation/provider/kbri_notifier.
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
-import 'package:rakhsa/features/nearme/presentation/provider/nearme_religion_notifier.dart';
+import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -72,6 +72,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<PassportNotifier>()),  
   ChangeNotifierProvider(create: (_) => di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<EcommerceProvider>()),
-  ChangeNotifierProvider(create: (_) => di.locator<GetNearbyPlaceReligionNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>(), lazy: false),
 ];

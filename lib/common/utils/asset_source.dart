@@ -24,4 +24,8 @@ class AssetSource {
   static const String iconKantorPolisi = "assets/images/icon-kantor-polisi.png";
   static const String iconRestoran = "assets/images/icon-hotel.png";
   static const String iconHotel = "assets/images/icon-restoran.png";
+
+  // icons
+  static const String lodging = "assets/images/icons/lodging";
+  static const String mosque = "assets/images/icons/mosque.png";
 }

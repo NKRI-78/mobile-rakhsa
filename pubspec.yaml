@@ -57,7 +57,7 @@ dependencies:
   geolocator: ^10.1.0
   get_it: ^7.6.7
   google_api_headers: ^2.0.0
-  google_maps_flutter: ^2.2.1
+  google_maps_flutter: ^2.4.0
   googleapis: ^13.1.0
   googleapis_auth: ^1.6.0
 
@@ -112,6 +112,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/icons/
     - assets/sounds/
 
 flutter_launcher_icons:

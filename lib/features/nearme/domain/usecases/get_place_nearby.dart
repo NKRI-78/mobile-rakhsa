@@ -12,13 +12,11 @@ class GetPlaceNearbyUseCase {
   Future<Either<Failure, NearbyplaceModel>> execute({
     required double currentLat, 
     required double currentLng, 
-    required String keyword, 
-    required String type
+    required String type,
   }) async {
     return repository.getNearme(
       currentLat: currentLat, 
       currentLng: currentLng, 
-      keyword: keyword, 
       type: type
     );
   }

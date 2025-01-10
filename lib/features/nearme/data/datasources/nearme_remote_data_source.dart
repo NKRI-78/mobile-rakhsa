@@ -8,7 +8,6 @@ import 'package:rakhsa/features/nearme/data/models/nearme.dart';
 
 abstract class NearmeRemoteDataSource {
   Future<NearbyplaceModel> getNearme({
-    required String keyword,
     required double currentLat,
     required double currentLng,
     required String type,
@@ -23,7 +22,6 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
 
   @override
   Future<NearbyplaceModel> getNearme({
-    required String keyword,
     required double currentLat,
     required double currentLng,
     required String type,
@@ -31,7 +29,6 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
     try { 
       final response = await client.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=5000&key=${RemoteDataSourceConsts.gmaps}");
       Map<String, dynamic> data = response.data;
-      debugPrint(data.toString());
       NearbyplaceModel nearby = NearbyplaceModel.fromJson(data);
       return nearby;
     } on DioException catch (e) {
