@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -36,5 +38,32 @@ class ListEventNotifier extends ChangeNotifier {
       _state = ProviderState.loaded;
       Future.delayed(Duration.zero, () => notifyListeners());
     });
+  }
+
+  void appendToEventGoogleCalendar({
+    required String summary,
+    required String description,
+    required String startDate,
+    required String endDate
+  }) {
+    _entity.add(
+      EventData(
+        id: Random.secure().nextInt(1000), 
+        title: summary, 
+        description: description, 
+        state: "", 
+        continent: "", 
+        startDay: "", 
+        endDay: "",
+        startDate: startDate, 
+        endDate: "", 
+        user: EventUser(
+          id: "", 
+          name: ""
+        ),
+        type: "google"
+      )
+    );
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 }

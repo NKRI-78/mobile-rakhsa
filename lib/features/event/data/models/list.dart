@@ -30,6 +30,7 @@ class EventData {
   String startDate;
   String endDate;
   EventUser user;
+  String type;
 
   EventData({
     required this.id,
@@ -42,6 +43,7 @@ class EventData {
     required this.startDate,
     required this.endDate,
     required this.user,
+    required this.type,
   });
 
   factory EventData.fromJson(Map<String, dynamic> json) => EventData(
@@ -55,6 +57,7 @@ class EventData {
     startDate: json["start_date"],
     endDate: json["end_date"],
     user: EventUser.fromJson(json["user"]),
+    type: "api"
   );
 }
 

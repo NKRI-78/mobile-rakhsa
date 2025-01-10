@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
@@ -16,6 +19,23 @@ import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
+import 'package:googleapis/calendar/v3.dart' as googleAPI;
+
+import 'package:http/http.dart' as http;
+
+class GoogleAuthClient extends http.BaseClient {
+  final String accessToken;
+  final String idToken;
+
+  GoogleAuthClient(this.accessToken, this.idToken);
+
+ @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    request.headers['Authorization'] = 'Bearer $accessToken';
+    return await http.Client().send(request);
+  }
+}
+
 class EventListPage extends StatefulWidget {
   const EventListPage({super.key});
 
@@ -25,11 +45,60 @@ class EventListPage extends StatefulWidget {
 
 class EventListPageState extends State<EventListPage> {
 
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    scopes: [
+      googleAPI.CalendarApi.calendarScope
+    ]
+  ); 
+
   late ListEventNotifier listEventNotifier; 
+
+  Future<void> initializeCalendarApi() async {
+    try {
+     
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        throw Exception("Google Sign-In failed");
+      } 
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+       final GoogleAuthClient authenticatedClient = GoogleAuthClient(
+        googleAuth.accessToken.toString(),
+        googleAuth.idToken.toString(),
+      );
+
+      final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);
+   
+      final googleAPI.Events events = await calendarAPI.events.list('primary');
+
+      events.items?.forEach((event) {
+        String summary = event.summary.toString();
+        String description = event.description.toString();
+        DateTime startDatetime = event.start?.dateTime ?? DateTime.now();
+        DateTime endDatetime = event.end?.dateTime ?? DateTime.now();
+
+        listEventNotifier.appendToEventGoogleCalendar(
+          summary: summary, 
+          description: description,
+          startDate: DateFormat.MMMMEEEEd().format(startDatetime),
+          endDate: DateFormat.MMMMEEEEd().format(endDatetime)
+        );
+      });
+
+      debugPrint("=== SUCCESFULLY SIGNED GOOGLE ===");
+    } catch(e) {
+      debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
+    }
+  }
 
   Future<void> getData() async {
     if(!mounted) return;
       listEventNotifier.list();
+
+    if(!mounted) return;
+      initializeCalendarApi();
   }
 
   @override 
@@ -51,7 +120,12 @@ class EventListPageState extends State<EventListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
-        leading: const SizedBox(),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
@@ -133,63 +207,62 @@ class EventListView extends StatelessWidget {
           ? SliverFillRemaining(
               child: Center(
                 child: Text('Belum ada Rencana yang di Buat',
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade700
-                ),
-              )
-            ),
-          )
-          : SliverToBoxAdapter(
-            child: EventListData(
-              events: events,
-              getData: getData,
-            ),
-          ),
-
-          StorageHelper.getUserId() == null 
-          ? const SliverToBoxAdapter()
-          : SliverToBoxAdapter(
-              child: Column(
-                children: [
-                const SizedBox(
-                  height: 26,
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const EventCreatePage()
-                    )).then((val) { 
-                      if(val != "") {
-                        getData();
-                      }
-                    });
-                  },
-                  
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                      8,
-                    )),
-                    backgroundColor: const Color(0xffFE1717),
-                  ),
-                  label: Text('Rencana',
-                    style: robotoRegular.copyWith(
-                      color: ColorResources.white
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.add,
-                    color: ColorResources.white,
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade700
                   ),
                 )
-              ],
+              ),
+            )
+          : SliverToBoxAdapter(
+              child: EventListData(
+                events: events,
+                getData: getData,
+              ),
             ),
-          )
-        ],
-      ),
-    );
+
+            StorageHelper.getUserId() == null 
+            ? const SliverToBoxAdapter()
+            : SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                  const SizedBox(
+                    height: 26,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const EventCreatePage()
+                      )).then((val) { 
+                        if(val != "") {
+                          getData();
+                        }
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                        8,
+                      )),
+                      backgroundColor: const Color(0xffFE1717),
+                    ),
+                    label: Text('Rencana',
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.white
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.add,
+                      color: ColorResources.white,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      );
   }
 }
 
@@ -214,7 +287,9 @@ class EventListData extends StatelessWidget {
         return Container(
           margin: const EdgeInsets.only(top: 10.0),
           child: InkWell(
-            onTap: () {
+            onTap: events[i].type == "google" 
+            ? () {}
+            : () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return EventDetailPage(
                   id: events[i].id,
@@ -255,7 +330,9 @@ class EventListData extends StatelessWidget {
                         ),
                       ),
 
-                      Row(
+                      events[i].type == "google" 
+                      ? const SizedBox()
+                      : Row(
                         children: [
 
                           Material(
@@ -340,7 +417,14 @@ class EventListData extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Image.asset('assets/images/airplane.png'),
+                      
+                      events[i].type == "google" 
+                      ? Image.asset('assets/images/google-calendar.png',
+                          width: 90.0,
+                          height: 90.0,
+                        )
+                      : Image.asset('assets/images/airplane.png'),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
