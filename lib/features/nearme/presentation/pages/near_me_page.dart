@@ -2,17 +2,53 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/nearme/presentation/provider/nearme_religion_notifier.dart';
 
-import '../../../../common/utils/custom_themes.dart';
-
-class NearMePage extends StatelessWidget {
+class NearMePage extends StatefulWidget {
   const NearMePage({super.key, required this.type});
 
   final String type;
 
+  @override
+  State<NearMePage> createState() => NearMePageState();
+}
+
+class NearMePageState extends State<NearMePage> {
+  
+  late ProfileNotifier profileNotifier;
+  late GetNearbyPlaceReligionNotifier getNearbyPlaceReligionNotifier;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      await profileNotifier.getProfile();
+
+    if(!mounted) return;
+      await getNearbyPlaceReligionNotifier.getNearmeReligion(
+        keyword: "", 
+        currentLat: double.parse(profileNotifier.entity.data!.lat), 
+        currentLng: double.parse(profileNotifier.entity.data!.lng)
+      );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    profileNotifier = context.read<ProfileNotifier>();
+    getNearbyPlaceReligionNotifier = context.read<GetNearbyPlaceReligionNotifier>();
+
+    Future.microtask(() => getData());
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

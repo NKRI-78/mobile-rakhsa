@@ -109,7 +109,7 @@ class DashboardScreenState extends State<DashboardScreen> {
           GeneralModal.showMainMenu(
             context,
             bottom: marginBottomMenuDialog,
-            content: _buildMainMenuDialog(),
+            content: buildMainMenuDialog(),
           );
         }),
  
@@ -127,7 +127,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                   context,
                   bottom: marginBottomMenuDialog,
                   showAlignment: Alignment.bottomRight,
-                  content: _buildDocumentDialog(),
+                  content: buildDocumentDialog(),
                 );
               },
               icon: Image.asset(AssetSource.iconNavBarWallet),
@@ -138,7 +138,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     );
   }
  
-  Widget _buildDocumentDialog() {
+  Widget buildDocumentDialog() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(
@@ -171,7 +171,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     );
   }
  
-  Widget _buildMainMenuDialog() {
+  Widget buildMainMenuDialog() {
     return SizedBox(
       width: double.maxFinite,
       height: 200,

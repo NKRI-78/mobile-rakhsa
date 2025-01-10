@@ -36,7 +36,7 @@ class NearbyplaceResponse {
     this.plusCode,
   });
 
-  BusinessStatus businessStatus;
+  String businessStatus;
   Geometry geometry;
   String icon;
   IconBackgroundColor iconBackgroundColor;
@@ -54,7 +54,7 @@ class NearbyplaceResponse {
   PlusCode? plusCode;
 
   factory NearbyplaceResponse.fromJson(Map<String, dynamic> json) => NearbyplaceResponse(
-    businessStatus: businessStatusValues.map[json["business_status"]]!,
+    businessStatus: json["business_status"],
     geometry: Geometry.fromJson(json["geometry"]),
     icon: json["icon"],
     iconBackgroundColor: iconBackgroundColorValues.map[json["icon_background_color"]]!,

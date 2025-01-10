@@ -1193,7 +1193,6 @@ class EcommerceRepo {
         }
       );
       Map<String, dynamic> data = response.data;
-      debugPrint(data.toString());
       OwnerModel ownerModel = OwnerModel.fromJson(data);
       return ownerModel;
     } on DioError catch(e) {

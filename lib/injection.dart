@@ -87,6 +87,11 @@ import 'package:rakhsa/features/media/presentation/provider/upload_media_notifie
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 
 import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
+import 'package:rakhsa/features/nearme/data/datasources/nearme_remote_data_source.dart';
+import 'package:rakhsa/features/nearme/data/repositories/nearme_repository_impl.dart';
+import 'package:rakhsa/features/nearme/domain/repository/nearme_repository.dart';
+import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
+import 'package:rakhsa/features/nearme/presentation/provider/nearme_religion_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
@@ -104,6 +109,7 @@ void init() {
   locator.registerLazySingleton<MediaRemoteDatasource>(() => MediaRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<EventRemoteDataSource>(() => EventRemoteDataSourceImpl(client: locator()));
+  locator.registerLazySingleton<NearmeRemoteDataSource>(() => NearmeRemoteDataSourceImpl(client: locator()));
   
   // REPOSITORY 
   locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
@@ -113,11 +119,13 @@ void init() {
   locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
+  locator.registerLazySingleton<NearmeRepository>(() => NearmeRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
   locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
+  locator.registerLazySingleton(() => GetPlaceNearbyUseCase(locator()));
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
@@ -185,6 +193,7 @@ void init() {
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
+  locator.registerFactory(() => GetNearbyPlaceReligionNotifier(useCase: locator()));
   locator.registerFactory(() => EcommerceProvider(
     er: locator(), 
     mr: locator()

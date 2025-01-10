@@ -29,11 +29,13 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
     required String type,
   }) async {
     try { 
-      final response = await client.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=$keyword&location=$currentLat,$currentLng&types=mosque&radius=500&key=${RemoteDataSourceConsts.gmaps}");
+      final response = await client.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=5000&key=${RemoteDataSourceConsts.gmaps}");
       Map<String, dynamic> data = response.data;
+      debugPrint(data.toString());
       NearbyplaceModel nearby = NearbyplaceModel.fromJson(data);
       return nearby;
     } on DioException catch (e) {
+      debugPrint(e.response.toString());
       String message = handleDioException(e);
       throw ServerException(message);
     } catch (e, stacktrace) {

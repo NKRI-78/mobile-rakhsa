@@ -29,6 +29,8 @@ class ProfileData {
   String contact;
   String emergencyContact;
   String createdAt;
+  String lat; 
+  String lng;
   ProfileSos sos;
 
   ProfileData({
@@ -41,6 +43,8 @@ class ProfileData {
     required this.contact,
     required this.emergencyContact,
     required this.createdAt,
+    required this.lat,
+    required this.lng,
     required this.sos,
   });
 
@@ -54,6 +58,8 @@ class ProfileData {
     contact: json["contact"],
     emergencyContact: json["emergency_contact"],
     createdAt: json["created_at"],
+    lat: json["lat"],
+    lng: json["lng"],
     sos: ProfileSos.fromJson(json["sos"]),
   );
 }

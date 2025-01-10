@@ -129,11 +129,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       });
 
       Future.delayed(Duration.zero, () async {
-        await updateAddressNotifier.updateAddress(
-          address: address, 
-          lat: position.latitude, 
-          lng: position.longitude
-        );
+        // await updateAddressNotifier.updateAddress(
+        //   address: address, 
+        //   lat: position.latitude, 
+        //   lng: position.longitude
+        // );
 
         await dashboardNotifier.getEws(
           lat: position.latitude,
