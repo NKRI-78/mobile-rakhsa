@@ -19,7 +19,6 @@ import 'package:rakhsa/features/administration/presentation/provider/get_country
 import 'package:rakhsa/features/information/presentation/pages/kbri.dart';
 import 'package:rakhsa/features/information/presentation/pages/passport_visa/index.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
-import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class SearchPage extends StatefulWidget {
   final String info;
