@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -10,7 +11,9 @@ import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
@@ -34,7 +37,7 @@ void initializeNotifications() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -64,8 +67,6 @@ Future<void> main() async {
       AwesomeNotificationController.onActionReceivedMethod(receivedAction);
     }
   });
-
-  await FirebaseProvider.registerBackgroundHandler();
 
   await StorageHelper.init();
 

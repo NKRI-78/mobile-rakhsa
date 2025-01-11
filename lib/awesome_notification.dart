@@ -20,6 +20,8 @@ class AwesomeNotificationController {
     String recipientId = receivedAction.payload!["recipient_id"] ?? "-";
     String sosId = receivedAction.payload!["sos_id"] ?? "-";
 
+    debugPrint("=== NEWS ID $newsId ===");
+
     if(type == "chat") {
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
         ChatPage(
@@ -41,7 +43,7 @@ class AwesomeNotificationController {
         )
       ));
     }
-   }
+  }
 
   static Future<void> onNotificationCreated(ReceivedNotification receivedNotification) async {
 

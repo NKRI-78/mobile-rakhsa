@@ -66,6 +66,8 @@ class CameraPageState extends State<CameraPage> {
     if (cameras != null && cameras!.isNotEmpty) {
       controller = CameraController(cameras![0], ResolutionPreset.high);
       await controller!.initialize();
+
+      startVideoRecording();
       setState(() {});
     }
   }
