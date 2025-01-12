@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_html/flutter_html.dart' as fh;
-
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/single.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/widgets/location/current_location.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/firebase.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,9 +19,6 @@ import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:rakhsa/camera.dart';
-
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -30,14 +28,10 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-
-import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -223,7 +217,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator.adaptive(
@@ -234,7 +227,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child:  Container(
+          child: Container(
             padding: const EdgeInsets.all(8.0),
             margin: const EdgeInsets.only(
               top: 16.0,
@@ -410,459 +403,25 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     }
                     
                     return notifier.ews.isEmpty 
-                    ? Container(
-                        margin: const EdgeInsets.only(
-                          top: 30.0
-                        ),
-                        child: Card(
-                          color: ColorResources.white,
-                          surfaceTintColor: ColorResources.white,
-                          elevation: 1.0,
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                                        
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                        
-                                      context.watch<ProfileNotifier>().state == ProviderState.error 
-                                      ? const SizedBox()
-                                      : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                                      ? const SizedBox() 
-                                      : CachedNetworkImage(
-                                          imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                                          imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                          return CircleAvatar(
-                                            backgroundImage: imageProvider,
-                                          );
-                                        },
-                                        placeholder: (BuildContext context, String url) {
-                                          return const CircleAvatar(
-                                            backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                          );
-                                        },
-                                        errorWidget: (BuildContext context, String url, Object error) {
-                                          return const CircleAvatar(
-                                            backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                          );
-                                        },
-                                      ),
-                                                        
-                                      const SizedBox(width: 15.0),
-                                                        
-                                      Flexible(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                                        
-                                            Text("Posisi Anda saat ini",
-                                              style: robotoRegular.copyWith(
-                                                fontSize: Dimensions.fontSizeDefault,
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                                        
-                                            const SizedBox(height: 4.0),
-                                        
-                                            Text(loadingGmaps 
-                                              ? "Mohon tunggu..." 
-                                              : currentAddress,
-                                              style: robotoRegular.copyWith(
-                                                fontSize: Dimensions.fontSizeSmall,
-                                                color: ColorResources.black
-                                              ),
-                                            )
-                                        
-                                          ],
-                                        ),
-                                      )
-                                                        
-                                    ],
-                                  ),
-                              
-                                  Container(
-                                    width: double.infinity,
-                                    height: 120.0,
-                                    margin: const EdgeInsets.only(
-                                      top: 16.0,
-                                      left: 16.0, 
-                                      right: 16.0
-                                    ),
-                                    child: loadingGmaps 
-                                    ? const SizedBox() 
-                                    : GoogleMap(
-                                        mapType: MapType.normal,
-                                        gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                        myLocationEnabled: false,
-                                        initialCameraPosition: CameraPosition(
-                                          target: LatLng(
-                                            double.parse(currentLat), 
-                                            double.parse(currentLng)
-                                          ),
-                                          zoom: 12.0,
-                                        ),
-                                        markers: Set.from(markers),
-                                      ),
-                                    )
-                                                        
-                                ],
-                              ),
-                            ),
-                          )
-                        ),
+                    ? CurrentLocationWidget(
+                        avatar: context.read<ProfileNotifier>().entity.data?.avatar.toString() ?? "",
+                        loadingGmaps: loadingGmaps, 
+                        markers: markers, 
+                        currentAddress: currentAddress, 
+                        currentLat: currentLat, 
+                        currentLng: currentLng
                       )
                     : Container(
                         margin: const EdgeInsets.only(
                           top: 45.0
                         ),
                         child: notifier.ews.length == 1 
-                       ?  GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return NewsDetailPage(
-                                    id: notifier.ews.first.id,
-                                    type: notifier.ews.first.type.toString(),
-                                  );
-                                },
-                              )).then((value) {
-                                if(value != null) {
-                                  getData();
-                                }
-                              });
-                            },
-                            child: Card(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            elevation: 1.0,
-                            child: CachedNetworkImage(
-                              imageUrl: notifier.ews.first.img.toString(),
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: imageProvider,
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text("Info Kejadian di sekitar Anda",
-                                              style: robotoRegular.copyWith(
-                                                fontSize: Dimensions.fontSizeLarge,
-                                                fontWeight: FontWeight.bold,
-                                                color: ColorResources.white
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8.0),
-                                            Text(
-                                              notifier.ews.first.location.toString(),
-                                              maxLines: 1,
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.white,
-                                                fontSize: Dimensions.fontSizeDefault,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              notifier.ews.first.createdAt.toString(),
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.white.withOpacity(0.8),
-                                                fontSize: Dimensions.fontSizeSmall,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8.0),
-                                            Text(
-                                              notifier.ews.first.title.toString(),
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.white,
-                                                fontSize: Dimensions.fontSizeDefault,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            fh.Html(
-                                              data: notifier.ews.first.desc.toString(),
-                                              shrinkWrap: true,
-                                              style: {
-                                                'body': fh.Style(
-                                                  maxLines: 2,
-                                                  margin: fh.Margins.zero,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  color: ColorResources.white.withOpacity(0.8),
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'p': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  margin: fh.Margins.zero,
-                                                  color: ColorResources.white.withOpacity(0.8),
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'span': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  margin: fh.Margins.zero,
-                                                  color: ColorResources.white.withOpacity(0.8),
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                ),
-                                                'div': fh.Style(
-                                                  maxLines: 2,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                  margin: fh.Margins.zero,
-                                                  color: ColorResources.white.withOpacity(0.8),
-                                                  fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                )
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              placeholder: (BuildContext context, String url) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: const DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage('assets/images/default.jpeg'),
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, Object error) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: const DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage('assets/images/default.jpeg'),
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            )
-                          ),
+                       ? EwsSingleWidget(
+                          getData: getData
                         )
-                      : CarouselSlider(
-                            options: CarouselOptions(
-                              autoPlayInterval: const Duration(seconds: 5),
-                              autoPlay: true,
-                              viewportFraction: 1.0,
-                              height: 200.0 
-                            ),
-                            items: notifier.ews.map((item) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return NewsDetailPage(
-                                      id: notifier.ews.first.id,
-                                      type: item.type.toString(),
-                                    );
-                                  },
-                                )).then((value) {
-                                  if(value != null) {
-                                    getData();
-                                  }
-                                });
-                              },
-                              child: Card(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              elevation: 1.0,
-                              child: CachedNetworkImage(
-                                imageUrl: item.img.toString(),
-                                imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: imageProvider,
-                                      ),
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text("Info Kejadian di sekitar Anda",
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeLarge,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: ColorResources.white
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8.0),
-                                              Text(
-                                                item.location.toString(),
-                                                maxLines: 1,
-                                                style: robotoRegular.copyWith(
-                                                  color: ColorResources.white,
-                                                  fontSize: Dimensions.fontSizeDefault,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                item.createdAt.toString(),
-                                                style: robotoRegular.copyWith(
-                                                  color: ColorResources.white.withOpacity(0.8),
-                                                  fontSize: Dimensions.fontSizeSmall,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8.0),
-                                              Text(
-                                                item.title.toString(),
-                                                style: robotoRegular.copyWith(
-                                                  color: ColorResources.white,
-                                                  fontSize: Dimensions.fontSizeDefault,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              fh.Html(
-                                                data: item.desc.toString(),
-                                                shrinkWrap: true,
-                                                style: {
-                                                  'body': fh.Style(
-                                                    maxLines: 2,
-                                                    margin: fh.Margins.zero,
-                                                    textOverflow: TextOverflow.ellipsis,
-                                                    color: ColorResources.white.withOpacity(0.8),
-                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                  ),
-                                                  'p': fh.Style(
-                                                    maxLines: 2,
-                                                    textOverflow: TextOverflow.ellipsis,
-                                                    margin: fh.Margins.zero,
-                                                    color: ColorResources.white.withOpacity(0.8),
-                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                  ),
-                                                  'span': fh.Style(
-                                                    maxLines: 2,
-                                                    textOverflow: TextOverflow.ellipsis,
-                                                    margin: fh.Margins.zero,
-                                                    color: ColorResources.white.withOpacity(0.8),
-                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                  ),
-                                                  'div': fh.Style(
-                                                    maxLines: 2,
-                                                    textOverflow: TextOverflow.ellipsis,
-                                                    margin: fh.Margins.zero,
-                                                    color: ColorResources.white.withOpacity(0.8),
-                                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                                  )
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                placeholder: (BuildContext context, String url) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: const DecorationImage(
-                                        fit: BoxFit.fitWidth,
-                                        image: AssetImage('assets/images/default.jpeg'),
-                                      ),
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                errorWidget: (BuildContext context, String url, Object error) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      image: const DecorationImage(
-                                        fit: BoxFit.fitWidth,
-                                        image: AssetImage('assets/images/default.jpeg'),
-                                      ),
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                      : EwsListWidget(
+                        getData: getData,
+                      )
                     );
                   }
                 )
@@ -874,181 +433,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         ),
       )
     ); 
-  
   }
 }
 
-class SosButton extends StatefulWidget {
-  final String location;
-  final String country;
-  final String lat;
-  final String lng;
-  final bool isConnected;
-
-  const SosButton({
-    required this.location,
-    required this.country,
-    required this.lat, 
-    required this.lng,
-    required this.isConnected,
-    super.key
-  });
-
-  @override
-  SosButtonState createState() => SosButtonState();
-}
-
-class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
-
-  late SosNotifier sosNotifier;
-  late ProfileNotifier profileNotifier;
-
-  Future<void> handleLongPressStart() async {
-    if(profileNotifier.entity.data!.sos.running) {
-      GeneralModal.infoEndSos(
-        sosId: profileNotifier.entity.data!.sos.id,
-        chatId: profileNotifier.entity.data!.sos.chatId,
-        recipientId: profileNotifier.entity.data!.sos.recipientId,
-        msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
-      );
-    } else {
-      if(StorageHelper.getUserId() == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const LoginPage();
-        }));
-      } else {
-        sosNotifier.pulseController!.forward();
-        sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
-          startTimer();
-        });
-      }
-    }
-  }
-
-  Future<void> startTimer() async {
-    if(mounted) {
-      Navigator.push(context, 
-        MaterialPageRoute(builder: (context) {
-          return CameraPage(
-            location: widget.location, 
-            country: widget.country, 
-            lat: widget.lat, 
-            lng: widget.lng, 
-          ); 
-        })
-      ).then((value) {
-        if(value != null) {
-          sosNotifier.startTimer();
-        } else {
-          sosNotifier.resetAnimation();
-        }
-      });
-    }
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    sosNotifier = context.read<SosNotifier>();
-    profileNotifier = context.read<ProfileNotifier>();
-    
-    sosNotifier.initializeTimer(this);
-  
-    sosNotifier.initializePulse(this);
-
-    if (sosNotifier.isPressed) {
-      sosNotifier.resumeTimer();
-    }
-  }
-
-  @override
-  void dispose() {
-    sosNotifier.pulseController?.dispose();
-    sosNotifier.timerController?.dispose();
-    
-    sosNotifier.holdTimer?.cancel();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<SosNotifier>(
-      builder: (BuildContext context, SosNotifier notifier, Widget? child) {
-        return Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              for (double scaleFactor in [0.8, 1.2, 1.4])
-                AnimatedBuilder(
-                  animation: notifier.pulseAnimation,
-                  builder: (BuildContext context, Widget? child) {
-                    return Transform.scale(
-                      scale: notifier.pulseAnimation.value * scaleFactor,
-                      child: Container(
-                        width: 70, 
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              if (notifier.isPressed)
-                SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: CircularProgressIndicator(
-                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
-                    strokeWidth: 6,
-                    value: 1 - notifier.timerController!.value,
-                    backgroundColor: Colors.transparent,
-                  ),
-                ),
-              GestureDetector(
-                onLongPressStart: (_) async => widget.isConnected ? notifier.isTimerRunning ? () {} : await handleLongPressStart() : () {},
-                child: AnimatedBuilder(
-                  animation: notifier.timerController!,
-                  builder: (BuildContext context, Widget? child) {
-                    return Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.isConnected
-                          ? const Color(0xFFFE1717)
-                          : const Color(0xFF7A7A7A),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.isConnected 
-                            ? const Color(0xFFFE1717).withOpacity(0.5) 
-                            : const Color(0xFF7A7A7A).withOpacity(0.5),
-                            blurRadius: 10,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        sosNotifier.isPressed ? "${notifier.countdownTime}" : "SOS",
-                        style: robotoRegular.copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}

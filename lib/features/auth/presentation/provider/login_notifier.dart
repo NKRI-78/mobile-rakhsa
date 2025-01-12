@@ -57,6 +57,9 @@ class LoginNotifier with ChangeNotifier {
         if(authModel.data!.user.enabled) {  
 
           StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+          StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+          StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+          
           StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
           webSocketsService.join();

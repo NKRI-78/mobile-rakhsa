@@ -40,6 +40,18 @@ class StorageHelper {
     return userId;
   }
 
+  static String? getUserEmail() {
+    String? userEmail = sharedPreferences.getString("user_email");
+
+    return userEmail;
+  }
+
+  static String? getUserPhone() {
+    String? userPhone = sharedPreferences.getString("user_phone");
+
+    return userPhone;
+  }
+
   static int? getElapsedTime() {
     int? elapsedTime = sharedPreferences.getInt("elapsedtime") ?? 60;
 
@@ -58,6 +70,14 @@ class StorageHelper {
 
   static void saveUserId({required String userId}) async {
     await sharedPreferences.setString("user_id", userId);
+  }
+
+  static void saveUserPhone({required String phone}) async {
+    await sharedPreferences.setString("user_phone", phone);
+  }
+
+  static void saveUserEmail({required String email}) async {
+    await sharedPreferences.setString("user_email", email);
   }
 
   static void saveElapsedTime({required int elapsedtime}) async {
