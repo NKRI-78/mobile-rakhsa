@@ -25,6 +25,12 @@ import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
+import 'package:rakhsa/features/document/data/datasource/document_remote_datasource.dart';
+import 'package:rakhsa/features/document/data/repositories/document_repository_impl.dart';
+import 'package:rakhsa/features/document/domain/repository/document_repository.dart';
+import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
+import 'package:rakhsa/features/document/domain/usecase/update_visa_use_case.dart';
+import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
 import 'package:rakhsa/features/event/data/datasources/event_remote_datasource.dart';
 import 'package:rakhsa/features/event/domain/usecases/delete_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/detail_event.dart';
@@ -112,6 +118,7 @@ void init() {
   locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<EventRemoteDataSource>(() => EventRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<NearmeRemoteDataSource>(() => NearmeRemoteDataSourceImpl(client: locator()));
+  locator.registerLazySingleton<DocumentRemoteDatasource>(() => DocumentRemoteDatasourceImpl(client: locator()));
   
   // REPOSITORY 
   locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
@@ -124,6 +131,7 @@ void init() {
   locator.registerLazySingleton<NearmeRepository>(() => NearmeRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
   locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
+  locator.registerLazySingleton<DocumentRepository>(() => DocumentRepositoryImpl(remoteDatasource: locator()));
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
@@ -156,6 +164,8 @@ void init() {
   locator.registerLazySingleton(() => GetStateUseCase(locator()));
   locator.registerLazySingleton(() => InsertMessageUseCase(locator()));
   locator.registerLazySingleton(() => ForgotPasswordUseCase(locator()));
+  locator.registerLazySingleton(() => UpdatePassportUseCase(locator()));
+  locator.registerLazySingleton(() => UpdateVisaUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -206,6 +216,13 @@ void init() {
   ));
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()
+  ));
+
+  locator.registerFactory(() => DocumentNotifier(
+    mediaUseCase: locator(),
+    updatePassport: locator(),
+    updateVisa: locator(),
+    profileUseCase: locator(),
   ));
   
   locator.registerFactory(() => WebSocketsService());

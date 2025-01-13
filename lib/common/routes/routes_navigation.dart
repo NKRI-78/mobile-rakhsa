@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
+import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
@@ -15,6 +17,8 @@ class RoutesNavigation {
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
+  static const visaDocument = '/visa-document';
+  static const passportDocument = '/passport-document';
   static const itinerary = '/itinerary';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
@@ -25,6 +29,10 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const InformationListPage());
       case nearMeTypeList:
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
+      case visaDocument: 
+        return MaterialPageRoute(builder: (_) => const VisaDocumentPage());
+      case passportDocument: 
+        return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
       case nearMe:
         final type = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));

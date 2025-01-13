@@ -68,14 +68,14 @@ class CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Consumer<EcommerceProvider>(
-        builder: (_, notifier, __) {
-          if(notifier.getCartStatus == GetCartStatus.loading) {
+        builder: (BuildContext context, EcommerceProvider ecommerceProvider, Widget? child) {
+          if(ecommerceProvider.getCartStatus == GetCartStatus.loading) {
             return const SizedBox();
           }
-          if(notifier.getCartStatus == GetCartStatus.empty) {
+          if(ecommerceProvider.getCartStatus == GetCartStatus.empty) {
             return const SizedBox();
           }
-          if(notifier.getCartStatus == GetCartStatus.error) {
+          if(ecommerceProvider.getCartStatus == GetCartStatus.error) {
             return const SizedBox();
           }
           return Container(
@@ -105,7 +105,7 @@ class CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       const SizedBox(height: 2.0),
-                      Text(formatCurrency(notifier.cartData.totalPrice!),
+                      Text(formatCurrency(ecommerceProvider.cartData.totalPrice!),
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           fontWeight: FontWeight.bold,
@@ -124,7 +124,7 @@ class CartScreenState extends State<CartScreen> {
                       right: 10.0
                     ),
                     child: CustomButton(
-                      onTap: notifier.cartData.totalPrice == 0 
+                      onTap: ecommerceProvider.cartData.totalPrice == 0 
                       ? () {} 
                       : () {
                         Navigator.push(context, MaterialPageRoute(builder:(context) => const DeliveryScreen(
@@ -137,7 +137,7 @@ class CartScreenState extends State<CartScreen> {
                       isBoxShadow: false,
                       fontSize: Dimensions.fontSizeSmall,
                       isLoading: false,
-                      btnColor: notifier.cartData.totalPrice == 0 
+                      btnColor: ecommerceProvider.cartData.totalPrice == 0 
                       ? ColorResources.grey 
                       : const Color(0xFFFE1717),
                       btnTxt: "Selanjutnya",
@@ -158,7 +158,7 @@ class CartScreenState extends State<CartScreen> {
           });
         },
         child: Consumer<EcommerceProvider>(
-          builder: (__, notifier, _) {
+          builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
             return CustomScrollView(
               physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               slivers: [

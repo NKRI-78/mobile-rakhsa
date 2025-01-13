@@ -146,7 +146,14 @@ class DashboardScreenState extends State<DashboardScreen> {
         (index) {
           bool isPassport = (index == 0);
           return InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              if(isPassport) {
+                Navigator.pushNamed(context, RoutesNavigation.passportDocument);
+              } else {
+                Navigator.pushNamed(context, RoutesNavigation.visaDocument);
+              }
+            },
             borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.all(8),

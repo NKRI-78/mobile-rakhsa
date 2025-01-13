@@ -83,7 +83,7 @@ class BulkDeleteProductScreenState extends State<BulkDeleteProductScreen> {
               )
             ) 
           : SingleChildScrollView(
-            child: Column(
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -235,17 +235,17 @@ class BulkDeleteProductScreenState extends State<BulkDeleteProductScreen> {
                                       )
                                     );
                                   },
-                                  transitionBuilder: (_, anim, __, child) {
+                                  transitionBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2, Widget child) {
                                     Tween<Offset> tween;
-                                    if (anim.status == AnimationStatus.reverse) {
+                                    if (animation1.status == AnimationStatus.reverse) {
                                       tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
                                     } else {
                                       tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
                                     }
                                     return SlideTransition(
-                                      position: tween.animate(anim),
+                                      position: tween.animate(animation1),
                                       child: FadeTransition(
-                                        opacity: anim,
+                                        opacity: animation1,
                                         child: child,
                                       ),
                                     );

@@ -28,9 +28,10 @@ class ProfileData {
   String passport;
   String contact;
   String emergencyContact;
-  String createdAt;
-  String lat; 
+  String lat;
   String lng;
+  String createdAt;
+  ProfileDoc document;
   ProfileSos sos;
 
   ProfileData({
@@ -42,9 +43,10 @@ class ProfileData {
     required this.passport,
     required this.contact,
     required this.emergencyContact,
-    required this.createdAt,
     required this.lat,
     required this.lng,
+    required this.createdAt,
+    required this.document,
     required this.sos,
   });
 
@@ -57,10 +59,23 @@ class ProfileData {
     passport: json["passport"],
     contact: json["contact"],
     emergencyContact: json["emergency_contact"],
-    createdAt: json["created_at"],
     lat: json["lat"],
     lng: json["lng"],
+    createdAt: json["created_at"],
+    document: ProfileDoc.fromJson(json['doc']),
     sos: ProfileSos.fromJson(json["sos"]),
+  );
+}
+
+class ProfileDoc {
+  final String visa;
+  final String passport;
+
+  ProfileDoc({required this.visa, required this.passport});
+
+  factory ProfileDoc.fromJson(Map<String, dynamic> json) => ProfileDoc(
+    visa: json['visa'],
+    passport: json['passport'],
   );
 }
 
