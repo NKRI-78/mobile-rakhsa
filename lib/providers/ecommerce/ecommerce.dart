@@ -286,7 +286,7 @@ class EcommerceProvider extends ChangeNotifier {
 
   bool reached = false;
   bool hasMore = false;
-  bool selectedAll = false;
+  bool selectedAll = true;
   bool selectedAllProduct = false;
 
   int badge = 0;
