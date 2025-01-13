@@ -45,6 +45,8 @@ class CartScreenState extends State<CartScreen> {
 
   late EcommerceProvider ecommerceProvider;
 
+  bool loadingNext = false;
+
   Timer? debounce;
 
   Future<void> getData() async {
@@ -128,7 +130,7 @@ class CartScreenState extends State<CartScreen> {
                       right: 10.0
                     ),
                     child: CustomButton(
-                      onTap: ecommerceProvider.cartData.totalPrice == 0 
+                      onTap: ecommerceProvider.cartData.totalPrice == 0 || loadingNext
                       ? () {} 
                       : () {
                         Navigator.push(context, MaterialPageRoute(builder:(context) => const DeliveryScreen(
@@ -141,7 +143,7 @@ class CartScreenState extends State<CartScreen> {
                       isBoxShadow: false,
                       fontSize: Dimensions.fontSizeSmall,
                       isLoading: false,
-                      btnColor: ecommerceProvider.cartData.totalPrice == 0 
+                      btnColor: ecommerceProvider.cartData.totalPrice == 0 || loadingNext
                       ? ColorResources.grey 
                       : const Color(0xFFFE1717),
                       btnTxt: "Selanjutnya",
@@ -514,51 +516,57 @@ class CartScreenState extends State<CartScreen> {
                                                                 FilteringTextInputFormatter.digitsOnly
                                                               ],
                                                               onChanged: (String val) {
+
+                                                                setState(() {
+                                                                  loadingNext = true;
+                                                                });
                                       
                                                                 int qty = int.parse(val.isEmpty ? '0' : val);
 
-                                                                setState(() => notifier.cartData.stores![i].items[z].cart.qty = qty);
+                                                                setState(() {
+                                                                  notifier.cartData.stores![i].items[z].cart.qty = qty;
+                                                                  notifier.cartData.stores![i].items[z].cart.totalCartC = TextEditingController(text: notifier.cartData.stores![i].items[z].cart.qty.toString());
+                                                                  notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length));
+                                                                });
                                                                     
-                                                                if(notifier.cartData.stores![i].items[z].cart.qty == 0) {
-                                                                  setState(() {
-                                                                    notifier.cartData.stores![i].items[z].cart.totalCartC =  TextEditingController(text: "1");
-                                                                    notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(
-                                                                      TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length)
-                                                                    );
-                                                                  });
-                                                                } else {
-                                                                  if(notifier.cartData.stores![i].items[z].cart.qty >= notifier.cartData.stores![i].items[z].stock) {
+                                                                if(notifier.cartData.stores![i].items[z].cart.qty >= notifier.cartData.stores![i].items[z].stock) {
+                                                                  
+                                                                  Future.delayed(const Duration(milliseconds: 300), () {
                                                                     setState(() {
-                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC = TextEditingController(text: notifier.cartData.stores![i].items[z].cart.qty.toString());
-                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(
-                                                                        TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length)
-                                                                      );
+                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC = TextEditingController(text: notifier.cartData.stores![i].items[z].stock.toString());
+                                                                      notifier.cartData.stores![i].items[z].cart.qty =  int.tryParse(notifier.cartData.stores![i].items[z].cart.totalCartC.text) ?? 0; 
+                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length));
                                                                     });
+                                                                  });
 
-                                                                    notifier.incrementTotalProduct(
-                                                                      i,
-                                                                      z,
-                                                                      notifier.cartData.stores![i].items[z].cart.id,
-                                                                      notifier.cartData.stores![i].items[z].cart.qty.toString()
-                                                                    );
-                                                                  } else {
-                                                                    setState(() => notifier.cartData.stores![i].items[z].cart.qty = qty);
+                                                                  notifier.incrementTotalProduct(
+                                                                    i,
+                                                                    z,
+                                                                    notifier.cartData.stores![i].items[z].cart.id,
+                                                                    notifier.cartData.stores![i].items[z].cart.qty.toString()
+                                                                  );
+                                                                } else {
+                                                                  setState(() {
+                                                                    notifier.cartData.stores![i].items[z].cart.qty = qty; 
+                                                                  });
 
-                                                                    notifier.incrementTotalProduct(
-                                                                      i,
-                                                                      z,
-                                                                      notifier.cartData.stores![i].items[z].cart.id,
-                                                                      notifier.cartData.stores![i].items[z].cart.qty.toString()
-                                                                    );
-                                                                  }
+                                                                  notifier.incrementTotalProduct(
+                                                                    i,
+                                                                    z,
+                                                                    notifier.cartData.stores![i].items[z].cart.id,
+                                                                    notifier.cartData.stores![i].items[z].cart.qty.toString()
+                                                                  );
                                                                 }
 
                                                                 if (debounce?.isActive ?? false) debounce?.cancel();
                                                                   debounce = Timer(const Duration(milliseconds: 300), () {
                                                                     notifier.updateQty(
                                                                       cartId: notifier.cartData.stores![i].items[z].cart.id, 
-                                                                      qty: notifier.cartData.stores![i].items[z].cart.qty
+                                                                      qty: int.parse(notifier.cartData.stores![i].items[z].cart.totalCartC.text)
                                                                     );
+                                                                    setState(() {
+                                                                      loadingNext = false;
+                                                                    });
                                                                   });
                                                               },
                                                               cursorColor: ColorResources.black,

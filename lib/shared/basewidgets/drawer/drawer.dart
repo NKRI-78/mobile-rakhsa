@@ -193,15 +193,15 @@ class DrawerWidgetState extends State<DrawerWidget> {
             ],
           ),
 
-            Bouncing(
-              child: Image.asset(logoutTitle,
-                width: 110.0,
-                height: 110.0,
-              ), 
-              onPress: () async {
-                await GeneralModal.logout(globalKey: widget.globalKey);
-              }
-            )
+          Bouncing(
+            child: Image.asset(logoutTitle,
+              width: 110.0,
+              height: 110.0,
+            ), 
+            onPress: () async {
+              await GeneralModal.logout(globalKey: widget.globalKey);
+            }
+          )
 
           ],
         ),

@@ -15,9 +15,9 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
@@ -944,10 +944,7 @@ class GeneralModal {
                                 onTap: () {
                                   context.read<WebSocketsService>().leave();
 
-                                  context.read<UpdateIsLoggedinNotifier>().updateIsLoggedIn(
-                                    userId: StorageHelper.getUserId() ?? "-",
-                                    type: "logout"
-                                  );
+                                  context.read<SosNotifier>().stopTimer();
 
                                   StorageHelper.clear();
                                   StorageHelper.removeToken();
