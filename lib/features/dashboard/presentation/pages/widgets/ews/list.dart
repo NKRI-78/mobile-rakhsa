@@ -37,7 +37,7 @@ class EwsListWidget extends StatelessWidget {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
                     return NewsDetailPage(
-                      id: notifier.ews.first.id,
+                      id: item.id,
                       type: item.type.toString(),
                     );
                   },

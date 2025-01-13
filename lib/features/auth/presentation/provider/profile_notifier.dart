@@ -4,6 +4,8 @@ import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/global.dart';
 
 class ProfileNotifier with ChangeNotifier {
   final ProfileUseCase useCase;
@@ -41,6 +43,14 @@ class ProfileNotifier with ChangeNotifier {
       }
     );
 
+  }
+
+  Future<void> navigateToHome() async {
+    Navigator.push(navigatorKey.currentContext!,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return const DashboardScreen();
+      })
+    );
   }
 
 }

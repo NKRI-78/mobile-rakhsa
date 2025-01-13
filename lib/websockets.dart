@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -222,7 +222,7 @@ class WebSocketsService extends ChangeNotifier {
         return;
       }
 
-      context.read<ProfileNotifier>().getProfile();
+      context.read<ProfileNotifier>().navigateToHome();
     }
 
     if(message["type"] == "closed-by-agent") { 
@@ -250,7 +250,7 @@ class WebSocketsService extends ChangeNotifier {
       }
 
       context.read<ProfileNotifier>().getProfile();
-      
+
       context.read<SosNotifier>().stopTimer();
 
       var messageNotifier = context.read<GetMessagesNotifier>();
