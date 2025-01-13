@@ -112,7 +112,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   unsentMessages.clear();
 }
 
-
   Future<void> sendMessageOffline() async {
     bool isConnected = await ConnectionHelper.isConnected();
 
@@ -245,6 +244,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         if (didPop) {
           return;
         }
+        StorageHelper.saveRecordScreen(isHome: false);
         messageNotifier.clearActiveChatId();
         Navigator.pop(context, "refetch");
       },
@@ -315,7 +315,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                 ? CustomButton(
                     onTap: () async {
                       GeneralModal.ratingSos(
-                        sosId: widget.sosId
+                        sosId: widget.sosId,
+                        isHome: false
                       );
                     },
                     btnColor: const Color(0xFFC82927),

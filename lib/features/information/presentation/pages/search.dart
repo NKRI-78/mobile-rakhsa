@@ -225,7 +225,7 @@ class SearchPageState extends State<SearchPage> {
                     left: 16.0,
                     right: 16.0
                   ),
-                  child: Text("Pilih negara",
+                  child: Text("Informasi Alamat KBRI ",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeOverLarge,
                       fontWeight: FontWeight.bold
@@ -267,7 +267,7 @@ class SearchPageState extends State<SearchPage> {
                         color: ColorResources.grey,
                         fontSize: Dimensions.fontSizeSmall
                       ),
-                      hintText: "Cari negara yang Anda inginkan",
+                      hintText: "Pilih Negara yang Anda Inginkan",
                       prefixIcon: const Icon(
                         Icons.search,
                         color: ColorResources.grey,

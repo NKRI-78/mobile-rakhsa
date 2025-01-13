@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:rakhsa/common/helpers/format_currency.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 
@@ -11,6 +12,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
@@ -759,7 +761,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                             ),
                                                             child: InkWell(
                                                               onTap: () {
-                                                           Navigator.pop(context);
+                                                                Navigator.pop(context);
                                                               },
                                                               child: Padding(
                                                                 padding: const EdgeInsets.all(10.0),

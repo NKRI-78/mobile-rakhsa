@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/global.dart';
 
 class ProfileNotifier with ChangeNotifier {
   final ProfileUseCase useCase;
@@ -43,17 +40,6 @@ class ProfileNotifier with ChangeNotifier {
         setStateProviderState(ProviderState.loaded);
       }
     );
-
-  }
-
-  Future<void> navigateToHome() async {
-    if(StorageHelper.getRecordScreen()) {
-      Navigator.push(navigatorKey.currentContext!,
-        MaterialPageRoute(builder: (BuildContext context) {
-          return const DashboardScreen();
-        })
-      );
-    }
   }
 
 }

@@ -221,8 +221,8 @@ class WebSocketsService extends ChangeNotifier {
       if(context == null) {
         return;
       }
-      
-      context.read<ProfileNotifier>().navigateToHome();
+
+      context.read<ProfileNotifier>().getProfile();
     }
 
     if(message["type"] == "closed-by-agent") { 
@@ -248,6 +248,8 @@ class WebSocketsService extends ChangeNotifier {
       if(context == null) {
         return;
       }
+
+      StorageHelper.saveRecordScreen(isHome: false);
 
       context.read<ProfileNotifier>().getProfile();
 

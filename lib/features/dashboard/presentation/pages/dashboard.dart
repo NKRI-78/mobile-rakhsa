@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
@@ -147,6 +148,7 @@ class DashboardScreenState extends State<DashboardScreen> {
           bool isPassport = (index == 0);
           return InkWell(
             onTap: () {
+              StorageHelper.saveRecordScreen(isHome: false);
               Navigator.pop(context);
               if(isPassport) {
                 Navigator.pushNamed(context, RoutesNavigation.passportDocument);
@@ -190,8 +192,8 @@ class DashboardScreenState extends State<DashboardScreen> {
         ),
         padding: EdgeInsets.zero,
         itemCount: menus.length,
-        itemBuilder: (context, index) {
-          final menu = menus[index];
+        itemBuilder: (BuildContext context, int i) {
+          final menu = menus[i];
           return InkWell(
             onTap: () {
               Navigator.pop(context);

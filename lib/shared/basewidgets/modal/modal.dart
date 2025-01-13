@@ -265,11 +265,9 @@ class GeneralModal {
                                   borderRadiusGeometry: const BorderRadius.only(bottomRight: Radius.circular(25.0)),
                                   height: 35.0,
                                   onTap: () async {
-
-                                    await ratingSos(sosId: sosId).then((_) {
+                                    await ratingSos(sosId: sosId, isHome: true).then((_) {
                                       Navigator.pop(context);
                                     });
-
                                   },
                                   btnTxt: "Sudah",
                                 ),
@@ -662,7 +660,8 @@ class GeneralModal {
   }
 
   static Future<void> ratingSos({
-    required String sosId
+    required String sosId,
+    required bool isHome
   }) {
      return showDialog(
       context: navigatorKey.currentContext!,
@@ -748,6 +747,12 @@ class GeneralModal {
                                   context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
 
                                   Navigator.pop(context);
+
+                                  if(!isHome) {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                      return const DashboardScreen();
+                                    }));
+                                  }
                                 },
                               ),
 
