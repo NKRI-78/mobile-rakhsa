@@ -126,9 +126,6 @@ class EventCreatePageState extends State<EventCreatePage> {
     }
     
     if(!mounted) return;
-    
-    clear();
-
     Navigator.pop(context, "refetch");
   }
 
@@ -163,10 +160,10 @@ class EventCreatePageState extends State<EventCreatePage> {
       final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);
 
       final googleAPI.Event newEvent = googleAPI.Event()
-      ..summary = "New Meeting"
-      ..description = "Discussing project updates"
+      ..summary = titleC.text
+      ..description = descC.text
       ..start = googleAPI.EventDateTime(
-        dateTime: DateTime.now(),
+        dateTime: rangeStart!,
         timeZone: "GMT",
       )
       ..end = googleAPI.EventDateTime(
@@ -179,6 +176,8 @@ class EventCreatePageState extends State<EventCreatePage> {
       debugPrint("Event created: ${createdEvent.summary}");
 
       debugPrint("=== SUCCESSFULLY SIGNED GOOGLE ===");
+
+      clear();
     } catch (e) {
       debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
     }

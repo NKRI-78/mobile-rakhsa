@@ -183,7 +183,7 @@ class NewsListPageState extends State<NewsListPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: notifier.news.length,
                   itemBuilder: (BuildContext context, int i) {
-                    if(notifier.news[i].id == 0) {
+                    if(i == 0) {
                       return const SizedBox();
                     }
                     return Padding(

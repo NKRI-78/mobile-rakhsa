@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart' as fh;
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -203,9 +204,9 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: notifier.news.where((ek) => false).length,
+                      itemCount: notifier.news.length,
                       itemBuilder: (BuildContext context, int i) {
-                        if(notifier.news[i].id == 0) {
+                        if(notifier.news[i].id == widget.id) {
                           return const SizedBox();
                         }
                         return Padding(
@@ -214,14 +215,10 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                builder: (_) => NewsDetailPage(
-                                  id: notifier.news[i].id,
-                                  type: widget.type,
-                                )
-                              ));
+                              Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
+                                'id': notifier.news[i].id,
+                                'type':  widget.type,
+                              });
                             },
                             child: Container(
                               clipBehavior: Clip.antiAlias,
