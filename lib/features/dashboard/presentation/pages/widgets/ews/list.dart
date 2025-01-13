@@ -116,28 +116,28 @@ class EwsListWidget extends StatelessWidget {
                                 shrinkWrap: true,
                                 style: {
                                   'body': fh.Style(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     margin: fh.Margins.zero,
                                     textOverflow: TextOverflow.ellipsis,
                                     color: ColorResources.white.withOpacity(0.8),
                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                   ),
                                   'p': fh.Style(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     textOverflow: TextOverflow.ellipsis,
                                     margin: fh.Margins.zero,
                                     color: ColorResources.white.withOpacity(0.8),
                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                   ),
                                   'span': fh.Style(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     textOverflow: TextOverflow.ellipsis,
                                     margin: fh.Margins.zero,
                                     color: ColorResources.white.withOpacity(0.8),
                                     fontSize: fh.FontSize(Dimensions.fontSizeSmall),
                                   ),
                                   'div': fh.Style(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     textOverflow: TextOverflow.ellipsis,
                                     margin: fh.Margins.zero,
                                     color: ColorResources.white.withOpacity(0.8),
