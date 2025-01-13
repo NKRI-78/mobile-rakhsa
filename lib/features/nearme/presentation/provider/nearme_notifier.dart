@@ -93,8 +93,8 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
                 icon: icon(type),
                 text: "Current Location",
               ).toBitmapDescriptor(
-                logicalSize: const Size(150, 150), 
-                imageSize: const Size(150, 150)
+                logicalSize: const Size(80, 80), 
+                imageSize: const Size(80, 80)
               ),
               infoWindow: InfoWindow(
                 title: el.name,
