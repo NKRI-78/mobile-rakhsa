@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
@@ -126,6 +127,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
               
                         CustomButton(
                           onTap: () {
+                            StorageHelper.saveRecordScreen(isHome: false);
+
                             Navigator.push(context, MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return const ProfilePage();
@@ -157,6 +160,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   : notifier.ownerModel.data!.haveStore 
                   ? CustomButton(
                       onTap: () async {
+                        StorageHelper.saveRecordScreen(isHome: false);
+
                         if(notifier.ownerModel.data!.haveStore) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => StoreInfoScreen(storeId: notifier.ownerModel.data!.storeId)));
                         } else {
@@ -178,6 +183,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
           
               CustomButton(
                 onTap: () async {
+                  StorageHelper.saveRecordScreen(isHome: false);
+
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
                     return const ChatsPage();
                   }));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
@@ -46,11 +47,13 @@ class ProfileNotifier with ChangeNotifier {
   }
 
   Future<void> navigateToHome() async {
-    Navigator.push(navigatorKey.currentContext!,
-      MaterialPageRoute(builder: (BuildContext context) {
-        return const DashboardScreen();
-      })
-    );
+    if(StorageHelper.getRecordScreen()) {
+      Navigator.push(navigatorKey.currentContext!,
+        MaterialPageRoute(builder: (BuildContext context) {
+          return const DashboardScreen();
+        })
+      );
+    }
   }
 
 }

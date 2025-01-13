@@ -64,6 +64,14 @@ class StorageHelper {
     return nationality; 
   }
 
+  static bool getRecordScreen() {
+    return sharedPreferences.getBool("is_home") ?? true;
+  }
+  
+  static void saveRecordScreen({required bool isHome}) async {
+    await sharedPreferences.setBool("is_home", isHome);
+  }
+
   static void saveUserNationality({required String nationality}) async {
     await sharedPreferences.setString("nationality", nationality.toLowerCase());
   }

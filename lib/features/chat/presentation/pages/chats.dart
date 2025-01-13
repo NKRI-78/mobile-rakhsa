@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -73,7 +74,7 @@ class ChatsPageState extends State<ChatsPage> {
           });
         },
         child: Consumer<GetChatsNotifier>(
-          builder: (__, notifier, _) {
+          builder: (BuildContext context, GetChatsNotifier notifier, Widget? child) {
             return CustomScrollView(
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()
@@ -145,6 +146,8 @@ class ChatsPageState extends State<ChatsPage> {
                         ),
                         child: ListTile(
                           onTap: () async {
+                            StorageHelper.saveRecordScreen(isHome: false);
+
                             Navigator.push(context, MaterialPageRoute(builder: (context) {
                               return ChatPage(
                                 sosId: chat.sosId,

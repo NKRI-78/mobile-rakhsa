@@ -221,7 +221,7 @@ class WebSocketsService extends ChangeNotifier {
       if(context == null) {
         return;
       }
-
+      
       context.read<ProfileNotifier>().navigateToHome();
     }
 
