@@ -77,7 +77,7 @@ class PaymentReceiptVaScreenState extends State<PaymentReceiptVaScreen> {
               buildDataRow('Jumlah Pembelian', formatCurrency(widget.amount)),
               widget.cost == 0 
               ? const SizedBox() 
-              : buildDataRow('Biayar Kurir', formatCurrency(widget.cost)),
+              : buildDataRow('Biaya Kurir', formatCurrency(widget.cost)),
               buildDataRow('Admin', formatCurrency(widget.responseMidtransVaData.data.channel.fee)),
               buildDataRow('Total Pembayaran', formatCurrency(widget.responseMidtransVaData.data.totalAmount)),
               const Divider(),

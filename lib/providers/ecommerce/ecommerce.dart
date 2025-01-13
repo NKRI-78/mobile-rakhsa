@@ -120,13 +120,13 @@ class EcommerceProvider extends ChangeNotifier {
     required this.mr
   });
 
-  late AnimationController controller;
-  late Animation<double> animation;
-
   int balance = 0;
 
   int selectedTopupId = 0;
   int selectedTopupPrice = 0;
+
+  late AnimationController controller;
+  late Animation<double> animation;
 
   List<Asset> images = [];
 
@@ -1665,10 +1665,13 @@ class EcommerceProvider extends ChangeNotifier {
 
       cartId = dataCartId;
 
-      Future.delayed(const Duration(seconds: 2),() {
-        getCart();
+      Future.delayed(const Duration(milliseconds: 300), () {
         controller.stop();
         notifyListeners();
+      });
+
+      Future.delayed(Duration.zero,() {
+        getCart();
       });
     } catch(_) {
       setStateAddCartStatus(AddCartStatus.error);
@@ -1679,7 +1682,6 @@ class EcommerceProvider extends ChangeNotifier {
     required String productId,
     required String note
   }) async {
-    controller.forward();
     setStateAddCartLiveStatus(AddCartLiveStatus.loading);
     try {
       String dataCartId = await er.addToCartLive(note: note, productId: productId);
@@ -1687,10 +1689,8 @@ class EcommerceProvider extends ChangeNotifier {
 
       cartId = dataCartId;
 
-      Future.delayed(const Duration(seconds: 2),() {
+      Future.delayed(Duration.zero,() {
         getCart();
-        controller.stop();
-        notifyListeners();
       });
     } catch(_) {
       setStateAddCartLiveStatus(AddCartLiveStatus.error);

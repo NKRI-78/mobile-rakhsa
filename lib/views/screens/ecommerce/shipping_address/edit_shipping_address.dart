@@ -7,7 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:rakhsa/data/models/ecommerce/region/city.dart';
@@ -17,9 +21,6 @@ import 'package:rakhsa/data/models/ecommerce/region/subdistrict.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class EditShippingAddressScreen extends StatefulWidget {
@@ -122,7 +123,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         leading: CupertinoNavigationBarBackButton(
           color: ColorResources.black,
           onPressed: () {
-       Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -144,6 +145,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 ),
                 
                 inputFieldLocationAddress(context),
+
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -159,34 +161,34 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         ...typeTempat
-                          .map((e) => GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                typeAddressC.text = e;
-                                isCheck = true;
-                              });
-                            },
-                            child: Container(
-                              height: 20,
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(35),
-                                color: ColorResources.white,
-                                border: Border.all(
-                                  color: Colors.grey[350]!
-                                )
-                              ),
-                              child: Center(
-                                child: Text(e,
-                                  style: robotoRegular.copyWith(
-                                    color: Colors.grey[600],
-                                    fontSize: 14,
-                                  )
-                                )
+                        .map((e) => GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              typeAddressC.text = e;
+                              isCheck = true;
+                            });
+                          },
+                          child: Container(
+                            height: 20,
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(35),
+                              color: ColorResources.white,
+                              border: Border.all(
+                                color: Colors.grey[350]!
                               )
                             ),
-                        )).toList()
+                            child: Center(
+                              child: Text(e,
+                                style: robotoRegular.copyWith(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                )
+                              )
+                            )
+                          ),
+                        ))
                       ],
                     )
                   ),
@@ -1107,7 +1109,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             color: ColorResources.white,
             borderRadius: BorderRadius.circular(10.0)
           ),
-          child:   Container(
+          child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color:ColorResources.white,
@@ -1123,9 +1125,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             ),
             child: TextFormField(
               onTap: () {
-                setState(() {
-                  isCheck = false;
-                });
+                setState(() => isCheck = false);
               },
               cursorColor: ColorResources.black,
               controller: typeAddressC,

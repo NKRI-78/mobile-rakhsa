@@ -81,10 +81,10 @@ class AddProductScreenState extends State<AddProductScreen> {
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           MaterialButton(
+            onPressed: uploadPic,
             child: const Text( "Galeri",
               style: robotoRegular,
             ),
-            onPressed: uploadPic,
           )
         ],
       )
@@ -244,7 +244,7 @@ class AddProductScreenState extends State<AddProductScreen> {
       leading: CupertinoNavigationBarBackButton(
         color: ColorResources.black,
         onPressed: () {
-     Navigator.pop(context);
+          Navigator.pop(context);
         },
       ),
       centerTitle: true,

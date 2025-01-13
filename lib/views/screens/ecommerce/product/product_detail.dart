@@ -94,12 +94,10 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
         children: [
           
           Consumer<EcommerceProvider>(
-            builder: (__, notifier, _) {
+            builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
               return RefreshIndicator(
                 onRefresh: () {
-                  return Future.sync(() {
-
-                  });
+                  return Future.sync(() {});
                 },
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -117,7 +115,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                       leading: CupertinoNavigationBarBackButton(
                         color: ColorResources.black,
                         onPressed: () {
-                     Navigator.pop(context);
+                          Navigator.pop(context);
                         },
                       ),
                       actions: [
@@ -149,9 +147,17 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                             onPress: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const CartScreen()));
                             },
-                            child: const Icon(
-                              Icons.shopping_cart,
-                              size: 20.0
+                            child: AnimatedBuilder(
+                              animation: ep.animation,
+                              builder: (BuildContext context, Widget? child) {
+                                return Transform.translate(
+                                  offset: Offset(ep.animation.value, 0),
+                                  child: const Icon(
+                                    Icons.shopping_cart,
+                                    size: 20.0,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -168,9 +174,9 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                             },
                             child: AnimatedBuilder(
                               animation: ep.animation,
-                              builder: (context, child) {
+                              builder: (BuildContext context, Widget? child) {
                                 return Transform.translate(
-                                  offset: Offset(0, ep.animation.value),
+                                  offset: Offset(ep.animation.value, 0),
                                   child: const Icon(
                                     Icons.shopping_cart,
                                     size: 20.0,
@@ -184,7 +190,6 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                       if(notifier.getCartStatus == GetCartStatus.loaded)
                         Container(
                           margin: const EdgeInsets.only(
-                            top: 25.0,
                             right: 16.0,
                             left: 16.0
                           ),
@@ -200,9 +205,9 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               ),
                               child: AnimatedBuilder(
                                 animation: ep.animation,
-                                builder: (context, child) {
+                                builder: (BuildContext context, Widget? child) {
                                   return Transform.translate(
-                                    offset: Offset(0, ep.animation.value),
+                                    offset: Offset(ep.animation.value, 0),
                                     child: const Icon(
                                       Icons.shopping_cart,
                                       size: 20.0,
@@ -1137,7 +1142,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               height: 40.0,
                               decoration: BoxDecoration(
                                 color: notifier.productDetailData.product!.stock > 0 
-                                ? ColorResources.blue
+                                ? ColorResources.primary
                                 : ColorResources.hintColor,
                                 borderRadius: BorderRadius.circular(10.0)
                               ),

@@ -313,6 +313,13 @@ class EcommerceRepo {
     required String storeId,
     required String transactionId
   }) async {
+
+    debugPrint({
+          "transaction_id": transactionId,
+          "store_id": storeId,
+          "user_id": StorageHelper.getUserId(),
+          "app": "raksha"
+        }.toString());
     try {
       Dio dio = DioManager.shared.getClient();
       await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/confirm",
@@ -370,6 +377,9 @@ class EcommerceRepo {
   }
 
   Future<ListOrderSellerModel> getOrderSellerList({required String orderStatus}) async {
+    debugPrint("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/seller/list");
+    debugPrint(orderStatus);
+    debugPrint(StorageHelper.getUserId());
     try { 
       Dio dio = DioManager.shared.getClient();
       Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/seller/list",
@@ -639,6 +649,7 @@ class EcommerceRepo {
   }
 
   Future<int> getBadgeOrderAll() async {
+    debugPrint("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/badges/order/all");
     try {
       Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/badges/order/all",

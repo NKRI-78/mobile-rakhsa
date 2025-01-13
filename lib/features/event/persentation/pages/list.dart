@@ -82,8 +82,8 @@ class EventListPageState extends State<EventListPage> {
         listEventNotifier.appendToEventGoogleCalendar(
           summary: summary, 
           description: description,
-          startDate: DateFormat.MMMMEEEEd().format(startDatetime),
-          endDate: DateFormat.MMMMEEEEd().format(endDatetime)
+          startDate: DateFormat.yMMMMEEEEd().format(startDatetime),
+          endDate: DateFormat.yMMMMEEEEd().format(endDatetime)
         );
       });
 

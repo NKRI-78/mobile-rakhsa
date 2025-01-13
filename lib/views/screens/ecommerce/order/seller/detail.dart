@@ -1,12 +1,11 @@
-import 'dart:io';
-import 'dart:ui' as ui;
+// import 'dart:io';
+// import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
-import 'package:gallery_saver_plus/gallery_saver.dart';
+// import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:date_count_down/date_count_down.dart';
 import 'package:barcode_widget/barcode_widget.dart';
@@ -40,8 +39,6 @@ class DetailOrderSellerScreen extends StatefulWidget {
 }
 
 class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
-  GlobalKey globalKey = GlobalKey();
-
   bool btnUnduhResi = true;
   bool icCopyResi = true;
 
@@ -55,40 +52,40 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
       );
   }
 
-  Future<void> takeScreenshot() async {
-    setState(() {
-      btnUnduhResi = false;
-      icCopyResi = false;
-    });
+  // Future<void> takeScreenshot() async {
+  //   setState(() {
+  //     btnUnduhResi = false;
+  //     icCopyResi = false;
+  //   });
 
-    try {
+  //   try {
 
-      Future.delayed(const Duration(seconds: 1), () async {
-        RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-        ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        Uint8List pngBytes = byteData!.buffer.asUint8List();
+      // Future.delayed(const Duration(seconds: 1), () async {
+      //   RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      //   ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      //   ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      //   Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-        final directory = (await getApplicationDocumentsDirectory()).path;
-        String fileName = 'screenshot.png';
-        File imgFile = File('$directory/$fileName');
-        imgFile.writeAsBytes(pngBytes);
+      //   final directory = (await getApplicationDocumentsDirectory()).path;
+      //   String fileName = 'screenshot.png';
+      //   File imgFile = File('$directory/$fileName');
+      //   imgFile.writeAsBytes(pngBytes);
 
-        await GallerySaver.saveImage(imgFile.path);
-      });
+      //   await GallerySaver.saveImage(imgFile.path);
+      // });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          btnUnduhResi = true;
-          icCopyResi = true;
-        });
-      });
+      // Future.delayed(const Duration(seconds: 2), () {
+      //   setState(() {
+      //     btnUnduhResi = true;
+      //     icCopyResi = true;
+      //   });
+      // });
       
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Screenshot saved!')));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to take screenshot: $e')));
-    }
-  }
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Screenshot saved!')));
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to take screenshot: $e')));
+  //   }
+  // }
 
   @override 
   void initState() {
@@ -118,7 +115,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
         leading: CupertinoNavigationBarBackButton(
           color: ColorResources.black,
           onPressed: () {
-       Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -421,7 +418,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                           const SizedBox(height: 20.0),
                   
                           RepaintBoundary(
-                            key: globalKey,
+                            key: GlobalKey(),
                             child: Container(
                               padding: const EdgeInsets.all(12.0),
                               decoration: const BoxDecoration(
@@ -444,21 +441,21 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                         ),
                                       ),
                               
-                                      btnUnduhResi 
-                                      ? notifier.detailOrderSellerData.item!.waybill == "-" 
-                                      ? const SizedBox() 
-                                      : InkWell(
-                                          onTap: () async {
-                                            await takeScreenshot();
-                                          },
-                                          child: Text("Unduh resi",
-                                            style: robotoRegular.copyWith(
-                                              color: ColorResources.blue,
-                                              fontSize: Dimensions.fontSizeSmall
-                                            ),
-                                          )
-                                        ) 
-                                      : const SizedBox()
+                                      // btnUnduhResi 
+                                      // ? notifier.detailOrderSellerData.item!.waybill == "-" 
+                                      // ? const SizedBox() 
+                                      // : InkWell(
+                                      //     onTap: () async {
+                                      //       await takeScreenshot();
+                                      //     },
+                                      //     child: Text("Unduh resi",
+                                      //       style: robotoRegular.copyWith(
+                                      //         color: ColorResources.blue,
+                                      //         fontSize: Dimensions.fontSizeSmall
+                                      //       ),
+                                      //     )
+                                      //   ) 
+                                      // : const SizedBox()
                               
                                     ],
                                   ),
