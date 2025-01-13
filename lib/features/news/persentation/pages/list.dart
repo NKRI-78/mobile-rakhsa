@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -116,16 +116,10 @@ class NewsListPageState extends State<NewsListPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, 
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return NewsDetailPage(
-                            id: notifier.news[0].id,
-                            type: notifier.news[0].type.toString(),
-                          );
-                        },
-                      )
-                    );
+                    Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
+                      'id': notifier.news[0].id,
+                      'type': notifier.news[0].type.toString(),
+                    });
                   },
                   child: Container(
                     clipBehavior: Clip.antiAlias,
@@ -198,13 +192,10 @@ class NewsListPageState extends State<NewsListPage> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context, MaterialPageRoute(
-                            builder: (_) => NewsDetailPage(
-                              id: notifier.news[0].id,
-                              type: notifier.news[i].type.toString(),
-                            )
-                          ));
+                          Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
+                            'id': notifier.news[i].id,
+                            'type': notifier.news[i].type.toString(),
+                          });
                         },
                         child: Container(
                           clipBehavior: Clip.antiAlias,

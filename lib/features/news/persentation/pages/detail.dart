@@ -203,7 +203,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: notifier.news.length,
+                      itemCount: notifier.news.where((ek) => false).length,
                       itemBuilder: (BuildContext context, int i) {
                         if(notifier.news[i].id == 0) {
                           return const SizedBox();

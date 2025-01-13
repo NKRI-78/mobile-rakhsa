@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
-
 import 'package:rakhsa/features/nearme/presentation/widgets/my_marker.dart';
 import 'package:rakhsa/features/nearme/presentation/widgets/widget_to_marker.dart';
 

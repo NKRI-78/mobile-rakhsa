@@ -96,9 +96,6 @@ class EventListPageState extends State<EventListPage> {
   Future<void> getData() async {
     if(!mounted) return;
       listEventNotifier.list();
-
-    if(!mounted) return;
-      initializeCalendarApi();
   }
 
   @override 

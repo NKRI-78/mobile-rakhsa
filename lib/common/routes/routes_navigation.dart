@@ -5,6 +5,7 @@ import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
+import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
 import 'package:rakhsa/views/screens/ecommerce/product/products.dart';
 
@@ -17,6 +18,7 @@ class RoutesNavigation {
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
+  static const newsDetail = '/news-detail';
   static const visaDocument = '/visa-document';
   static const passportDocument = '/passport-document';
   static const itinerary = '/itinerary';
@@ -38,6 +40,12 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));
       case news:
         return MaterialPageRoute(builder: (_) => const NewsListPage());
+      case newsDetail:
+        final data = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => NewsDetailPage(
+          id: data['id'],
+          type: data['type'],
+        ));
       case itinerary:
         return MaterialPageRoute(builder: (_) => const EventListPage());
       default:

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
 
@@ -20,6 +21,23 @@ import 'package:rakhsa/features/administration/presentation/provider/get_contine
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 
+import 'package:googleapis/calendar/v3.dart' as googleAPI;
+
+import 'package:http/http.dart' as http;
+
+class GoogleAuthClient extends http.BaseClient {
+  final String accessToken;
+  final String idToken;
+
+  GoogleAuthClient(this.accessToken, this.idToken);
+
+ @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    request.headers['Authorization'] = 'Bearer $accessToken';
+    return await http.Client().send(request);
+  }
+}
+
 class EventCreatePage extends StatefulWidget {
   const EventCreatePage({super.key});
 
@@ -28,6 +46,12 @@ class EventCreatePage extends StatefulWidget {
 }
 
 class EventCreatePageState extends State<EventCreatePage> {
+
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    scopes: [
+      googleAPI.CalendarApi.calendarScope
+    ]
+  ); 
 
   late TextEditingController titleC;
   late TextEditingController descC;
@@ -56,8 +80,6 @@ class EventCreatePageState extends State<EventCreatePage> {
   Future<void> save() async {
     String title = titleC.text;
     String desc = descC.text;
-    String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
-    String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
 
     if(title.isEmpty) {
       ShowSnackbar.snackbarErr("Field title is required");
@@ -84,6 +106,11 @@ class EventCreatePageState extends State<EventCreatePage> {
       return;
     }
 
+    String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
+    String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
+
+    insertToGoogleCalendar(rangeStart, rangeEnd);
+
     await saveEventNotifier.save(
       title: title, 
       startDate: startDate, 
@@ -99,18 +126,62 @@ class EventCreatePageState extends State<EventCreatePage> {
     }
     
     if(!mounted) return;
+    
+    clear();
 
+    Navigator.pop(context, "refetch");
+  }
+
+  void clear() {
     titleC.clear();
     descC.clear();
 
     setState(() {
       rangeStart = null;
       rangeEnd = null;
+
       continentId = -1;
       stateId = -1;
     });
+  }
 
-    Navigator.pop(context, "refetch");
+  Future<void> insertToGoogleCalendar(DateTime? rangeStart, DateTime? rangeEnd) async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        throw Exception("Google Sign-In failed");
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final GoogleAuthClient authenticatedClient = GoogleAuthClient(
+        googleAuth.accessToken.toString(),
+        googleAuth.idToken.toString(),
+      );
+
+      final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);
+
+      final googleAPI.Event newEvent = googleAPI.Event()
+      ..summary = "New Meeting"
+      ..description = "Discussing project updates"
+      ..start = googleAPI.EventDateTime(
+        dateTime: DateTime.now(),
+        timeZone: "GMT",
+      )
+      ..end = googleAPI.EventDateTime(
+        dateTime: DateTime.now(),
+        timeZone: "GMT",
+      );
+      
+      final googleAPI.Event createdEvent = await calendarAPI.events.insert(newEvent, 'primary');
+
+      debugPrint("Event created: ${createdEvent.summary}");
+
+      debugPrint("=== SUCCESSFULLY SIGNED GOOGLE ===");
+    } catch (e) {
+      debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
+    }
   }
 
   @override 
