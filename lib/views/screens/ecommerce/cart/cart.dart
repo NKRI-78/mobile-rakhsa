@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
@@ -648,97 +649,94 @@ class CartScreenState extends State<CartScreen> {
                                                           barrierColor: Colors.black.withOpacity(0.5),
                                                           transitionDuration: const Duration(milliseconds: 700),
                                                           pageBuilder: (BuildContext context, Animation<double> double, _) {
-                                                            return Center(
-                                                              child: Material(
-                                                                color: ColorResources.transparent,
-                                                                child: Container(
-                                                                  margin: const EdgeInsets.all(20.0),
-                                                                  height: 250.0,
-                                                                  decoration: BoxDecoration(
-                                                                    color: ColorResources.purple, 
-                                                                    borderRadius: BorderRadius.circular(20.0)
-                                                                  ),
-                                                                  child: Stack(
-                                                                    clipBehavior: Clip.none,
-                                                                    children: [
-                                                                                                      
-                                                                      Align(
-                                                                        alignment: Alignment.center,
-                                                                        child: Text("Apakah kamu yakin ingin hapus dari Keranjang ?",
-                                                                          style: robotoRegular.copyWith(
-                                                                            fontSize: Dimensions.fontSizeDefault,
-                                                                            fontWeight: FontWeight.bold,
-                                                                            color: ColorResources.white
-                                                                          ),
-                                                                        )
-                                                                      ),
-                                                                                                      
-                                                                      Align(
-                                                                        alignment: Alignment.bottomCenter,
-                                                                        child: Column(
-                                                                          mainAxisSize: MainAxisSize.min,
-                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                          children: [
-                                                                            Container(
-                                                                              margin: const EdgeInsets.only(
-                                                                                top: 20.0,
-                                                                                bottom: 20.0
+                                                            return Dialog(
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(16.0),
+                                                              ),
+                                                              child: Stack(
+                                                                clipBehavior: Clip.none,
+                                                                alignment: Alignment.topCenter,
+                                                                children: [
+                                                                  Container(
+                                                                    width: 300,
+                                                                    padding: const EdgeInsets.only(
+                                                                      top: 60.0,
+                                                                      left: 16.0,
+                                                                      right: 16.0,
+                                                                      bottom: 16.0,
+                                                                    ),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(16.0),
+                                                                    ),
+                                                                    child: Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        const Text(
+                                                                          "Apakah kamu yakin ingin menghapus produk ini?",
+                                                                          textAlign: TextAlign.center,
+                                                                          style: TextStyle(fontSize: 16.0),
+                                                                        ),
+                                                                        const SizedBox(height: 20.0),
+                                                                        Row(                                                           mainAxisSize: MainAxisSize.max,
+                                                                            children: [
+                                                                              const Expanded(child: SizedBox()),
+                                                                              Expanded(
+                                                                                flex: 5,
+                                                                                child: CustomButton(
+                                                                                  isBorderRadius: true,
+                                                                                  isBoxShadow: false,
+                                                                                  btnColor: ColorResources.white,
+                                                                                  btnTextColor: ColorResources.black,
+                                                                                  onTap: () {
+                                                                                    Future.delayed(Duration.zero, () {
+                                                                                      Navigator.pop(context);
+                                                                                    });
+                                                                                  }, 
+                                                                                  btnTxt: "Batal"
+                                                                                ),
                                                                               ),
-                                                                              child: Row(
-                                                                                mainAxisSize: MainAxisSize.max,
-                                                                                children: [
-                                                                                  const Expanded(child: SizedBox()),
-                                                                                  Expanded(
-                                                                                    flex: 5,
-                                                                                    child: CustomButton(
+                                                                              const Expanded(child: SizedBox()),
+                                                                              Expanded(
+                                                                                flex: 5,
+                                                                                child: Consumer<EcommerceProvider>(
+                                                                                  builder: (_, notifier, __) {
+                                                                                    return CustomButton(
                                                                                       isBorderRadius: true,
                                                                                       isBoxShadow: false,
-                                                                                      btnColor: ColorResources.white,
-                                                                                      btnTextColor: ColorResources.black,
-                                                                                      onTap: () {
+                                                                                      isLoading: notifier.deleteCartStatus == DeleteCartStatus.loading 
+                                                                                      ? true 
+                                                                                      : false,
+                                                                                      btnColor: ColorResources.error ,
+                                                                                      btnTextColor: ColorResources.white,
+                                                                                      onTap: () async {
+                                                                                        await notifier.deleteCart(cartId: notifier.cartData.stores![i].items[z].cart.id);
                                                                                         Future.delayed(Duration.zero, () {
                                                                                           Navigator.pop(context);
                                                                                         });
                                                                                       }, 
-                                                                                      btnTxt: "Batal"
-                                                                                    ),
-                                                                                  ),
-                                                                                  const Expanded(child: SizedBox()),
-                                                                                  Expanded(
-                                                                                    flex: 5,
-                                                                                    child: Consumer<EcommerceProvider>(
-                                                                                      builder: (_, notifier, __) {
-                                                                                        return CustomButton(
-                                                                                          isBorderRadius: true,
-                                                                                          isBoxShadow: false,
-                                                                                          isLoading: notifier.deleteCartStatus == DeleteCartStatus.loading 
-                                                                                          ? true 
-                                                                                          : false,
-                                                                                          btnColor: ColorResources.error ,
-                                                                                          btnTextColor: ColorResources.white,
-                                                                                          onTap: () async {
-                                                                                            await notifier.deleteCart(cartId: notifier.cartData.stores![i].items[z].cart.id);
-                                                                                            Future.delayed(Duration.zero, () {
-                                                                                              Navigator.pop(context);
-                                                                                            });
-                                                                                          }, 
-                                                                                          btnTxt: "OK"
-                                                                                        );
-                                                                                      },
-                                                                                    )
-                                                                                  ),
-                                                                                  const Expanded(child: SizedBox()),
-                                                                                ],
+                                                                                      btnTxt: "OK"
+                                                                                    );
+                                                                                  },
+                                                                                )
                                                                               ),
-                                                                            )
-                                                                          ],
-                                                                        ) 
-                                                                      )
-                                                                    ],
-                                                                  ),
+                                                                              const Expanded(child: SizedBox()),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Positioned(
+                                                                      top: -50,
+                                                                      child: Image.asset(
+                                                                        AssetSource.iconAlert,
+                                                                        height: 80,
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              )
-                                                            );
+                                                              );
                                                           },
                                                           transitionBuilder: (_, anim, __, child) {
                                                             Tween<Offset> tween;

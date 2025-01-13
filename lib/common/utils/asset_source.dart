@@ -3,6 +3,7 @@ class AssetSource {
   static const String loginOrnament = "assets/images/login-ornament.png";
   static const String signWithGoogle = "assets/images/sign-with-google.png";
   static const String iconCalendar = "assets/images/icon-calendar.png";
+  static const String iconAlert = "assets/images/ic-alert.png";
   static const String iconInfo = "assets/images/icon-info.png";
   static const String iconCard = "assets/images/icon-card.png";
   static const String iconHukum = "assets/images/icon-hukum.png";
