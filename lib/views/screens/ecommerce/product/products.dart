@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'dart:async';
 
 import 'package:provider/provider.dart';
@@ -14,7 +12,6 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
-import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 import 'package:rakhsa/views/screens/ecommerce/cart/cart.dart';
 import 'package:rakhsa/views/screens/ecommerce/order/buyer/list.dart';
@@ -194,31 +191,30 @@ class ProductsScreenState extends State<ProductsScreen> {
                     ],
                   ),
 
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          const Expanded(
-                            flex: 2,
-                            child: SizedBox(),
-                          ),
-                          Expanded(
-                            child: CustomButton(
-                              onTap: () {},
-                              height: 36.0,
-                              isBorderRadius: true,
-                              fontSize: Dimensions.fontSizeSmall,
-                              btnColor: const Color(0xFFC82927),
-                              btnTxt: "Pulsa & Tagihan",  
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                 
-                  ),
+                  // SliverToBoxAdapter(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Row(
+                  //       mainAxisSize: MainAxisSize.max,
+                  //       children: [
+                  //         const Expanded(
+                  //           flex: 2,
+                  //           child: SizedBox(),
+                  //         ),
+                  //         Expanded(
+                  //           child: CustomButton(
+                  //             onTap: () {},
+                  //             height: 36.0,
+                  //             isBorderRadius: true,
+                  //             fontSize: Dimensions.fontSizeSmall,
+                  //             btnColor: const Color(0xFFC82927),
+                  //             btnTxt: "Pulsa & Tagihan",  
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   )
+                  // ),
 
                   SliverToBoxAdapter(
                     child: Container(

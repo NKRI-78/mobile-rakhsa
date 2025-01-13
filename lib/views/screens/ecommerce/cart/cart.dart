@@ -45,6 +45,8 @@ class CartScreenState extends State<CartScreen> {
 
   late EcommerceProvider ecommerceProvider;
 
+  Timer? debounce;
+
   Future<void> getData() async {
     if(!mounted) return;
       ecommerceProvider.getCart();
@@ -61,6 +63,8 @@ class CartScreenState extends State<CartScreen> {
 
   @override 
   void dispose() {
+    debounce?.cancel();
+
     super.dispose();
   }
 
@@ -367,419 +371,419 @@ class CartScreenState extends State<CartScreen> {
                                                 
                                                 const SizedBox(height: 8.0),
                                     
-                                                  SizedBox(
-                                                    width: 200.0,
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                      
-                                                        Expanded(
-                                                          flex: 25,
-                                                          child: Bouncing(
-                                                          onPress: () {
-                                                            showModalBottomSheet(
-                                                              shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.only(
-                                                                  topLeft: Radius.circular(30.0),
-                                                                  topRight: Radius.circular(30.0)
-                                                                )
-                                                              ),
-                                                              context: context,
-                                                              isScrollControlled: true,
-                                                              builder: (BuildContext context) {
-                                                                return Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                    bottom: MediaQuery.of(context).viewInsets.bottom
-                                                                  ),
-                                                                  child: Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    children: [
-                                                                      Container(
-                                                                        margin: const EdgeInsets.only(top: 35.0),
-                                                                        child: Column(
-                                                                          mainAxisSize: MainAxisSize.min,
-                                                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                                                          children: [
-                                                                            Container(
-                                                                              margin: const EdgeInsets.only(
-                                                                                top: 5.0,
-                                                                                left: 10.0,
-                                                                                right: 10.0,
-                                                                                bottom: 5.0
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  Text("Catatan",
-                                                                                    style: robotoRegular.copyWith(
-                                                                                      fontSize: Dimensions.fontSizeLarge,
-                                                                                      fontWeight: FontWeight.bold
-                                                                                    ),
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    onTap: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    child: const Padding(
-                                                                                      padding: EdgeInsets.all(5.0),
-                                                                                      child: Icon(
-                                                                                        Icons.close,
-                                                                                        size: 30.0,
-                                                                                      ),
-                                                                                    ),
-                                                                                  )
-                                                                                ],
-                                                                              ) 
-                                                                            ),
-                                                                            const Divider(
-                                                                              height: 10.0,
-                                                                              thickness: 1.5,
-                                                                              color: ColorResources.greyBottomNavbar,
-                                                                            ),
-                                                                            Container(
-                                                                              margin: const EdgeInsets.all(10.0),
-                                                                              child: TextField(
-                                                                                controller: notifier.cartData.stores![i].items[z].cart.noteC,
-                                                                                maxLines: 8,
-                                                                                maxLength: 100,
-                                                                                decoration: const InputDecoration(
-                                                                                  border: OutlineInputBorder(),
-                                                                                  focusedBorder: OutlineInputBorder(),
-                                                                                  enabledBorder: OutlineInputBorder()
-                                                                                ),
-                                                                                cursorColor: ColorResources.black,
-                                                                              )
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ).whenComplete(() async {
-                                                              await notifier.updateNote(
-                                                                cartId: notifier.cartData.stores![i].items[z].cart.id, 
-                                                                note: notifier.cartData.stores![i].items[z].cart.noteC.text
-                                                              );
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(5.0),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children: [
-                                        
-                                                                Text("Tulis Catatan",
-                                                                  style: robotoRegular.copyWith(
-                                                                    fontSize: Dimensions.fontSizeSmall,
-                                                                    color: ColorResources.purple
-                                                                  )
-                                                                ),
-                                        
-                                                              ],
-                                                            )
-                                                            
-                                                            
-                                                          ),
-                                                        ),
-                                                      ),
+                                                SizedBox(
+                                                  width: 220.0,
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: [
                                     
                                                       Expanded(
-                                                        flex: 45,
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            Container(
-                                                              height: 40.0,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(5.0),
-                                                                border: Border.all(
-                                                                  color: ColorResources.hintColor
+                                                        flex: 25,
+                                                        child: Bouncing(
+                                                        onPress: () {
+                                                          showModalBottomSheet(
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(30.0),
+                                                                topRight: Radius.circular(30.0)
+                                                              )
+                                                            ),
+                                                            context: context,
+                                                            isScrollControlled: true,
+                                                            builder: (BuildContext context) {
+                                                              return Padding(
+                                                                padding: EdgeInsets.only(
+                                                                  bottom: MediaQuery.of(context).viewInsets.bottom
+                                                                ),
+                                                                child: Column(
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    Container(
+                                                                      margin: const EdgeInsets.only(top: 35.0),
+                                                                      child: Column(
+                                                                        mainAxisSize: MainAxisSize.min,
+                                                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                                                        children: [
+                                                                          Container(
+                                                                            margin: const EdgeInsets.only(
+                                                                              top: 5.0,
+                                                                              left: 10.0,
+                                                                              right: 10.0,
+                                                                              bottom: 5.0
+                                                                            ),
+                                                                            child: Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              children: [
+                                                                                Text("Catatan",
+                                                                                  style: robotoRegular.copyWith(
+                                                                                    fontSize: Dimensions.fontSizeLarge,
+                                                                                    fontWeight: FontWeight.bold
+                                                                                  ),
+                                                                                ),
+                                                                                InkWell(
+                                                                                  onTap: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: const Padding(
+                                                                                    padding: EdgeInsets.all(5.0),
+                                                                                    child: Icon(
+                                                                                      Icons.close,
+                                                                                      size: 30.0,
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ) 
+                                                                          ),
+                                                                          const Divider(
+                                                                            height: 10.0,
+                                                                            thickness: 1.5,
+                                                                            color: ColorResources.greyBottomNavbar,
+                                                                          ),
+                                                                          Container(
+                                                                            margin: const EdgeInsets.all(10.0),
+                                                                            child: TextField(
+                                                                              controller: notifier.cartData.stores![i].items[z].cart.noteC,
+                                                                              maxLines: 8,
+                                                                              maxLength: 100,
+                                                                              decoration: const InputDecoration(
+                                                                                border: OutlineInputBorder(),
+                                                                                focusedBorder: OutlineInputBorder(),
+                                                                                enabledBorder: OutlineInputBorder()
+                                                                              ),
+                                                                              cursorColor: ColorResources.black,
+                                                                            )
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
+                                                          ).whenComplete(() async {
+                                                            await notifier.updateNote(
+                                                              cartId: notifier.cartData.stores![i].items[z].cart.id, 
+                                                              note: notifier.cartData.stores![i].items[z].cart.noteC.text
+                                                            );
+                                                          });
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(5.0),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                      
+                                                              Text("Tulis Catatan",
+                                                                style: robotoRegular.copyWith(
+                                                                  fontSize: Dimensions.fontSizeSmall,
+                                                                  color: ColorResources.purple
                                                                 )
                                                               ),
-                                                              child: TextField(
-                                                                textAlign: TextAlign.center,
-                                                                controller: notifier.cartData.stores![i].items[z].cart.totalCartC,
-                                                                style: robotoRegular.copyWith(
-                                                                  fontSize: Dimensions.fontSizeDefault,
-                                                                ),
-                                                                inputFormatters: [
-                                                                  FilteringTextInputFormatter.digitsOnly
-                                                                ],
-                                                                onChanged: (String val) {
-                                        
-                                                                  int qty = int.parse(val.isEmpty ? '0' : val);
-                                        
+                                      
+                                                            ],
+                                                          )
+                                                          
+                                                          
+                                                        ),
+                                                      ),
+                                                    ),
+                                  
+                                                    Expanded(
+                                                      flex: 45,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Container(
+                                                            height: 40.0,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(5.0),
+                                                              border: Border.all(
+                                                                color: ColorResources.hintColor
+                                                              )
+                                                            ),
+                                                            child: TextField(
+                                                              textAlign: TextAlign.center,
+                                                              controller: notifier.cartData.stores![i].items[z].cart.totalCartC,
+                                                              style: robotoRegular.copyWith(
+                                                                fontSize: Dimensions.fontSizeDefault,
+                                                              ),
+                                                              inputFormatters: [
+                                                                FilteringTextInputFormatter.digitsOnly
+                                                              ],
+                                                              onChanged: (String val) {
+                                      
+                                                                int qty = int.parse(val.isEmpty ? '0' : val);
+
+                                                                setState(() => notifier.cartData.stores![i].items[z].cart.qty = qty);
+                                                                    
+                                                                if(notifier.cartData.stores![i].items[z].cart.qty == 0) {
                                                                   setState(() {
-                                                                    notifier.cartData.stores![i].items[z].cart.qty = qty;
+                                                                    notifier.cartData.stores![i].items[z].cart.totalCartC =  TextEditingController(text: "1");
+                                                                    notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(
+                                                                      TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length)
+                                                                    );
                                                                   });
-                                                                      
-                                                                  if(notifier.cartData.stores![i].items[z].cart.qty == 0) {
+                                                                } else {
+                                                                  if(notifier.cartData.stores![i].items[z].cart.qty >= notifier.cartData.stores![i].items[z].stock) {
                                                                     setState(() {
-                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC =  TextEditingController(text: "1");
+                                                                      notifier.cartData.stores![i].items[z].cart.totalCartC = TextEditingController(text: notifier.cartData.stores![i].items[z].cart.qty.toString());
                                                                       notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(
                                                                         TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length)
                                                                       );
                                                                     });
+
+                                                                    notifier.incrementTotalProduct(
+                                                                      i,
+                                                                      z,
+                                                                      notifier.cartData.stores![i].items[z].cart.id,
+                                                                      notifier.cartData.stores![i].items[z].cart.qty.toString()
+                                                                    );
                                                                   } else {
-                                                                    if(notifier.cartData.stores![i].items[z].cart.qty >= notifier.cartData.stores![i].items[z].stock) {
-                                                                      setState(() {
-                                                                        notifier.cartData.stores![i].items[z].cart.totalCartC =  TextEditingController(text: notifier.cartData.stores![i].items[z].stock.toString());
-                                                                        notifier.cartData.stores![i].items[z].cart.totalCartC.selection = TextSelection.fromPosition(
-                                                                          TextPosition(offset: notifier.cartData.stores![i].items[z].cart.totalCartC.text.length)
-                                                                        );
-                                                                        notifier.cartData.stores![i].items[z].cart.qty = int.parse(notifier.cartData.stores![i].items[z].stock.toString());
-                                                                      });
-                                                                      notifier.incrementTotalProduct(
-                                                                        i,
-                                                                        z,
-                                                                        notifier.cartData.stores![i].items[z].cart.id,
-                                                                        notifier.cartData.stores![i].items[z].cart.qty.toString()
-                                                                      );
-                                                                    } else {
-                                                                      setState(() {
-                                                                        notifier.cartData.stores![i].items[z].cart.qty = qty;
-                                                                      });
-                                                                      notifier.incrementTotalProduct(
-                                                                        i,
-                                                                        z,
-                                                                        notifier.cartData.stores![i].items[z].cart.id,
-                                                                        val
-                                                                      );
-                                                                    }
+                                                                    setState(() => notifier.cartData.stores![i].items[z].cart.qty = qty);
+
+                                                                    notifier.incrementTotalProduct(
+                                                                      i,
+                                                                      z,
+                                                                      notifier.cartData.stores![i].items[z].cart.id,
+                                                                      notifier.cartData.stores![i].items[z].cart.qty.toString()
+                                                                    );
                                                                   }
-                                                                  Debouncer debouncer = Debouncer(milliseconds: 50);
-                                                                  debouncer.run(() => notifier.updateQty(
-                                                                    cartId: notifier.cartData.stores![i].items[z].cart.id, 
-                                                                    qty: notifier.cartData.stores![i].items[z].cart.qty
-                                                                  ));
-                                                                },
-                                                                cursorColor: ColorResources.black,
-                                                                decoration: InputDecoration(
-                                                                  contentPadding: const EdgeInsets.only(
-                                                                    left: 0.0,
-                                                                    right: 0.0
-                                                                  ),
-                                                                  border: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                      color: ColorResources.black
-                                                                    )
-                                                                  ),
-                                                                  focusedBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                      color: Color(0xFF0F903B)
-                                                                    )
-                                                                  ),
-                                                                  enabledBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                      color: ColorResources.black
-                                                                    )
-                                                                  ),
-                                                                  suffixIcon: Bouncing(
-                                                                    onPress: () {
-                                                                      int currval = int.parse(notifier.cartData.stores![i].items[z].cart.totalCartC.text);
-                                        
-                                                                      int stock = notifier.cartData.stores![i].items[z].stock;
-                                        
-                                                                      if(currval < stock) {
-                                                                        setState(() {
-                                                                          currval = currval + 1;
-                                                                          notifier.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
-                                                                        });
-                                        
-                                                                        notifier.incrementQty(i: i, z: z, qty: currval);
-                                                                      }
-                                                                    }, 
-                                                                    child: const Icon(
-                                                                      Icons.add,
-                                                                      size: 15.0,
-                                                                      color: ColorResources.black
-                                                                    )
-                                                                  ),
-                                                                  prefixIcon: Bouncing(
-                                                                    onPress: () {
-                                                                      var currval = int.parse(notifier.cartData.stores![i].items[z].cart.totalCartC.text);
-                                                                      
-                                                                      if(currval > 1) {
-                                                                        setState(() {
-                                                                          currval = currval - 1;
-                                                                          notifier.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
-                                                                        });
-                                        
-                                                                        notifier.decrementQty(i: i, z: z, qty: currval);
-                                                                      }
-                                                                    }, 
-                                                                    child: Icon(
-                                                                      Icons.remove,
-                                                                      size: 15.0,
-                                                                      color: notifier.listenQty == 1 ||  notifier.listenQty == -1
-                                                                      ? ColorResources.hintColor 
-                                                                      : ColorResources.black
-                                                                    )
+                                                                }
+
+                                                                if (debounce?.isActive ?? false) debounce?.cancel();
+                                                                  debounce = Timer(const Duration(milliseconds: 300), () {
+                                                                    notifier.updateQty(
+                                                                      cartId: notifier.cartData.stores![i].items[z].cart.id, 
+                                                                      qty: notifier.cartData.stores![i].items[z].cart.qty
+                                                                    );
+                                                                  });
+                                                              },
+                                                              cursorColor: ColorResources.black,
+                                                              decoration: InputDecoration(
+                                                                contentPadding: const EdgeInsets.only(
+                                                                  left: 0.0,
+                                                                  right: 0.0
+                                                                ),
+                                                                border: const OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                    color: ColorResources.black
                                                                   )
                                                                 ),
+                                                                focusedBorder: const OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                    color: Color(0xFF0F903B)
+                                                                  )
+                                                                ),
+                                                                enabledBorder: const OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                    color: ColorResources.black
+                                                                  )
+                                                                ),
+                                                                suffixIcon: Bouncing(
+                                                                  onPress: () {
+                                                                    int currval = int.parse(notifier.cartData.stores![i].items[z].cart.totalCartC.text);
+                                      
+                                                                    int stock = notifier.cartData.stores![i].items[z].stock;
+                                      
+                                                                    if(currval < stock) {
+                                                                      setState(() {
+                                                                        currval = currval + 1;
+                                                                        notifier.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
+                                                                      });
+                                      
+                                                                      notifier.incrementQty(i: i, z: z, qty: currval);
+                                                                    }
+                                                                  }, 
+                                                                  child: const Icon(
+                                                                    Icons.add,
+                                                                    size: 15.0,
+                                                                    color: ColorResources.black
+                                                                  )
+                                                                ),
+                                                                prefixIcon: Bouncing(
+                                                                  onPress: () {
+                                                                    var currval = int.parse(notifier.cartData.stores![i].items[z].cart.totalCartC.text);
+                                                                    
+                                                                    if(currval > 1) {
+                                                                      setState(() {
+                                                                        currval = currval - 1;
+                                                                        notifier.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
+                                                                      });
+                                      
+                                                                      notifier.decrementQty(i: i, z: z, qty: currval);
+                                                                    }
+                                                                  }, 
+                                                                  child: Icon(
+                                                                    Icons.remove,
+                                                                    size: 15.0,
+                                                                    color: notifier.listenQty == 1 ||  notifier.listenQty == -1
+                                                                    ? ColorResources.hintColor 
+                                                                    : ColorResources.black
+                                                                  )
+                                                                )
                                                               ),
                                                             ),
-                                                          ],
-                                                        ), 
-                                                      ),
-                                      
-                                                      Bouncing(
-                                                        onPress: () {
-                                                          showGeneralDialog(
-                                                            context: context,
-                                                            barrierLabel: "Barrier",
-                                                            barrierDismissible: true,
-                                                            barrierColor: Colors.black.withOpacity(0.5),
-                                                            transitionDuration: const Duration(milliseconds: 700),
-                                                            pageBuilder: (BuildContext context, Animation<double> double, _) {
-                                                              return Center(
-                                                                child: Material(
-                                                                  color: ColorResources.transparent,
-                                                                  child: Container(
-                                                                    margin: const EdgeInsets.all(20.0),
-                                                                    height: 250.0,
-                                                                    decoration: BoxDecoration(
-                                                                      color: ColorResources.purple, 
-                                                                      borderRadius: BorderRadius.circular(20.0)
-                                                                    ),
-                                                                    child: Stack(
-                                                                      clipBehavior: Clip.none,
-                                                                      children: [
-                                                                                                        
-                                                                        Align(
-                                                                          alignment: Alignment.center,
-                                                                          child: Text("Apakah kamu yakin ingin hapus dari Keranjang ?",
-                                                                            style: robotoRegular.copyWith(
-                                                                              fontSize: Dimensions.fontSizeDefault,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: ColorResources.white
-                                                                            ),
-                                                                          )
-                                                                        ),
-                                                                                                        
-                                                                        Align(
-                                                                          alignment: Alignment.bottomCenter,
-                                                                          child: Column(
-                                                                            mainAxisSize: MainAxisSize.min,
-                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Container(
-                                                                                margin: const EdgeInsets.only(
-                                                                                  top: 20.0,
-                                                                                  bottom: 20.0
-                                                                                ),
-                                                                                child: Row(
-                                                                                  mainAxisSize: MainAxisSize.max,
-                                                                                  children: [
-                                                                                    const Expanded(child: SizedBox()),
-                                                                                    Expanded(
-                                                                                      flex: 5,
-                                                                                      child: CustomButton(
-                                                                                        isBorderRadius: true,
-                                                                                        isBoxShadow: false,
-                                                                                        btnColor: ColorResources.white,
-                                                                                        btnTextColor: ColorResources.black,
-                                                                                        onTap: () {
-                                                                                          Future.delayed(Duration.zero, () {
-                                                                                            Navigator.pop(context);
-                                                                                          });
-                                                                                        }, 
-                                                                                        btnTxt: "Batal"
-                                                                                      ),
-                                                                                    ),
-                                                                                    const Expanded(child: SizedBox()),
-                                                                                    Expanded(
-                                                                                      flex: 5,
-                                                                                      child: Consumer<EcommerceProvider>(
-                                                                                        builder: (_, notifier, __) {
-                                                                                          return CustomButton(
-                                                                                            isBorderRadius: true,
-                                                                                            isBoxShadow: false,
-                                                                                            isLoading: notifier.deleteCartStatus == DeleteCartStatus.loading 
-                                                                                            ? true 
-                                                                                            : false,
-                                                                                            btnColor: ColorResources.error ,
-                                                                                            btnTextColor: ColorResources.white,
-                                                                                            onTap: () async {
-                                                                                              await notifier.deleteCart(cartId: notifier.cartData.stores![i].items[z].cart.id);
-                                                                                              Future.delayed(Duration.zero, () {
-                                                                                                Navigator.pop(context);
-                                                                                              });
-                                                                                            }, 
-                                                                                            btnTxt: "OK"
-                                                                                          );
-                                                                                        },
-                                                                                      )
-                                                                                    ),
-                                                                                    const Expanded(child: SizedBox()),
-                                                                                  ],
-                                                                                ),
-                                                                              )
-                                                                            ],
-                                                                          ) 
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              );
-                                                            },
-                                                            transitionBuilder: (_, anim, __, child) {
-                                                              Tween<Offset> tween;
-                                                              if (anim.status == AnimationStatus.reverse) {
-                                                                tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                                                              } else {
-                                                                tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                                                              }
-                                                              return SlideTransition(
-                                                                position: tween.animate(anim),
-                                                                child: FadeTransition(
-                                                                  opacity: anim,
-                                                                  child: child,
-                                                                ),
-                                                              );
-                                                            },
-                                                          );
-                                                        },
-                                                        child: const Padding(
-                                                          padding: EdgeInsets.all(5.0),
-                                                          child: Icon(
-                                                            Icons.delete,
-                                                            color: ColorResources.error,
                                                           ),
-                                                        ),
-                                                      )
-                                      
-                                                    ],
-                                                  ),
-                                                ),
-                                        
-                                                notifier.cartData.stores![i].items[z].cart.noteC.text.isEmpty 
-                                                ? const SizedBox() 
-                                                : const SizedBox(height: 5.0),
-                                        
-                                                notifier.cartData.stores![i].items[z].cart.noteC.text.isEmpty 
-                                                ? const SizedBox()
-                                                : SizedBox(
-                                                    width: 250.0,
-                                                    child: Text("( ${notifier.cartData.stores![i].items[z].cart.noteC.text} )",
-                                                    style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeExtraSmall,
-                                                      color: ColorResources.black
+                                                        ],
+                                                      ), 
                                                     ),
+                                    
+                                                    Bouncing(
+                                                      onPress: () {
+                                                        showGeneralDialog(
+                                                          context: context,
+                                                          barrierLabel: "Barrier",
+                                                          barrierDismissible: true,
+                                                          barrierColor: Colors.black.withOpacity(0.5),
+                                                          transitionDuration: const Duration(milliseconds: 700),
+                                                          pageBuilder: (BuildContext context, Animation<double> double, _) {
+                                                            return Center(
+                                                              child: Material(
+                                                                color: ColorResources.transparent,
+                                                                child: Container(
+                                                                  margin: const EdgeInsets.all(20.0),
+                                                                  height: 250.0,
+                                                                  decoration: BoxDecoration(
+                                                                    color: ColorResources.purple, 
+                                                                    borderRadius: BorderRadius.circular(20.0)
+                                                                  ),
+                                                                  child: Stack(
+                                                                    clipBehavior: Clip.none,
+                                                                    children: [
+                                                                                                      
+                                                                      Align(
+                                                                        alignment: Alignment.center,
+                                                                        child: Text("Apakah kamu yakin ingin hapus dari Keranjang ?",
+                                                                          style: robotoRegular.copyWith(
+                                                                            fontSize: Dimensions.fontSizeDefault,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: ColorResources.white
+                                                                          ),
+                                                                        )
+                                                                      ),
+                                                                                                      
+                                                                      Align(
+                                                                        alignment: Alignment.bottomCenter,
+                                                                        child: Column(
+                                                                          mainAxisSize: MainAxisSize.min,
+                                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                                          children: [
+                                                                            Container(
+                                                                              margin: const EdgeInsets.only(
+                                                                                top: 20.0,
+                                                                                bottom: 20.0
+                                                                              ),
+                                                                              child: Row(
+                                                                                mainAxisSize: MainAxisSize.max,
+                                                                                children: [
+                                                                                  const Expanded(child: SizedBox()),
+                                                                                  Expanded(
+                                                                                    flex: 5,
+                                                                                    child: CustomButton(
+                                                                                      isBorderRadius: true,
+                                                                                      isBoxShadow: false,
+                                                                                      btnColor: ColorResources.white,
+                                                                                      btnTextColor: ColorResources.black,
+                                                                                      onTap: () {
+                                                                                        Future.delayed(Duration.zero, () {
+                                                                                          Navigator.pop(context);
+                                                                                        });
+                                                                                      }, 
+                                                                                      btnTxt: "Batal"
+                                                                                    ),
+                                                                                  ),
+                                                                                  const Expanded(child: SizedBox()),
+                                                                                  Expanded(
+                                                                                    flex: 5,
+                                                                                    child: Consumer<EcommerceProvider>(
+                                                                                      builder: (_, notifier, __) {
+                                                                                        return CustomButton(
+                                                                                          isBorderRadius: true,
+                                                                                          isBoxShadow: false,
+                                                                                          isLoading: notifier.deleteCartStatus == DeleteCartStatus.loading 
+                                                                                          ? true 
+                                                                                          : false,
+                                                                                          btnColor: ColorResources.error ,
+                                                                                          btnTextColor: ColorResources.white,
+                                                                                          onTap: () async {
+                                                                                            await notifier.deleteCart(cartId: notifier.cartData.stores![i].items[z].cart.id);
+                                                                                            Future.delayed(Duration.zero, () {
+                                                                                              Navigator.pop(context);
+                                                                                            });
+                                                                                          }, 
+                                                                                          btnTxt: "OK"
+                                                                                        );
+                                                                                      },
+                                                                                    )
+                                                                                  ),
+                                                                                  const Expanded(child: SizedBox()),
+                                                                                ],
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ) 
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            );
+                                                          },
+                                                          transitionBuilder: (_, anim, __, child) {
+                                                            Tween<Offset> tween;
+                                                            if (anim.status == AnimationStatus.reverse) {
+                                                              tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                                                            } else {
+                                                              tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                                                            }
+                                                            return SlideTransition(
+                                                              position: tween.animate(anim),
+                                                              child: FadeTransition(
+                                                                opacity: anim,
+                                                                child: child,
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      child: const Padding(
+                                                        padding: EdgeInsets.all(5.0),
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          color: ColorResources.error,
+                                                        ),
+                                                      ),
+                                                    )
+                                    
+                                                  ],
+                                                ),
+                                              ),
+                                      
+                                              notifier.cartData.stores![i].items[z].cart.noteC.text.isEmpty 
+                                              ? const SizedBox() 
+                                              : const SizedBox(height: 5.0),
+                                      
+                                              notifier.cartData.stores![i].items[z].cart.noteC.text.isEmpty 
+                                              ? const SizedBox()
+                                              : SizedBox(
+                                                  width: 250.0,
+                                                  child: Text("( ${notifier.cartData.stores![i].items[z].cart.noteC.text} )",
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                                    color: ColorResources.black
                                                   ),
                                                 ),
-                                                    
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      );
-                                        
+                                              ),
+                                                  
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    );
+                                      
                                         
                                 
                                     }),
