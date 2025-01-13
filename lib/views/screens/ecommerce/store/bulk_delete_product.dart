@@ -10,6 +10,7 @@ import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class BulkDeleteProductScreen extends StatefulWidget {
@@ -30,7 +31,10 @@ class BulkDeleteProductScreenState extends State<BulkDeleteProductScreen> {
   Future<void> getData() async {
 
     if(!mounted) return;
-      await ecommerceProvider.fetchAllProductSeller(search: "", storeId: widget.storeId);
+      await ecommerceProvider.fetchAllProductSeller(
+        search: "", 
+        storeId: widget.storeId
+      );
   }
 
   @override
@@ -198,25 +202,24 @@ class BulkDeleteProductScreenState extends State<BulkDeleteProductScreen> {
                                                           const Expanded(child: SizedBox()),
                                                           Expanded(
                                                             flex: 5,
-                                                            child: Consumer<EcommerceProvider>(
-                                                              builder: (_, notifier, __) {
-                                                                return CustomButton(
-                                                                  isBorderRadius: true,
-                                                                  isBoxShadow: false,
-                                                                  isLoading: notifier.deleteProductStatus == DeleteProductStatus.loading 
-                                                                  ? true 
-                                                                  : false,
-                                                                  btnColor: ColorResources.error,
-                                                                  btnTextColor: ColorResources.white,
-                                                                  onTap: () async {
-                                                                    await notifier.deleteProductSelect();
-                                                                    Future.delayed(Duration.zero, () {
-                                                                      Navigator.pop(context);
-                                                                    });
-                                                                  }, 
-                                                                  btnTxt: "OK"
+                                                            child: CustomButton(
+                                                              isBorderRadius: true,
+                                                              isBoxShadow: false,
+                                                              isLoading: ecommerceProvider.deleteProductStatus == DeleteProductStatus.loading 
+                                                              ? true 
+                                                              : false,
+                                                              btnColor: ColorResources.error,
+                                                              btnTextColor: ColorResources.white,
+                                                              onTap: () async {
+                                                                await ecommerceProvider.deleteProductSelect(
+                                                                  storeId: widget.storeId
                                                                 );
-                                                              },
+
+                                                                Future.delayed(Duration.zero, () {
+                                                                  Navigator.pop(context);
+                                                                });
+                                                              }, 
+                                                              btnTxt: "OK"
                                                             )
                                                           ),
                                                           const Expanded(child: SizedBox()),

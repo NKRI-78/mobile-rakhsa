@@ -1298,7 +1298,7 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteProductSelect() async {
+  Future<void> deleteProductSelect({required String storeId}) async {
     setStateDeleteProductStatus(DeleteProductStatus.loading);  
     try {
 
@@ -1307,6 +1307,8 @@ class EcommerceProvider extends ChangeNotifier {
     
         await er.deleteProduct(productId: productId);
       }
+
+      fetchAllProductSeller(search: "", storeId: storeId);
 
       setStateDeleteProductStatus(DeleteProductStatus.loaded);  
     } catch(_) {
