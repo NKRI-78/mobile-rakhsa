@@ -77,8 +77,8 @@ flutter {
 
 dependencies {
     implementation "com.google.android.gms:play-services-location:21.0.0"
-    implementation "com.google.android.play:core:1.7.3"
-    implementation "com.google.android.play:core-ktx:1.8.1"
+    // implementation "com.google.android.play:core:1.10.3"
+    // implementation "com.google.android.play:core-ktx:1.8.1"
     implementation "io.github.sangcomz:fishbun:1.1.1"
     implementation "com.google.firebase:firebase-bom:31.2.3"
 }

@@ -750,7 +750,7 @@ class GeneralModal {
                                   Navigator.pop(context);
 
                                   if(!isHome) {
-                                    Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.dashboard, (route) => false);
+                                    Navigator.pushNamed(context, RoutesNavigation.dashboard);
                                   }
                                 },
                               ),
