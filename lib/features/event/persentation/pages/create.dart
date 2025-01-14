@@ -167,7 +167,7 @@ class EventCreatePageState extends State<EventCreatePage> {
         timeZone: "GMT",
       )
       ..end = googleAPI.EventDateTime(
-        dateTime: DateTime.now(),
+        dateTime: rangeEnd,
         timeZone: "GMT",
       );
       
