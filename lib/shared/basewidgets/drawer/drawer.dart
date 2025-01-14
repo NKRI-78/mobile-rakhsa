@@ -185,6 +185,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
                 onTap: () async {
                   StorageHelper.saveRecordScreen(isHome: false);
 
+                  widget.globalKey.currentState?.closeEndDrawer();
+
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
                     return const ChatsPage();
                   }));

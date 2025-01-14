@@ -28,7 +28,7 @@ class GetMessagesNotifier with ChangeNotifier {
   bool _isRunning = false;
   bool get isRunning => _isRunning;
   
-  int _time = 5;
+  int _time = 60;
   int get time => _time;
 
   ScrollController sC = ScrollController();

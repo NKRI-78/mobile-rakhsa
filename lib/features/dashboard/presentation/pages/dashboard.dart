@@ -3,20 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/main_menu_notched_bottom_navbar.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/notched_botton_navbar.dart';
 
 import 'package:rakhsa/firebase.dart';
+
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
-
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -32,7 +33,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   late ProfileNotifier profileNotifier;
  
-  static final globalKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
  
   DateTime? lastTap;
  

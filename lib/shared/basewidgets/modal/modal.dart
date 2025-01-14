@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -749,9 +750,7 @@ class GeneralModal {
                                   Navigator.pop(context);
 
                                   if(!isHome) {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                      return const DashboardScreen();
-                                    }));
+                                    Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.dashboard, (route) => false);
                                   }
                                 },
                               ),

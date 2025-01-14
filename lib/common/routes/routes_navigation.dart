@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
@@ -13,6 +14,7 @@ class RoutesNavigation {
   RoutesNavigation._();
 
   static const initialRoute = '/';
+  static const dashboard = '/dashboard';
   static const mart = '/mart';
   static const nearMe = '/near-me';
   static const nearMeTypeList = '/near-me-type-list';
@@ -25,6 +27,8 @@ class RoutesNavigation {
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case dashboard: 
+        return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case mart: 
         return MaterialPageRoute(builder: (_) => const ProductsScreen());
       case information:
