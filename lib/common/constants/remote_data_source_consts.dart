@@ -5,6 +5,7 @@ class RemoteDataSourceConsts {
 
   static const String gmaps = 'AIzaSyCJD7w_-wHs4Pe5rWMf0ubYQFpAt2QF2RA';
 
+  static const String googleUrl = 'https://play.google.com/store/apps/details?id=com.inovatiftujuh8.rakhsa';
   
   static const String websocketUrlProd = 'wss://websockets-rakhsa.inovatiftujuh8.com';
   static const String websocketUrlDev = 'ws://192.168.1.15:9998';

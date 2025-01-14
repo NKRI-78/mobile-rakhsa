@@ -29,4 +29,5 @@ class AssetSource {
   // icons
   static const String lodging = "assets/images/icons/lodging";
   static const String mosque = "assets/images/icons/mosque.png";
+  static const String update = "assets/images/update/update.jpg";
 }

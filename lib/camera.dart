@@ -130,6 +130,7 @@ class CameraPageState extends State<CameraPage> {
           stopVideoRecording();
           timer.cancel();
         } else {
+          timer.cancel();
           setState(() {
             recordTimeLeft--;
           });
