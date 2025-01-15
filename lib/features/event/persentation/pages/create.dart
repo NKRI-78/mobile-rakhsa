@@ -109,7 +109,7 @@ class EventCreatePageState extends State<EventCreatePage> {
     String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
     String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
 
-    insertToGoogleCalendar(rangeStart, rangeEnd);
+    await insertToGoogleCalendar(rangeStart, rangeEnd);
 
     await saveEventNotifier.save(
       title: title, 
@@ -173,9 +173,7 @@ class EventCreatePageState extends State<EventCreatePage> {
       
       final googleAPI.Event createdEvent = await calendarAPI.events.insert(newEvent, 'primary');
 
-      debugPrint("Event created: ${createdEvent.summary}");
-
-      debugPrint("=== SUCCESSFULLY SIGNED GOOGLE ===");
+      debugPrint("Event summary: ${createdEvent.summary}");
 
       clear();
     } catch (e) {

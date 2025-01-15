@@ -10,6 +10,7 @@ import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
@@ -21,8 +22,6 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
-
-import 'package:rakhsa/views/screens/update/update.dart';
 
 void initializeNotifications() {
   an.AwesomeNotifications().setListeners(
@@ -92,7 +91,7 @@ class MyAppState extends State<MyApp> {
 
       if(isLoggedIn) {
         if(mounted) {
-          setState(() => home = const UpdateScreen()); 
+          setState(() => home = const DashboardScreen()); 
         }
       } else {
         if(mounted) {

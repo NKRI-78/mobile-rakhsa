@@ -220,241 +220,242 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        clipBehavior: Clip.none,
         children: [  
-            SizedBox.expand(
-              child: SafeArea(
-                child: RefreshIndicator.adaptive(
-                onRefresh: () {
-                  return Future.sync(() {
-                    getData();
-                  });
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.only(
-                      top: 16.0,
-                      left: 14.0,
-                      right: 14.0,
-                      bottom: 16.0
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StorageHelper.getUserId() == null
-                        ? const SizedBox()
-                        : context.watch<ProfileNotifier>().state == ProviderState.error 
-                        ? const SizedBox()
-                        : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                        ? const SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
+          SizedBox.expand(
+            child: SafeArea(
+              child: RefreshIndicator.adaptive(
+              onRefresh: () {
+                return Future.sync(() {
+                  getData();
+                });
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.only(
+                    top: 16.0,
+                    left: 14.0,
+                    right: 14.0,
+                    bottom: 16.0
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      StorageHelper.getUserId() == null
+                      ? const SizedBox()
+                      : context.watch<ProfileNotifier>().state == ProviderState.error 
+                      ? const SizedBox()
+                      : context.watch<ProfileNotifier>().state == ProviderState.loading 
+                      ? const SizedBox()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                  
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                    
-                            Column(
+                              Text("Selamat Datang",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  color: ColorResources.hintColor
+                                ),
+                              ), 
+                              Text(profileNotifier.entity.data?.username ?? "-",
+                                style: robotoRegular.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Dimensions.fontSizeExtraLarge
+                                ),
+                              )
+                            ],
+                          ),
+              
+                          Container(
+                            width: 12.0,
+                            height: 12.0,
+                            decoration: BoxDecoration(
+                              color: context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.green 
+                              ? ColorResources.green 
+                              : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.yellow 
+                              ? ColorResources.yellow 
+                              : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.red 
+                              ? ColorResources.error 
+                              : ColorResources.transparent,
+                              shape: BoxShape.circle,
+                            ),                      
+                          ),
+              
+                          GestureDetector(
+                            onTap: () {
+                              widget.globalKey.currentState?.openEndDrawer();
+                            },
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("Selamat Datang",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    color: ColorResources.hintColor
-                                  ),
-                                ), 
-                                Text(profileNotifier.entity.data?.username ?? "-",
-                                  style: robotoRegular.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: Dimensions.fontSizeExtraLarge
-                                  ),
+                                
+                                CachedNetworkImage(
+                                  imageUrl: profileNotifier.entity.data?.avatar ?? "-",
+                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                    return CircleAvatar(
+                                      backgroundImage: imageProvider,
+                                    );
+                                  },
+                                  placeholder: (BuildContext context, String url) {
+                                    return const CircleAvatar(
+                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context, String url, Object error) {
+                                    return const CircleAvatar(
+                                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                    );
+                                  },
                                 )
+                            
                               ],
                             ),
-                
-                            Container(
-                              width: 12.0,
-                              height: 12.0,
-                              decoration: BoxDecoration(
-                                color: context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.green 
-                                ? ColorResources.green 
-                                : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.yellow 
-                                ? ColorResources.yellow 
-                                : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.red 
-                                ? ColorResources.error 
-                                : ColorResources.transparent,
-                                shape: BoxShape.circle,
-                              ),                      
-                            ),
-                
-                            GestureDetector(
-                              onTap: () {
-                                widget.globalKey.currentState?.openEndDrawer();
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  
-                                  CachedNetworkImage(
-                                    imageUrl: profileNotifier.entity.data?.avatar ?? "-",
-                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                      return CircleAvatar(
-                                        backgroundImage: imageProvider,
-                                      );
-                                    },
-                                    placeholder: (BuildContext context, String url) {
-                                      return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      );
-                                    },
-                                    errorWidget: (BuildContext context, String url, Object error) {
-                                      return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      );
-                                    },
-                                  )
-                              
-                                ],
+                          )
+                  
+                        ],
+                      ),
+              
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 30.0
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text("Apakah Anda dalam\nkeadaan darurat ?",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeOverLarge,
+                                fontWeight: FontWeight.bold
                               ),
                             )
-                    
+              
+                          ]
+                        )
+                      ),
+              
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 20.0
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
+                              textAlign: TextAlign.center,
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: ColorResources.hintColor
+                              ),
+                            )
+              
                           ],
                         ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 30.0
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              
-                              Text("Apakah Anda dalam\nkeadaan darurat ?",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeOverLarge,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              )
-                
-                            ]
-                          )
+                      ),
+              
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 40.0
                         ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 20.0
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              
-                              Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
-                                textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.hintColor
-                                ),
-                              )
-                
-                            ],
-                          ),
-                        ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 40.0
-                          ),
-                          child: SosButton(
-                            location: currentAddress,
-                            country: currentCountry,
-                            lat: currentLat,
-                            lng: currentLng,
-                            isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
-                          )
-                        ),
-                
-                        Consumer<DashboardNotifier>(
-                          builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
-                            
-                            if(notifier.state == ProviderState.loading) {
-                              return const SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 16.0,
-                                    height: 16.0,
-                                    child: CircularProgressIndicator()
-                                  )
-                                ),
-                              );
-                            }
-                
-                            if(notifier.state == ProviderState.error) {
-                              return SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: Text(notifier.message,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.black
-                                    ),
-                                  )
+                        child: SosButton(
+                          location: currentAddress,
+                          country: currentCountry,
+                          lat: currentLat,
+                          lng: currentLng,
+                          isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
+                        )
+                      ),
+              
+                      Consumer<DashboardNotifier>(
+                        builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
+                          
+                          if(notifier.state == ProviderState.loading) {
+                            return const SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 16.0,
+                                  height: 16.0,
+                                  child: CircularProgressIndicator()
                                 )
-                              );
-                            }
-                            
-                            return notifier.ews.isEmpty 
-                            ? CurrentLocationWidget(
-                                avatar: context.read<ProfileNotifier>().entity.data?.avatar.toString() ?? "",
-                                loadingGmaps: loadingGmaps, 
-                                markers: markers, 
-                                currentAddress: currentAddress, 
-                                currentLat: currentLat, 
-                                currentLng: currentLng
-                              )
-                            : Container(
-                                margin: const EdgeInsets.only(
-                                  top: 45.0
-                                ),
-                                child: notifier.ews.length == 1 
-                                ? EwsSingleWidget(
-                                  getData: getData
+                              ),
+                            );
+                          }
+              
+                          if(notifier.state == ProviderState.error) {
+                            return SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: Text(notifier.message,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black
+                                  ),
                                 )
-                              : EwsListWidget(
-                                getData: getData,
                               )
                             );
                           }
-                        ),
-                    
-                        ],
+                          
+                          return notifier.ews.isEmpty 
+                          ? CurrentLocationWidget(
+                              avatar: context.read<ProfileNotifier>().entity.data?.avatar.toString() ?? "",
+                              loadingGmaps: loadingGmaps, 
+                              markers: markers, 
+                              currentAddress: currentAddress, 
+                              currentLat: currentLat, 
+                              currentLng: currentLng
+                            )
+                          : Container(
+                              margin: const EdgeInsets.only(
+                                top: 45.0
+                              ),
+                              child: notifier.ews.length == 1 
+                              ? EwsSingleWidget(
+                                getData: getData
+                              )
+                            : EwsListWidget(
+                              getData: getData,
+                            )
+                          );
+                        }
                       ),
-                    )
-                  ),
+                  
+                      ],
+                    ),
+                  )
                 ),
               ),
             ),
+          ),
           Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.5),
-                      Colors.white,
-                    ],
-                  ),
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.5),
+                    Colors.white,
+                  ],
                 ),
               ),
             ),
+          ),
         ],
       )
     ); 

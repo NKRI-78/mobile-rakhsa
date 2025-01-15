@@ -42,9 +42,20 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
   @override 
   Future<KbriInfoModel> infoKbriStateName({
     required String stateName
-  }) async {  
+  }) async {
+
+    String stateNameVal = "";
+
+    switch (stateName.toLowerCase()) {
+      case "japan":
+        stateNameVal = "Jepang";
+      break;
+      default:
+        stateNameVal = stateName;
+    }
+
     try {
-      Response res = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-kbri-state-name/$stateName");
+      Response res = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-kbri-state-name/$stateNameVal");
       Map<String, dynamic> data = res.data;
       KbriInfoModel kbriInfoModel = KbriInfoModel.fromJson(data);
       return kbriInfoModel;
