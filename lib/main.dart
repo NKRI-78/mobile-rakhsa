@@ -2,15 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:awesome_notifications/awesome_notifications.dart' as an;
-
 import 'package:provider/provider.dart';
+
+import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
@@ -22,6 +21,8 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
+
+import 'package:rakhsa/views/screens/update/update.dart';
 
 void initializeNotifications() {
   an.AwesomeNotifications().setListeners(
@@ -58,7 +59,6 @@ Future<void> main() async {
     debug: false
   );
 
-  // Listen for initial action (when app is terminated)
   an.AwesomeNotifications().getInitialNotificationAction().then((receivedAction) {
     if (receivedAction != null) {
       AwesomeNotificationController.onActionReceivedMethod(receivedAction);
@@ -92,7 +92,7 @@ class MyAppState extends State<MyApp> {
 
       if(isLoggedIn) {
         if(mounted) {
-          setState(() => home = const DashboardScreen()); 
+          setState(() => home = const UpdateScreen()); 
         }
       } else {
         if(mounted) {

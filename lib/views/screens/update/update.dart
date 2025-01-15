@@ -93,7 +93,7 @@ class UpdateScreenState extends State<UpdateScreen> {
                     isBorderRadius: false,
                     isBorder: false,
                     isBoxShadow: false,
-                    btnColor: ColorResources.bluePrimary,
+                    btnColor: const Color(0xFFFE1717),
                     btnTxt: "Update",
                   )
                 )
