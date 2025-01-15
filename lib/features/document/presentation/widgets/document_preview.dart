@@ -23,20 +23,13 @@ class DocumentPreview extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: InkWell(
-          onTap: (!hasDocument || loading) // jika dokumen belum ada
+          onTap: (!hasDocument) // jika dokumen belum ada
               ? () async => await provider.updateDocument(type)
               : null,
           borderRadius: BorderRadius.circular(16),
           child: loading
               ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator.adaptive(),
-                      SizedBox(height: 16),
-                      Text('Memuat Dokumen', textAlign: TextAlign.center),
-                    ],
-                  ),
+                  child: CircularProgressIndicator.adaptive(),
                 )
               : hasDocument
                   ? _buildPreviewDocument(type)
@@ -57,11 +50,10 @@ class DocumentPreview extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: RotatedBox(
-        quarterTurns: 1, // rotate vertical
-        child: CachedNetworkImage(
-          imageUrl: documentUrl,
-          fit: BoxFit.cover,
+      child: CachedNetworkImage(
+        imageUrl: documentUrl,
+        placeholder: (context, url) => const Center(
+          child: CircularProgressIndicator(),
         ),
       ),
     );

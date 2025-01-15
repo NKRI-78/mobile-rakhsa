@@ -24,6 +24,10 @@ class DocumentNotifier extends ChangeNotifier {
     required this.updatePassport,
   });
 
+  // document scanner plugin
+  DocumentScanner? _scanner;
+  DocumentScanningResult? _scannerResult;
+
   // path temp
   String _visaPath = '';
   String get visaPath => _visaPath;
@@ -45,17 +49,27 @@ class DocumentNotifier extends ChangeNotifier {
 
   Future<List<String>> scanDocument() async {
     try {
-      DocumentScannerOptions documentOptions = DocumentScannerOptions(
-        documentFormat: DocumentFormat.jpeg, // set output document format
-        mode: ScannerMode.filter, // to control what features are enabled
-        pageLimit: 1, // setting a limit to the number of pages scanned
-        isGalleryImport: true, // importing from the photo gallery
+      _scannerResult = null;
+      notifyListeners();
+
+      _scanner?.close();
+
+      _scanner = DocumentScanner(
+        options: DocumentScannerOptions(
+          documentFormat: DocumentFormat.jpeg, // set output document format
+          mode: ScannerMode.full, // to control what features are enabled
+          pageLimit: 1, // setting a limit to the number of pages scanned
+          isGalleryImport: true, // importing from the photo gallery'
+        ),
       );
-      final documentScanner = DocumentScanner(options: documentOptions);
 
-      final path = await documentScanner.scanDocument();
+      _scannerResult = await _scanner?.scanDocument();
 
-      return path.images;
+      if (_scannerResult != null) {
+        return _scannerResult!.images;
+      } else {
+        return [];
+      }
     } catch (e) {
       debugPrint(e.toString());
       return [];
@@ -65,124 +79,162 @@ class DocumentNotifier extends ChangeNotifier {
   Future<void> updateDocument(DocumentType type) async {
     if (type == DocumentType.visa) {
       final documentPathList = await scanDocument();
-      await _updateVisa(documentPathList.last).then((_) {
-        getImageDocument(type);
-      });
+      await _updateAndGetVisaFromServer(documentPathList.last);
     } else {
       final documentPathList = await scanDocument();
-      await _updatePassport(documentPathList.last).then((_) {
-        getImageDocument(type);
-      });
+      await _updateAndGetPassportFromServer(documentPathList.last);
     }
   }
 
-  Future<void> _updateVisa(String path) async {
-    try {
-      final media =
-          await mediaUseCase.execute(file: File(path), folderName: 'visa');
+  // [1] upload visa to server (media)
+  // [2] update url visa dari server ke profile
+  // [3] get visa url dari profile
+  Future<void> _updateAndGetVisaFromServer(String path) async {
+    _visaIsLoading = true;
+    notifyListeners();
 
-      media.fold((l) {
-        ShowSnackbar.snackbarErr(l.message);
-      }, (r) async {
-        await updateVisa.execute(path: r.path);
-        _errMessage = null;
+    // logic
+    try {
+      final uploadVisaToServer = await mediaUseCase.execute(
+        file: File(path),
+        folderName: 'visa',
+      );
+
+      // [1] upload visa to server (media)
+      uploadVisaToServer.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.message);
+        _visaIsLoading = false;
+        notifyListeners();
+      }, (media) async {
+        final updateVisaUrlToProfile =
+            await updateVisa.execute(path: media.path);
+
+        // [2] update url visa dari server ke profile
+        updateVisaUrlToProfile.fold((failure) {
+          ShowSnackbar.snackbarErr(failure.message);
+          _visaIsLoading = false;
+          notifyListeners();
+        }, (_) async {
+          await getVisaUrlFromProfile();
+        });
       });
     } catch (e) {
       _errMessage = e.toString();
+      _visaIsLoading = false;
+      notifyListeners();
+    } finally {
+      _visaIsLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> _updatePassport(String path) async {
-    try {
-      final media =
-          await mediaUseCase.execute(file: File(path), folderName: 'passport');
+  // [1] upload passport to server (media)
+  // [2] update url passport dari server ke profile
+  // [3] get passport url dari profile
+  Future<void> _updateAndGetPassportFromServer(String path) async {
+    _passportIsLoading = true;
+    notifyListeners();
 
-      media.fold((l) {
-        ShowSnackbar.snackbarErr(l.message);
-      }, (r) async {
-        await updatePassport.execute(path: r.path);
-        _errMessage = null;
+    // logic
+    try {
+      final uploadPassportToServer = await mediaUseCase.execute(
+        file: File(path),
+        folderName: 'passport',
+      );
+
+      // [1] upload Passport to server (media)
+      uploadPassportToServer.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.message);
+        _passportIsLoading = false;
+        notifyListeners();
+      }, (media) async {
+        final updatePassportUrlToProfile =
+            await updatePassport.execute(path: media.path);
+
+        // [2] update url Passport dari server ke profile
+        updatePassportUrlToProfile.fold((failure) {
+          ShowSnackbar.snackbarErr(failure.message);
+          _passportIsLoading = false;
+          notifyListeners();
+        }, (_) async {
+          await getPassportUrlFromProfile();
+        });
       });
     } catch (e) {
       _errMessage = e.toString();
+      _passportIsLoading = false;
+      notifyListeners();
+    } finally {
+      _passportIsLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> getImageDocument(DocumentType type) async {
-    if (type == DocumentType.visa) {
-      _getVisaImage();
-    } else {
-      _getPassportImage();
-    }
-  }
-
-  void _getVisaImage() async {
+  Future<void> getVisaUrlFromProfile() async {
     try {
       _visaIsLoading = true;
       notifyListeners();
 
       final profile = await profileUseCase.execute();
 
-      await profile.fold((l) {
-        ShowSnackbar.snackbarErr(l.toString());
-      }, (r) async {
-        final visaUrl = r.data?.document.visa;
+      // [3] get visa url dari profile
+      profile.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.toString());
+        _visaIsLoading = false;
+        notifyListeners();
+      }, (profile) async {
+        final visaUrl = profile.data?.document.visa;
 
-        if (visaUrl != null && await _isUrlAccessible(visaUrl)) {
+        if (visaUrl != null) {
           _errMessage = null;
           _visaPath = visaUrl;
         } else {
           _visaPath = '';
         }
 
+        _scanner?.close();
+
+        _visaIsLoading = false;
         notifyListeners();
       });
     } catch (e) {
       _errMessage = e.toString();
-      _visaPath = '';
-      _visaIsLoading = false;
-      notifyListeners();
-    } finally {
       _visaIsLoading = false;
       notifyListeners();
     }
   }
 
-  void _getPassportImage() async {
+  Future<void> getPassportUrlFromProfile() async {
     try {
       _passportIsLoading = true;
       notifyListeners();
 
       final profile = await profileUseCase.execute();
 
-      await profile.fold((l) {
-        ShowSnackbar.snackbarErr(l.toString());
-      }, (r) async {
-        final passportUrl = r.data?.document.passport;
+      // [3] get passport url dari profile
+      profile.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.toString());
+        _passportIsLoading = false;
+        notifyListeners();
+      }, (profile) async {
+        final passportUrl = profile.data?.document.passport;
 
-        if (passportUrl != null && await _isUrlAccessible(passportUrl)) {
+        if (passportUrl != null) {
           _errMessage = null;
           _passportPath = passportUrl;
         } else {
           _passportPath = '';
         }
 
+        _scanner?.close();
+
+        _passportIsLoading = false;
         notifyListeners();
       });
     } catch (e) {
       _errMessage = e.toString();
-      _passportPath = '';
-      _passportIsLoading = false;
-      notifyListeners();
-    } finally {
       _passportIsLoading = false;
       notifyListeners();
     }
-  }
-
-  Future<bool> _isUrlAccessible(String url) async {
-    return Uri.parse(url).isAbsolute;
   }
 }

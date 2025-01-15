@@ -24,7 +24,7 @@ class _VisaDocumentPageState extends State<VisaDocumentPage> {
     documentNotifier = context.read<DocumentNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      documentNotifier.getImageDocument(DocumentType.visa);
+      documentNotifier.getVisaUrlFromProfile();
     });
   }
 

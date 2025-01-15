@@ -24,7 +24,7 @@ class _PassportDocumentPageState extends State<PassportDocumentPage> {
     documentNotifier = context.read<DocumentNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      documentNotifier.getImageDocument(DocumentType.passport);
+      documentNotifier.getPassportUrlFromProfile();
     });
   }
 
