@@ -213,7 +213,6 @@ class SearchPageState extends State<SearchPage> {
                       )
                     )
                     
-                    
                   );
                 },
               ),
@@ -233,62 +232,6 @@ class SearchPageState extends State<SearchPage> {
                   ),
                 )
               ),
-
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    top: 16.0,
-                    left: 16.0,
-                    right: 16.0
-                  ),
-                  child: TextField(
-                    controller: searchC,
-                    onChanged: (String val) async {
-                      if (debounce?.isActive ?? false) debounce?.cancel();
-                        debounce = Timer(const Duration(milliseconds: 500), () {
-                          countryNotifier.getCountry(search: val);
-                        });
-                    },
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: ColorResources.white,
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.all(Radius.circular(9.0))
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.all(Radius.circular(9.0))
-                      ),
-                      hintStyle: robotoRegular.copyWith(
-                        color: ColorResources.grey,
-                        fontSize: Dimensions.fontSizeSmall
-                      ),
-                      hintText: "Pilih Negara yang Anda Inginkan",
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: ColorResources.grey,
-                      )
-                    ),
-                  )
-                ),
-              ),
-
-              if(notifier.state == ProviderState.loading)
-                const SliverFillRemaining(
-                  child: Center(
-                    child: SizedBox(
-                      width: 16.0,
-                      height: 16.0,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
-                      )
-                    ),
-                  ),
-                ),
 
               if(notifier.state == ProviderState.loaded)
                 SliverList.builder(
@@ -351,6 +294,62 @@ class SearchPageState extends State<SearchPage> {
                       )
                     );
                   },
+                ),
+
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: const EdgeInsets.only(
+                    top: 16.0,
+                    left: 16.0,
+                    right: 16.0
+                  ),
+                  child: TextField(
+                    controller: searchC,
+                    onChanged: (String val) async {
+                      if (debounce?.isActive ?? false) debounce?.cancel();
+                        debounce = Timer(const Duration(milliseconds: 500), () {
+                          countryNotifier.getCountry(search: val);
+                        });
+                    },
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: ColorResources.white,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(9.0))
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(9.0))
+                      ),
+                      hintStyle: robotoRegular.copyWith(
+                        color: ColorResources.grey,
+                        fontSize: Dimensions.fontSizeSmall
+                      ),
+                      hintText: "Pilih Negara yang Anda Inginkan",
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: ColorResources.grey,
+                      )
+                    ),
+                  )
+                ),
+              ),
+
+              if(notifier.state == ProviderState.loading)
+                const SliverFillRemaining(
+                  child: Center(
+                    child: SizedBox(
+                      width: 16.0,
+                      height: 16.0,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                      )
+                    ),
+                  ),
                 ),
             
             ],
