@@ -58,7 +58,6 @@ class LoginPageState extends State<LoginPage> {
       return true;
     }
 
-
     String val = valC.text.trim();
     String pass = passwordC.text.trim();
 
@@ -182,7 +181,7 @@ class LoginPageState extends State<LoginPage> {
                 
                       CustomTextField(
                         controller: valC,
-                        labelText: '',
+                        labelText: "",
                         isEmail: true,
                         cursorColor: ColorResources.white,
                         onChanged: (p0) {},
@@ -296,7 +295,9 @@ class LoginPageState extends State<LoginPage> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterPage()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
+                              return const RegisterPage();
+                            }));
                           },
                           child: Text("BUAT AKUN BARU",
                             style: robotoRegular.copyWith(

@@ -204,8 +204,7 @@ class SearchPageState extends State<SearchPage> {
                                     )
                                   )
                                 },
-                              ),
-                            ),
+                              )),
                           
                             ],
                           ),

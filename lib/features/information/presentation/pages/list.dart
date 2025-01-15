@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
@@ -15,9 +16,13 @@ class InformationListPage extends StatelessWidget {
       backgroundColor: const Color(0xffF4F4F7),
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
-        automaticallyImplyLeading: false,
+        leading: CupertinoNavigationBarBackButton(
+          onPressed: () {
+            return Navigator.pop(context);
+          },
+        ),
         bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: Size.fromHeight(80.0),
           child: Padding(
             padding: EdgeInsets.only(
               left: 20.0, 
