@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/camera.dart';
+
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -142,7 +145,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   ),
                 ),
               GestureDetector(
-                onLongPressStart: (_) async => widget.isConnected ? notifier.isTimerRunning ? () {} : await handleLongPressStart() : () {},
+                onLongPressStart: (LongPressStartDetails longPressStartDetails) async => widget.isConnected ? notifier.isTimerRunning ? () {} : await handleLongPressStart() : () {},
                 child: AnimatedBuilder(
                   animation: notifier.timerController!,
                   builder: (BuildContext context, Widget? child) {

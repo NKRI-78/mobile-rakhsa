@@ -109,8 +109,6 @@ class EventCreatePageState extends State<EventCreatePage> {
     String startDate = DateFormat('yyyy-MM-dd').format(rangeStart!);
     String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
 
-    await insertToGoogleCalendar(rangeStart, rangeEnd);
-
     await saveEventNotifier.save(
       title: title, 
       startDate: startDate, 
@@ -124,9 +122,11 @@ class EventCreatePageState extends State<EventCreatePage> {
       ShowSnackbar.snackbarErr(saveEventNotifier.message);
       return;
     }
+
+    await insertToGoogleCalendar(rangeStart, rangeEnd);
     
     if(!mounted) return;
-    Navigator.pop(context, "refetch");
+      Navigator.pop(context, "refetch");
   }
 
   void clear() {
@@ -174,8 +174,6 @@ class EventCreatePageState extends State<EventCreatePage> {
       final googleAPI.Event createdEvent = await calendarAPI.events.insert(newEvent, 'primary');
 
       debugPrint("Event summary: ${createdEvent.summary}");
-
-      clear();
     } catch (e) {
       debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
     }
@@ -191,6 +189,8 @@ class EventCreatePageState extends State<EventCreatePage> {
     saveEventNotifier = context.read<SaveEventNotifier>();
     getContinentNotifier = context.read<GetContinentNotifier>();
     getStateNotifier = context.read<GetStateNotifier>();
+
+    clear();
 
     Future.microtask(() => getData());
   }
