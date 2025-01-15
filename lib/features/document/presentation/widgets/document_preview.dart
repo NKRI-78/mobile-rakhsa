@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
 
 class DocumentPreview extends StatelessWidget {
@@ -32,14 +33,14 @@ class DocumentPreview extends StatelessWidget {
                   child: CircularProgressIndicator.adaptive(),
                 )
               : hasDocument
-                  ? _buildPreviewDocument(type)
-                  : _buildUnAvailableDocument(),
+                  ? buildPreviewDocument(type)
+                  : buildUnAvailableDocument(),
         ),
       ),
     );
   }
 
-  Widget _buildPreviewDocument(DocumentType type) {
+  Widget buildPreviewDocument(DocumentType type) {
     String documentUrl;
 
     if (type == DocumentType.visa) {
@@ -52,22 +53,22 @@ class DocumentPreview extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: CachedNetworkImage(
         imageUrl: documentUrl,
-        placeholder: (context, url) => const Center(
+        errorWidget: (BuildContext context, String url, dynamic error) {
+          return Image.asset(AssetSource.iconDefaultImg);
+        },
+        placeholder: (BuildContext context, String url) => const Center(
           child: CircularProgressIndicator(),
         ),
       ),
     );
   }
 
-  Widget _buildUnAvailableDocument() {
+  Widget buildUnAvailableDocument() {
     return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // icon
         Icon(Icons.document_scanner_outlined),
         SizedBox(height: 16),
-
-        // text
         Text(
           'Upload dokumen Anda disini',
           textAlign: TextAlign.center,

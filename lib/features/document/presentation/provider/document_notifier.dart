@@ -1,7 +1,8 @@
+
 import 'dart:io';
 
+import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_document_scanner/google_mlkit_document_scanner.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
@@ -25,8 +26,6 @@ class DocumentNotifier extends ChangeNotifier {
   });
 
   // document scanner plugin
-  DocumentScanner? _scanner;
-  DocumentScanningResult? _scannerResult;
 
   // path temp
   String _visaPath = '';
@@ -49,27 +48,12 @@ class DocumentNotifier extends ChangeNotifier {
 
   Future<List<String>> scanDocument() async {
     try {
-      _scannerResult = null;
-      notifyListeners();
-
-      _scanner?.close();
-
-      _scanner = DocumentScanner(
-        options: DocumentScannerOptions(
-          documentFormat: DocumentFormat.jpeg, // set output document format
-          mode: ScannerMode.full, // to control what features are enabled
-          pageLimit: 1, // setting a limit to the number of pages scanned
-          isGalleryImport: true, // importing from the photo gallery'
-        ),
+      final selectedDocuments = await CunningDocumentScanner.getPictures(
+        noOfPages: 1,
+        isGalleryImportAllowed: true,
       );
 
-      _scannerResult = await _scanner?.scanDocument();
-
-      if (_scannerResult != null) {
-        return _scannerResult!.images;
-      } else {
-        return [];
-      }
+      return selectedDocuments ?? [];
     } catch (e) {
       debugPrint(e.toString());
       return [];
@@ -192,8 +176,6 @@ class DocumentNotifier extends ChangeNotifier {
           _visaPath = '';
         }
 
-        _scanner?.close();
-
         _visaIsLoading = false;
         notifyListeners();
       });
@@ -225,8 +207,6 @@ class DocumentNotifier extends ChangeNotifier {
         } else {
           _passportPath = '';
         }
-
-        _scanner?.close();
 
         _passportIsLoading = false;
         notifyListeners();

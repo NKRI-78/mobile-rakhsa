@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -75,12 +76,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       await firebaseProvider.initFcm();
-
+    
     if(!mounted) return;
       getCurrentLocation();
 
-    if(!mounted) return;
-      checkNotificationPermission();
+    if(Platform.isAndroid) {
+      if(!mounted) return;
+        checkNotificationPermission();
+    }
   }
 
   Future<void> getCurrentLocation() async {
@@ -188,7 +191,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
       await Future.delayed(const Duration(milliseconds: 500)); 
       await getData();
-      await checkNotificationPermission();
+      if(Platform.isIOS) {
+        await checkNotificationPermission();
+      }
       await getCurrentLocation();
 
       isResumedProcessing = false;
