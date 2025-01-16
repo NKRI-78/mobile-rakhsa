@@ -57,7 +57,7 @@ class NewsListPageState extends State<NewsListPage> {
           },
         ),
         bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: Size.fromHeight(60.0),
           child: Padding(
             padding: EdgeInsets.only(
               left: 16.0, 

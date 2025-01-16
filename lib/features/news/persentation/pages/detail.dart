@@ -95,7 +95,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             }
 
             if(notifier.state == ProviderState.error) {
-              return Container();
+              return const SizedBox();
             }
 
             return ListView(
@@ -131,7 +131,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                     color: ColorResources.black
                   ),
                 ),
-              SizedBox(
+                SizedBox(
                   height: notifier.entity.location.toString().isNotEmpty 
                   ? 10.0 
                   : 0.0,

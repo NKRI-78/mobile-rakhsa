@@ -43,7 +43,7 @@ class ProfilePageState extends State<ProfilePage> {
     imageSource = await showDialog<ImageSource>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text("Source Image",
+        title: Text("Sumber Gambar",
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
             fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class ProfilePageState extends State<ProfilePage> {
         ),
         actions: [
           MaterialButton(
-            child: Text("Camera",
+            child: Text("Kamera",
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.black
@@ -61,7 +61,7 @@ class ProfilePageState extends State<ProfilePage> {
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           MaterialButton(
-            child: Text("Gallery",
+            child: Text("Galeri",
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.black
@@ -148,6 +148,10 @@ class ProfilePageState extends State<ProfilePage> {
       ShowSnackbar.snackbarOk("Update Profile Success");
     }
 
+    Future.delayed(Duration.zero, () {
+      Navigator.pop(context);
+    });
+
     profileNotifier.getProfile();
   }
 
@@ -172,28 +176,20 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       bottomNavigationBar: selectedFile != null 
-      ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-
-            Container(
-              margin: const EdgeInsets.only(
-                top: 20.0,
-                bottom: 20.0,
-                left: 10.0,
-                right: 10.0
-              ),
-              child: CustomButton(
-                onTap: submit,
-                isBorder: false,
-                isBorderRadius: true,
-                btnColor: const Color(0xFFFE1717),
-                btnTxt: "Update Profile",
-              ),
-            )
-
-          ],
+      ? Container(
+          margin: const EdgeInsets.only(
+            top: 20.0,
+            bottom: 20.0,
+            left: 10.0,
+            right: 10.0
+          ),
+          child: CustomButton(
+            onTap: submit,
+            isBorder: false,
+            isBorderRadius: true,
+            btnColor: const Color(0xFFFE1717),
+            btnTxt: "Update Profile",
+          ),
         ) 
       : const SizedBox(),
       body: RefreshIndicator(

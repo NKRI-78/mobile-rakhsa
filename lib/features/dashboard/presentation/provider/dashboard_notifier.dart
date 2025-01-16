@@ -52,12 +52,11 @@ class DashboardNotifier with ChangeNotifier {
 
       _news = [];
       _news.addAll(r.data);
+      setStateProvider(ProviderState.loaded);
 
       if(news.isEmpty) {
         setStateProvider(ProviderState.empty);
       }
-
-      setStateProvider(ProviderState.loaded);
     });
   }
 
@@ -78,14 +77,12 @@ class DashboardNotifier with ChangeNotifier {
     }, (r) {
 
       _ews = [];
-
       _ews.addAll(r.data);
+      setStateProvider(ProviderState.loaded);
 
       if(ews.isEmpty) {
         setStateProvider(ProviderState.empty);
       }
-
-      setStateProvider(ProviderState.loaded);
     });
   }
 
