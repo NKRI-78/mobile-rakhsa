@@ -1,13 +1,17 @@
+// ignore_for_file: non_constant_identifier_names
 
 import 'dart:io';
 
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
+import 'package:rakhsa/features/document/domain/usecase/delete_visa.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_visa_use_case.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 enum DocumentType { visa, passport }
 
@@ -16,16 +20,21 @@ class DocumentNotifier extends ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
   final ProfileUseCase profileUseCase;
   final UpdateVisaUseCase updateVisa;
+  final DeleteVisaUseCase deleteVisa;
   final UpdatePassportUseCase updatePassport;
+  final DeviceInfoPlugin deviceInfo;
 
   DocumentNotifier({
     required this.mediaUseCase,
     required this.profileUseCase,
     required this.updateVisa,
+    required this.deleteVisa,
     required this.updatePassport,
+    required this.deviceInfo,
   });
 
-  // document scanner plugin
+  // android system un requireD
+  final DEVICE_NOT_SUPPORTED_HARDWARE = 'S665L'; // itel S23
 
   // path temp
   String _visaPath = '';
@@ -41,31 +50,44 @@ class DocumentNotifier extends ChangeNotifier {
   bool get hasPassport => _passportPath.isNotEmpty;
 
   // loading state
-  bool _visaIsLoading = false;
+  bool _visaIsLoading = true;
   bool get visaIsLoading => _visaIsLoading;
-  bool _passportIsLoading = false;
+  bool _passportIsLoading = true;
   bool get passportIsLoading => _passportIsLoading;
 
-  Future<List<String>> scanDocument() async {
+  Future<List<String>> scanDocument(BuildContext context) async {
     try {
-      final selectedDocuments = await CunningDocumentScanner.getPictures(
-        noOfPages: 1,
-        isGalleryImportAllowed: true,
-      );
+      final androidInfo = await deviceInfo.androidInfo;
+      final currentDevice = androidInfo.hardware;
 
-      return selectedDocuments ?? [];
+      if (currentDevice == DEVICE_NOT_SUPPORTED_HARDWARE) {
+        if (context.mounted) {
+          Navigator.pushNamed(
+            context,
+            RoutesNavigation.deviceNotSupport,
+          );
+        }
+
+        return [];
+      } else {
+        final selectedDocuments = await CunningDocumentScanner.getPictures(
+          noOfPages: 1,
+          isGalleryImportAllowed: true,
+        );
+        return selectedDocuments ?? [];
+      }
     } catch (e) {
       debugPrint(e.toString());
       return [];
     }
   }
 
-  Future<void> updateDocument(DocumentType type) async {
+  Future<void> updateDocument(BuildContext context, DocumentType type) async {
     if (type == DocumentType.visa) {
-      final documentPathList = await scanDocument();
+      final documentPathList = await scanDocument(context);
       await _updateAndGetVisaFromServer(documentPathList.last);
     } else {
-      final documentPathList = await scanDocument();
+      final documentPathList = await scanDocument(context);
       await _updateAndGetPassportFromServer(documentPathList.last);
     }
   }
@@ -98,9 +120,34 @@ class DocumentNotifier extends ChangeNotifier {
           ShowSnackbar.snackbarErr(failure.message);
           _visaIsLoading = false;
           notifyListeners();
-        }, (_) async {
-          await getVisaUrlFromProfile();
-        });
+        }, (_) async => await getVisaUrlFromProfile());
+      });
+    } catch (e) {
+      _errMessage = e.toString();
+      _visaIsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getVisaUrlFromProfile() async {
+    try {
+      final getProfile = await profileUseCase.execute();
+
+      // [3] get visa url dari profile
+      getProfile.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.toString());
+        _visaIsLoading = false;
+        notifyListeners();
+      }, (profile) async {
+        final visaUrl = profile.data?.document.visa;
+
+        if (visaUrl != null) {
+          _errMessage = null;
+          _visaPath = visaUrl;
+        } else {
+          _visaPath = '';
+        }
+        notifyListeners();
       });
     } catch (e) {
       _errMessage = e.toString();
@@ -140,61 +187,21 @@ class DocumentNotifier extends ChangeNotifier {
           ShowSnackbar.snackbarErr(failure.message);
           _passportIsLoading = false;
           notifyListeners();
-        }, (_) async {
-          await getPassportUrlFromProfile();
-        });
+        }, (_) async => await getPassportUrlFromProfile());
       });
     } catch (e) {
       _errMessage = e.toString();
       _passportIsLoading = false;
-      notifyListeners();
-    } finally {
-      _passportIsLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> getVisaUrlFromProfile() async {
-    try {
-      _visaIsLoading = true;
-      notifyListeners();
-
-      final profile = await profileUseCase.execute();
-
-      // [3] get visa url dari profile
-      profile.fold((failure) {
-        ShowSnackbar.snackbarErr(failure.toString());
-        _visaIsLoading = false;
-        notifyListeners();
-      }, (profile) async {
-        final visaUrl = profile.data?.document.visa;
-
-        if (visaUrl != null) {
-          _errMessage = null;
-          _visaPath = visaUrl;
-        } else {
-          _visaPath = '';
-        }
-
-        _visaIsLoading = false;
-        notifyListeners();
-      });
-    } catch (e) {
-      _errMessage = e.toString();
-      _visaIsLoading = false;
       notifyListeners();
     }
   }
 
   Future<void> getPassportUrlFromProfile() async {
     try {
-      _passportIsLoading = true;
-      notifyListeners();
-
-      final profile = await profileUseCase.execute();
+      final getProfile = await profileUseCase.execute();
 
       // [3] get passport url dari profile
-      profile.fold((failure) {
+      getProfile.fold((failure) {
         ShowSnackbar.snackbarErr(failure.toString());
         _passportIsLoading = false;
         notifyListeners();
@@ -207,13 +214,36 @@ class DocumentNotifier extends ChangeNotifier {
         } else {
           _passportPath = '';
         }
-
-        _passportIsLoading = false;
         notifyListeners();
       });
     } catch (e) {
       _errMessage = e.toString();
       _passportIsLoading = false;
+      notifyListeners();
+    } finally {
+      _passportIsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteVisaEvent() async {
+    try {
+      _visaIsLoading = true;
+      notifyListeners();
+
+      final deleteVisaEvent = await deleteVisa.execute();
+
+      deleteVisaEvent.fold(
+        (failure) {
+          ShowSnackbar.snackbarErr(failure.toString());
+          _visaIsLoading = false;
+          notifyListeners();
+        },
+        (_) async => await getVisaUrlFromProfile(),
+      );
+    } catch (e) {
+      _errMessage = e.toString();
+      _visaIsLoading = false;
       notifyListeners();
     }
   }

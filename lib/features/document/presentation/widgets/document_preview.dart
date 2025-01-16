@@ -25,7 +25,7 @@ class DocumentPreview extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: InkWell(
           onTap: (!hasDocument) // jika dokumen belum ada
-              ? () async => await provider.updateDocument(type)
+              ? () async => await provider.updateDocument(context, type)
               : null,
           borderRadius: BorderRadius.circular(16),
           child: loading

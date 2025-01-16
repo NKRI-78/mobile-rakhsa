@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
 
 import 'package:rakhsa/data/models/ecommerce/balance/balance.dart';
@@ -121,6 +122,11 @@ class EcommerceProvider extends ChangeNotifier {
   });
 
   int balance = 0;
+
+  String provinceName = "";
+  String cityName = "";
+  String subdistrictName = "";
+  String tariffCode = ""; 
 
   int selectedTopupId = 0;
   int selectedTopupPrice = 0;
@@ -2119,17 +2125,51 @@ class EcommerceProvider extends ChangeNotifier {
   Future<List<PredictionModel>> getAutocomplete(String query) async {
     try {
       Dio dio = Dio();
-      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyCJD7w_-wHs4Pe5rWMf0ubYQFpAt2QF2RA");
+      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${RemoteDataSourceConsts.gmaps}");
       Map<String, dynamic> data = res.data;
       AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
+
+      for (var prediction in autocompleteModel.predictions) {
+        await addPostalCodeToPrediction(prediction, dio);
+      }
+
       return autocompleteModel.predictions;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
     return [];
   }
+
+  Future<void> addPostalCodeToPrediction(PredictionModel prediction, Dio dio) async {
+    try {
+      final placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json"
+        "?place_id=${prediction.placeId}"
+        "&key=${RemoteDataSourceConsts.gmaps}";
+
+      Response res = await dio.get(placeDetailsUrl);
+      Map<String, dynamic> details = res.data;
+
+      List addressComponents = details['result']['address_components'] ?? [];
+
+      String postalCode = "";
+
+      for (var component in addressComponents) {
+        var types = (component['types'] as List);
+
+        if (types.isNotEmpty && types.contains('postal_code')) {
+          postalCode = component["long_name"].toString();
+          break; 
+        }
+      }
+
+      debugPrint("=== GET POSTAL CODE ${postalCode.toString()} ===");
+    } catch (e) {
+      debugPrint('Error fetching postal code: $e');
+    }
+  }
+
 
   Future<void> getPaymentChannel({
     required BuildContext context

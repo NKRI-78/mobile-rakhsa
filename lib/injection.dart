@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -28,6 +29,7 @@ import 'package:rakhsa/features/dashboard/presentation/provider/update_address_n
 import 'package:rakhsa/features/document/data/datasource/document_remote_datasource.dart';
 import 'package:rakhsa/features/document/data/repositories/document_repository_impl.dart';
 import 'package:rakhsa/features/document/domain/repository/document_repository.dart';
+import 'package:rakhsa/features/document/domain/usecase/delete_visa.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_visa_use_case.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
@@ -157,6 +159,7 @@ void init() {
   locator.registerLazySingleton(() => GetVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriIdUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriNameUseCase(locator()));
+  locator.registerLazySingleton(() => DeleteVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetPassportUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
@@ -223,6 +226,8 @@ void init() {
     updatePassport: locator(),
     updateVisa: locator(),
     profileUseCase: locator(),
+    deleteVisa: locator(),
+    deviceInfo: locator()
   ));
   
   locator.registerFactory(() => WebSocketsService());
@@ -231,4 +236,5 @@ void init() {
   Dio getDio = dio.getClient();
 
   locator.registerLazySingleton(() => getDio);
+  locator.registerLazySingleton(() => DeviceInfoPlugin());
 }

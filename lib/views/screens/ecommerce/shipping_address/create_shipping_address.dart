@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:rakhsa/data/models/ecommerce/region/city.dart';
@@ -14,6 +13,7 @@ import 'package:rakhsa/data/models/ecommerce/region/subdistrict.dart';
 
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -123,7 +123,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                 ),
                 
                 isCheck
-                ? Container()
+                ? const SizedBox()
                 : Container(
                     height: 35.0,
                     margin: const EdgeInsets.only(bottom: 15),
@@ -167,9 +167,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                 
                 inputFieldProvince(context, "Provinsi", province),
                 
-                const SizedBox(
-                  height: 15.0,
-                ),
+                const SizedBox(height: 15.0),
 
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

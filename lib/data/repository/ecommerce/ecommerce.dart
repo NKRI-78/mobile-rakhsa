@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/dio.dart';
+import 'package:rakhsa/data/models/ecommerce/autocomplete/autocomplete.dart';
 import 'package:rakhsa/data/models/ecommerce/badge/badge.dart';
 import 'package:rakhsa/data/models/ecommerce/balance/balance.dart';
 
@@ -942,6 +943,19 @@ class EcommerceRepo {
       throw Exception('Failed shipping address detail');
     }
   }
+
+  Future<AutocompleteModel> getAutocomplete({required String zipCode}) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/autocomplete/$zipCode");
+      Map<String, dynamic> data = response.data;
+      AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
+      return autocompleteModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to get autocomplete");
+    }
+  } 
   
   Future<ProvinceModel> getProvince({required String search}) async {
     try {

@@ -33,6 +33,7 @@ dependencies:
   dio: ^5.4.1
   dartz: ^0.10.1
   date_count_down: ^3.0.0
+  device_info_plus: ^10.1.2
 
   # E
   equatable: ^2.0.5

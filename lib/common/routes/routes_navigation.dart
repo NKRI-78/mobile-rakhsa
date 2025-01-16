@@ -24,10 +24,14 @@ class RoutesNavigation {
   static const visaDocument = '/visa-document';
   static const passportDocument = '/passport-document';
   static const itinerary = '/itinerary';
+  static const deviceNotSupport = '/device-not-support';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case dashboard: 
+        return MaterialPageRoute(builder: (_) => const DashboardScreen());
+      case mart: 
+      case deviceNotSupport: 
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case mart: 
         return MaterialPageRoute(builder: (_) => const ProductsScreen());

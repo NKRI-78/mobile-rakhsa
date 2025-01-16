@@ -5,7 +5,7 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
-import 'package:rakhsa/features/document/presentation/widgets/button_update_document.dart';
+import 'package:rakhsa/features/document/presentation/widgets/document_button.dart';
 import 'package:rakhsa/features/document/presentation/widgets/document_preview.dart';
 
 class PassportDocumentPage extends StatefulWidget {
@@ -77,10 +77,10 @@ class _PassportDocumentPageState extends State<PassportDocumentPage> {
                     // tombol update dokumen hanya muncul ketika dokumen sudah terpilih
                     // document path != null
                     if (provider.hasPassport)
-                      ButtonUpdateDocument(
+                      DocumentButton(
                         label: 'Update Passport',
                         onTap: () async => await provider
-                            .updateDocument(DocumentType.passport),
+                            .updateDocument(context, DocumentType.passport),
                       )
                   ],
                 );
