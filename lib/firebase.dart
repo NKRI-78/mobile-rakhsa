@@ -24,11 +24,18 @@ class NotificationType {
   static const ews = "ews";
   static const news = "news";
   static const chat = "chat";
+  static const historyUser = "history-user";
 }
 
 
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
-  if (message.notification != null) {}
+  if (message.notification != null) {
+    debugPrint("${message.notification?.title.toString()}");
+    debugPrint("${message.notification?.body.toString()}");
+    if(message.data["type"] == "history-user") {
+      debugPrint("=== ${message.data.toString()} ===");
+    }
+  }
   return;
 }
 
@@ -79,7 +86,7 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void processMessage(BuildContext context, RemoteMessage message) {
-    switch (message.data["type"]) {
+    switch (message.data["type"]) {     
       case NotificationType.resolvedSos:
         handleResolvedSos(context, message.data);
       break;
