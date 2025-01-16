@@ -6,23 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
-import 'package:rakhsa/global.dart';
 
-// import 'package:rxdart/rxdart.dart';
+import 'package:rakhsa/global.dart';
 
 class NotificationType {
   static const resolvedSos = "resolved-sos";
   static const closedSos = "closed-sos";
   static const confirmSos = "confirm-sos";
   static const ews = "ews";
+  static const news = "news";
   static const chat = "chat";
 }
 
@@ -35,11 +35,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
 class FirebaseProvider with ChangeNotifier {
   final Dio dio;
 
-  // static final onNotifications = BehaviorSubject<RemoteMessage>();
-
   FirebaseProvider({required this.dio});
-
-  // final Soundpool soundpool = Soundpool.fromOptions(options: SoundpoolOptions.kDefault);
 
   Future<void> initFcm() async {
     try {
@@ -77,17 +73,6 @@ class FirebaseProvider with ChangeNotifier {
       }
     });
   }
-
-  // Future<void> playNotificationSound() async {
-  //   try {
-  //     int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-  //       return soundpool.load(soundData);
-  //     });
-  //     await soundpool.play(soundId);
-  //   } catch (e) {
-  //     debugPrint("Error playing notification sound: $e");
-  //   }
-  // }
   
   void handleMessage(BuildContext context, RemoteMessage message) {
     processMessage(context, message);
@@ -104,6 +89,16 @@ class FirebaseProvider with ChangeNotifier {
       case NotificationType.confirmSos:
         handleConfirmSos(context, message.data);
       break;
+      case NotificationType.news: 
+        String newsId = message.data["news_id"] ?? "0";
+        
+        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
+          NewsDetailPage(
+            id: int.parse(newsId),
+            type: "news",
+          )
+        ));
+      break;  
       case NotificationType.ews:
         String newsId = message.data["news_id"] ?? "0";
         

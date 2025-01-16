@@ -124,6 +124,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                       },
                     ),
                     actions: [
+
                        notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
                       ? const SizedBox() 
                       : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
@@ -188,6 +189,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           Icons.filter_alt_sharp,
                         )
                       )
+                      
                     ],
                   ),
 

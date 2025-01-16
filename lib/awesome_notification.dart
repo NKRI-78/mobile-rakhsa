@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
+
 import 'package:rakhsa/global.dart';
 
 class AwesomeNotificationController {
@@ -15,13 +16,11 @@ class AwesomeNotificationController {
     // NEWS ID
     String newsId = receivedAction.payload!["news_id"] ?? "0";
 
-    // CHAT
     String chatId = receivedAction.payload!["chat_id"] ?? "-";
     String recipientId = receivedAction.payload!["recipient_id"] ?? "-";
     String sosId = receivedAction.payload!["sos_id"] ?? "-";
 
-    debugPrint("=== NEWS ID $newsId ===");
-
+    // CHAT
     if(type == "chat") {
       Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
         ChatPage(
@@ -30,6 +29,16 @@ class AwesomeNotificationController {
           sosId: sosId,
           status: "NONE",
           autoGreetings: false,
+        )
+      ));
+    }
+
+    // NEWS 
+     if(type == "news") {
+      Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
+        NewsDetailPage(
+          id: int.parse(newsId),
+          type: "news",
         )
       ));
     }
