@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -76,12 +77,16 @@ class _PassportDocumentPageState extends State<PassportDocumentPage> {
                     // button update document
                     // tombol update dokumen hanya muncul ketika dokumen sudah terpilih
                     // document path != null
-                    if (provider.hasPassport)
-                      DocumentButton(
-                        label: 'Update Passport',
-                        onTap: () async => await provider
-                            .updateDocument(context, DocumentType.passport),
-                      )
+                      Visibility(
+                        maintainAnimation: true,
+                          maintainState: true,
+                          visible: provider.hasPassport,                        
+                          child: DocumentButton(
+                          label: 'Update Passport',
+                          onTap: () async => await provider
+                              .updateDocument(context, DocumentType.passport),
+                        ),
+                      ),
                   ],
                 );
               },
