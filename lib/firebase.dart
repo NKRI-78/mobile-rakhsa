@@ -27,16 +27,11 @@ class NotificationType {
   static const historyUser = "history-user";
 }
 
-
+@pragma('vm:entry-point') // add this for production
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   if (message.notification != null) {
-    debugPrint("${message.notification?.title.toString()}");
-    debugPrint("${message.notification?.body.toString()}");
-    if(message.data["type"] == "history-user") {
-      debugPrint("=== ${message.data.toString()} ===");
-    }
+    return;
   }
-  return;
 }
 
 class FirebaseProvider with ChangeNotifier {
@@ -160,7 +155,7 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
-    if (notification != null) {      
+    if (notification != null) {     
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           payload: {

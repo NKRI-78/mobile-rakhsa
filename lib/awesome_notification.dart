@@ -7,7 +7,7 @@ import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 import 'package:rakhsa/global.dart';
 
-class AwesomeNotificationController {
+class AwesomeNotificationService {
 
   static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     // TYPE
