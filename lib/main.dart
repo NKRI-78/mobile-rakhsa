@@ -34,7 +34,7 @@ import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:workmanager/workmanager.dart';
+import 'package:workmanager/workmanager.dart';
 
 final service = FlutterBackgroundService();
 
@@ -125,8 +125,6 @@ Future<bool> onIosBackground(ServiceInstance service) async {
   return true;
 }
 
-
-
 void startBackgroundService() {
   service.startService();
 }
@@ -135,29 +133,71 @@ void stopBackgroundService() {
   service.invoke("stop");
 }
 
-// @pragma('vm:entry-point')
-// void callbackDispatcher() {
-//   Workmanager().executeTask((task, inputData) async {
-//     switch (task) {
-//       case "fetchBackground":
-//       break;
-//     }
-//     return Future.value(true);
-//   });
-// }
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case "fetchBackground":
+
+        // final sharedPreferences = await SharedPreferences.getInstance();
+
+        // String? userId = sharedPreferences.getString("user_id");
+
+        // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+        Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best,
+        );
+
+        // List<Placemark> placemarks = await placemarkFromCoordinates(
+        //   position.latitude,
+        //   position.longitude,
+        // );
+
+        // String address = [
+        //   placemarks[0].administrativeArea,
+        //   placemarks[0].subAdministrativeArea,
+        //   placemarks[0].street,
+        //   placemarks[0].country,
+        // ].where((part) => part != null && part.isNotEmpty).join(", ");
+
+        // try {
+        //   await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+        //     data: {
+        //       "user_id": userId,
+        //       "address": address,
+        //       "device": androidInfo.model,
+        //       "lat": position.latitude,
+        //       "lng": position.longitude,
+        //     },
+        //   );
+        // } catch (e) {
+        //   debugPrint("Error posting data: $e");
+        // }
+
+        debugPrint("=== RUNNING ON BACKGROUND ===");
+
+        debugPrint("Lat : ${position.latitude.toString()} Lng : ${position.longitude.toString()}");
+
+      break;
+    }
+    return Future.value(true);
+  });
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Workmanager().initialize(
-  //   callbackDispatcher, 
-  //   isInDebugMode: true 
-  // );
-  // Workmanager().registerPeriodicTask(
-  //   "1",
-  //   "fetchBackground",
-  //   frequency: const Duration(minutes: 15),
-  // );
+  Workmanager().initialize(
+    callbackDispatcher, 
+    isInDebugMode: false 
+  );
+  Workmanager().registerPeriodicTask(
+    "1",
+    "fetchBackground",
+    frequency: const Duration(minutes: 15),
+  );
   
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
