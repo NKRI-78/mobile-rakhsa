@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
 
