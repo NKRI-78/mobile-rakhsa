@@ -17,6 +17,11 @@ abstract class DashboardRemoteDataSource {
   Future<NewsDetailModel> getNewsDetail({
     required int id
   });
+  Future<void> trackUser({
+    required String address,
+    required double lat, 
+    required double lng
+  }); 
   Future<void> updateAddress({
     required String address, 
     required double lat, 
@@ -64,6 +69,30 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       Map<String, dynamic> data = response.data;
       NewsDetailModel newsDetailModel = NewsDetailModel.fromJson(data);
       return newsDetailModel;
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> trackUser({
+    required String address,
+    required double lat,
+    required double lng
+  }) async {
+    try {
+      await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+        data: {
+          "user_id": StorageHelper.getUserId(),
+          "address": address,
+          "lat": lat,
+          "lng": lng
+        }
+      );
     } on DioException catch(e) {
       String message = handleDioException(e);
       throw ServerException(message);

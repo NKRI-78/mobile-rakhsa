@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:permission_handler/permission_handler.dart';
@@ -19,6 +21,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
@@ -49,10 +52,15 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
+  // static const MethodChannel channel = MethodChannel('com.inovatiftujuh8.rakhsa/location');
+
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
+  
+  Position? currentLocation;
+  StreamSubscription? subscription;
 
   bool isResumedProcessing = false;
 
@@ -69,6 +77,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   
   bool loadingGmaps = true;
 
+  // void startService() async {
+  //   try {
+  //     await channel.invokeMethod('startService');
+  //   } on PlatformException catch (e) {
+  //     debugPrint("Failed to start service: ${e.message}");
+  //   }
+  // }
+
+  // void stopService() async {
+  //   await channel.invokeMethod('stopService');
+  // }
+
   Future<void> getData() async {
     if(!mounted) return;
       await profileNotifier.getProfile();
@@ -77,10 +97,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await firebaseProvider.initFcm();
 
     if(!mounted) return;
-      getCurrentLocation();
+      await checkNotificationPermission();
 
     if(!mounted) return;
-      checkNotificationPermission();
+      await getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
@@ -88,8 +108,35 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       
       await Geolocator.requestPermission();
 
+      // channel.setMethodCallHandler((call) async {
+      //   if (call.method == "updateLocation") {
+      //     final latitude = call.arguments['latitude'];
+      //     final longitude = call.arguments['longitude'];
+      //     debugPrint("Lat: $latitude, Long: $longitude");
+      //   }
+      // });
+
+      await service.configure(
+        iosConfiguration: IosConfiguration(
+          autoStart: true,
+          onForeground: onStart,
+          onBackground: onIosBackground,
+        ),
+        androidConfiguration: AndroidConfiguration(
+          onStart: onStart,
+          isForegroundMode: true,
+          foregroundServiceNotificationId: notificationId,
+          foregroundServiceTypes: [
+            AndroidForegroundType.location
+          ],
+          notificationChannelId: "notification"
+        ),
+      );
+
+      startBackgroundService();
+
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation,
+        desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true
       );
 
@@ -100,7 +147,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
 
       String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-
+  
       setState(() {
         currentAddress = address;
         currentCountry = country;
@@ -143,6 +190,32 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     }
   }
+
+  // void startListeningLocation() {
+  //   locationPermission(
+  //     isSuccess: () {
+  //       subscription = Geolocator.getPositionStream(
+  //         locationSettings: AndroidSettings(
+  //           accuracy: LocationAccuracy.best,
+  //           distanceFilter: 10,
+  //           forceLocationManager: true,
+  //           foregroundNotificationConfig: const ForegroundNotificationConfig(
+  //             notificationTitle: "", 
+  //             notificationText: "",
+  //             enableWakeLock: true
+  //           )
+  //         )
+  //       ).listen((event) async {
+  //         currentLocation = event;
+  //         debugPrint(currentLocation.toString());
+  //       });
+  //     }
+  //   );
+  // }
+
+  // locationPermission({VoidCallback? isSuccess}) async {
+  //   isSuccess?.call();
+  // }
 
   Future<void> checkNotificationPermission() async {
     bool notificationReq = await Permission.notification.isDenied;

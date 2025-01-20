@@ -18,9 +18,6 @@ dependencies:
 
   # B
   barcode_widget: ^2.0.4
-  background_location_tracker:
-    git:
-      url: https://github.com/jeferson505/flutter-background-location-tracker.git
 
   # C
   cunning_document_scanner: ^1.2.3
@@ -60,8 +57,8 @@ dependencies:
     
   # G
   gallery_saver_plus: ^3.1.1
-  geocoding: ^2.0.5
-  geolocator: ^10.1.0
+  geocoding: ^3.0.0
+  geolocator: ^11.1.0
   get_it: ^7.6.7
   google_sign_in: ^6.0.2
   google_api_headers: ^2.0.0
@@ -71,6 +68,7 @@ dependencies:
 
   # L
   lecle_flutter_absolute_path: ^0.0.2+1
+  # location: ^6.0.2
 
   # I
   intl: ^0.19.0
@@ -87,7 +85,6 @@ dependencies:
   # S
   soundpool: ^2.3.0
   shared_preferences: ^2.2.2
-  stop_watch_timer: ^3.2.1
   
   # P
   permission_handler: ^11.3.1
@@ -109,6 +106,7 @@ dependencies:
 
   # W
   web_socket_channel: ^3.0.1
+  workmanager: ^0.5.2
 
 dev_dependencies:
 

@@ -82,10 +82,30 @@ class DashboardRepositoryImpl implements DashboardRepository {
     required String sosId,
     required String rating
   }) async {
-     try {
+    try {
       var result = await remoteDataSource.ratingSos(
         sosId: sosId,
         rating: rating,
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, void>> userTrack({
+    required String address,
+    required double lat, 
+    required double lng
+  }) async {
+    try {
+      var result = await remoteDataSource.trackUser(
+        address: address,
+        lat: lat,
+        lng: lng
       );
       return Right(result);
     } on ServerException catch(e) {

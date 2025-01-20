@@ -22,9 +22,11 @@ import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifi
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/detail_news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/track_user.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/document/data/datasource/document_remote_datasource.dart';
 import 'package:rakhsa/features/document/data/repositories/document_repository_impl.dart';
@@ -158,6 +160,7 @@ void init() {
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => GetVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriIdUseCase(locator()));
+  locator.registerLazySingleton(() => TrackUserUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriNameUseCase(locator()));
   locator.registerLazySingleton(() => DeleteVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetPassportUseCase(locator()));
@@ -202,6 +205,7 @@ void init() {
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
+  locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(

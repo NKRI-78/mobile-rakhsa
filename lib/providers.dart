@@ -21,6 +21,7 @@ import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifi
 import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
@@ -49,6 +50,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<DashboardNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<DetailNewsNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<SosRatingNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ListEventNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<ProfileNotifier>()),
