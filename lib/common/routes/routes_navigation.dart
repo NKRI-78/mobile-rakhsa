@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
@@ -17,6 +19,8 @@ class RoutesNavigation {
   static const dashboard = '/dashboard';
   static const mart = '/mart';
   static const nearMe = '/near-me';
+  static const register = '/register';
+  static const registerPassport = '/register-passport';
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
@@ -30,11 +34,14 @@ class RoutesNavigation {
     switch (settings.name) {
       case dashboard: 
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
-      case mart: 
       case deviceNotSupport: 
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case mart: 
         return MaterialPageRoute(builder: (_) => const ProductsScreen());
+      case register: 
+        return MaterialPageRoute(builder: (_) => const RegisterPage());
+      case registerPassport: 
+        return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
       case nearMeTypeList:

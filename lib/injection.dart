@@ -1,5 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
@@ -14,6 +15,7 @@ import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/passport_scanner_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
@@ -225,6 +227,10 @@ void init() {
     dio: locator()
   ));
 
+  locator.registerLazySingleton(() => PassportScannerNotifier(
+    gemini: locator(),
+  ));
+
   locator.registerFactory(() => DocumentNotifier(
     mediaUseCase: locator(),
     updatePassport: locator(),
@@ -241,4 +247,5 @@ void init() {
 
   locator.registerLazySingleton(() => getDio);
   locator.registerLazySingleton(() => DeviceInfoPlugin());
+  locator.registerLazySingleton(() => Gemini.instance);
 }

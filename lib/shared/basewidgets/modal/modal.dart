@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:provider/provider.dart';
@@ -27,6 +28,14 @@ import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
+
+  static Future<void> showLoadingOverLay({String? status}) async {
+    await EasyLoading.show(status: status);
+  }
+
+  static Future<void> hideLoadingOverLay({String? status}) async {
+    await EasyLoading.dismiss();
+  }
 
   static void showMainMenu(
     BuildContext context, {
@@ -535,7 +544,7 @@ class GeneralModal {
                               });
 
                             },
-                            btnTxt: "Aktifkan",
+                            btnTxt: "Ok",
                           )
                         ),
                         

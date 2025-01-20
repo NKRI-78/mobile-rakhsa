@@ -27,10 +27,19 @@ abstract class AuthRemoteDataSource {
     required String newPassword
   });
   Future<AuthModel> register({
-    required String fullname,
+    required String countryCode,
+    required String passportNumber,
+    required String fullName,
+    required String nasionality,
+    required String placeOfBirth,
+    required String dateOfBirth,
+    required String gender,
+    required String dateOfIssue,
+    required String dateOfExpiry,
+    required String registrationNumber,
+    required String issuingAuthority,
+    required String mrzCode,
     required String email,
-    required String phone,
-    required String passport,
     required String emergencyContact,
     required String password
   });
@@ -131,20 +140,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<AuthModel> register({
-    required String fullname,
+    required String countryCode,
+    required String passportNumber,
+    required String fullName,
+    required String nasionality,
+    required String placeOfBirth,
+    required String dateOfBirth,
+    required String gender,
+    required String dateOfIssue,
+    required String dateOfExpiry,
+    required String registrationNumber,
+    required String issuingAuthority,
+    required String mrzCode,
     required String email,
-    required String phone,
-    required String passport,
     required String emergencyContact,
     required String password
   }) async {
     try {
       final response = await client.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/register-member",
         data: {
-          "fullname": fullname,
+          "code_country": countryCode,
+          "passport": passportNumber,
+          "fullname": fullName,
+          "citizen": nasionality,
+          "birth_place": placeOfBirth,
+          "birth_date": dateOfBirth,
+          "gender": gender,
+          "passport_issued": dateOfIssue,
+          "passport_expired": dateOfExpiry,
+          "no_reg": registrationNumber,
+          "issuing_authority": issuingAuthority,
+          "mrz_code": mrzCode,
           "email": email,
-          "phone": phone,
-          "passport": passport,
           "emergency_contact": emergencyContact,
           "password": password
         }

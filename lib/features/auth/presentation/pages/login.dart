@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -295,9 +296,7 @@ class LoginPageState extends State<LoginPage> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {
-                              return const RegisterPage();
-                            }));
+                            Navigator.pushNamed(context, RoutesNavigation.registerPassport);
                           },
                           child: Text("BUAT AKUN BARU",
                             style: robotoRegular.copyWith(

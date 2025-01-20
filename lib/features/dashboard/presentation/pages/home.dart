@@ -223,7 +223,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       if (!isDialogNotificationShowing) {
         setState(() => isDialogNotificationShowing = true);
         await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses notifikasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          msg: "Izin Notifikasi Dibutuhkan",
           type: "notification"
         );
 

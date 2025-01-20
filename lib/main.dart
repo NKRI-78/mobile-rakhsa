@@ -9,10 +9,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
@@ -74,7 +76,11 @@ void onStart(ServiceInstance service) async {
     )
   );
 
-  Timer.periodic(const Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
+    // DateTime now = DateTime.now();
+
+    // Check if current time is 4 AM or 4 PM
+    // if (now.hour == 4 && now.minute == 0) {
     String? userId = sharedPreferences.getString("user_id");
 
     if (userId == null) {
@@ -114,6 +120,7 @@ void onStart(ServiceInstance service) async {
     } catch (e) {
       debugPrint("Error posting data: $e");
     }
+    // }
   });
 }
 
@@ -233,6 +240,12 @@ Future<void> main() async {
 
   di.init();
 
+  Gemini.init(apiKey: 'AIzaSyBROwuSIdITYdSU7GWWWg-oBZntbSX_D8E');
+
+  EasyLoading.instance
+    ..userInteractions = false
+    ..dismissOnTap = false;
+
   runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
@@ -303,6 +316,7 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
       home: home,
+      builder: EasyLoading.init(),
     );
   }
 }

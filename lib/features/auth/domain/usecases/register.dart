@@ -11,20 +11,38 @@ class RegisterUseCase {
   RegisterUseCase(this.repository);
 
   Future<Either<Failure, AuthModel>> execute({
-    required String fullname,
+    required String countryCode,
+    required String passportNumber,
+    required String fullName,
+    required String nasionality,
+    required String placeOfBirth,
+    required String dateOfBirth,
+    required String gender,
+    required String dateOfIssue,
+    required String dateOfExpiry,
+    required String registrationNumber,
+    required String issuingAuthority,
+    required String mrzCode,
     required String email,
-    required String phone,
-    required String passport,
     required String emergencyContact,
     required String password
   }) {
     return repository.register(
-      fullname: fullname,
+      countryCode: countryCode,
+      passportNumber: passportNumber,
+      fullName: fullName,
+      nasionality: nasionality,
+      placeOfBirth: placeOfBirth,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+      dateOfIssue: dateOfIssue,
+      dateOfExpiry: dateOfExpiry,
+      registrationNumber: registrationNumber,
+      issuingAuthority: issuingAuthority,
+      mrzCode: mrzCode,
       email: email,
-      phone: phone,
-      passport: passport,
       emergencyContact: emergencyContact,
-      password: password,
+      password: password
     );
   }
 }

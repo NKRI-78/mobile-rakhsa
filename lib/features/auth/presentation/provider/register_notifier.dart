@@ -34,52 +34,69 @@ class RegisterNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> register({
-    required String fullname,
+  Future<void> register(
+      {
+    required String countryCode,
+    required String passportNumber,
+    required String fullName,
+    required String nasionality,
+    required String placeOfBirth,
+    required String dateOfBirth,
+    required String gender,
+    required String dateOfIssue,
+    required String dateOfExpiry,
+    required String registrationNumber,
+    required String issuingAuthority,
+    required String mrzCode,
     required String email,
-    required String phone,
-    required String passport,
     required String emergencyContact,
-    required String password
+    required String password,
   }) async {
     setStateProviderState(ProviderState.loading);
 
     final register = await useCase.execute(
-      fullname: fullname,
-      email: email,
-      phone: phone,
-      passport: passport,
-      emergencyContact: emergencyContact,
-      password: password,
+      countryCode: countryCode,
+        passportNumber: passportNumber,
+        fullName: fullName,
+        nasionality: nasionality,
+        placeOfBirth: placeOfBirth,
+        dateOfBirth: dateOfBirth,
+        gender: gender,
+        dateOfIssue: dateOfIssue,
+        dateOfExpiry: dateOfExpiry,
+        registrationNumber: registrationNumber,
+        issuingAuthority: issuingAuthority,
+        mrzCode: mrzCode,
+        email: email,
+        emergencyContact: emergencyContact,
+        password: password
     );
-    
-    register.fold(
-      (l) { 
-        _message = l.message;
-        setStateProviderState(ProviderState.error);
-      }, (r) {
 
-        _authModel = r;
+    register.fold((l) {
+      _message = l.message;
+      setStateProviderState(ProviderState.error);
+    }, (r) {
+      _authModel = r;
 
-        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-        StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
-        StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+      StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+      StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+      StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-        webSocketsService.join();
+      webSocketsService.join();
 
-        ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
+      ShowSnackbar.snackbarOk(
+          "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
 
-        Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-          MaterialPageRoute(builder: (context) {
-            return RegisterOtp(email: email);
-          }),
-          (route) => false,
-        );
+      Navigator.pushAndRemoveUntil(
+        navigatorKey.currentContext!,
+        MaterialPageRoute(builder: (context) {
+          return RegisterOtp(email: email);
+        }),
+        (route) => false,
+      );
 
-        setStateProviderState(ProviderState.loaded);
-      }
-    );
-   
+      setStateProviderState(ProviderState.loaded);
+    });
   }
 
 }
