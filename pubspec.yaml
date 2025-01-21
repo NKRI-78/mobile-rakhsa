@@ -18,6 +18,7 @@ dependencies:
 
   # B
   barcode_widget: ^2.0.4
+  background_location: ^0.13.0
 
   # C
   cunning_document_scanner: ^1.2.3

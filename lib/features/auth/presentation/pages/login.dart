@@ -12,7 +12,6 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/pages/forgot_password.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 
