@@ -7,7 +7,7 @@ import 'package:image/image.dart' as img;
 
 import 'package:path_provider/path_provider.dart';
 
-class StorageHelper {
+class StorageFrHelper {
 
   static Future<Directory> getStorageDirectory() async {
     if (Platform.isAndroid) {

@@ -3,6 +3,7 @@ import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
+import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
@@ -23,6 +24,7 @@ class RoutesNavigation {
   static const dashboard = '/dashboard';
   static const mart = '/mart';
   static const nearMe = '/near-me';
+  static const welcomePage = '/welcome';
   static const register = '/register';
   static const loginFr = '/login-fr';
   static const registerFr = '/register-fr';
@@ -57,6 +59,8 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
       case visaDocument: 
         return MaterialPageRoute(builder: (_) => const VisaDocumentPage());
+      case welcomePage: 
+        return MaterialPageRoute(builder: (_) => const WelcomePage());
       case passportDocument: 
         return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
       case loginFr: 

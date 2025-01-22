@@ -42,6 +42,7 @@ class User {
   String name;
   String email;
   String phone;
+  String access;
   String role;
   bool enabled;
 
@@ -50,6 +51,7 @@ class User {
     required this.name,
     required this.email,
     required this.phone,
+    required this.access,
     required this.role,
     required this.enabled,
   });
@@ -59,6 +61,7 @@ class User {
     name: json["name"] ?? "",
     email: json["email"] ?? "",
     phone: json["phone"] ?? "",
+    access: json["access"] ?? "",
     role: json["role"] ?? "",
     enabled: json["enabled"] ?? "",
   );

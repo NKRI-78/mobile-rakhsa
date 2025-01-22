@@ -9,6 +9,7 @@ class DatabaseHelper {
   static const table = 'my_table';
 
   static const columnId = 'id';
+  static const columnUserId = 'user_id';
   static const columnName = 'name';
   static const columnPic = 'picture';
   static const columnEmbedding = 'embedding';
@@ -34,6 +35,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE $table (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnUserId TEXT NOT NULL,
         $columnName TEXT NOT NULL,
         $columnPic TEXT NOT NULL,
         $columnEmbedding TEXT NOT NULL,

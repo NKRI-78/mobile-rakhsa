@@ -957,20 +957,11 @@ class GeneralModal {
                                 onTap: () {
                                   context.read<WebSocketsService>().leave();
 
-                                  context.read<SosNotifier>().stopTimer();
-
-                                  StorageHelper.clear();
                                   StorageHelper.removeToken();
 
                                   globalKey.currentState?.closeDrawer();
 
-                                  Navigator.pushAndRemoveUntil(
-                                    context, MaterialPageRoute(builder: (BuildContext context) {
-                                      return const LoginPage();
-                                    }), (route) {
-                                      return false;
-                                    },
-                                  );
+                                  Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.welcomePage, (route) => false,);
                                 },
                                 btnTxt: "Ya",
                               ),

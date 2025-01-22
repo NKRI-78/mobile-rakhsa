@@ -45,6 +45,7 @@ class Recognizer {
       String name = row[DatabaseHelper.columnName];
       List<double> embd = row[DatabaseHelper.columnEmbedding].split(',').map((e) => double.parse(e)).toList().cast<double>();
       Recognition recognition = Recognition(
+        row[DatabaseHelper.columnUserId],
         row[DatabaseHelper.columnName], 
         row[DatabaseHelper.columnCreatedAt], 
         Rect.zero, embd, 0
@@ -54,8 +55,9 @@ class Recognizer {
     }
   }
 
-  void registerFaceInDB(String name, String filename, List<double> embedding) async {
+  void registerFaceInDB(String userId, String name, String filename, List<double> embedding) async {
     Map<String, dynamic> row = {
+      DatabaseHelper.columnUserId: userId,
       DatabaseHelper.columnName: name,
       DatabaseHelper.columnPic: filename,
       DatabaseHelper.columnEmbedding: embedding.join(","),
@@ -108,17 +110,18 @@ class Recognizer {
 
     Pair pair = findNearest(outputArray);
 
-    return Recognition(pair.name, pair.createdAt, location, outputArray, pair.distance);
+    return Recognition(pair.id, pair.name, pair.createdAt, location, outputArray, pair.distance);
   }
 
   Pair findNearest(List<double> emb) {
-    Pair pair = Pair("Unknown", "", double.infinity);
+    Pair pair = Pair("", "Unknown", "", double.infinity);
 
     // Precompute the input embedding norm (squared norm is enough for comparison)
     double inputSquaredNorm = emb.fold(0, (sum, element) => sum + element * element);
     double inputNorm = sqrt(inputSquaredNorm);
 
     for (var item in registered.entries) {
+      final String id = item.value.userId;
       final String name = item.key;
       final String createdAt = item.value.createdAt;
       List<double> knownEmb = item.value.embeddings;
@@ -139,6 +142,7 @@ class Recognizer {
 
       // Update the nearest pair if this distance is smaller
       if (normalizedDistance < pair.distance) {
+        pair.id = id;
         pair.distance = normalizedDistance;
         pair.name = name;
         pair.createdAt = createdAt;
@@ -161,8 +165,9 @@ class Recognizer {
 }
 
 class Pair {
+  String id;
   String name;
   String createdAt;
   double distance;
-  Pair(this.name, this.createdAt, this.distance);
+  Pair(this.id, this.name, this.createdAt, this.distance);
 }

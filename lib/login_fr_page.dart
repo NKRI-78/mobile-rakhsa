@@ -1,13 +1,17 @@
 
 
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
 
 // import 'package:dio/dio.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/global.dart';
 import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/Helper/Image.dart';
@@ -123,12 +127,39 @@ class LoginFrPageState extends State<LoginFrPage> {
       setState(() => text = "Not Registered");
     } else {
       setState(() => text = "Already registered ! AS ${recognition.name}");
-      Future.delayed(const Duration(seconds: 2), () {
-        if(!mounted) return;
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+
+      String? userId = StorageHelper.getUserId();
+
+      // save to api (on progress)
+      try {
+        Dio dio = Dio();
+        Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-member-fr", 
+          data: {
+            "user_id": userId.toString(),
+          }
+        );
+
+        Map<String, dynamic> data = res.data;
+        AuthModel authModel = AuthModel.fromJson(data);
+        
+        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+        StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+        StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+        
+        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+        Navigator.pushReplacement(navigatorKey.currentContext!,
+          MaterialPageRoute(builder: (context) {
             return const DashboardScreen();
-          }), (route) => false);
-      });
+          }),
+        );
+
+      } on DioException catch(e) {
+        debugPrint(e.response!.data.toString());
+        debugPrint(e.response!.statusCode.toString());
+      } catch(e) {
+        debugPrint(e.toString());
+      }
     }
 
     return recognition;

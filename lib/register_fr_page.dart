@@ -2,15 +2,20 @@
 
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:dio/dio.dart';
+import 'package:rakhsa/Helper/directory.dart';
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
+import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/global.dart';
 
 import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/Helper/Image.dart';
-import 'package:rakhsa/Helper/directory.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +27,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:rakhsa/ML/Recognition.dart';
+import 'package:uuid/uuid.dart';
 
 import 'ML/Recognizer.dart';
 
@@ -195,12 +201,15 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     // save to local
                     s(() => btnRegister = true);
 
-                    await StorageHelper.saveImageToDownloads(
-                      image: croppedFace, 
-                      filename: widget.passport.fullName.toString()
-                    );
+                    String userId = const Uuid().v4();
+
+                    // await StorageFrHelper.saveImageToDownloads(
+                    //   image: croppedFace, 
+                    //   filename: widget.passport.fullName.toString()
+                    // );
 
                     recognizer.registerFaceInDB(
+                      userId,
                       widget.passport.fullName.toString(), 
                       widget.passport.fullName.toString(), 
                       recognition.embeddings
@@ -211,30 +220,49 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                         s(() => btnRegister = false);
                     });
                   
-                    if(!mounted) return;
-                      Navigator.pop(context);
-
                     // save to api (on progress)
-                    // try {
-                    //   Dio dio = Dio();
-                    //   Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-fr", 
-                    //     data: {
-                    //       "embedding": recognition.embeddings.join(",")
-                    //     }
-                    //   );
+                    try {
+                      Dio dio = Dio();
+                      Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-member-fr", 
+                        data: {
+                          "user_id": userId,
+                          "fullname": widget.passport.fullName.toString(),
+                          "passport": widget.passport.passportNumber.toString(),
+                          "citizen": widget.passport.nationality.toString(),
+                          "birth_date": widget.passport.dateOfBirth.toString(),
+                          "place_birth": widget.passport.placeOfBirth.toString(),
+                          "gender": widget.passport.gender.toString(),
+                          "passport_expired": widget.passport.dateOfExpiry.toString(),
+                          "passport_issued": widget.passport.dateOfIssue.toString(),
+                          "no_reg": widget.passport.registrationNumber.toString(),
+                          "mrz_code": widget.passport.mrzCode.toString(),
+                          "issuing_authority": widget.passport.issuingAuthority.toString(),
+                          "code_country": widget.passport.countryCode.toString()
+                        }
+                      );
 
-                    //   setState(() => btnRegister = false);
+                      Map<String, dynamic> data = res.data;
+                      AuthModel authModel = AuthModel.fromJson(data);
+                      
+                      StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+                      StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+                      StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+                      
+                      StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-                    //   if(!mounted) return;
-                    //     Navigator.pop(context);
+                      Navigator.pushReplacement(navigatorKey.currentContext!,
+                        MaterialPageRoute(builder: (context) {
+                          return const DashboardScreen();
+                        }),
+                      );
 
-                    //   debugPrint("=== FACE REGISTERED ${res.statusMessage.toString()} ===");
-                    // } on DioException catch(e) {
-                    //   debugPrint(e.response!.data.toString());
-                    //   debugPrint(e.response!.statusCode.toString());
-                    // } catch(e) {
-                    //   debugPrint(e.toString());
-                    // }
+                      debugPrint("=== FACE REGISTERED ${res.statusMessage.toString()} ===");
+                    } on DioException catch(e) {
+                      debugPrint(e.response!.data.toString());
+                      debugPrint(e.response!.statusCode.toString());
+                    } catch(e) {
+                      debugPrint(e.toString());
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:const Color(0xffFE1717),

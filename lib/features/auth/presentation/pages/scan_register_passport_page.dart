@@ -22,6 +22,7 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
   void initState() {
     super.initState();
     // redirect to document scanner
+    context.read<RegisterNotifier>().deleteData();
     if (!context.read<RegisterNotifier>().hasPath) {
       context.read<RegisterNotifier>().startScan(context);
     }
@@ -102,7 +103,7 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
                     return ElevatedButton(
                       onPressed: provider.hasPassport 
                       ? () {
-                         Navigator.pushNamed(context, RoutesNavigation.registerFr,arguments: provider.passport);
+                         Navigator.pushNamed(context, RoutesNavigation.registerFr, arguments: provider.passport);
                         } 
                       : null,
                       style: ElevatedButton.styleFrom(
