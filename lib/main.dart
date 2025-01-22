@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,7 +23,7 @@ import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/firebase.dart';
@@ -36,7 +37,9 @@ import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:workmanager/workmanager.dart';
+// import 'package:workmanager/workmanager.dart';
+
+late List<CameraDescription> cameras;
 
 final service = FlutterBackgroundService();
 
@@ -84,7 +87,6 @@ void onStart(ServiceInstance service) async {
     String? userId = sharedPreferences.getString("user_id");
 
     if (userId == null) {
-      debugPrint("No user_id found, skipping data posting.");
       return;
     }
 
@@ -140,11 +142,11 @@ void stopBackgroundService() {
   service.invoke("stop");
 }
 
-@pragma('vm:entry-point')
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case "fetchBackground":
+// @pragma('vm:entry-point')
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) async {
+//     switch (task) {
+//       case "fetchBackground":
 
         // final sharedPreferences = await SharedPreferences.getInstance();
 
@@ -153,9 +155,9 @@ void callbackDispatcher() {
         // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best,
-        );
+        // Position position = await Geolocator.getCurrentPosition(
+        //   desiredAccuracy: LocationAccuracy.best,
+        // );
 
         // List<Placemark> placemarks = await placemarkFromCoordinates(
         //   position.latitude,
@@ -183,29 +185,31 @@ void callbackDispatcher() {
         //   debugPrint("Error posting data: $e");
         // }
 
-        debugPrint("=== RUNNING ON BACKGROUND ===");
+//         debugPrint("=== RUNNING ON BACKGROUND ===");
 
-        debugPrint("Lat : ${position.latitude.toString()} Lng : ${position.longitude.toString()}");
+//         debugPrint("Lat : ${position.latitude.toString()} Lng : ${position.longitude.toString()}");
 
-      break;
-    }
-    return Future.value(true);
-  });
-}
+//       break;
+//     }
+//     return Future.value(true);
+//   });
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Workmanager().initialize(
-    callbackDispatcher, 
-    isInDebugMode: false 
-  );
-  Workmanager().registerPeriodicTask(
-    "1",
-    "fetchBackground",
-    frequency: const Duration(minutes: 15),
-  );
-  
+  cameras = await availableCameras();
+
+  // Workmanager().initialize(
+  //   callbackDispatcher, 
+  //   isInDebugMode: false 
+  // );
+  // Workmanager().registerPeriodicTask(
+  //   "1",
+  //   "fetchBackground",
+  //   frequency: const Duration(minutes: 15),
+  // );
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -240,7 +244,7 @@ Future<void> main() async {
 
   di.init();
 
-  Gemini.init(apiKey: 'AIzaSyBROwuSIdITYdSU7GWWWg-oBZntbSX_D8E');
+  Gemini.init(apiKey: RemoteDataSourceConsts.geminiApiKey);
 
   EasyLoading.instance
     ..userInteractions = false
@@ -276,13 +280,13 @@ class MyAppState extends State<MyApp> {
         }
       } else {
         if(mounted) {
-          setState(() => home = const LoginPage()); 
+          setState(() => home = const WelcomePage()); 
         }
       }
 
     } else {
       if(mounted) {
-        setState(() => home = const LoginPage()); 
+        setState(() => home = const WelcomePage()); 
       }
     }
 

@@ -1,4 +1,7 @@
 class AssetSource {
+  // logo marlinda
+  static const String logoMarlinda = 'assets/images/logo-marlinda.png';
+
   static const String logoutTitle = "assets/images/logout.png";
   static const String loginOrnament = "assets/images/login-ornament.png";
   static const String signWithGoogle = "assets/images/sign-with-google.png";

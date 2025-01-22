@@ -217,6 +217,7 @@ void init() {
   locator.registerLazySingleton(() => RegisterNotifier(
     webSocketsService: locator(),
     useCase: locator(),
+    gemini: locator(),
   ));
   
   locator.registerFactory(() => EcommerceProvider(

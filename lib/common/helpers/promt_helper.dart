@@ -3,7 +3,7 @@ class PromptHelper {
 
   static String getPromt(){
     return '''
-Berikut adalah gambar paspor. Ekstrak informasi dari gambar ini dan berikan data dalam format JSON berikut. Pastikan untuk mengambil data mrzCode dari 2 baris kode paspor yang berada di bagian bawah paspor termasuk juga karakternya. Jangan tambahkan penjelasan, deskripsi, atau kalimat tambahan apa pun di luar JSON.
+Berikut adalah gambar paspor. Ekstrak informasi dari gambar ini dan berikan data dalam format JSON berikut. Pastikan untuk mengambil data mrzCode dari 2 baris kode paspor yang berada di bagian bawah paspor, termasuk juga karakternya. Jangan tambahkan penjelasan, deskripsi, atau kalimat tambahan apa pun di luar JSON.
 
 Format JSON yang diinginkan:
 {
@@ -22,10 +22,7 @@ Format JSON yang diinginkan:
   "mrzCode": "Ambil dari kode paspor di bagian bawah paspor"
 }
 
-Jika suatu informasi tidak ditemukan, gunakan nilai `null`.
-Hasilkan hanya JSON seperti format di atas.
-
-Jika gambar yang diberikan terdeteksi bukan paspor, hanya kembalikan string angka 400 tanpa penjelasan tambahan, deskripsi, atau kalimat lain.
+Jika gambar yang diberikan bukan "halaman identitas paspor", hanya kembalikan 400 tanpa penjelasan tambahan, deskripsi, atau kalimat lain, dan tanpa menghasilkan JSON kosong.
 ''';
   }
 }

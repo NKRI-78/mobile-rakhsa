@@ -19,6 +19,7 @@ class SosButton extends StatefulWidget {
   final String lat;
   final String lng;
   final bool isConnected;
+  final bool loadingGmaps;
 
   const SosButton({
     required this.location,
@@ -26,6 +27,7 @@ class SosButton extends StatefulWidget {
     required this.lat, 
     required this.lng,
     required this.isConnected,
+    required this.loadingGmaps,
     super.key
   });
 
@@ -145,7 +147,13 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   ),
                 ),
               GestureDetector(
-                onLongPressStart: (LongPressStartDetails longPressStartDetails) async => widget.isConnected ? notifier.isTimerRunning ? () {} : await handleLongPressStart() : () {},
+                onLongPressStart: (LongPressStartDetails longPressStartDetails) async => widget.isConnected 
+                ? notifier.isTimerRunning 
+                ? () {} 
+                : widget.loadingGmaps 
+                ? () {} 
+                : await handleLongPressStart() 
+                : () {},
                 child: AnimatedBuilder(
                   animation: notifier.timerController!,
                   builder: (BuildContext context, Widget? child) {

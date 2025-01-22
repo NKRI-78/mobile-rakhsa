@@ -9,6 +9,8 @@ class RemoteDataSourceConsts {
   
   static const String websocketUrlProd = 'wss://websockets-rakhsa.inovatiftujuh8.com';
   static const String websocketUrlDev = 'ws://192.168.1.15:9998';
+
+  static const String geminiApiKey = 'AIzaSyBROwuSIdITYdSU7GWWWg-oBZntbSX_D8E';
   
   // dev
   // ws://192.168.1.15:9998

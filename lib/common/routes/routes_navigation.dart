@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
+import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
@@ -10,6 +12,8 @@ import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
+import 'package:rakhsa/login_fr_page.dart';
+import 'package:rakhsa/register_fr_page.dart';
 import 'package:rakhsa/views/screens/ecommerce/product/products.dart';
 
 class RoutesNavigation {
@@ -20,7 +24,10 @@ class RoutesNavigation {
   static const mart = '/mart';
   static const nearMe = '/near-me';
   static const register = '/register';
+  static const loginFr = '/login-fr';
+  static const registerFr = '/register-fr';
   static const registerPassport = '/register-passport';
+  static const scanRegisterPassport = '/scan-register-passport';
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
@@ -42,6 +49,8 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case registerPassport: 
         return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
+      case scanRegisterPassport: 
+        return MaterialPageRoute(builder: (_) => const ScanRegisterPassportPage());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
       case nearMeTypeList:
@@ -50,6 +59,11 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const VisaDocumentPage());
       case passportDocument: 
         return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
+      case loginFr: 
+        return MaterialPageRoute(builder: (_) => const LoginFrPage());
+      case registerFr: 
+        final data = settings.arguments as Passport;
+        return MaterialPageRoute(builder: (_) => RegisterFrPage(passport: data));
       case nearMe:
         final type = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));

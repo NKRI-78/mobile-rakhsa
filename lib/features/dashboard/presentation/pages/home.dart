@@ -116,25 +116,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       //   }
       // });
 
-      await service.configure(
-        iosConfiguration: IosConfiguration(
-          autoStart: true,
-          onForeground: onStart,
-          onBackground: onIosBackground,
-        ),
-        androidConfiguration: AndroidConfiguration(
-          onStart: onStart,
-          isForegroundMode: true,
-          foregroundServiceNotificationId: notificationId,
-          foregroundServiceTypes: [
-            AndroidForegroundType.location
-          ],
-          notificationChannelId: "notification"
-        ),
-      );
-
-      startBackgroundService();
-
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true
@@ -183,6 +164,26 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           lat: position.latitude,
           lng: position.longitude
         );
+
+        await service.configure(
+          iosConfiguration: IosConfiguration(
+            autoStart: true,
+            onForeground: onStart,
+            onBackground: onIosBackground,
+          ),
+          androidConfiguration: AndroidConfiguration(
+            onStart: onStart,
+            isForegroundMode: true,
+            foregroundServiceNotificationId: notificationId,
+            foregroundServiceTypes: [
+              AndroidForegroundType.location
+            ],
+            notificationChannelId: "notification"
+          ),
+        );
+
+        startBackgroundService();
+
       });
     } catch(e) {
 
@@ -443,6 +444,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             country: currentCountry,
                             lat: currentLat,
                             lng: currentLng,
+                            loadingGmaps: loadingGmaps,
                             isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
                           )
                         ),
