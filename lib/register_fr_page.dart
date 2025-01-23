@@ -26,14 +26,15 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:rakhsa/ML/Recognition.dart';
-import 'package:uuid/uuid.dart';
 
 import 'ML/Recognizer.dart';
 
 class RegisterFrPage extends StatefulWidget {
+  final String userId;
   final Passport passport;
 
   const RegisterFrPage({
+    required this.userId,
     required this.passport,
     super.key
   });
@@ -149,14 +150,14 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 1.0) {
+    if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
-      setState(() => text1 = "Not Registered");
+      setState(() => text1 = "");
       setState(() => text2 = "Take your photo to register account");
       setState(() => alreadyRegistered = false);
       setState(() => waitForScanSucceded = false);
     } else {
-      setState(() => text1 = "Already Registered ! AS ${recognition.name}");
+      setState(() => text1 = "");
       setState(() => text2 = "");
       setState(() => alreadyRegistered = true);
     }
@@ -200,15 +201,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     // save to local
                     s(() => btnRegister = true);
 
-                    String userId = const Uuid().v4();
-
-                    // await StorageFrHelper.saveImageToDownloads(
-                    //   image: croppedFace, 
-                    //   filename: widget.passport.fullName.toString()
-                    // );
-
                     recognizer.registerFaceInDB(
-                      userId,
+                      widget.userId,
                       widget.passport.fullName.toString(), 
                       widget.passport.fullName.toString(), 
                       recognition.embeddings
@@ -224,7 +218,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       Dio dio = Dio();
                       Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-member-fr", 
                         data: {
-                          "user_id": userId,
+                          "user_id": widget.userId,
                           "fullname": widget.passport.fullName.toString(),
                           "passport": widget.passport.passportNumber.toString(),
                           "citizen": widget.passport.nationality.toString(),
@@ -358,7 +352,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
       enableContours: true,
       enableTracking: true,
       enableClassification: true,
-      performanceMode: FaceDetectorMode.fast
+      performanceMode: FaceDetectorMode.accurate
     );
     
     faceDetector = FaceDetector(options: options);
@@ -532,14 +526,17 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                 right: 0.0,
                 child: Center(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(text1,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                      text1.isEmpty 
+                      ? const SizedBox() 
+                      : Text(text1,
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                          ),
                         ),
-                      ),
                       Text(text2,
                         style: const TextStyle(
                           fontSize: 16.0,

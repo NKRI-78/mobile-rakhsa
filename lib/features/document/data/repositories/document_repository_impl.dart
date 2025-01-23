@@ -36,12 +36,15 @@ class DocumentRepositoryImpl implements DocumentRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updatePassport({required String path}) async {
+  Future<Either<Failure, void>> updatePassport({
+    required String userId,
+    required String path
+  }) async {
     try {
-      final userId = StorageHelper.getUserId();
-      if (userId != null) {
-        await remoteDatasource.updatePassport(path: path, userId: userId);
-      }
+      await remoteDatasource.updatePassport(
+        userId: userId,
+        path: path, 
+      );
       return right(null);
     } catch (e) {
       return left(ServerFailure(e.toString()));

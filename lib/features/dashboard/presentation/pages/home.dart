@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:location/location.dart' as loc;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -236,20 +238,42 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> checkLocationPermission() async {
-    var locationReq = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
+    var locationReq = await Permission.location.isDenied 
+    || await Permission.location.isPermanentlyDenied 
+    || await Permission.accessMediaLocation.isPermanentlyDenied;
 
-    if(locationReq) {
+    bool isLocationEnabled = await loc.Location().serviceEnabled();
+
+    if(!isLocationEnabled) {
+
       if (!isDialogLocationShowing) {
         setState(() => isDialogLocationShowing = true);
         await GeneralModal.dialogRequestPermission(
           msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "notification"
+          type: "location"
         );
 
         Future.delayed(const Duration(seconds: 2),() {
           setState(() => isDialogLocationShowing = false);
         });
       }
+
+    } else {  
+      
+      if(locationReq) {
+        if (!isDialogLocationShowing) {
+          setState(() => isDialogLocationShowing = true);
+          await GeneralModal.dialogRequestPermission(
+            msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+            type: "location"
+          );
+
+          Future.delayed(const Duration(seconds: 2),() {
+            setState(() => isDialogLocationShowing = false);
+          });
+        }
+      }
+
     }
   }
 
@@ -257,10 +281,27 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed && !isResumedProcessing) {
       debugPrint("=== APP RESUME ===");
-      
+
+      bool isLocationEnabled = await loc.Location().serviceEnabled();
+
       isResumedProcessing = true;
 
       await Future.delayed(const Duration(milliseconds: 500)); 
+      
+      if(!isLocationEnabled) {
+        if (!isDialogLocationShowing) {
+          setState(() => isDialogLocationShowing = true);
+          await GeneralModal.dialogRequestPermission(
+            msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+            type: "location"
+          );
+
+          Future.delayed(const Duration(seconds: 2),() {
+            setState(() => isDialogLocationShowing = false);
+          });
+        }
+      } 
+
       await getData();
       await checkNotificationPermission();
       await getCurrentLocation();

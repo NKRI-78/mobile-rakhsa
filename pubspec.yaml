@@ -70,8 +70,9 @@ dependencies:
   googleapis_auth: ^1.6.0
 
   # L
+  local_auth: ^2.3.0
   lecle_flutter_absolute_path: ^0.0.2+1
-  # location: ^6.0.2
+  location: ^6.0.2
 
   # I
   intl: ^0.19.0
@@ -98,6 +99,7 @@ dependencies:
 
   # S
   shimmer: ^2.0.0
+  sliding_up_panel: ^2.0.0+1
 
   # U
   uuid: ^4.5.1
@@ -110,7 +112,7 @@ dependencies:
 
   # W
   web_socket_channel: ^3.0.1
-  workmanager: ^0.5.2
+  # workmanager: ^0.5.2
 
 dev_dependencies:
 

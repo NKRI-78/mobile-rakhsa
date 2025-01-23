@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
 import 'package:rakhsa/features/document/domain/usecase/delete_visa.dart';
@@ -179,8 +180,11 @@ class DocumentNotifier extends ChangeNotifier {
         _passportIsLoading = false;
         notifyListeners();
       }, (media) async {
-        final updatePassportUrlToProfile =
-            await updatePassport.execute(path: media.path);
+       
+        final updatePassportUrlToProfile = await updatePassport.execute(
+          userId: StorageHelper.getUserId().toString(),
+          path: media.path
+        );
 
         // [2] update url Passport dari server ke profile
         updatePassportUrlToProfile.fold((failure) {

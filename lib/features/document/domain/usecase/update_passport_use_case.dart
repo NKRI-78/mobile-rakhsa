@@ -7,7 +7,13 @@ class UpdatePassportUseCase {
 
   UpdatePassportUseCase(this.repository);
 
-  Future<Either<Failure, void>> execute({required String path}) async {
-    return await repository.updatePassport(path: path);
+  Future<Either<Failure, void>> execute({
+    required String userId,
+    required String path
+  }) async {
+    return await repository.updatePassport(
+      userId: userId,
+      path: path
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
@@ -64,10 +63,13 @@ class RoutesNavigation {
       case passportDocument: 
         return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
       case loginFr: 
-        return MaterialPageRoute(builder: (_) => const LoginFrPage());
+        return MaterialPageRoute(builder: (_) => const LoginFrPage(fromHome: false));
       case registerFr: 
-        final data = settings.arguments as Passport;
-        return MaterialPageRoute(builder: (_) => RegisterFrPage(passport: data));
+        final data = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => RegisterFrPage(
+          userId: data["user_id"],  
+          passport: data["passport"]
+        ));
       case nearMe:
         final type = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));

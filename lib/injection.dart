@@ -215,6 +215,8 @@ void init() {
     useCase: locator()
   ));
   locator.registerLazySingleton(() => RegisterNotifier(
+    mediaUseCase: locator(),
+    updatePassport: locator(),
     webSocketsService: locator(),
     useCase: locator(),
     gemini: locator(),

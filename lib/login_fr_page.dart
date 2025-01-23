@@ -27,7 +27,11 @@ import 'package:rakhsa/ML/Recognition.dart';
 import 'ML/Recognizer.dart';
 
 class LoginFrPage extends StatefulWidget {
-  const LoginFrPage({Key? key}) : super(key: key);
+  final bool fromHome;
+  const LoginFrPage({
+    required this.fromHome,
+    super.key
+  });
 
   @override
   LoginFrPageState createState() => LoginFrPageState();
@@ -122,7 +126,7 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 1.0) {
+    if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
     } else {
@@ -211,7 +215,7 @@ class LoginFrPageState extends State<LoginFrPage> {
       enableContours: true,
       enableTracking: true,
       enableClassification: true,
-      performanceMode: FaceDetectorMode.fast
+      performanceMode: FaceDetectorMode.accurate
     );
     
     faceDetector = FaceDetector(options: options);
@@ -270,14 +274,16 @@ class LoginFrPageState extends State<LoginFrPage> {
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       forceMaterialTransparency: true,
-      leading: CupertinoNavigationBarBackButton(
-        color: Colors.white,
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-    ),
-    body: Container(
+      leading: widget.fromHome 
+      ? const SizedBox() 
+      : CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ) ,
+      ), 
+      body: Container(
       color: Colors.black,
       child: Stack(
         clipBehavior: Clip.none,

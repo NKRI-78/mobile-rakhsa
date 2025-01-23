@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -24,7 +25,6 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
@@ -34,6 +34,7 @@ import 'package:rakhsa/global.dart';
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/login_fr_page.dart';
 
 import 'package:rakhsa/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -247,8 +248,8 @@ Future<void> main() async {
   Gemini.init(apiKey: RemoteDataSourceConsts.geminiApiKey);
 
   EasyLoading.instance
-    ..userInteractions = false
-    ..dismissOnTap = false;
+  ..userInteractions = false
+  ..dismissOnTap = false;
 
   runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
@@ -264,6 +265,8 @@ class MyAppState extends State<MyApp> {
 
   late FirebaseProvider firebaseProvider;
 
+  final localAuth = LocalAuthentication();
+
   static const String isolateName = "LocatorIsolate";
   ReceivePort port = ReceivePort();
 
@@ -273,10 +276,11 @@ class MyAppState extends State<MyApp> {
     bool? isLoggedIn = await StorageHelper.isLoggedIn();
     
     if(isLoggedIn != null) {
-
       if(isLoggedIn) {
         if(mounted) {
-          setState(() => home = const DashboardScreen()); 
+          setState(() => home = const LoginFrPage(
+            fromHome: true,
+          )); 
         }
       } else {
         if(mounted) {

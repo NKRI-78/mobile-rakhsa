@@ -16,10 +16,8 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 
@@ -536,8 +534,12 @@ class GeneralModal {
                             isBorderRadius: true,
                             height: 40.0,
                             onTap: () async {
-
-                              await AppSettings.openAppSettings(type: AppSettingsType.notification);
+                              
+                              if(type == "notification") {
+                                await AppSettings.openAppSettings(type: AppSettingsType.notification);
+                              } else {
+                                await AppSettings.openAppSettings(type: AppSettingsType.location);
+                              }
 
                               Future.delayed(Duration.zero, () {
                                 Navigator.pop(context);

@@ -16,12 +16,18 @@ import 'package:rakhsa/features/auth/data/models/passport.dart';
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
+import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
+import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/websockets.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RegisterNotifier with ChangeNotifier {
+  final UploadMediaUseCase mediaUseCase;
+  final UpdatePassportUseCase updatePassport;
+
   final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
   final Gemini gemini;
@@ -44,9 +50,20 @@ class RegisterNotifier with ChangeNotifier {
   String _passportPath = '';
   String get passportPath => _passportPath;
   bool get hasPath => _passportPath.isNotEmpty;
-  
+
+  // panel controller
+  final _panelMinHeightActualy = kBottomNavigationBarHeight + 24;
+  double _panelMinHeight = 0.0;
+  double get panelMinHeight => _panelMinHeight;
+  late PanelController _panelController;
+  PanelController get panelController => _panelController;
+  void registerPanelController(PanelController controller) {
+    _panelController = controller;
+  }
 
   RegisterNotifier({
+    required this.mediaUseCase,
+    required this.updatePassport,
     required this.webSocketsService,
     required this.useCase,
     required this.gemini,
@@ -123,7 +140,7 @@ class RegisterNotifier with ChangeNotifier {
     });
   }
 
-  Future<void> startScan(BuildContext context) async {
+  Future<void> startScan(BuildContext context, String userId) async {
     try {
       final scanResult = await CunningDocumentScanner.getPictures(
         isGalleryImportAllowed: true,
@@ -144,7 +161,7 @@ class RegisterNotifier with ChangeNotifier {
               content: 'Ulangi Sekali Lagi',
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
-                await startScan(context);
+                await startScan(context, userId);
               },
             );
           },
@@ -152,32 +169,68 @@ class RegisterNotifier with ChangeNotifier {
             FailureDocumentDialog.launch(
               context,
               title: 'Data Tidak Valid',
-              content:
-                  'Dokumen yang Anda Pindai Terdeketsi Bukan Passpor, Berikan Dokumen Paspor yang Benar',
+              content: 'Dokumen yang Anda Pindai Terdeketsi Bukan Passpor, Berikan Dokumen Paspor yang Benar',
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
-                await startScan(context);
+                await startScan(context, userId);
               },
             );
           },
         );
 
-        _passport = passport;
-        notifyListeners();
+        // valid response
+        if (passport != null) {
+
+          final uploadPassportToServer = await mediaUseCase.execute(
+            file: File(_passportPath),
+            folderName: 'passport',
+          );
+          
+          uploadPassportToServer.fold((failure) {
+            ShowSnackbar.snackbarErr(failure.message);
+            notifyListeners();
+          }, (media) async {
+            final updatePassportUrlToProfile = await updatePassport.execute(
+              userId: userId,
+              path: media.path
+            );
+
+            updatePassportUrlToProfile.fold((failure) {
+              ShowSnackbar.snackbarErr(failure.message);
+              notifyListeners();
+            }, (_) {
+
+            });
+          });
+
+          _passport = passport;
+          _panelMinHeight = _panelMinHeightActualy;
+          notifyListeners();
+
+          // open panel
+          _panelController.open();
+        }
       }
     } catch (e) {
-      log(e.toString());
-      _passportPath = '';
+      // kondisi untuk catch error dari _launchPromt
+      // karena error pada launch promt mengembalikan null
+      // progam ini hanya untuk error pada scan document
+      if (_passport == null) {
+        _passportPath = '';
 
-      // back to previous page
-      if (context.mounted) Navigator.of(context).pop();
-      ShowSnackbar.snackbarDefault('Register Paspor Dibatalkan');
+        // back to previous page
+        if (context.mounted) Navigator.of(context).pop();
+        await Future.delayed(const Duration(seconds: 1), () {
+          ShowSnackbar.snackbarDefault('Register Paspor Dibatalkan');
+        });
+      }
     }
   }
 
   void deleteData() {
     _passportPath = '';
     _passport = null;
+    _panelMinHeight = 0.0;
   }
 
   Future<Passport?> _launchPromt({
@@ -185,6 +238,7 @@ class RegisterNotifier with ChangeNotifier {
     VoidCallback? wrongDocumentCallback,
     ValueChanged<String>? errorCallback,
   }) async {
+    log('memulai scanning');
     try {
       // scan promt
       final scanResult = await gemini.prompt(parts: [
@@ -193,6 +247,8 @@ class RegisterNotifier with ChangeNotifier {
       ]);
 
       if (int.tryParse(scanResult?.output ?? '400') == 400) {
+        log('bukan paspor');
+
         _passportPath = '';
         notifyListeners();
 
@@ -202,26 +258,25 @@ class RegisterNotifier with ChangeNotifier {
         return null;
       } else {
         final rawJson = scanResult?.output;
-        log('raw json $rawJson');
-        print('passpor = $rawJson');
-
 
         final filteredJson = rawJson?.substring(8).replaceAll('```', '');
-        log('passport = $filteredJson');
+        log('paspor = $filteredJson');
 
         return Passport.fromMap(jsonDecode(filteredJson ?? ''));
       }
     } on GeminiException catch (e) {
+      log('gemini exception = ${e.message.toString()}');
       // show dialog
       errorCallback?.call(e.message.toString());
 
-      throw Exception(e.toString());
+      return null;
     } catch (e) {
+      log('exception = ${e.toString()}');
       // show dialog
       errorCallback?.call(e.toString());
 
       // exception
-      throw Exception(e.toString());
+      return null;
     }
   }
 
