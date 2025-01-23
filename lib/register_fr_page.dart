@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
-import 'package:rakhsa/Helper/directory.dart';
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
@@ -150,7 +149,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 1.0) {
+    if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
       setState(() => text1 = "Not Registered");
       setState(() => text2 = "Take your photo to register account");
@@ -359,7 +358,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
       enableContours: true,
       enableTracking: true,
       enableClassification: true,
-      performanceMode: FaceDetectorMode.fast
+      performanceMode: FaceDetectorMode.accurate
     );
     
     faceDetector = FaceDetector(options: options);
