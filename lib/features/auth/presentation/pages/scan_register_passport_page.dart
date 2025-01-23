@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/widget/scanning_effect.dart';
 

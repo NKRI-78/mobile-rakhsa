@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
-import 'package:rakhsa/Helper/directory.dart';
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
