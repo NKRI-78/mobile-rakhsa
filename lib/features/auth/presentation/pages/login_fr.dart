@@ -4,14 +4,17 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
+
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+
 import 'package:rakhsa/ML/Recognizer.dart';
 
 // import 'package:dio/dio.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/main.dart';
 
@@ -21,7 +24,6 @@ import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:rakhsa/ML/Recognition.dart';
 
@@ -151,10 +153,8 @@ class LoginFrPageState extends State<LoginFrPage> {
         
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        Navigator.pushReplacement(navigatorKey.currentContext!,
-          MaterialPageRoute(builder: (context) {
-            return const DashboardScreen();
-          }),
+        Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
+          RoutesNavigation.dashboard, (route) => false
         );
 
       } on DioException catch(e) {

@@ -41,6 +41,10 @@ class RegisterNotifier with ChangeNotifier {
   ProviderState _providerState = ProviderState.idle; 
   ProviderState get providerState => _providerState;
 
+  // media passport 
+  String _media = '';
+  String get media => _media;
+
   // register passport
   Passport? _passport;
   Passport? get passport => _passport;
@@ -189,18 +193,9 @@ class RegisterNotifier with ChangeNotifier {
           uploadPassportToServer.fold((failure) {
             ShowSnackbar.snackbarErr(failure.message);
             notifyListeners();
-          }, (media) async {
-            final updatePassportUrlToProfile = await updatePassport.execute(
-              userId: userId,
-              path: media.path
-            );
-
-            updatePassportUrlToProfile.fold((failure) {
-              ShowSnackbar.snackbarErr(failure.message);
-              notifyListeners();
-            }, (_) {
-
-            });
+          }, (picture) async {
+            _media = picture.path; 
+            notifyListeners();
           });
 
           _passport = passport;

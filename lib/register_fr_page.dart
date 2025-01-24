@@ -31,10 +31,12 @@ import 'ML/Recognizer.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
+  final String media;
   final Passport passport;
 
   const RegisterFrPage({
     required this.userId,
+    required this.media,
     required this.passport,
     super.key
   });
@@ -216,6 +218,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     // save to api (on progress)
                     try {
                       Dio dio = Dio();
+
                       Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-member-fr", 
                         data: {
                           "user_id": widget.userId,
@@ -243,13 +246,22 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       
                       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
+                      debugPrint("=== FACE REGISTERED ${res.statusMessage.toString()} ===");
+
+                      await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/profile/update-passport", 
+                        data: {
+                          "user_id": widget.userId,
+                          "path": widget.media
+                        }
+                      );
+
+                      debugPrint("=== UPDATED PASSPORT PIC ${res.statusMessage.toString()} ===");
+
                       Navigator.pushReplacement(navigatorKey.currentContext!,
                         MaterialPageRoute(builder: (context) {
                           return const DashboardScreen();
                         }),
                       );
-
-                      debugPrint("=== FACE REGISTERED ${res.statusMessage.toString()} ===");
                     } on DioException catch(e) {
                       debugPrint(e.response!.data.toString());
                       debugPrint(e.response!.statusCode.toString());

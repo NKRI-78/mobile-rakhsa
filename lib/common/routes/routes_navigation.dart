@@ -68,6 +68,7 @@ class RoutesNavigation {
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => RegisterFrPage(
           userId: data["user_id"],  
+          media: data["media"],
           passport: data["passport"]
         ));
       case nearMe:

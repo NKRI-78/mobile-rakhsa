@@ -105,17 +105,17 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if(!mounted) return;
       await getCurrentLocation();
 
-    if(StorageHelper.middlewareLogin()) {
-      Future.delayed(Duration.zero, () {
-        Navigator.pushAndRemoveUntil(
-        context, MaterialPageRoute(
-          builder: (BuildContext context) => const LoginFrPage(fromHome: true)
-        ), 
-        (route) => false);
-      });
+    // if(StorageHelper.middlewareLogin()) {
+      // Future.delayed(Duration.zero, () {
+      //   Navigator.pushAndRemoveUntil(
+      //   context, MaterialPageRoute(
+      //     builder: (BuildContext context) => const LoginFrPage(fromHome: true)
+      //   ), 
+      //   (route) => false);
+      // });
 
-      StorageHelper.destroyMiddlewareLogin();
-    }
+      // StorageHelper.destroyMiddlewareLogin();
+    // }
   }
 
   Future<void> getCurrentLocation() async {
@@ -307,7 +307,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         }
       } 
 
-      StorageHelper.setMiddlewareLogin(val: true);
+      // StorageHelper.setMiddlewareLogin(val: true);
 
       await getData();
       await checkNotificationPermission();
