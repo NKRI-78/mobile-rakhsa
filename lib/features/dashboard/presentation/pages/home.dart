@@ -23,6 +23,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rakhsa/login_fr_page.dart';
 import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -103,6 +104,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       await getCurrentLocation();
+
+    if(StorageHelper.middlewareLogin()) {
+      Future.delayed(Duration.zero, () {
+        Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(
+          builder: (BuildContext context) => const LoginFrPage(fromHome: true)
+        ), 
+        (route) => false);
+      });
+
+      StorageHelper.destroyMiddlewareLogin();
+    }
   }
 
   Future<void> getCurrentLocation() async {
@@ -293,6 +306,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           });
         }
       } 
+
+      StorageHelper.setMiddlewareLogin(val: true);
 
       await getData();
       await checkNotificationPermission();

@@ -67,7 +67,19 @@ class StorageHelper {
   static bool getRecordScreen() {
     return sharedPreferences.getBool("is_home") ?? true;
   }
-  
+
+  static void setMiddlewareLogin({required bool val}) async {
+    await sharedPreferences.setBool("middleware_login", val);
+  }
+
+  static void destroyMiddlewareLogin() async {
+    await sharedPreferences.remove("middleware_login");
+  }
+
+  static bool middlewareLogin() {
+    return sharedPreferences.getBool("middleware_login") ?? false;
+  }
+
   static void saveRecordScreen({required bool isHome}) async {
     await sharedPreferences.setBool("is_home", isHome);
   }
