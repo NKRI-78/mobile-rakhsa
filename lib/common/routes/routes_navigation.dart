@@ -4,6 +4,7 @@ import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/weather_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
@@ -25,6 +26,7 @@ class RoutesNavigation {
   static const nearMe = '/near-me';
   static const welcomePage = '/welcome';
   static const register = '/register';
+  static const weather = '/weather';
   static const loginFr = '/login-fr';
   static const registerFr = '/register-fr';
   static const registerPassport = '/register-passport';
@@ -54,6 +56,9 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const ScanRegisterPassportPage());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
+      case weather:
+        final data = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => WeatherPage(data));
       case nearMeTypeList:
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
       case visaDocument: 

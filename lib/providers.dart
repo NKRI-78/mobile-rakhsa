@@ -24,6 +24,7 @@ import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notif
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
@@ -82,5 +83,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => di.locator<EcommerceProvider>()),
    ChangeNotifierProvider(create: (_) => di.locator<PassportScannerNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<GetNearbyPlacenNotifier>()),
+  ChangeNotifierProvider(create: (_) => di.locator<WeatherNotifier>()),
   ChangeNotifierProvider(create: (_) => di.locator<WebSocketsService>(), lazy: false),
 ];

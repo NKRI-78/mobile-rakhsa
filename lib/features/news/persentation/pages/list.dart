@@ -10,6 +10,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -116,10 +117,13 @@ class NewsListPageState extends State<NewsListPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
-                      'id': notifier.news[0].id,
-                      'type': notifier.news[0].type.toString(),
-                    });
+                    // Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
+                    //   'id': notifier.news[0].id,
+                    //   'type': notifier.news[0].type.toString(),
+                    // });
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+                      return NewsDetailPage(id: notifier.news[0].id, type: notifier.news[0].type.toString(),);
+                    },), (route) => route.isFirst);
                   },
                   child: Container(
                     clipBehavior: Clip.antiAlias,

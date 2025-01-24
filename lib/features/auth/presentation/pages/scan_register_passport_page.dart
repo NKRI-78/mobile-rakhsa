@@ -23,19 +23,28 @@ class ScanRegisterPassportPage extends StatefulWidget {
 class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
 
   final userId = Uuid().generateV4();
+  late RegisterNotifier registerNotifier;
 
   @override
   void initState() {
     super.initState();
-    context.read<RegisterNotifier>().registerPanelController(
+
+    registerNotifier = context.read<RegisterNotifier>();
+    registerNotifier.registerPanelController(
           PanelController(),
         );
 
     // redirect to document scanner
-    context.read<RegisterNotifier>().deleteData();
-    if (!context.read<RegisterNotifier>().hasPath) {
-      context.read<RegisterNotifier>().startScan(context, userId);
+    registerNotifier.deleteData();
+    if (!registerNotifier.hasPath) {
+      registerNotifier.startScan(context, userId);
     }
+  }
+  
+  @override
+  void dispose() {
+    registerNotifier.deleteData();
+    super.dispose();
   }
 
   @override
@@ -45,81 +54,78 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
         MediaQuery.of(context).padding.bottom + kBottomNavigationBarHeight + 16;
     final appBarHeight = MediaQuery.of(context).padding.top + kToolbarHeight;
 
-    return PopScope(
-      onPopInvoked: (_) => context.read<RegisterNotifier>().deleteData(),
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: primaryColor,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Image.asset(
-            AssetSource.loginOrnament,
-            fit: BoxFit.cover,
-          ),
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.light,
-            statusBarBrightness: Brightness.light,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: primaryColor,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Image.asset(
+          AssetSource.loginOrnament,
+          fit: BoxFit.cover,
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: p.Consumer<RegisterNotifier>(
-                builder: (context, provider, _) => SlidingUpPanel(
-                  isDraggable: true,
-                  panelSnapping: true,
-                  parallaxEnabled: true,
-                  backdropEnabled: true,
-                  backdropColor: primaryColor,
-                  collapsed: _NameHeader(provider),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                  controller: provider.panelController,
-                  maxHeight: deviceHeight - actionButtonHeight - appBarHeight,
-                  minHeight: context.watch<RegisterNotifier>().panelMinHeight,
-                  body: _ScanningViewState(
-                    paddingBottom: actionButtonHeight + appBarHeight,
-                  ),
-                  panelBuilder: (sc) => _ScanningResultState(provider, sc),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.light,
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: p.Consumer<RegisterNotifier>(
+              builder: (context, provider, _) => SlidingUpPanel(
+                isDraggable: true,
+                panelSnapping: true,
+                parallaxEnabled: true,
+                backdropEnabled: true,
+                backdropColor: primaryColor,
+                collapsed: _NameHeader(provider),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
                 ),
+                controller: provider.panelController,
+                maxHeight: deviceHeight - actionButtonHeight - appBarHeight,
+                minHeight: context.watch<RegisterNotifier>().panelMinHeight,
+                body: _ScanningViewState(
+                  paddingBottom: actionButtonHeight + appBarHeight,
+                ),
+                panelBuilder: (sc) => _ScanningResultState(provider, sc),
               ),
             ),
-
-            // FR button
-            p.Consumer<RegisterNotifier>(
-              builder: (context, provider, child) {
-                return Container(
-                  width: double.infinity,
-                  height: actionButtonHeight,
-                  padding: const EdgeInsets.all(12),
-                  child: ElevatedButton(
-                    onPressed: provider.hasPassport
-                        ? () => Navigator.pushNamed(
-                              context,
-                              RoutesNavigation.registerFr,
-                              arguments: {
-                                "user_id": userId,
-                                "media":provider.media,
-                                "passport":  provider.passport
-                              },
-                            )
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: whiteColor,
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+          ),
+    
+          // FR button
+          p.Consumer<RegisterNotifier>(
+            builder: (context, provider, child) {
+              return Container(
+                width: double.infinity,
+                height: actionButtonHeight,
+                padding: const EdgeInsets.all(12),
+                child: ElevatedButton(
+                  onPressed: provider.hasPassport
+                      ? () => Navigator.pushNamed(
+                            context,
+                            RoutesNavigation.registerFr,
+                            arguments: {
+                              "user_id": userId,
+                              "media":provider.media,
+                              "passport":  provider.passport
+                            },
+                          )
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: whiteColor,
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text('Lanjut Untuk Pemindaian Wajah'),
                   ),
-                );
-              },
-            ),
-          ],
-        ),
+                  child: const Text('Lanjut Untuk Pemindaian Wajah'),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

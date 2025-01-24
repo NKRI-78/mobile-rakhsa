@@ -2,17 +2,16 @@ import 'dart:async';
 
 import 'package:location/location.dart' as loc;
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/single.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/location/current_location.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,7 +22,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:rakhsa/login_fr_page.dart';
 import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -61,6 +59,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
+  late WeatherNotifier weatherNotifier;
+
   
   Position? currentLocation;
   StreamSubscription? subscription;
@@ -74,6 +74,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String currentCountry = "";
   String currentLat = "";
   String currentLng = "";
+  String subAdministrativeArea = '';
 
   bool isDialogLocationShowing = false;
   bool isDialogNotificationShowing = false;
@@ -104,6 +105,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       await getCurrentLocation();
+
+    if(!mounted) return;
+      await getCurrentWeather();
 
     // if(StorageHelper.middlewareLogin()) {
       // Future.delayed(Duration.zero, () {
@@ -139,6 +143,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       setState(() {
         currentAddress = address;
         currentCountry = country;
+        subAdministrativeArea = subadministrativeArea;
 
         currentLat = position.latitude.toString();
         currentLng = position.longitude.toString();
@@ -282,6 +287,13 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> getCurrentWeather() async {
+    await context.read<WeatherNotifier>().getCurrentWeather(
+          double.parse(currentLat),
+          double.parse(currentLng),
+        );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed && !isResumedProcessing) {
@@ -312,6 +324,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await getData();
       await checkNotificationPermission();
       await getCurrentLocation();
+      await getCurrentWeather();
 
       isResumedProcessing = false;
     }
@@ -370,115 +383,32 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         ? const SizedBox()
                         : context.watch<ProfileNotifier>().state == ProviderState.loading 
                         ? const SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                    
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text("Selamat Datang",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    color: ColorResources.hintColor
-                                  ),
-                                ), 
-                                Text(profileNotifier.entity.data?.username ?? "-",
-                                  style: robotoRegular.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: Dimensions.fontSizeExtraLarge
-                                  ),
-                                )
-                              ],
-                            ),
+                        : _HeaderSection(scaffoldKey: widget.globalKey, profileNotifier: profileNotifier),
+                        const SizedBox(height: 16),
                 
-                            Container(
-                              width: 12.0,
-                              height: 12.0,
-                              decoration: BoxDecoration(
-                                color: context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.green 
-                                ? ColorResources.green 
-                                : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.yellow 
-                                ? ColorResources.yellow 
-                                : context.watch<WebSocketsService>().connectionIndicator == ConnectionIndicator.red 
-                                ? ColorResources.error 
-                                : ColorResources.transparent,
-                                shape: BoxShape.circle,
-                              ),                      
-                            ),
-                
-                            GestureDetector(
-                              onTap: () {
-                                widget.globalKey.currentState?.openEndDrawer();
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  
-                                  CachedNetworkImage(
-                                    imageUrl: profileNotifier.entity.data?.avatar ?? "-",
-                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                      return CircleAvatar(
-                                        backgroundImage: imageProvider,
-                                      );
-                                    },
-                                    placeholder: (BuildContext context, String url) {
-                                      return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      );
-                                    },
-                                    errorWidget: (BuildContext context, String url, Object error) {
-                                      return const CircleAvatar(
-                                        backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                      );
-                                    },
-                                  )
-                              
-                                ],
-                              ),
-                            )
-                    
-                          ],
-                        ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 30.0
+                         _WelcomeAndWeatherSection(
+                          loadingLocation: loadingGmaps,
+                          coordinate: LatLng(
+                            double.tryParse(currentLat) ?? 0.0,
+                            double.tryParse(currentLng) ?? 0.0,
                           ),
+                          area: subAdministrativeArea,
+                        ),
+
+                        Container(
+                          margin: const EdgeInsets.only(top: 30.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              
-                              Text("Apakah Anda dalam\nkeadaan darurat ?",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeOverLarge,
-                                  fontWeight: FontWeight.bold
+                              Flexible(
+                                child: Text(
+                                  "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               )
-                
-                            ]
-                          )
-                        ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 20.0
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              
-                              Text("Tekan dan tahan tombol ini, maka bantuan\nakan segera hadir",
-                                textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.hintColor
-                                ),
-                              )
-                
                             ],
                           ),
                         ),
@@ -558,28 +488,205 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.5),
-                      Colors.white,
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            const _BottomFadeEffect(),
         ],
       )
     ); 
+  }
+}
+
+
+
+class _HeaderSection extends StatelessWidget {
+  const _HeaderSection({
+    required this.scaffoldKey,
+    required this.profileNotifier,
+  });
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final ProfileNotifier profileNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Flexible(
+          fit: FlexFit.tight,
+          child: GestureDetector(
+            onTap: () => scaffoldKey.currentState?.openEndDrawer(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: profileNotifier.entity.data?.avatar ?? "-",
+                  imageBuilder: (BuildContext context,
+                      ImageProvider<Object> imageProvider) {
+                    return CircleAvatar(
+                      backgroundImage: imageProvider,
+                    );
+                  },
+                  placeholder: (BuildContext context, String url) {
+                    return const CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                    );
+                  },
+                  errorWidget:
+                      (BuildContext context, String url, Object error) {
+                    return const CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/default.jpeg'),
+                    );
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+        Container(
+          width: 14.0,
+          height: 14.0,
+          decoration: BoxDecoration(
+            color: context.watch<WebSocketsService>().connectionIndicator ==
+                ConnectionIndicator.green
+                ? ColorResources.green
+                : context.watch<WebSocketsService>().connectionIndicator ==
+                    ConnectionIndicator.yellow
+                    ? ColorResources.yellow
+                    : context.watch<WebSocketsService>().connectionIndicator ==
+                            ConnectionIndicator.red
+                        ? ColorResources.error
+                        : ColorResources.transparent,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WelcomeAndWeatherSection extends StatelessWidget {
+  const _WelcomeAndWeatherSection({
+    required this.area,
+    required this.coordinate,
+    required this.loadingLocation,
+  });
+
+  final String? area;
+  final LatLng coordinate;
+  final bool loadingLocation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          fit: FlexFit.tight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Selamat Datang",
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.hintColor),
+              ),
+              Consumer<ProfileNotifier>(
+                builder: (context, provider, child) {
+                  return Text(
+                    provider.entity.data?.username ?? "-",
+                    style: robotoRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: Dimensions.fontSizeLarge),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: loadingLocation
+              ? null
+              : () => Navigator.pushNamed(
+                    context,
+                    RoutesNavigation.weather,
+                    arguments: {
+                      'area': area,
+                      'coordinate': coordinate,
+                    },
+                  ),
+          borderRadius: BorderRadius.circular(8),
+          child: Consumer<WeatherNotifier>(
+            builder: (context, provider, child) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      // cloud asset
+                      Image.asset(
+                        provider.getWeatherIcon(
+                            provider.weather?.weatherConditionCode ?? 300),
+                        width: 32,
+                        height: 32,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${(provider.weather?.temperature?.celsius ?? 0).round()}\u00B0C',
+                        style: robotoRegular.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                  Text(
+                    (provider.loading && loadingLocation)
+                        ? 'Memuat'
+                        : area ?? 'Memuat Alamat',
+                    style: robotoRegular.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BottomFadeEffect extends StatelessWidget {
+  const _BottomFadeEffect();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.white.withOpacity(0.1),
+              Colors.white.withOpacity(0.5),
+              Colors.white,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

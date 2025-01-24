@@ -112,6 +112,7 @@ dependencies:
 
   # W
   web_socket_channel: ^3.0.1
+  weather: ^3.1.1
   # workmanager: ^0.5.2
 
 dev_dependencies:
@@ -128,18 +129,9 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/icons/
+    - assets/images/weather/
     - assets/images/update/
     - assets/sounds/
-
-flutter_launcher_icons:
-  android: true
-  ios: true
-  remove_alpha_ios: true
-  image_path: "assets/images/ic-apps.png"
-  min_sdk_android: 21
-  adaptive_icon_background: "#FFFFFFF"
-  adaptive_icon_monochrome: "assets/images/ic-apps.png" 
-  adaptive_icon_foreground: "assets/images/ic-apps.png"
 
   fonts:
     - family: Gilroy

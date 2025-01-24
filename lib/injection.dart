@@ -30,6 +30,7 @@ import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_noti
 import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/features/document/data/datasource/document_remote_datasource.dart';
 import 'package:rakhsa/features/document/data/repositories/document_repository_impl.dart';
 import 'package:rakhsa/features/document/domain/repository/document_repository.dart';
@@ -226,6 +227,9 @@ void init() {
     er: locator(), 
     mr: locator()
   ));
+
+  locator.registerFactory(() => WeatherNotifier());
+
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()
   ));

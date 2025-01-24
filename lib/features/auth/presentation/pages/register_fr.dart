@@ -6,12 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 
-import 'package:rakhsa/ML/Recognizer.dart';
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:image/image.dart' as img;
+
+import 'package:rakhsa/ML/Recognizer.dart';
+import 'package:rakhsa/ML/Recognition.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -29,8 +31,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-import 'package:rakhsa/ML/Recognition.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
@@ -182,7 +182,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
       ),
       alignment: Alignment.center,
       content: SizedBox(
-        height: 400.0,
+        height: 500.0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -193,8 +193,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
               Uint8List.fromList(
                 img.encodeBmp(croppedFace)
               ),
-              width: 300.0,
-              height: 250.0
             ),
 
             const SizedBox(height: 20.0),
@@ -431,9 +429,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                   fontWeight: ui.FontWeight.bold
                 ),
               ),
-
               const SizedBox(height: 10.0),
-
               Container(
                 padding: const EdgeInsets.all(1.0),
                 decoration: BoxDecoration(
