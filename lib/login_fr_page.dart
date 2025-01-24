@@ -351,14 +351,6 @@ class LoginFrPageState extends State<LoginFrPage> {
             )
           ), 
 
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-              ),
-            ),
-          ),
-          
         ],
       ),
     ),

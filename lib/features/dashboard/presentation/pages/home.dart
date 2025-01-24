@@ -110,14 +110,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       
       await Geolocator.requestPermission();
 
-      // channel.setMethodCallHandler((call) async {
-      //   if (call.method == "updateLocation") {
-      //     final latitude = call.arguments['latitude'];
-      //     final longitude = call.arguments['longitude'];
-      //     debugPrint("Lat: $latitude, Long: $longitude");
-      //   }
-      // });
-
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true
@@ -551,7 +543,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
               ),
             ),
-          Positioned(
+            Positioned(
               bottom: 0,
               left: 0,
               right: 0,

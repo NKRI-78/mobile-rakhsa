@@ -549,14 +549,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                 )
               ), 
                     
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                ),
-              ),
-                    
               Positioned(
                 left: 0.0,
                 bottom: 0.0,
