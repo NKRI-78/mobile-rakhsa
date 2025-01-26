@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
@@ -28,6 +29,7 @@ class RoutesNavigation {
   static const register = '/register';
   static const weather = '/weather';
   static const loginFr = '/login-fr';
+  static const login = '/login';
   static const registerFr = '/register-fr';
   static const registerPassport = '/register-passport';
   static const scanRegisterPassport = '/scan-register-passport';
@@ -69,6 +71,8 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
       case loginFr: 
         return MaterialPageRoute(builder: (_) => const LoginFrPage(fromHome: false));
+      case login: 
+        return MaterialPageRoute(builder: (_) => const LoginPage());
       case registerFr: 
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => RegisterFrPage(

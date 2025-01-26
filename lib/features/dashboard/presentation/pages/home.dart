@@ -53,14 +53,11 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
-  // static const MethodChannel channel = MethodChannel('com.inovatiftujuh8.rakhsa/location');
-
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
   late WeatherNotifier weatherNotifier;
-
   
   Position? currentLocation;
   StreamSubscription? subscription;
@@ -81,18 +78,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   
   bool loadingGmaps = true;
 
-  // void startService() async {
-  //   try {
-  //     await channel.invokeMethod('startService');
-  //   } on PlatformException catch (e) {
-  //     debugPrint("Failed to start service: ${e.message}");
-  //   }
-  // }
-
-  // void stopService() async {
-  //   await channel.invokeMethod('stopService');
-  // }
-
   Future<void> getData() async {
     if(!mounted) return;
       await profileNotifier.getProfile();
@@ -108,6 +93,15 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       await getCurrentWeather();
+
+    String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
+    String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
+
+    service.invoke("weather", {
+      "area_name": subAdministrativeArea,
+      "celcius": celcius,
+      "weather_desc": weatherDesc
+    });
 
     // if(StorageHelper.middlewareLogin()) {
       // Future.delayed(Duration.zero, () {
@@ -204,32 +198,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  // void startListeningLocation() {
-  //   locationPermission(
-  //     isSuccess: () {
-  //       subscription = Geolocator.getPositionStream(
-  //         locationSettings: AndroidSettings(
-  //           accuracy: LocationAccuracy.best,
-  //           distanceFilter: 10,
-  //           forceLocationManager: true,
-  //           foregroundNotificationConfig: const ForegroundNotificationConfig(
-  //             notificationTitle: "", 
-  //             notificationText: "",
-  //             enableWakeLock: true
-  //           )
-  //         )
-  //       ).listen((event) async {
-  //         currentLocation = event;
-  //         debugPrint(currentLocation.toString());
-  //       });
-  //     }
-  //   );
-  // }
-
-  // locationPermission({VoidCallback? isSuccess}) async {
-  //   isSuccess?.call();
-  // }
-
   Future<void> checkNotificationPermission() async {
     bool notificationReq = await Permission.notification.isDenied;
     if(notificationReq) {
@@ -288,10 +256,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> getCurrentWeather() async {
-    await context.read<WeatherNotifier>().getCurrentWeather(
-          double.parse(currentLat),
-          double.parse(currentLng),
-        );
+    await weatherNotifier.getCurrentWeather(
+      double.parse(currentLat),
+      double.parse(currentLng),
+    );
   }
 
   @override
@@ -340,6 +308,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
+    weatherNotifier = context.read<WeatherNotifier>();
 
     Future.microtask(() => getData());
   }

@@ -26,8 +26,18 @@ class ProfileData {
   String avatar;
   String address;
   String passport;
+  String passportExpired;
+  String passportIssued;
+  String issuingAuthority;
+  String citizen;
   String contact;
   String emergencyContact;
+  String noReg;
+  String mrzCode;
+  String codeCountry;
+  String birthplace;
+  String birthdate;
+  String gender;
   String lat;
   String lng;
   String createdAt;
@@ -41,8 +51,18 @@ class ProfileData {
     required this.avatar,
     required this.address,
     required this.passport,
+    required this.passportExpired,
+    required this.passportIssued,
+    required this.issuingAuthority,
+    required this.citizen,
     required this.contact,
     required this.emergencyContact,
+    required this.noReg,
+    required this.mrzCode,
+    required this.codeCountry,
+    required this.birthplace,
+    required this.birthdate,
+    required this.gender,
     required this.lat,
     required this.lng,
     required this.createdAt,
@@ -54,11 +74,21 @@ class ProfileData {
     id: json["id"],
     username: json["username"],
     email: json["email"],
-    avatar: json["avatar"] ?? "-",
+    avatar: json["avatar"],
     address: json["address"],
     passport: json["passport"],
+    passportExpired: json["passport_expired"],
+    passportIssued: json["passport_issued"],
+    issuingAuthority: json["issuing_authority"],
+    citizen: json["citizen"],
     contact: json["contact"],
     emergencyContact: json["emergency_contact"],
+    noReg: json["no_reg"],
+    mrzCode: json["mrz_code"],
+    codeCountry: json["code_country"],
+    birthdate: json["birth_date"],
+    birthplace: json["birth_place"],
+    gender: json["gender"],
     lat: json["lat"],
     lng: json["lng"],
     createdAt: json["created_at"],

@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 
@@ -19,7 +21,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
-import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -251,7 +252,8 @@ class ProfilePageState extends State<ProfilePage> {
               SliverPadding(
                 padding: const EdgeInsets.only(
                   left: 16.0, 
-                  right: 16.0
+                  right: 16.0,
+                  bottom: 20.0
                 ),
                 sliver: SliverToBoxAdapter(
                   child: Column(
@@ -454,49 +456,61 @@ class ProfilePageState extends State<ProfilePage> {
                       
                       const SizedBox(height: 10.0),
 
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                          color: ColorResources.white
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                
-                                Expanded(
-                                  flex: 2,
-                                  child: Text("Kontak darurat",
-                                    style: robotoRegular.copyWith(
-                                      color: ColorResources.grey,
-                                      fontSize: Dimensions.fontSizeDefault
-                                    ),
-                                  ),
-                                ),
-
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(profileNotifier.entity.data!.emergencyContact.toString(),
-                                    style: robotoRegular.copyWith(
-                                      color: ColorResources.black,
-                                      fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                )
-                
-                              ],
-                            ), 
-                
-                          ],
-                        )
+                      fieldProfile(
+                        title: "Kontak darurat", 
+                        desc: profileNotifier.entity.data!.emergencyContact.toString()
                       ),
 
-                  
+                      fieldProfile(
+                        title: "Gender", 
+                        desc: profileNotifier.entity.data!.gender.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "Passport Expired", 
+                        desc: profileNotifier.entity.data!.passportExpired.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "Passport Issued", 
+                        desc: profileNotifier.entity.data!.passportIssued.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "No Reg", 
+                        desc: profileNotifier.entity.data!.noReg.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "MRZ Code", 
+                        desc: profileNotifier.entity.data!.mrzCode.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "Issuing Authority", 
+                        desc: profileNotifier.entity.data!.issuingAuthority.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "Citizen", 
+                        desc: profileNotifier.entity.data!.citizen.toString()
+                      ),
+                      
+                      fieldProfile(
+                        title: "Citizen", 
+                        desc: profileNotifier.entity.data!.codeCountry.toString()
+                      ),
+
+                      fieldProfile(
+                        title: "Birthdate", 
+                        desc: profileNotifier.entity.data!.birthdate.toString()
+                      ),
+                      
+                      fieldProfile(
+                        title: "Birthplace", 
+                        desc: profileNotifier.entity.data!.birthplace.toString()
+                      ),
+
                     ],
                   )
                 )
@@ -505,6 +519,50 @@ class ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget fieldProfile({required String title, required String desc}) {
+    return  Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        color: ColorResources.white
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+
+              Expanded(
+                flex: 2,
+                child: Text(title,
+                  style: robotoRegular.copyWith(
+                    color: ColorResources.grey,
+                    fontSize: Dimensions.fontSizeDefault
+                  ),
+                ),
+              ),
+
+              Expanded(
+                flex: 3,
+                child: Text(desc,
+                  style: robotoRegular.copyWith(
+                    color: ColorResources.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              )
+
+            ],
+          ), 
+
+        ],
+      )
     );
   }
 }
