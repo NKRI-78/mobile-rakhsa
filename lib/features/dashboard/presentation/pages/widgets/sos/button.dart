@@ -11,6 +11,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class SosButton extends StatefulWidget {
@@ -49,15 +50,31 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
       );
     } else {
+      sosNotifier.pulseController!.forward();
       if(StorageHelper.getUserId() == null) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return const LoginPage();
         }));
       } else {
-        sosNotifier.pulseController!.forward();
         sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
+          sosNotifier.pulseController!.reverse();
           startTimer();
         });
+      }
+    }
+  }
+
+   void handleLongPressEnd() {
+    if(StorageHelper.getUserId() == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const LoginPage();
+      }));
+    } else {
+      if (sosNotifier.holdTimer?.isActive ?? false) {
+        sosNotifier.holdTimer?.cancel();
+        sosNotifier.pulseController!.reverse();
+      } else if (!sosNotifier.isPressed) {
+        setState(() => sosNotifier.isPressed = false);
       }
     }
   }
@@ -154,34 +171,50 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                 ? () {} 
                 : await handleLongPressStart() 
                 : () {},
+                onLongPressEnd: (_) => widget.isConnected 
+                ? notifier.isTimerRunning 
+                ? () {} 
+                : widget.loadingGmaps 
+                ? () {} 
+                : handleLongPressEnd() 
+                : () {},
                 child: AnimatedBuilder(
                   animation: notifier.timerController!,
                   builder: (BuildContext context, Widget? child) {
-                    return Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.isConnected
-                          ? const Color(0xFFFE1717)
-                          : const Color(0xFF7A7A7A),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.isConnected 
-                            ? const Color(0xFFFE1717).withOpacity(0.5) 
-                            : const Color(0xFF7A7A7A).withOpacity(0.5),
-                            blurRadius: 10,
-                            spreadRadius: 5,
+                    return Bouncing(
+                      onPress: () async => widget.isConnected 
+                      ? notifier.isTimerRunning 
+                      ? () {} 
+                      : widget.loadingGmaps 
+                      ? () {} 
+                      : () {} 
+                      : () {},
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: widget.isConnected
+                            ? const Color(0xFFFE1717)
+                            : const Color(0xFF7A7A7A),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.isConnected 
+                              ? const Color(0xFFFE1717).withOpacity(0.5) 
+                              : const Color(0xFF7A7A7A).withOpacity(0.5),
+                              blurRadius: 10,
+                              spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          sosNotifier.isPressed ? "${notifier.countdownTime}" : "SOS",
+                          style: robotoRegular.copyWith(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        sosNotifier.isPressed ? "${notifier.countdownTime}" : "SOS",
-                        style: robotoRegular.copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
                         ),
                       ),
                     );

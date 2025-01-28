@@ -117,13 +117,12 @@ class NewsListPageState extends State<NewsListPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    // Navigator.pushNamedAndRemoveUntil(context, RoutesNavigation.newsDetail, (route) => route.isFirst, arguments: {
-                    //   'id': notifier.news[0].id,
-                    //   'type': notifier.news[0].type.toString(),
-                    // });
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-                      return NewsDetailPage(id: notifier.news[0].id, type: notifier.news[0].type.toString(),);
-                    },), (route) => route.isFirst);
+                      return NewsDetailPage(
+                        id: notifier.news[0].id, 
+                        type: notifier.news[0].type.toString()
+                      );
+                    }), (route) => route.isFirst);
                   },
                   child: Container(
                     clipBehavior: Clip.antiAlias,

@@ -16,7 +16,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/pages/profile.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -181,23 +180,23 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
               const SizedBox(height: 10.0),
           
-              CustomButton(
-                onTap: () async {
-                  StorageHelper.saveRecordScreen(isHome: false);
+              // CustomButton(
+              //   onTap: () async {
+              //     StorageHelper.saveRecordScreen(isHome: false);
 
-                  widget.globalKey.currentState?.closeEndDrawer();
+              //     widget.globalKey.currentState?.closeEndDrawer();
 
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                    return const ChatsPage();
-                  }));
-                },
-                isBorder: true,
-                isBorderRadius: true,
-                btnColor: ColorResources.transparent,
-                btnBorderColor: ColorResources.white,
-                fontSize: Dimensions.fontSizeDefault,
-                btnTxt: "Notification",
-              ),
+              //     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+              //       return const ChatsPage();
+              //     }));
+              //   },
+              //   isBorder: true,
+              //   isBorderRadius: true,
+              //   btnColor: ColorResources.transparent,
+              //   btnBorderColor: ColorResources.white,
+              //   fontSize: Dimensions.fontSizeDefault,
+              //   btnTxt: "Notification",
+              // ),
           
             ],
           ),

@@ -91,18 +91,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if(!mounted) return;
       await getCurrentLocation();
 
-    if(!mounted) return;
-      await getCurrentWeather();
-
-    String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
-    String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
-
-    service.invoke("weather", {
-      "area_name": subAdministrativeArea,
-      "celcius": celcius,
-      "weather_desc": weatherDesc
-    });
-
     // if(StorageHelper.middlewareLogin()) {
       // Future.delayed(Duration.zero, () {
       //   Navigator.pushAndRemoveUntil(
@@ -157,6 +145,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         loadingGmaps = false;
       });
 
+      await weatherNotifier.getCurrentWeather(
+        double.parse(currentLat),
+        double.parse(currentLng),
+      );
+
+      String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
+      String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
+
       Future.delayed(Duration.zero, () async {
         await updateAddressNotifier.updateAddress(
           address: address, 
@@ -184,6 +180,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
             foregroundServiceTypes: [
               AndroidForegroundType.location
             ],
+            initialNotificationTitle: "$celcius $subAdministrativeArea",
+            initialNotificationContent: weatherDesc,
             notificationChannelId: "notification"
           ),
         );
@@ -255,13 +253,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> getCurrentWeather() async {
-    await weatherNotifier.getCurrentWeather(
-      double.parse(currentLat),
-      double.parse(currentLng),
-    );
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed && !isResumedProcessing) {
@@ -292,7 +283,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await getData();
       await checkNotificationPermission();
       await getCurrentLocation();
-      await getCurrentWeather();
 
       isResumedProcessing = false;
     }
@@ -529,6 +519,12 @@ class _HeaderSection extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
+        IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, RoutesNavigation.chats);
+          },
+          icon: const Icon(Icons.notifications)
+        )
       ],
     );
   }

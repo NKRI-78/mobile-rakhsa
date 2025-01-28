@@ -68,7 +68,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
         if(didPop) {
           return;
         }
-        Navigator.pop(context, "refetch");
+        Navigator.pushReplacementNamed(context, RoutesNavigation.dashboard);
       },
       child: Scaffold(
         backgroundColor: const Color(0xffF4F4F7),

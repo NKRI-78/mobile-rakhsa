@@ -462,52 +462,52 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
 
                       fieldProfile(
-                        title: "Gender", 
+                        title: "Jenis Kelamin", 
                         desc: profileNotifier.entity.data!.gender.toString()
                       ),
 
                       fieldProfile(
-                        title: "Passport Expired", 
+                        title: "Passport\nKedaluwarsa", 
                         desc: profileNotifier.entity.data!.passportExpired.toString()
                       ),
 
                       fieldProfile(
-                        title: "Passport Issued", 
+                        title: "Passport\nDikeluarkan", 
                         desc: profileNotifier.entity.data!.passportIssued.toString()
                       ),
 
                       fieldProfile(
-                        title: "No Reg", 
+                        title: "Nomor Reg", 
                         desc: profileNotifier.entity.data!.noReg.toString()
                       ),
 
                       fieldProfile(
-                        title: "MRZ Code", 
+                        title: "Kode MRZ", 
                         desc: profileNotifier.entity.data!.mrzCode.toString()
                       ),
 
                       fieldProfile(
-                        title: "Issuing Authority", 
+                        title: "Otoritas Penerbit", 
                         desc: profileNotifier.entity.data!.issuingAuthority.toString()
                       ),
 
                       fieldProfile(
-                        title: "Citizen", 
+                        title: "Warga Negara", 
                         desc: profileNotifier.entity.data!.citizen.toString()
                       ),
                       
                       fieldProfile(
-                        title: "Citizen", 
+                        title: "Warga Negara", 
                         desc: profileNotifier.entity.data!.codeCountry.toString()
                       ),
 
                       fieldProfile(
-                        title: "Birthdate", 
+                        title: "Tanggal Lahir", 
                         desc: profileNotifier.entity.data!.birthdate.toString()
                       ),
                       
                       fieldProfile(
-                        title: "Birthplace", 
+                        title: "Tempat Lahir", 
                         desc: profileNotifier.entity.data!.birthplace.toString()
                       ),
 

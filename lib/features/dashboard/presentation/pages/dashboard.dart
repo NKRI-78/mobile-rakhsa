@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
@@ -69,11 +70,11 @@ class DashboardScreenState extends State<DashboardScreen> {
       menuIcon: AssetSource.iconMenuInformation,
       path: RoutesNavigation.information,
     ),
-    MainMenu(
-      title: 'News',
-      menuIcon: AssetSource.iconMenuNews,
-      path: RoutesNavigation.news,
-    ),
+    // MainMenu(
+    //   title: 'News',
+    //   menuIcon: AssetSource.iconMenuNews,
+    //   path: RoutesNavigation.news,
+    // ),
     MainMenu(
       title: 'Itinerary',
       menuIcon: AssetSource.iconMenuItinerary,
@@ -94,7 +95,22 @@ class DashboardScreenState extends State<DashboardScreen> {
  
   @override
   Widget build(BuildContext context) {
-    return _PopScopeWrapper(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (lastTap == null) {
+          lastTap = DateTime.now();
+          ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+        } else {
+          if (DateTime.now().difference(lastTap!) <
+              const Duration(seconds: 2)) {
+            SystemNavigator.pop();
+          } else {
+            lastTap = DateTime.now();
+            ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+          }
+        }
+      },
       child: Scaffold(
         key: globalKey,
 
@@ -119,8 +135,11 @@ class DashboardScreenState extends State<DashboardScreen> {
           navBarHeight: botomNavBarHeight,
           menus: [
             IconButton(
-              onPressed: null,
-              icon: Image.asset(AssetSource.iconNavBarHome),
+              onPressed: () => Navigator.pushNamed(context, RoutesNavigation.news),
+              icon: Image.asset(
+                AssetSource.iconMenuNews, 
+                color: ColorResources.white
+              ),
             ),
             IconButton(
               onPressed: () {
@@ -237,33 +256,3 @@ class MainMenu {
   });
 }
  
-// ignore: must_be_immutable
-class _PopScopeWrapper extends StatelessWidget {
-  _PopScopeWrapper({required this.child});
- 
-  final Widget child;
- 
-  DateTime? _lastTap;
- 
-  @override
-  Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool didPop) {
-        if (_lastTap == null) {
-          _lastTap = DateTime.now();
-          ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
-        } else {
-          if (DateTime.now().difference(_lastTap!) <
-              const Duration(seconds: 2)) {
-            SystemNavigator.pop();
-          } else {
-            _lastTap = DateTime.now();
-            ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
-          }
-        }
-      },
-      child: child,
-    );
-  }
-}
