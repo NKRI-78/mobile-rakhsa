@@ -55,11 +55,11 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
  
   final menus = [
-    MainMenu(
-      title: 'Raksha Mart',
-      menuIcon: AssetSource.iconMenuMart,
-      path: RoutesNavigation.mart,
-    ),
+    // MainMenu(
+    //   title: 'Raksha Mart',
+    //   menuIcon: AssetSource.iconMenuMart,
+    //   path: RoutesNavigation.mart,
+    // ),
     MainMenu(
       title: 'Near Me',
       menuIcon: AssetSource.iconMenuNearme,
@@ -201,7 +201,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   Widget buildMainMenuDialog() {
     return SizedBox(
       width: double.maxFinite,
-      height: 200,
+      height: 90.0,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,

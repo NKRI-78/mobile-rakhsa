@@ -14,6 +14,7 @@ import 'package:image/image.dart' as img;
 
 import 'package:rakhsa/ML/Recognizer.dart';
 import 'package:rakhsa/ML/Recognition.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -254,6 +255,11 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     } on DioException catch(e) {
                       debugPrint(e.response!.data.toString());
                       debugPrint(e.response!.statusCode.toString());
+
+                      if(e.response!.statusCode == 400) {
+                        String message = e.response!.data["message"];
+                        ShowSnackbar.snackbarErr(message);
+                      }
                     } catch(e) {
                       debugPrint(e.toString());
                     }

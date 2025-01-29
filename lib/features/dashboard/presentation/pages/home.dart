@@ -88,27 +88,16 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if(!mounted) return;
       await checkNotificationPermission();
 
-    if(!mounted) return;
-      await getCurrentLocation();
-
-    // if(StorageHelper.middlewareLogin()) {
-      // Future.delayed(Duration.zero, () {
-      //   Navigator.pushAndRemoveUntil(
-      //   context, MaterialPageRoute(
-      //     builder: (BuildContext context) => const LoginFrPage(fromHome: true)
-      //   ), 
-      //   (route) => false);
-      // });
-
-      // StorageHelper.destroyMiddlewareLogin();
-    // }
+    if(!mounted) return;        
+      bool notificationReq = await Permission.notification.isDenied;
+      if(!notificationReq) {
+        await getCurrentLocation();
+      }
   }
 
   Future<void> getCurrentLocation() async {
     try {
       
-      await Geolocator.requestPermission();
-
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true
@@ -198,6 +187,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> checkNotificationPermission() async {
     bool notificationReq = await Permission.notification.isDenied;
+
     if(notificationReq) {
       if (!isDialogNotificationShowing) {
         setState(() => isDialogNotificationShowing = true);
@@ -205,16 +195,17 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           msg: "Izin Notifikasi Dibutuhkan",
           type: "notification"
         );
-
         Future.delayed(const Duration(seconds: 2),() {
           setState(() => isDialogNotificationShowing = false);
         });
+
+        return;
       }
     }
   }
 
   Future<void> checkLocationPermission() async {
-    var locationReq = await Permission.location.isDenied 
+    var appLocationReq = await Permission.location.isDenied 
     || await Permission.location.isPermanentlyDenied 
     || await Permission.accessMediaLocation.isPermanentlyDenied;
 
@@ -226,7 +217,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         setState(() => isDialogLocationShowing = true);
         await GeneralModal.dialogRequestPermission(
           msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "location"
+          type: "location-gps"
         );
 
         Future.delayed(const Duration(seconds: 2),() {
@@ -236,12 +227,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     } else {  
       
-      if(locationReq) {
+      if(appLocationReq) {
         if (!isDialogLocationShowing) {
           setState(() => isDialogLocationShowing = true);
           await GeneralModal.dialogRequestPermission(
             msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-            type: "location"
+            type: "location-app"
           );
 
           Future.delayed(const Duration(seconds: 2),() {
@@ -258,31 +249,20 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed && !isResumedProcessing) {
       debugPrint("=== APP RESUME ===");
 
-      bool isLocationEnabled = await loc.Location().serviceEnabled();
-
       isResumedProcessing = true;
 
       await Future.delayed(const Duration(milliseconds: 500)); 
-      
-      if(!isLocationEnabled) {
-        if (!isDialogLocationShowing) {
-          setState(() => isDialogLocationShowing = true);
-          await GeneralModal.dialogRequestPermission(
-            msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-            type: "location"
-          );
-
-          Future.delayed(const Duration(seconds: 2),() {
-            setState(() => isDialogLocationShowing = false);
-          });
-        }
-      } 
-
+    
       // StorageHelper.setMiddlewareLogin(val: true);
 
       await getData();
       await checkNotificationPermission();
-      await getCurrentLocation();
+      
+      bool notificationReq = await Permission.notification.isDenied;
+      
+      if(!notificationReq) {
+        await getCurrentLocation();
+      }
 
       isResumedProcessing = false;
     }
@@ -552,19 +532,24 @@ class _WelcomeAndWeatherSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "Selamat Datang",
+              Text("Selamat Datang",
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.hintColor),
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.hintColor
+                ),
               ),
               Consumer<ProfileNotifier>(
                 builder: (context, provider, child) {
-                  return Text(
-                    provider.entity.data?.username ?? "-",
-                    style: robotoRegular.copyWith(
+                  return SizedBox(
+                    width: 150.0,
+                    child: Text(
+                      provider.entity.data?.username ?? "-",
+                      overflow: TextOverflow.ellipsis,
+                      style: robotoRegular.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: Dimensions.fontSizeLarge),
+                        fontSize: Dimensions.fontSizeLarge
+                      ),
+                    ),
                   );
                 },
               ),

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -108,11 +109,15 @@ class DrawerWidgetState extends State<DrawerWidget> {
               
                                 const SizedBox(height: 2.0),
               
-                                Text(profileNotifier.entity.data!.username.toString(),
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorResources.black
+                                SizedBox(
+                                  width: 150.0,
+                                  child: Text(profileNotifier.entity.data!.username.toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorResources.black
+                                    ),
                                   ),
                                 ),
               

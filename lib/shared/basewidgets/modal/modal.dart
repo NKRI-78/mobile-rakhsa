@@ -4,6 +4,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:provider/provider.dart';
 
@@ -538,12 +539,18 @@ class GeneralModal {
                               if(type == "notification") {
                                 await AppSettings.openAppSettings(type: AppSettingsType.notification);
                               } else {
-                                await AppSettings.openAppSettings(type: AppSettingsType.location);
+                                if(type == "location-app") {
+                                  Geolocator.openAppSettings();
+                                } 
+                                if(type == "location-gps") {
+                                  await AppSettings.openAppSettings(type: AppSettingsType.location);
+                                }
                               }
 
                               Future.delayed(Duration.zero, () {
                                 Navigator.pop(context);
                               });
+
 
                             },
                             btnTxt: "Ok",
