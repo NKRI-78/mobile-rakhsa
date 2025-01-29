@@ -26,6 +26,8 @@ class WebSocketsService extends ChangeNotifier {
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
+  List<Map<String, dynamic>> messageQueue = [];
+
   WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
@@ -71,11 +73,32 @@ class WebSocketsService extends ChangeNotifier {
         },
       );
 
+      flushQueue();
+
       join();
       debugPrint("Connected to socket.");
     } catch (e) {
       debugPrint("Connection error: $e");
       reconnect();
+    }
+  }
+
+  void sendMessageQueue(Map<String, dynamic> message) {
+    try {
+      channel!.sink.add(jsonEncode(message));
+      debugPrint("SOS Message Sent: $message");
+    } catch (e) {
+      debugPrint("Failed to send SOS message: $e");
+      messageQueue.add(message); // Re-add message to queue if sending fails
+    }
+  }
+
+  void flushQueue() {
+    if (messageQueue.isNotEmpty) {
+      for (var message in messageQueue) {
+        sendMessageQueue(message);
+      }
+      messageQueue.clear();
     }
   }
 
@@ -146,8 +169,8 @@ class WebSocketsService extends ChangeNotifier {
     required String lng,
   }) async {
     final userId = StorageHelper.getUserId();
-
-    channel?.sink.add(jsonEncode({
+     if (isConnected) {
+      sendMessageQueue({
       "type": "sos",
       "user_id": userId,
       "location": location,
@@ -157,7 +180,24 @@ class WebSocketsService extends ChangeNotifier {
       "lng": lng,
       "country": country,
       "platform_type": "raksha",
-    }));
+    });
+    } else {
+      debugPrint("WebSocket Disconnected. Adding SOS to Queue.");
+      messageQueue.add({
+        "type": "sos",
+        "user_id": userId,
+        "location": location,
+        "media": media,
+        "ext": ext,
+        "lat": lat,
+        "lng": lng,
+        "country": country,
+        "platform_type": "raksha",
+      });
+      reconnect();
+    }
+
+   
   }
 
   void sendMessage({

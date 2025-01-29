@@ -253,8 +253,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
       await Future.delayed(const Duration(milliseconds: 500)); 
     
-      // StorageHelper.setMiddlewareLogin(val: true);
-
       await getData();
       await checkNotificationPermission();
       
@@ -558,15 +556,15 @@ class _WelcomeAndWeatherSection extends StatelessWidget {
         ),
         InkWell(
           onTap: loadingLocation
-              ? null
-              : () => Navigator.pushNamed(
-                    context,
-                    RoutesNavigation.weather,
-                    arguments: {
-                      'area': area,
-                      'coordinate': coordinate,
-                    },
-                  ),
+          ? null
+          : () => Navigator.pushNamed(
+            context,
+            RoutesNavigation.weather,
+            arguments: {
+              'area': area,
+              'coordinate': coordinate,
+            },
+          ),
           borderRadius: BorderRadius.circular(8),
           child: Consumer<WeatherNotifier>(
             builder: (context, provider, child) {
