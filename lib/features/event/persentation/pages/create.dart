@@ -343,11 +343,11 @@ class EventCreatePageState extends State<EventCreatePage> {
               ),
             ),
           ),
-
+    
           const SizedBox(
             height: 20,
           ),
-
+    
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Consumer<GetContinentNotifier>(
@@ -382,7 +382,7 @@ class EventCreatePageState extends State<EventCreatePage> {
           const SizedBox(
             height: 14.0,
           ),
-
+    
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Consumer<GetStateNotifier>(
@@ -412,7 +412,7 @@ class EventCreatePageState extends State<EventCreatePage> {
               },
             ),
           ),
-
+    
           const SizedBox(
             height: 14,
           ),

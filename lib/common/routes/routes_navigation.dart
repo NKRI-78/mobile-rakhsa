@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
+import 'package:rakhsa/features/auth/presentation/pages/login_fr.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
@@ -9,20 +11,18 @@ import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/weather_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
+import 'package:rakhsa/features/event/persentation/pages/create.dart';
 import 'package:rakhsa/features/event/persentation/pages/list.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
-import 'package:rakhsa/login_fr_page.dart';
-import 'package:rakhsa/register_fr_page.dart';
 import 'package:rakhsa/views/screens/ecommerce/product/products.dart';
 
 class RoutesNavigation {
   RoutesNavigation._();
 
-  static const initialRoute = '/';
   static const dashboard = '/dashboard';
   static const mart = '/mart';
   static const nearMe = '/near-me';
@@ -41,8 +41,10 @@ class RoutesNavigation {
   static const newsDetail = '/news-detail';
   static const visaDocument = '/visa-document';
   static const passportDocument = '/passport-document';
-  static const itinerary = '/itinerary';
   static const deviceNotSupport = '/device-not-support';
+
+  static const itinerary = '/itinerary';
+  static const itineraryCreate = '/itinerary/create';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -97,6 +99,8 @@ class RoutesNavigation {
         ));
       case itinerary:
         return MaterialPageRoute(builder: (_) => const EventListPage());
+      case itineraryCreate:
+        return MaterialPageRoute(builder: (_) => const EventCreatePage());
       default:
         return MaterialPageRoute(builder: (_) => const _InvalidRoute());
     }

@@ -86,13 +86,10 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await firebaseProvider.initFcm();
 
     if(!mounted) return;
-      await checkNotificationPermission();
+      await requestNotificationPermission();
 
-    if(!mounted) return;        
-      bool notificationReq = await Permission.notification.isDenied;
-      if(!notificationReq) {
-        await getCurrentLocation();
-      }
+    if(!mounted) return;
+      await getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
@@ -185,10 +182,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> checkNotificationPermission() async {
-    bool notificationReq = await Permission.notification.isDenied;
+  Future<void> requestNotificationPermission() async {
+    await Permission.notification.request();
+  }
 
-    if(notificationReq) {
+  Future<void> checkNotificationPermission() async {
+    bool isNotificationDenied = await Permission.notification.isDenied;
+
+    if(isNotificationDenied) {
       if (!isDialogNotificationShowing) {
         setState(() => isDialogNotificationShowing = true);
         await GeneralModal.dialogRequestPermission(
@@ -205,14 +206,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> checkLocationPermission() async {
-    var appLocationReq = await Permission.location.isDenied 
-    || await Permission.location.isPermanentlyDenied 
-    || await Permission.accessMediaLocation.isPermanentlyDenied;
+    bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
 
-    bool isLocationEnabled = await loc.Location().serviceEnabled();
+    bool isGpsEnabled = await loc.Location().serviceEnabled();
 
-    if(!isLocationEnabled) {
-
+    if(!isGpsEnabled) {
       if (!isDialogLocationShowing) {
         setState(() => isDialogLocationShowing = true);
         await GeneralModal.dialogRequestPermission(
@@ -224,23 +222,24 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() => isDialogLocationShowing = false);
         });
       }
+    } else {
+      await checkNotificationPermission();
+    }
 
-    } else {  
-      
-      if(appLocationReq) {
-        if (!isDialogLocationShowing) {
-          setState(() => isDialogLocationShowing = true);
-          await GeneralModal.dialogRequestPermission(
-            msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-            type: "location-app"
-          );
+    if(isLocationDenied) {
+      if (!isDialogLocationShowing) {
+        setState(() => isDialogLocationShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type: "location-app"
+        );
 
-          Future.delayed(const Duration(seconds: 2),() {
-            setState(() => isDialogLocationShowing = false);
-          });
-        }
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogLocationShowing = false);
+        });
       }
-
+    } else {
+      await checkNotificationPermission();
     }
   }
 
@@ -254,13 +253,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await Future.delayed(const Duration(milliseconds: 500)); 
     
       await getData();
-      await checkNotificationPermission();
-      
-      bool notificationReq = await Permission.notification.isDenied;
-      
-      if(!notificationReq) {
-        await getCurrentLocation();
-      }
+      await getCurrentLocation();
 
       isResumedProcessing = false;
     }

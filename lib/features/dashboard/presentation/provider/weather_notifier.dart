@@ -45,6 +45,8 @@ class WeatherNotifier extends ChangeNotifier {
       return 'Selamat Pagi';
     } else if (hour < 17) {
       return 'Selamat Siang';
+    } else if (hour > 18) {
+      return 'Selamat Malam';
     } else {
       return 'Selamat Sore';
     }

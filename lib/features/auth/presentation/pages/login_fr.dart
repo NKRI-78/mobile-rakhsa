@@ -12,8 +12,11 @@ import 'package:rakhsa/ML/Recognizer.dart';
 // import 'package:dio/dio.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
+
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
+
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/main.dart';
@@ -130,12 +133,14 @@ class LoginFrPageState extends State<LoginFrPage> {
     if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
+
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() => text = "");
+      });
     } else {
-      setState(() => text = "Already registered ! AS ${recognition.name}");
 
       String? userId = StorageHelper.getUserId();
 
-      // save to api (on progress)
       try {
         Dio dio = Dio();
         Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-member-fr", 
@@ -158,8 +163,14 @@ class LoginFrPageState extends State<LoginFrPage> {
         );
 
       } on DioException catch(e) {
-        debugPrint(e.response!.data.toString());
-        debugPrint(e.response!.statusCode.toString());
+        if(e.response!.statusCode == 400) {
+          String message = e.response!.data["message"];
+          ShowSnackbar.snackbarErr(message);
+
+          Future.delayed(Duration.zero, () {
+            Navigator.pop(context);
+          });
+        }
       } catch(e) {
         debugPrint(e.toString());
       }

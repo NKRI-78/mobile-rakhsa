@@ -156,7 +156,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.6) {
+    if (recognition.distance > 0.1) {
       recognition.name = "Not Registered";
       setState(() => text1 = "");
       setState(() => text2 = "Take your photo to register account");
@@ -213,12 +213,13 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     );
 
                     Future.delayed(const Duration(seconds: 2), () async {
-                      if(!mounted) return;
-                        s(() => btnRegister = false);
+                      s(() => btnRegister = false);
                     });
                   
                     // save to api (on progress)
+
                     try {
+                      
                       Dio dio = Dio();
                       Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-member-fr", 
                         data: {
@@ -234,7 +235,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                           "no_reg": widget.passport.registrationNumber.toString(),
                           "mrz_code": widget.passport.mrzCode.toString(),
                           "issuing_authority": widget.passport.issuingAuthority.toString(),
-                          "code_country": widget.passport.countryCode.toString()
+                          "code_country": widget.passport.countryCode.toString(),
+                          "embedding": recognition.embeddings.toString()
                         }
                       );
 
@@ -247,18 +249,30 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       
                       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
+                      await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/profile/update-passport", 
+                        data: {
+                          "user_id": widget.userId,
+                          "path": widget.media
+                        }
+                      );
+
                       Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
                         RoutesNavigation.dashboard, (route) => false
                       );
-
-                      debugPrint("=== FACE REGISTERED ${res.statusMessage.toString()} ===");
                     } on DioException catch(e) {
-                      debugPrint(e.response!.data.toString());
-                      debugPrint(e.response!.statusCode.toString());
+
+                      s(() => btnRegister = false);
 
                       if(e.response!.statusCode == 400) {
-                        String message = e.response!.data["message"];
-                        ShowSnackbar.snackbarErr(message);
+                        Future.delayed(const Duration(seconds: 2), () {
+                          String message = e.response!.data["message"];
+                          ShowSnackbar.snackbarErr(message);
+                        });
+
+                        Future.delayed(Duration.zero, () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        });
                       }
                     } catch(e) {
                       debugPrint(e.toString());
@@ -578,7 +592,17 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                     
                         const SizedBox(height: 10.0),
                     
-                        Container(
+                        register 
+                        ? const Center(
+                            child: SizedBox(
+                              width: 15.0,
+                              height: 15.0,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                              )
+                            )
+                          ) 
+                        :  Container(
                           padding: const EdgeInsets.all(1.0),
                           decoration: BoxDecoration(
                             color: alreadyRegistered 

@@ -174,12 +174,16 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                   ),
                 widget.type == "ews"  
                 ? const SizedBox()
+                : context.watch<DashboardNotifier>().state == ProviderState.loading 
+                ? const SizedBox() 
+                : context.watch<DashboardNotifier>().state == ProviderState.empty 
+                ? const SizedBox() 
                 : const Text('Baca Berita Lainnya',
-                  style: TextStyle(
+                    style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                      fontSize: 17,
+                    ),
                   ),
-                ),
                 widget.type == "ews" 
                 ? const SizedBox() 
                 : const SizedBox(

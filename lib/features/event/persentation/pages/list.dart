@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 
 import 'package:provider/provider.dart';
@@ -12,7 +13,6 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/event/data/models/list.dart';
-import 'package:rakhsa/features/event/persentation/pages/create.dart';
 import 'package:rakhsa/features/event/persentation/pages/detail.dart';
 import 'package:rakhsa/features/event/persentation/pages/edit.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
@@ -229,9 +229,7 @@ class EventListView extends StatelessWidget {
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const EventCreatePage()
-                      )).then((val) { 
+                      Navigator.pushNamed(context, RoutesNavigation.itineraryCreate).then((val) {
                         if(val != "") {
                           getData();
                         }

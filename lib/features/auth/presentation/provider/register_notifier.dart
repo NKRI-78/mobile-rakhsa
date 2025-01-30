@@ -159,6 +159,9 @@ class RegisterNotifier with ChangeNotifier {
         final passport = await _launchPromt(
           documentPath: scanResult.last,
           errorCallback: (e) {
+            
+            debugPrint(e.toString());
+
             FailureDocumentDialog.launch(
               context,
               title: 'Terjadi Kesalahan Saat Ekstraksi Data Paspor',
@@ -236,10 +239,12 @@ class RegisterNotifier with ChangeNotifier {
     log('memulai scanning');
     try {
       // scan promt
-      final scanResult = await gemini.prompt(parts: [
-        Part.bytes(await File(documentPath).readAsBytes()),
-        Part.text(PromptHelper.getPromt()),
-      ]);
+      final scanResult = await gemini.prompt(
+        parts: [
+          Part.bytes(await File(documentPath).readAsBytes()),
+          Part.text(PromptHelper.getPromt()),
+        ]
+      );
 
       if (int.tryParse(scanResult?.output ?? '400') == 400) {
         log('bukan paspor');
