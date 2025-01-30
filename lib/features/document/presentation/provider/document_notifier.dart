@@ -142,9 +142,9 @@ class DocumentNotifier extends ChangeNotifier {
       }, (profile) async {
         final visaUrl = profile.data?.document.visa;
 
-        if (visaUrl != null) {
+        if (visaUrl != "-") {
           _errMessage = null;
-          _visaPath = visaUrl;
+          _visaPath = visaUrl.toString();
         } else {
           _visaPath = '';
         }
