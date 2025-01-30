@@ -50,26 +50,30 @@ class Passport {
   }
 
   static String? _getPeriod(String issuingDateStr, String expiryDateStr) {
-    DateTime issuingDate = DateTime.parse(issuingDateStr);
-    DateTime expiryDate = DateTime.parse(expiryDateStr);
-    if (expiryDate.isBefore(issuingDate)) {
-      return "Paspor sudah kedaluwarsa";
-    }
+    try {
+      DateTime issuingDate = DateTime.parse(issuingDateStr);
+      DateTime expiryDate = DateTime.parse(expiryDateStr);
+      if (expiryDate.isBefore(issuingDate)) {
+        return "Paspor sudah kedaluwarsa";
+      }
 
-    final duration = expiryDate.difference(issuingDate);
-    final years = duration.inDays ~/ 365;
-    final months = (duration.inDays % 365) ~/ 30;
-    final weeks = (duration.inDays % 365) % 30 ~/ 7;
-    final days = (duration.inDays % 365) % 30 % 7;
+      final duration = expiryDate.difference(issuingDate);
+      final years = duration.inDays ~/ 365;
+      final months = (duration.inDays % 365) ~/ 30;
+      final weeks = (duration.inDays % 365) % 30 ~/ 7;
+      final days = (duration.inDays % 365) % 30 % 7;
 
-    if (years > 0 && months > 0) {
-      return "$years tahun $months bulan";
-    } else if (months > 0) {
-      return "$months bulan";
-    } else if (weeks > 0) {
-      return "$weeks minggu";
-    } else {
-      return "$days hari";
+      if (years > 0 && months > 0) {
+        return "$years tahun $months bulan";
+      } else if (months > 0) {
+        return "$months bulan";
+      } else if (weeks > 0) {
+        return "$weeks minggu";
+      } else {
+        return "$days hari";
+      }
+    } catch(_) {
+      return null;
     }
   }
 }
