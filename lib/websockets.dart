@@ -159,7 +159,7 @@ class WebSocketsService extends ChangeNotifier {
   }) async {
     final userId = StorageHelper.getUserId();
 
-    var message =  {
+    channel?.sink.add(jsonEncode({
       "type": "sos",
       "user_id": userId,
       "location": location,
@@ -169,9 +169,7 @@ class WebSocketsService extends ChangeNotifier {
       "lng": lng,
       "country": country,
       "platform_type": "raksha"
-    };
-
-    channel!.sink.add(jsonEncode(message));
+    }));
   }
 
   void sendMessage({

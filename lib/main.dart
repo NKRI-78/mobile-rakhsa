@@ -3,15 +3,15 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geocoding/geocoding.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -35,7 +35,7 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:workmanager/workmanager.dart';
 
 late List<CameraDescription> cameras;
@@ -62,7 +62,7 @@ void onStart(ServiceInstance service) async {
 
   debugPrint("=== ON START ===");
 
-  final sharedPreferences = await SharedPreferences.getInstance();
+  // final sharedPreferences = await SharedPreferences.getInstance();
 
   // await an.AwesomeNotifications().createNotification(
   //   content: an.NotificationContent(
@@ -77,26 +77,6 @@ void onStart(ServiceInstance service) async {
   //     channelKey: "notification",
   //   )
   // );
-
-  // service.on("weather").listen((event) async {
-  //   String areaName = event!["area_name"];
-  //   String celcius = event["celcius"];
-  //   String weatherDesc = event["weather_desc"];
-
-  //   await an.AwesomeNotifications().createNotification(
-  //     content: an.NotificationContent(
-  //       id: notificationId, 
-  //       notificationLayout: an.NotificationLayout.Default,
-  //       roundedLargeIcon: false,
-  //       hideLargeIconOnExpand: true,
-  //       locked: true,
-  //       icon: "resource://drawable/ic_launcher",
-  //       title: "$celcius $areaName",
-  //       body: weatherDesc,
-  //       channelKey: "notification",
-  //     )
-  //   );
-  // });
 
 
   Timer.periodic(const Duration(minutes: 1), (timer) async {
