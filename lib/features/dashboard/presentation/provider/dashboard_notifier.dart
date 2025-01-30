@@ -6,6 +6,8 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
+enum ProviderState { idle, loading, empty, loaded, error }
+
 class DashboardNotifier with ChangeNotifier {
   final ProfileNotifier profileNotifier;
   final GetNewsUseCase useCase;
@@ -14,6 +16,9 @@ class DashboardNotifier with ChangeNotifier {
     required this.profileNotifier,
     required this.useCase
   });  
+
+  bool _newsLoading = false;
+  bool get newsLoading => _newsLoading;
   
   List<NewsData> _ews = [];
   List<NewsData> get ews =>[..._ews];
@@ -27,6 +32,12 @@ class DashboardNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
+  void setStateNewsLoading(bool val) {
+    _newsLoading = val;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
@@ -37,7 +48,7 @@ class DashboardNotifier with ChangeNotifier {
     required double lat,
     required double lng
   }) async {
-    setStateProvider(ProviderState.loading);
+    setStateNewsLoading(true);
 
     final result = await useCase.execute(
       type: "news",
@@ -47,12 +58,12 @@ class DashboardNotifier with ChangeNotifier {
 
     result.fold((l) {
       _message = l.message;
-      setStateProvider(ProviderState.error);
+      setStateNewsLoading(false);
     }, (r) {
 
       _news = [];
       _news.addAll(r.data);
-      setStateProvider(ProviderState.loaded);
+      setStateNewsLoading(false);
 
       if(news.isEmpty) {
         setStateProvider(ProviderState.empty);
@@ -64,6 +75,7 @@ class DashboardNotifier with ChangeNotifier {
     required double lat,
     required double lng
   }) async {
+    setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(
       type: "ews",
