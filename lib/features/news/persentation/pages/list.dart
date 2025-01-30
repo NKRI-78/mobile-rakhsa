@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -76,7 +75,7 @@ class NewsListPageState extends State<NewsListPage> {
       ),
       body:  Consumer<DashboardNotifier>(
         builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
-          if(notifier.state == ProviderState.loading) {
+          if(notifier.newsState == NewsProviderState.loading) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
@@ -85,7 +84,7 @@ class NewsListPageState extends State<NewsListPage> {
               )
             );
           }
-          if(notifier.state == ProviderState.empty) {
+          if(notifier.newsState == NewsProviderState.empty) {
             return Center(
               child: Text("Belum ada berita", 
                 style: robotoRegular.copyWith(
@@ -95,7 +94,7 @@ class NewsListPageState extends State<NewsListPage> {
               )
             );
           }
-          if(notifier.state == ProviderState.error) {
+          if(notifier.newsState == NewsProviderState.error) {
             return Center(
               child: Text(notifier.message,
                 style: robotoRegular.copyWith(

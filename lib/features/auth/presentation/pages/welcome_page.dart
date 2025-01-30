@@ -62,7 +62,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   // login button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.login);
+                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: blackColor,
@@ -87,8 +87,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'Atau',
+                          child: Text('Atau',
                             style: TextStyle(
                               color: whiteColor.withOpacity(0.5),
                             ),

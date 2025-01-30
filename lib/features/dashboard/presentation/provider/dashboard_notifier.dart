@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
-enum ProviderState { idle, loading, empty, loaded, error }
+enum NewsProviderState { idle, loading, empty, loaded, error }
 
 class DashboardNotifier with ChangeNotifier {
   final ProfileNotifier profileNotifier;
@@ -16,9 +15,6 @@ class DashboardNotifier with ChangeNotifier {
     required this.profileNotifier,
     required this.useCase
   });  
-
-  bool _newsLoading = false;
-  bool get newsLoading => _newsLoading;
   
   List<NewsData> _ews = [];
   List<NewsData> get ews =>[..._ews];
@@ -26,14 +22,17 @@ class DashboardNotifier with ChangeNotifier {
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
 
+  NewsProviderState _newsState = NewsProviderState.loading;
+  NewsProviderState get newsState => _newsState;
+
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
 
   String _message = "";
   String get message => _message;
 
-  void setStateNewsLoading(bool val) {
-    _newsLoading = val;
+  void setStateNews(NewsProviderState newState) {
+    _newsState = newState;
 
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -48,7 +47,7 @@ class DashboardNotifier with ChangeNotifier {
     required double lat,
     required double lng
   }) async {
-    setStateNewsLoading(true);
+    setStateNews(NewsProviderState.loading);
 
     final result = await useCase.execute(
       type: "news",
@@ -58,15 +57,15 @@ class DashboardNotifier with ChangeNotifier {
 
     result.fold((l) {
       _message = l.message;
-      setStateNewsLoading(false);
+      setStateNews(NewsProviderState.error);
     }, (r) {
 
       _news = [];
       _news.addAll(r.data);
-      setStateNewsLoading(false);
+      setStateNews(NewsProviderState.loaded);
 
       if(news.isEmpty) {
-        setStateProvider(ProviderState.empty);
+        setStateNews(NewsProviderState.empty);
       }
     });
   }
