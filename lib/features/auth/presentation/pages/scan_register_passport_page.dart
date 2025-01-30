@@ -173,7 +173,7 @@ class _ScanningResultState extends StatelessWidget {
         horizontal: 16,
       ),
       children: [
-        // country code
+        /// country code
         _PassportField(
           'Kode Negara',
           provider.passport?.countryCode ?? '-',
@@ -205,13 +205,23 @@ class _ScanningResultState extends StatelessWidget {
         ),
         // gender
         _PassportField(
-          'Gender',
+          'Jenis Kelamin',
           provider.passport?.gender ?? '-',
         ),
         // date of issue
         _PassportField(
           'Tanggal Penerbitan',
           provider.passport?.dateOfIssue ?? '-',
+        ),
+        // date of expiry
+        _PassportField(
+          'Tanggal Habis Berlaku',
+          provider.passport?.dateOfExpiry ?? '-',
+        ),
+        // period
+        _PassportField(
+          'Masa Berlaku',
+          provider.passport?.period ?? '-',
         ),
         // registration number
         _PassportField(

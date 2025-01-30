@@ -73,8 +73,6 @@ class WebSocketsService extends ChangeNotifier {
         },
       );
 
-      flushQueue();
-
       join();
       debugPrint("Connected to socket.");
     } catch (e) {
@@ -90,15 +88,6 @@ class WebSocketsService extends ChangeNotifier {
     } catch (e) {
       debugPrint("Failed to send SOS message: $e");
       messageQueue.add(message); // Re-add message to queue if sending fails
-    }
-  }
-
-  void flushQueue() {
-    if (messageQueue.isNotEmpty) {
-      for (var message in messageQueue) {
-        sendMessageQueue(message);
-      }
-      messageQueue.clear();
     }
   }
 
@@ -169,8 +158,8 @@ class WebSocketsService extends ChangeNotifier {
     required String lng,
   }) async {
     final userId = StorageHelper.getUserId();
-     if (isConnected) {
-      sendMessageQueue({
+
+    var message =  {
       "type": "sos",
       "user_id": userId,
       "location": location,
@@ -179,25 +168,10 @@ class WebSocketsService extends ChangeNotifier {
       "lat": lat,
       "lng": lng,
       "country": country,
-      "platform_type": "raksha",
-    });
-    } else {
-      debugPrint("WebSocket Disconnected. Adding SOS to Queue.");
-      messageQueue.add({
-        "type": "sos",
-        "user_id": userId,
-        "location": location,
-        "media": media,
-        "ext": ext,
-        "lat": lat,
-        "lng": lng,
-        "country": country,
-        "platform_type": "raksha",
-      });
-      reconnect();
-    }
+      "platform_type": "raksha"
+    };
 
-   
+    channel!.sink.add(jsonEncode(message));
   }
 
   void sendMessage({
@@ -293,8 +267,6 @@ class WebSocketsService extends ChangeNotifier {
 
       context.read<ProfileNotifier>().getProfile();
 
-      context.read<SosNotifier>().stopTimer();
-
       var messageNotifier = context.read<GetMessagesNotifier>();
 
       if(message["sender"] == StorageHelper.getUserId()) {
@@ -305,6 +277,10 @@ class WebSocketsService extends ChangeNotifier {
           sosId: message["sos_id"].toString(),
         );
       }
+
+      Future.delayed(const Duration(seconds: 1), () {
+        context.read<SosNotifier>().stopTimer();
+      });
     }
 
   }

@@ -14,7 +14,6 @@ import 'package:image/image.dart' as img;
 
 import 'package:rakhsa/ML/Recognizer.dart';
 import 'package:rakhsa/ML/Recognition.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -32,6 +31,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
@@ -156,8 +156,9 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.1) {
+    if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
+      
       setState(() => text1 = "");
       setState(() => text2 = "Take your photo to register account");
       setState(() => alreadyRegistered = false);
@@ -264,9 +265,9 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       s(() => btnRegister = false);
 
                       if(e.response!.statusCode == 400) {
-                        Future.delayed(const Duration(seconds: 2), () {
+                        Future.delayed(const Duration(seconds: 1), () {
                           String message = e.response!.data["message"];
-                          ShowSnackbar.snackbarErr(message);
+                          GeneralModal.info(msg: message);
                         });
 
                         Future.delayed(Duration.zero, () {
