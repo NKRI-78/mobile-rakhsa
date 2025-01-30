@@ -50,12 +50,12 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
       );
     } else {
-      sosNotifier.pulseController!.forward();
       if(StorageHelper.getUserId() == null) {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return const LoginPage();
         }));
       } else {
+        sosNotifier.pulseController?.forward();
         sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
           sosNotifier.pulseController!.reverse();
           startTimer();
@@ -108,9 +108,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     sosNotifier = context.read<SosNotifier>();
     profileNotifier = context.read<ProfileNotifier>();
     
-    sosNotifier.initializeTimer(this);
-  
     sosNotifier.initializePulse(this);
+    sosNotifier.initializeTimer(this);
 
     if (sosNotifier.isPressed) {
       sosNotifier.resumeTimer();
@@ -119,7 +118,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    sosNotifier.pulseController?.dispose();
     sosNotifier.timerController?.dispose();
     
     sosNotifier.holdTimer?.cancel();

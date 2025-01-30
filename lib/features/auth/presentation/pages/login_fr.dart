@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:provider/provider.dart';
 
 import 'package:rakhsa/ML/Recognizer.dart';
 
@@ -29,6 +30,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 
 import 'package:rakhsa/ML/Recognition.dart';
+import 'package:rakhsa/websockets.dart';
 
 class LoginFrPage extends StatefulWidget {
   final bool fromHome;
@@ -42,6 +44,8 @@ class LoginFrPage extends StatefulWidget {
 }
 
 class LoginFrPageState extends State<LoginFrPage> {
+
+  late WebSocketsService websocketService;
   
   late CameraController controller;
 
@@ -156,7 +160,11 @@ class LoginFrPageState extends State<LoginFrPage> {
         StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
         StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
         
+        debugPrint("===  USER ID ${StorageHelper.getUserId()} ===");
+
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+        websocketService.join();
 
         Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
           RoutesNavigation.dashboard, (route) => false
@@ -219,6 +227,8 @@ class LoginFrPageState extends State<LoginFrPage> {
   @override
   void initState() {
     super.initState();
+
+    websocketService = context.read<WebSocketsService>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

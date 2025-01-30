@@ -220,7 +220,7 @@ class _ScanningResultState extends StatelessWidget {
         ),
         // period
         _PassportField(
-          'Masa Berlaku',
+          'Sisa Masa Berlaku',
           provider.passport?.period ?? '-',
         ),
         // registration number

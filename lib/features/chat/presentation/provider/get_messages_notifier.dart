@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/global.dart';
 
 class GetMessagesNotifier with ChangeNotifier {
@@ -14,7 +14,9 @@ class GetMessagesNotifier with ChangeNotifier {
 
   GetMessagesNotifier({
     required this.useCase
-  });
+  }) {
+    sC = ScrollController();
+  }
 
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
@@ -31,7 +33,7 @@ class GetMessagesNotifier with ChangeNotifier {
   int _time = 60;
   int get time => _time;
 
-  ScrollController sC = ScrollController();
+  late ScrollController sC;
 
   RecipientUser _recipient = RecipientUser();
   RecipientUser get recipient => _recipient;
@@ -133,17 +135,7 @@ class GetMessagesNotifier with ChangeNotifier {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(chatId: chatId, status: status);
-    
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (sC.hasClients) {
-        sC.animateTo(
-          sC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300), 
-          curve: Curves.easeOut, 
-        );
-      }
-    });
-
+ 
     result.fold((l) {
       _message = l.message;
       setStateProvider(ProviderState.loaded);
@@ -157,6 +149,16 @@ class GetMessagesNotifier with ChangeNotifier {
       _messages = [];
       _messages.addAll(r.data.messages);
 
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (sC.hasClients) {
+          sC.animateTo(
+            sC.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300), 
+            curve: Curves.easeOut, 
+          );
+        }
+      });
+
       setStateProvider(ProviderState.loaded);
     });
 
@@ -168,16 +170,20 @@ class GetMessagesNotifier with ChangeNotifier {
     required String recipientId,
     required String sosId
   }) {
-    Navigator.push(navigatorKey.currentContext!,
-      MaterialPageRoute(builder: (BuildContext context) {
-        return ChatPage(
-          chatId: chatId,
-          status: status,
-          recipientId: recipientId,
-          sosId: sosId,
-          autoGreetings: true,
-        );
-      })
+    Navigator.pushNamedAndRemoveUntil(
+      navigatorKey.currentContext!, 
+      RoutesNavigation.dashboard, (route) => false
+    );
+    Navigator.pushNamed(
+      navigatorKey.currentContext!, 
+      arguments: {
+        "chat_id": chatId,
+        "status": status,
+        "recipient_id": recipientId,
+        "sos_id": sosId,
+        "auto_greetings": true
+      },
+      RoutesNavigation.chat
     );
   }
 
@@ -211,17 +217,20 @@ class GetMessagesNotifier with ChangeNotifier {
       ),
     );
 
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (sC.hasClients) {
-        sC.animateTo(
-          sC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-
     Future.delayed(Duration.zero, () => notifyListeners());
+
+    // Future.delayed(const Duration(milliseconds: 300), () {
+    //   if (sC.hasClients) {
+    //     sC.animateTo(
+    //       sC.position.maxScrollExtent,
+    //       duration: const Duration(milliseconds: 300),
+    //       curve: Curves.easeOut,
+    //     );
+    //     Future.delayed(Duration.zero, () => notifyListeners());
+    //   }
+    // });
+
+    
   }
 
 }

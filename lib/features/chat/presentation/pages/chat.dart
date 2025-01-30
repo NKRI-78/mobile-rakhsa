@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
@@ -55,6 +56,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   List<Map<String, dynamic>> unsentMessages = [];
 
+  late ScrollController sC;
+
   late TextEditingController messageC;
 
   late InsertMessageNotifier insertMessageNotifier;
@@ -72,6 +75,33 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   Future<void> getData() async {
     if(!mounted) return;
       messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
+
+    Future.delayed(const Duration(seconds: 1), () {
+      if (sC.hasClients) {
+        sC.animateTo(
+          sC.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+        setState(() {});
+      }
+    });
+
+    webSocketService.channelSubscription?.onData((message) {
+      final data = jsonDecode(message);
+      if(data["type"] == "fetch-message") {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (sC.hasClients) {
+            sC.animateTo(
+              sC.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+            setState(() {});
+          }
+        });
+      }
+    }); 
   }
 
  Future<void> resendUnsentMessages() async {
@@ -94,7 +124,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         recipientId: widget.recipientId, 
         message: text,
         createdAt: createdAt,
-      );
+      );  
 
       // Uncomment if needed to insert sent messages into a notifier
       // await insertMessageNotifier.insertMessage(
@@ -163,6 +193,17 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       messageC.clear();
       showAutoGreetings = false;
     });
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (sC.hasClients) {
+        sC.animateTo(
+          sC.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -208,6 +249,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
+    sC = ScrollController();
+
     showAutoGreetings = widget.autoGreetings;
 
     messageNotifier = context.read<GetMessagesNotifier>();
@@ -228,6 +271,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
 
+    sC.dispose();
+
     messageC.removeListener(handleTyping);
     messageC.dispose();
 
@@ -238,6 +283,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) {
@@ -403,7 +450,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
           child: Consumer<GetMessagesNotifier>(
             builder: (BuildContext context, GetMessagesNotifier notifier, Widget? child) {
               return CustomScrollView(
-                controller: notifier.sC,
+                controller: sC,
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()
                 ),

@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -32,6 +33,7 @@ import 'package:flutter/material.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
+import 'package:rakhsa/websockets.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
@@ -50,6 +52,10 @@ class RegisterFrPage extends StatefulWidget {
 }
 
 class RegisterFrPageState extends State<RegisterFrPage> {
+
+  // webSocketsService.join();
+
+  late WebSocketsService websocketService;
   
   late CameraController controller;
 
@@ -247,6 +253,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
                       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
                       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+
+                      debugPrint("===  USER ID ${StorageHelper.getUserId()} ===");
                       
                       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
@@ -256,6 +264,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                           "path": widget.media
                         }
                       );
+
+                      websocketService.join();
 
                       Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
                         RoutesNavigation.dashboard, (route) => false
@@ -368,6 +378,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   @override
   void initState() {
     super.initState();
+
+    websocketService = context.read<WebSocketsService>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

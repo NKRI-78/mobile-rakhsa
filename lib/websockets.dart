@@ -159,7 +159,7 @@ class WebSocketsService extends ChangeNotifier {
   }) async {
     final userId = StorageHelper.getUserId();
 
-    channel?.sink.add(jsonEncode({
+    channel!.sink.add(jsonEncode({
       "type": "sos",
       "user_id": userId,
       "location": location,
@@ -261,11 +261,9 @@ class WebSocketsService extends ChangeNotifier {
         return;
       }
 
-      StorageHelper.saveRecordScreen(isHome: false);
-
       context.read<ProfileNotifier>().getProfile();
 
-      var messageNotifier = context.read<GetMessagesNotifier>();
+      GetMessagesNotifier messageNotifier = context.read<GetMessagesNotifier>();
 
       if(message["sender"] == StorageHelper.getUserId()) {
         messageNotifier.navigateToChat(

@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:developer';
+
 class Passport {
   final String type;
   final String countryCode;
@@ -45,26 +47,34 @@ class Passport {
       registrationNumber: map['registrationNumber'],
       issuingAuthority: map['issuingAuthority'],
       mrzCode: map['mrzCode'],
-      period: _getPeriod(map['dateOfIssue'], map['dateOfExpiry']),
+      period: _getPeriod(map['dateOfExpiry']),
     );
   }
 
-  static String? _getPeriod(String issuingDateStr, String expiryDateStr) {
+  static String? _getPeriod(String expiryDateStr) {
     try {
-      DateTime issuingDate = DateTime.parse(issuingDateStr);
+      DateTime now = DateTime.now();
       DateTime expiryDate = DateTime.parse(expiryDateStr);
-      if (expiryDate.isBefore(issuingDate)) {
+
+      log('expiry date: ${expiryDate.toString()}');
+      log('expiry date str: $expiryDateStr');
+
+      if (expiryDate.isBefore(now)) {
         return "Paspor sudah kedaluwarsa";
       }
 
-      final duration = expiryDate.difference(issuingDate);
-      final years = duration.inDays ~/ 365;
-      final months = (duration.inDays % 365) ~/ 30;
-      final weeks = (duration.inDays % 365) % 30 ~/ 7;
-      final days = (duration.inDays % 365) % 30 % 7;
+      final totalDays = expiryDate.difference(now).inDays;
+      final years = totalDays ~/ 365;
+      final remainingDaysAfterYears = totalDays % 365;
+      final months = remainingDaysAfterYears ~/ 30;
+      final remainingDaysAfterMonths = remainingDaysAfterYears % 30;
+      final weeks = remainingDaysAfterMonths ~/ 7;
+      final days = remainingDaysAfterMonths % 7;
 
       if (years > 0 && months > 0) {
         return "$years tahun $months bulan";
+      } else if (years > 0) {
+        return "$years tahun";
       } else if (months > 0) {
         return "$months bulan";
       } else if (weeks > 0) {
@@ -72,7 +82,7 @@ class Passport {
       } else {
         return "$days hari";
       }
-    } catch(_) {
+    } catch (_) {
       return null;
     }
   }

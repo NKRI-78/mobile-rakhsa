@@ -164,8 +164,9 @@ class RegisterNotifier with ChangeNotifier {
 
             FailureDocumentDialog.launch(
               context,
-              title: 'Terjadi Kesalahan Saat Ekstraksi Data Paspor',
-              content: 'Ulangi Sekali Lagi',
+              title: 'Kesalahan Ekstraksi Data Paspor',
+              content:
+                  'Kami mengalami kendala saat memproses paspor Anda. Pastikan gambar jelas dan tidak buram, lalu coba lagi. [${e.toString()}]',
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
                 await startScan(context, userId);
@@ -239,12 +240,11 @@ class RegisterNotifier with ChangeNotifier {
     log('memulai scanning');
     try {
       // scan promt
-      final scanResult = await gemini.prompt(
-        parts: [
-          Part.bytes(await File(documentPath).readAsBytes()),
-          Part.text(PromptHelper.getPromt()),
-        ]
-      );
+      final scanResult = await gemini.prompt(model: 'gemini-1.5-pro',
+      parts: [
+        Part.bytes(await File(documentPath).readAsBytes()),
+        Part.text(PromptHelper.getPromt()),
+      ]);
 
       if (int.tryParse(scanResult?.output ?? '400') == 400) {
         log('bukan paspor');
@@ -258,6 +258,7 @@ class RegisterNotifier with ChangeNotifier {
         return null;
       } else {
         final rawJson = scanResult?.output;
+        log('raw = $rawJson');
 
         final filteredJson = rawJson?.substring(8).replaceAll('```', '');
         log('paspor = $filteredJson');
@@ -266,14 +267,22 @@ class RegisterNotifier with ChangeNotifier {
       }
     } on GeminiException catch (e) {
       log('gemini exception = ${e.message.toString()}');
-      // show dialog
-      errorCallback?.call(e.message.toString());
 
+      // show dialog
+      errorCallback?.call('Kesalahan Server');
+
+      return null;
+    } on FormatException catch (e) {
+      log('format exception = ${e.toString()}');
+      // show dialog
+      errorCallback?.call('Kesalahan Proses Pemformatan');
+
+      // exception
       return null;
     } catch (e) {
       log('exception = ${e.toString()}');
       // show dialog
-      errorCallback?.call(e.toString());
+      errorCallback?.call('Kesalahan yang tidak diketahui');
 
       // exception
       return null;

@@ -6,6 +6,7 @@ import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.d
 import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
+import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/weather_page.dart';
@@ -30,6 +31,7 @@ class RoutesNavigation {
   static const register = '/register';
   static const weather = '/weather';
   static const chats = '/chats';
+  static const chat = '/chat';
   static const loginFr = '/login-fr';
   static const login = '/login';
   static const registerFr = '/register-fr';
@@ -67,6 +69,21 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => WeatherPage(data));
       case chats: 
         return MaterialPageRoute(builder: (_) => const ChatsPage());
+      case chat: 
+        final data = settings.arguments as Map<String, dynamic>;
+        bool autoGreetings = data["auto_greetings"];
+        String chatId = data["chat_id"];
+        String sosId = data["sos_id"];
+        String recipientId = data["recipient_id"];
+        String status = data["status"];
+
+        return MaterialPageRoute(builder: (_) => ChatPage(
+          autoGreetings: autoGreetings,
+          chatId: chatId,
+          recipientId: recipientId,
+          sosId: sosId,
+          status: status,
+        ));
       case nearMeTypeList:
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
       case visaDocument: 
