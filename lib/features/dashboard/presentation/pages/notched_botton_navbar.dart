@@ -19,7 +19,7 @@ class NotchedBottomNavBar extends StatelessWidget {
       shape: const CircularNotchedRectangle(),
       color: redColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: menus,

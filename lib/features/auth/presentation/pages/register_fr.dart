@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -33,7 +32,6 @@ import 'package:flutter/material.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-import 'package:rakhsa/websockets.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;

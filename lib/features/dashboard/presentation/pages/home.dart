@@ -36,6 +36,7 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/socketio.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -50,6 +51,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
+  late SocketIoService socketIoService;
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
@@ -76,6 +78,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   bool loadingGmaps = true;
 
   Future<void> getData() async {
+    if(!mounted) return;
+      socketIoService.join();
+
     if(!mounted) return;
       await profileNotifier.getProfile();
 
@@ -261,7 +266,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-    
+
+    socketIoService = context.read<SocketIoService>();
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();

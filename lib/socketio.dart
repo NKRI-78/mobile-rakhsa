@@ -55,14 +55,6 @@ class SocketIoService with ChangeNotifier {
     socket?.onConnect((_) {
       debugPrint("=== CONNECTED SOCKET IO ===");
 
-      final userId = StorageHelper.getUserId();
-
-      if(userId != "-") { 
-        socket?.emit("join", {
-          "user_id": userId
-        });
-      }
-
       setStateConnectionIndicator(ConnectionIndicator.yellow);
       Future.delayed(const Duration(seconds: 1), () {
         setStateConnectionIndicator(ConnectionIndicator.green);
@@ -93,14 +85,14 @@ class SocketIoService with ChangeNotifier {
   }
 
   void join() {
-    if (socket?.connected ?? false) {
-      final userId = StorageHelper.getUserId();
-      socket!.emit("join", {
-        "user_id": userId
-      });
-    } else {
-      debugPrint("Socket not connected.");
-    }
+    // if (socket?.connected ?? false) {
+    final userId = StorageHelper.getUserId();
+    socket!.emit("join", {
+      "user_id": userId
+    });
+    // } else {
+    //   debugPrint("Socket not connected.");
+    // }
   }
 
   void leave() {

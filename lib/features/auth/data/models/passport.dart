@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:developer';
-
 class Passport {
   final String type;
   final String countryCode;
@@ -55,9 +53,6 @@ class Passport {
     try {
       DateTime now = DateTime.now();
       DateTime expiryDate = DateTime.parse(expiryDateStr);
-
-      log('expiry date: ${expiryDate.toString()}');
-      log('expiry date str: $expiryDateStr');
 
       if (expiryDate.isBefore(now)) {
         return "Paspor sudah kedaluwarsa";
