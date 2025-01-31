@@ -8,9 +8,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
@@ -119,37 +119,37 @@ class FirebaseProvider with ChangeNotifier {
       case NotificationType.news: 
         String newsId = message.data["news_id"] ?? "0";
         
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
-          NewsDetailPage(
-            id: int.parse(newsId),
-            type: "news",
-          )
-        ));
+        Navigator.pushNamed(context, RoutesNavigation.news, 
+          arguments: {
+            "id": int.parse(newsId),
+            "type": "news"
+          }
+        );
       break;  
       case NotificationType.ews:
         String newsId = message.data["news_id"] ?? "0";
         
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
-          NewsDetailPage(
-            id: int.parse(newsId),
-            type: "ews",
-          )
-        ));
+        Navigator.pushNamed(context, RoutesNavigation.news, 
+          arguments: {
+            "id": int.parse(newsId),
+            "type": "ews"
+          }
+        );
       break;
       case NotificationType.chat:
         String chatId =  message.data["chat_id"] ?? "-";
         String recipientId = message.data["recipient_id"] ?? "-";
         String sosId = message.data["sos_id"] ?? "-";
 
-        Navigator.push(navigatorKey.currentContext!, MaterialPageRoute(builder: (BuildContext context) =>  
-          ChatPage(
-            chatId: chatId,
-            recipientId: recipientId,
-            sosId: sosId,
-            status: "NONE",
-            autoGreetings: false,
-          )
-        ));
+        Navigator.pushNamed(context, RoutesNavigation.chat, 
+          arguments: {
+            "chat_id": chatId,
+            "recipient_id": recipientId,
+            "status": "NONE",
+            "sos_id": sosId,
+            "auto_greetings": false
+          }
+        );
       break;
       default:
         debugPrint("Unhandled notification type: ${message.data["type"]}");

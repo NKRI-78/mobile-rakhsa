@@ -3,6 +3,8 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 // import 'package:device_info_plus/device_info_plus.dart';
 // import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +12,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -35,6 +39,7 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:workmanager/workmanager.dart';
 
@@ -57,73 +62,60 @@ const notificationId = 888;
 void onStart(ServiceInstance service) async {
   service.on("stop").listen((event) {
     service.stopSelf();
-    debugPrint("background process is now stopped");
+    debugPrint("== BACKGROUND PROCESS IS NOW STOPPED");
   });
 
   debugPrint("=== ON START ===");
 
-  // final sharedPreferences = await SharedPreferences.getInstance();
-
-  // await an.AwesomeNotifications().createNotification(
-  //   content: an.NotificationContent(
-  //     id: notificationId, 
-  //     notificationLayout: an.NotificationLayout.Default,
-  //     roundedLargeIcon: false,
-  //     hideLargeIconOnExpand: true,
-  //     locked: true,
-  //     icon: "resource://drawable/ic_launcher",
-  //     title: "Waiting for location...",
-  //     body: "Please wait...",
-  //     channelKey: "notification",
-  //   )
-  // );
-
+  final sharedPreferences = await SharedPreferences.getInstance();
 
   Timer.periodic(const Duration(minutes: 1), (timer) async {
-    // DateTime now = DateTime.now();
+    debugPrint("=== SCHEDULER RUNNING ===");
+    DateTime now = DateTime.now();
 
-    // Check if current time is 4 AM or 4 PM
-    // if (now.hour == 4 && now.minute == 0) {
-      // String? userId = sharedPreferences.getString("user_id");
+    // Check if current time is exactly 4:00 AM or 4:00 PM
+    if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
+      String? userId = sharedPreferences.getString("user_id");
 
-      // if (userId == null) {
-      //   return;
-      // }
+      if (userId == null) {
+        return;
+      }
 
-      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-      // Position position = await Geolocator.getCurrentPosition(
-      //   desiredAccuracy: LocationAccuracy.best,
-      // );
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
 
-      // List<Placemark> placemarks = await placemarkFromCoordinates(
-      //   position.latitude,
-      //   position.longitude,
-      // );
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-      // String address = [
-      //   placemarks[0].administrativeArea,
-      //   placemarks[0].subAdministrativeArea,
-      //   placemarks[0].street,
-      //   placemarks[0].country,
-      // ].where((part) => part != null && part.isNotEmpty).join(", ");
+      String address = [
+        placemarks[0].administrativeArea,
+        placemarks[0].subAdministrativeArea,
+        placemarks[0].street,
+        placemarks[0].country,
+      ].where((part) => part != null && part.isNotEmpty).join(", ");
 
-      // try {
-      //   await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-      //     data: {
-      //       "user_id": userId,
-      //       "address": address,
-      //       "device": androidInfo.model,
-      //       "lat": position.latitude,
-      //       "lng": position.longitude,
-      //     },
-      //   );
-      // } catch (e) {
-      //   debugPrint("Error posting data: $e");
-      // }
-    // }
+      try {
+        await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+          data: {
+            "user_id": userId,
+            "address": address,
+            "device": androidInfo.model,
+            "lat": position.latitude,
+            "lng": position.longitude,
+          },
+        );
+      } catch (e) {
+        debugPrint("Error posting data: $e");
+      }
+    }
   });
+
 }
 
 @pragma('vm:entry-point')
@@ -142,73 +134,10 @@ void stopBackgroundService() {
   service.invoke("stop");
 }
 
-// @pragma('vm:entry-point')
-// void callbackDispatcher() {
-//   Workmanager().executeTask((task, inputData) async {
-//     switch (task) {
-//       case "fetchBackground":
-
-        // final sharedPreferences = await SharedPreferences.getInstance();
-
-        // String? userId = sharedPreferences.getString("user_id");
-
-        // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
-        // Position position = await Geolocator.getCurrentPosition(
-        //   desiredAccuracy: LocationAccuracy.best,
-        // );
-
-        // List<Placemark> placemarks = await placemarkFromCoordinates(
-        //   position.latitude,
-        //   position.longitude,
-        // );
-
-        // String address = [
-        //   placemarks[0].administrativeArea,
-        //   placemarks[0].subAdministrativeArea,
-        //   placemarks[0].street,
-        //   placemarks[0].country,
-        // ].where((part) => part != null && part.isNotEmpty).join(", ");
-
-        // try {
-        //   await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-        //     data: {
-        //       "user_id": userId,
-        //       "address": address,
-        //       "device": androidInfo.model,
-        //       "lat": position.latitude,
-        //       "lng": position.longitude,
-        //     },
-        //   );
-        // } catch (e) {
-        //   debugPrint("Error posting data: $e");
-        // }
-
-//         debugPrint("=== RUNNING ON BACKGROUND ===");
-
-//         debugPrint("Lat : ${position.latitude.toString()} Lng : ${position.longitude.toString()}");
-
-//       break;
-//     }
-//     return Future.value(true);
-//   });
-// }
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   cameras = await availableCameras();
-
-  // Workmanager().initialize(
-  //   callbackDispatcher, 
-  //   isInDebugMode: false 
-  // );
-  // Workmanager().registerPeriodicTask(
-  //   "1",
-  //   "fetchBackground",
-  //   frequency: const Duration(minutes: 15),
-  // );
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

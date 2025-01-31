@@ -248,8 +248,7 @@ class WebSocketsService extends ChangeNotifier {
 
       context.read<ProfileNotifier>().getProfile();
 
-      var messageNotifier = context.read<GetMessagesNotifier>();
-      messageNotifier.setStateNote(val: message["note"].toString());
+      context.read<GetMessagesNotifier>().setStateNote(val: message["note"].toString());
     }
 
     if(message["type"] == "confirmed-by-agent") {
@@ -263,10 +262,8 @@ class WebSocketsService extends ChangeNotifier {
 
       context.read<ProfileNotifier>().getProfile();
 
-      GetMessagesNotifier messageNotifier = context.read<GetMessagesNotifier>();
-
       if(message["sender"] == StorageHelper.getUserId()) {
-        messageNotifier.navigateToChat(
+        context.read<GetMessagesNotifier>().navigateToChat(
           chatId: message["chat_id"].toString(),
           status: "NONE",
           recipientId: message["recipient_id"].toString(),
