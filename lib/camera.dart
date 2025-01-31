@@ -17,9 +17,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
-
-import 'package:rakhsa/websockets.dart';
-
 class CameraPage extends StatefulWidget {
   final String location;
   final String country;
