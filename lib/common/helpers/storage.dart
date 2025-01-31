@@ -29,7 +29,7 @@ class StorageHelper {
   }
 
   static Future<String?> getToken() async {
-    String? token = await storage.read(key: 'token');
+    String? token = await storage.read(key: 'token') ?? "-";
 
     return token;
   } 

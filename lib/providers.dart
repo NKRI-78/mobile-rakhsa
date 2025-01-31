@@ -41,7 +41,7 @@ import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
-import 'package:rakhsa/websockets.dart';
+import 'package:rakhsa/socketio.dart';
 
 List<SingleChildWidget> providers = [
   ...independentServices,
@@ -84,5 +84,5 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<PassportScannerNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<WebSocketsService>()),
+  ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),
 ];

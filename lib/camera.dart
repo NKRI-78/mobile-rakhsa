@@ -42,7 +42,6 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
-  late WebSocketsService webSocketsService;
   late UploadMediaNotifier uploadMediaNotifier;
 
   bool loading = false;
@@ -56,7 +55,6 @@ class CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
 
-    webSocketsService = context.read<WebSocketsService>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     initializeCamera();
@@ -98,14 +96,14 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
 
-      webSocketsService.sos(
-        location: widget.location,
-        country: widget.country, 
-        media: media,
-        ext: ext,
-        lat: widget.lat, 
-        lng: widget.lng, 
-      );
+      // webSocketsService.sos(
+      //   location: widget.location,
+      //   country: widget.country, 
+      //   media: media,
+      //   ext: ext,
+      //   lat: widget.lat, 
+      //   lng: widget.lng, 
+      // );
       
       if(mounted) {
         Navigator.pop(context, "start");
@@ -158,13 +156,13 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
       
-      webSocketsService.sos(
-        location: widget.location,
-        country: widget.country,
-        media: media,
-        ext: ext,
-        lat: widget.lat, lng: widget.lng, 
-      );
+      // webSocketsService.sos(
+      //   location: widget.location,
+      //   country: widget.country,
+      //   media: media,
+      //   ext: ext,
+      //   lat: widget.lat, lng: widget.lng, 
+      // );
 
       if(mounted) {
         Navigator.pop(context, "start");

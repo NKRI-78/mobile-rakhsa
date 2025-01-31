@@ -109,8 +109,7 @@ import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
-
-import 'package:rakhsa/websockets.dart';
+import 'package:rakhsa/socketio.dart';
 
 final locator = GetIt.instance;
 
@@ -212,13 +211,14 @@ void init() {
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(
-    webSocketsService: locator(),
+    // webSocketsService: locator(),
+    socketIoService: locator(),
     useCase: locator()
   ));
   locator.registerLazySingleton(() => RegisterNotifier(
     mediaUseCase: locator(),
     updatePassport: locator(),
-    webSocketsService: locator(),
+    // webSocketsService: locator(),
     useCase: locator(),
     gemini: locator(),
   ));
@@ -246,9 +246,9 @@ void init() {
     deleteVisa: locator(),
     deviceInfo: locator()
   ));
-  
-  locator.registerFactory(() => WebSocketsService());
 
+  locator.registerFactory(() => SocketIoService());
+  
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();
 

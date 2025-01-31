@@ -55,7 +55,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
   // webSocketsService.join();
 
-  late WebSocketsService websocketService;
+  // late WebSocketsService websocketService;
   
   late CameraController controller;
 
@@ -265,7 +265,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                         }
                       );
 
-                      websocketService.join();
+                      // websocketService.join();
 
                       Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
                         RoutesNavigation.dashboard, (route) => false
@@ -379,7 +379,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   void initState() {
     super.initState();
 
-    websocketService = context.read<WebSocketsService>();
+    // websocketService = context.read<WebSocketsService>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

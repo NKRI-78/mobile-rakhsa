@@ -45,7 +45,7 @@ class LoginFrPage extends StatefulWidget {
 
 class LoginFrPageState extends State<LoginFrPage> {
 
-  late WebSocketsService websocketService;
+  // late WebSocketsService websocketService;
   
   late CameraController controller;
 
@@ -164,7 +164,7 @@ class LoginFrPageState extends State<LoginFrPage> {
 
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        websocketService.join();
+        // websocketService.join();
 
         Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
           RoutesNavigation.dashboard, (route) => false
@@ -228,7 +228,7 @@ class LoginFrPageState extends State<LoginFrPage> {
   void initState() {
     super.initState();
 
-    websocketService = context.read<WebSocketsService>();
+    // websocketService = context.read<WebSocketsService>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

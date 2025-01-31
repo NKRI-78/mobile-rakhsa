@@ -99,6 +99,7 @@ dependencies:
 
   # S
   shimmer: ^2.0.0
+  socket_io_client: ^3.0.2
   sliding_up_panel: ^2.0.0+1
 
   # U

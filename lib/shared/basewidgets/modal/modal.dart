@@ -763,7 +763,7 @@ class GeneralModal {
 
                                   context.read<SosRatingNotifier>().sosRating(sosId: sosId);
 
-                                  context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
+                                  // context.read<WebSocketsService>().userResolvedSos(sosId: sosId);
 
                                   Navigator.pop(context);
 
@@ -964,7 +964,7 @@ class GeneralModal {
                                 isBorderRadius: true,
                                 height: 30.0,
                                 onTap: () {
-                                  context.read<WebSocketsService>().leave();
+                                  // context.read<WebSocketsService>().leave();
 
                                   StorageHelper.removeToken();
 

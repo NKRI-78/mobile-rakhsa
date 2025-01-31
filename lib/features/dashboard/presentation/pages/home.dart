@@ -343,19 +343,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           ),
                         ),
                 
-                        Container(
-                          margin: const EdgeInsets.only(
-                            top: 40.0
-                          ),
-                          child: SosButton(
-                            location: currentAddress,
-                            country: currentCountry,
-                            lat: currentLat,
-                            lng: currentLng,
-                            loadingGmaps: loadingGmaps,
-                            isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
-                          )
-                        ),
+                        // Container(
+                        //   margin: const EdgeInsets.only(
+                        //     top: 40.0
+                        //   ),
+                        //   child: SosButton(
+                        //     location: currentAddress,
+                        //     country: currentCountry,
+                        //     lat: currentLat,
+                        //     lng: currentLng,
+                        //     loadingGmaps: loadingGmaps,
+                        //     isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
+                        //   )
+                        // ),
                 
                         Consumer<DashboardNotifier>(
                           builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
@@ -473,23 +473,23 @@ class _HeaderSection extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          width: 14.0,
-          height: 14.0,
-          decoration: BoxDecoration(
-            color: context.watch<WebSocketsService>().connectionIndicator ==
-                ConnectionIndicator.green
-                ? ColorResources.green
-                : context.watch<WebSocketsService>().connectionIndicator ==
-                    ConnectionIndicator.yellow
-                    ? ColorResources.yellow
-                    : context.watch<WebSocketsService>().connectionIndicator ==
-                            ConnectionIndicator.red
-                        ? ColorResources.error
-                        : ColorResources.transparent,
-            shape: BoxShape.circle,
-          ),
-        ),
+        // Container(
+        //   width: 14.0,
+        //   height: 14.0,
+        //   decoration: BoxDecoration(
+        //     color: context.watch<WebSocketsService>().connectionIndicator ==
+        //         ConnectionIndicator.green
+        //         ? ColorResources.green
+        //         : context.watch<WebSocketsService>().connectionIndicator ==
+        //             ConnectionIndicator.yellow
+        //             ? ColorResources.yellow
+        //             : context.watch<WebSocketsService>().connectionIndicator ==
+        //                     ConnectionIndicator.red
+        //                 ? ColorResources.error
+        //                 : ColorResources.transparent,
+        //     shape: BoxShape.circle,
+        //   ),
+        // ),
         IconButton(
           onPressed: () {
             Navigator.pushNamed(context, RoutesNavigation.chats);

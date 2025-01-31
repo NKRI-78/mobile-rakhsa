@@ -62,7 +62,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier; 
-  late WebSocketsService webSocketService;
+  // late WebSocketsService webSocketService;
 
   void monitorConnection() {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
@@ -87,21 +87,21 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       }
     });
 
-    webSocketService.channelSubscription?.onData((message) {
-      final data = jsonDecode(message);
-      if(data["type"] == "fetch-message") {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (sC.hasClients) {
-            sC.animateTo(
-              sC.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-            setState(() {});
-          }
-        });
-      }
-    }); 
+    // webSocketService.channelSubscription?.onData((message) {
+    //   final data = jsonDecode(message);
+    //   if(data["type"] == "fetch-message") {
+    //     Future.delayed(const Duration(milliseconds: 300), () {
+    //       if (sC.hasClients) {
+    //         sC.animateTo(
+    //           sC.position.maxScrollExtent,
+    //           duration: const Duration(milliseconds: 300),
+    //           curve: Curves.easeOut,
+    //         );
+    //         setState(() {});
+    //       }
+    //     });
+    //   }
+    // }); 
   }
 
  Future<void> resendUnsentMessages() async {
@@ -117,14 +117,14 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       String text = message["data"]["text"]; 
       var createdAt = message["data"]["created_at"];
       
-      webSocketService.connect();
+      // webSocketService.connect();
 
-      webSocketService.sendMessage(
-        chatId: widget.chatId,
-        recipientId: widget.recipientId, 
-        message: text,
-        createdAt: createdAt,
-      );  
+      // webSocketService.sendMessage(
+      //   chatId: widget.chatId,
+      //   recipientId: widget.recipientId, 
+      //   message: text,
+      //   createdAt: createdAt,
+      // );  
 
       // Uncomment if needed to insert sent messages into a notifier
       // await insertMessageNotifier.insertMessage(
@@ -182,12 +182,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
-    webSocketService.sendMessage(
-      chatId: widget.chatId,
-      recipientId: widget.recipientId, 
-      message: messageC.text,
-      createdAt: createdAt
-    );
+    // webSocketService.sendMessage(
+    //   chatId: widget.chatId,
+    //   recipientId: widget.recipientId, 
+    //   message: messageC.text,
+    //   createdAt: createdAt
+    // );
 
     setState(() {
       messageC.clear();
@@ -223,22 +223,22 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   void handleTyping() {
     if(messageC.text.isNotEmpty) {
-      webSocketService.typing(
-        chatId: widget.chatId, 
-        recipientId: widget.recipientId,
-        isTyping: true,
-      );
+      // webSocketService.typing(
+      //   chatId: widget.chatId, 
+      //   recipientId: widget.recipientId,
+      //   isTyping: true,
+      // );
 
       if (debounce != null) {
         debounce!.cancel();
       }
 
       debounce = Timer(const Duration(seconds: 1), () {
-        webSocketService.typing(
-          chatId: widget.chatId, 
-          recipientId: widget.recipientId,
-          isTyping: false,
-        );
+        // webSocketService.typing(
+        //   chatId: widget.chatId, 
+        //   recipientId: widget.recipientId,
+        //   isTyping: false,
+        // );
       });
     }
   }
@@ -255,7 +255,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     messageNotifier = context.read<GetMessagesNotifier>();
     insertMessageNotifier = context.read<InsertMessageNotifier>();
-    webSocketService = context.read<WebSocketsService>();
+    // webSocketService = context.read<WebSocketsService>();
 
     messageNotifier.startTimer();
 

@@ -28,7 +28,7 @@ class RegisterNotifier with ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
   final UpdatePassportUseCase updatePassport;
 
-  final WebSocketsService webSocketsService;
+  // final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
   final Gemini gemini;
 
@@ -68,7 +68,7 @@ class RegisterNotifier with ChangeNotifier {
   RegisterNotifier({
     required this.mediaUseCase,
     required this.updatePassport,
-    required this.webSocketsService,
+    // required this.webSocketsService,
     required this.useCase,
     required this.gemini,
   });
@@ -127,7 +127,7 @@ class RegisterNotifier with ChangeNotifier {
       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-      webSocketsService.join();
+      // webSocketsService.join();
 
       ShowSnackbar.snackbarOk(
           "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
