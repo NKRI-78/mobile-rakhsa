@@ -43,8 +43,8 @@ class SocketIoService with ChangeNotifier {
 
     socket = IO.io('https://socketio-rakhsa.langitdigital78.com', 
       OptionBuilder().setTransports(['websocket'])
-      .setExtraHeaders({'Authorization': token})
       .disableAutoConnect()
+      .setExtraHeaders({'Authorization': token ?? "-"})
       .enableForceNew()
       .enableForceNewConnection()
       .build()
@@ -55,9 +55,13 @@ class SocketIoService with ChangeNotifier {
     socket?.onConnect((_) {
       debugPrint("=== CONNECTED SOCKET IO ===");
 
-      socket?.on("join", (data) {
-        debugPrint("=== JOIN ===");
-      });
+      final userId = StorageHelper.getUserId();
+
+      if(userId != "-") { 
+        socket?.emit("join", {
+          "user_id": userId
+        });
+      }
 
       setStateConnectionIndicator(ConnectionIndicator.yellow);
       Future.delayed(const Duration(seconds: 1), () {
@@ -65,6 +69,10 @@ class SocketIoService with ChangeNotifier {
         toggleConnection(true);
       });
       isConnected = true;
+    });
+
+    socket?.on("user_online", (data) {
+      debugPrint("=== JOIN ${data["user_id"]} ===");
     });
 
     socket?.onReconnect((_) {
@@ -85,11 +93,14 @@ class SocketIoService with ChangeNotifier {
   }
 
   void join() {
-    final userId = StorageHelper.getUserId();
-
-    socket?.emit("join", {
-      "user_id": userId
-    });
+    if (socket?.connected ?? false) {
+      final userId = StorageHelper.getUserId();
+      socket!.emit("join", {
+        "user_id": userId
+      });
+    } else {
+      debugPrint("Socket not connected.");
+    }
   }
 
   void leave() {

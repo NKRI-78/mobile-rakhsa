@@ -235,7 +235,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                           "passport": widget.passport.passportNumber.toString(),
                           "citizen": widget.passport.nationality.toString(),
                           "birth_date": widget.passport.dateOfBirth.toString(),
-                          "place_birth": widget.passport.placeOfBirth.toString(),
+                          "birth_place": widget.passport.placeOfBirth.toString(),
                           "gender": widget.passport.gender.toString(),
                           "passport_expired": widget.passport.dateOfExpiry.toString(),
                           "passport_issued": widget.passport.dateOfIssue.toString(),

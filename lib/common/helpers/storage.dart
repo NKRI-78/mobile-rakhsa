@@ -37,7 +37,7 @@ class StorageHelper {
   static String? getUserId() {
     String? userId = sharedPreferences.getString("user_id");
 
-    return userId;
+    return userId ?? "-";
   }
 
   static String? getUserEmail() {

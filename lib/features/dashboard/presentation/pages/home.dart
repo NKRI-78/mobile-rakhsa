@@ -10,7 +10,6 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/single.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/location/current_location.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 
@@ -37,8 +36,6 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-
-import 'package:rakhsa/websockets.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -283,6 +280,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Stack(
         children: [  
