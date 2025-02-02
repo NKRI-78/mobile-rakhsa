@@ -16,6 +16,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/socketio.dart';
 
 class CameraPage extends StatefulWidget {
   final String location;
@@ -39,6 +40,8 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
+  late SocketIoService socketIoService;
+
   late UploadMediaNotifier uploadMediaNotifier;
 
   bool loading = false;
@@ -47,15 +50,6 @@ class CameraPageState extends State<CameraPage> {
   bool isVideoMode = false;  
 
   int recordTimeLeft = 10; 
-
-  @override
-  void initState() {
-    super.initState();
-
-    uploadMediaNotifier = context.read<UploadMediaNotifier>();
-
-    initializeCamera();
-  }
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
@@ -91,16 +85,16 @@ class CameraPageState extends State<CameraPage> {
       setState(() => loading = false);
 
       String media = uploadMediaNotifier.entity!.path;
-      // String ext = media.split('/').last.split('.').last;
+      String ext = media.split('/').last.split('.').last;
 
-      // webSocketsService.sos(
-      //   location: widget.location,
-      //   country: widget.country, 
-      //   media: media,
-      //   ext: ext,
-      //   lat: widget.lat, 
-      //   lng: widget.lng, 
-      // );
+      socketIoService.sos(
+        location: widget.location,
+        country: widget.country, 
+        media: media,
+        ext: ext,
+        lat: widget.lat, 
+        lng: widget.lng, 
+      );
       
       if(mounted) {
         Navigator.pop(context, "start");
@@ -127,9 +121,11 @@ class CameraPageState extends State<CameraPage> {
           stopVideoRecording();
           timer.cancel();
         } else {
-          setState(() {
-            recordTimeLeft--;
-          });
+          if(mounted) {
+            setState(() {
+              recordTimeLeft--;
+            });
+          }
         }
       });
     } catch (e) {
@@ -151,15 +147,16 @@ class CameraPageState extends State<CameraPage> {
       setState(() => loading = false);
 
       String media = uploadMediaNotifier.entity!.path;
-      // String ext = media.split('/').last.split('.').last;
+      String ext = media.split('/').last.split('.').last;
       
-      // webSocketsService.sos(
-      //   location: widget.location,
-      //   country: widget.country,
-      //   media: media,
-      //   ext: ext,
-      //   lat: widget.lat, lng: widget.lng, 
-      // );
+      socketIoService.sos(
+        location: widget.location,
+        country: widget.country,
+        media: media,
+        ext: ext,
+        lat: widget.lat, 
+        lng: widget.lng, 
+      );
 
       if(mounted) {
         Navigator.pop(context, "start");
@@ -169,6 +166,17 @@ class CameraPageState extends State<CameraPage> {
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
     }
+  }
+
+  
+  @override
+  void initState() {
+    super.initState();
+
+    socketIoService = context.read<SocketIoService>();
+    uploadMediaNotifier = context.read<UploadMediaNotifier>();
+
+    initializeCamera();
   }
 
   @override

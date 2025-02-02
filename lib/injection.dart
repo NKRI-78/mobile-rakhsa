@@ -211,14 +211,12 @@ void init() {
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(
-    // webSocketsService: locator(),
     socketIoService: locator(),
     useCase: locator()
   ));
   locator.registerLazySingleton(() => RegisterNotifier(
     mediaUseCase: locator(),
     updatePassport: locator(),
-    // webSocketsService: locator(),
     useCase: locator(),
     gemini: locator(),
   ));

@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
+
+import 'package:uuid/uuid.dart' as uuid;
+
 import 'package:intl/intl.dart';
-import 'package:rakhsa/connection.dart';
-import 'package:uuid/uuid.dart';
+import 'package:rakhsa/socketio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +25,6 @@ import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notif
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-
-import 'package:rakhsa/websockets.dart';
 
 class ChatPage extends StatefulWidget {
   final String sosId;
@@ -54,23 +52,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   bool showAutoGreetings = false;
 
-  List<Map<String, dynamic>> unsentMessages = [];
-
   late ScrollController sC;
 
   late TextEditingController messageC;
 
   late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier; 
-  // late WebSocketsService webSocketService;
-
-  void monitorConnection() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
-      if (result != ConnectivityResult.none) {
-        await resendUnsentMessages();
-      }
-    });
-  }
+  late SocketIoService socketIoService;
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -87,90 +75,18 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       }
     });
 
-    // webSocketService.channelSubscription?.onData((message) {
-    //   final data = jsonDecode(message);
-    //   if(data["type"] == "fetch-message") {
-    //     Future.delayed(const Duration(milliseconds: 300), () {
-    //       if (sC.hasClients) {
-    //         sC.animateTo(
-    //           sC.position.maxScrollExtent,
-    //           duration: const Duration(milliseconds: 300),
-    //           curve: Curves.easeOut,
-    //         );
-    //         setState(() {});
-    //       }
-    //     });
-    //   }
-    // }); 
-  }
-
- Future<void> resendUnsentMessages() async {
-  var sortedMessages = List<Map<String, dynamic>>.from(unsentMessages)
-    ..sort((a, b) {
-      var createdAtA = DateTime.parse(a["data"]["created_at"]);
-      var createdAtB = DateTime.parse(b["data"]["created_at"]);
-      return createdAtB.compareTo(createdAtA);
-    });
-
-  for (var message in sortedMessages) {
-    try {
-      String text = message["data"]["text"]; 
-      var createdAt = message["data"]["created_at"];
-      
-      // webSocketService.connect();
-
-      // webSocketService.sendMessage(
-      //   chatId: widget.chatId,
-      //   recipientId: widget.recipientId, 
-      //   message: text,
-      //   createdAt: createdAt,
-      // );  
-
-      // Uncomment if needed to insert sent messages into a notifier
-      // await insertMessageNotifier.insertMessage(
-      //   chatId: widget.chatId,
-      //   recipient: widget.recipientId,
-      //   text: text,
-      //   createdAt: createdAt,
-      // );
-    } catch (e) {
-      debugPrint("Failed to resend message: $e");
-    }
-  }
-
-  // Clear the unsentMessages only after successfully processing all
-  unsentMessages.clear();
-}
-
-  Future<void> sendMessageOffline() async {
-    bool isConnected = await ConnectionHelper.isConnected();
-
-    if(!isConnected) {
-      
-      String sentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
-      String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-
-      Map<String, dynamic> message = {
-        "data": {
-          "id": const Uuid().v4(),
-          "chat_id": widget.chatId,
-          "user": {
-            "id": StorageHelper.getUserId(),
-            "is_me": true,
-            "avatar": "-",
-            "name": "-",
-          },
-          "is_read": false,
-          "sent_time": sentTime,
-          "created_at": createdAt,
-          "text": messageC.text,
+    socketIoService.socket?.on("message", (message) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (sC.hasClients) {
+          sC.animateTo(
+            sC.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+          setState(() {});
         }
-      };
-
-      unsentMessages.add(message);
-
-      messageNotifier.appendMessage(data: message);
-    }
+      });
+    }); 
   }
 
   Future<void> sendMessage() async {
@@ -178,16 +94,33 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       return;
     }
 
-    await sendMessageOffline();
-
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
-    // webSocketService.sendMessage(
-    //   chatId: widget.chatId,
-    //   recipientId: widget.recipientId, 
-    //   message: messageC.text,
-    //   createdAt: createdAt
-    // );
+    socketIoService.sendMessage(
+      chatId: widget.chatId,
+      recipientId: widget.recipientId, 
+      message: messageC.text,
+      createdAt: createdAt
+    );
+
+    String sentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+    
+    Map<String, dynamic> message = {
+      "id": const uuid.Uuid().v4(),
+      "chat_id": widget.chatId,
+      "user": {
+        "id": StorageHelper.getUserId(),
+        "is_me": true,
+        "avatar": "-",
+        "name": "-",
+      },
+      "is_read": false,
+      "sent_time": sentTime,
+      "created_at": createdAt,
+      "text": messageC.text,
+    };
+
+    messageNotifier.appendMessage(data: message);
 
     setState(() {
       messageC.clear();
@@ -223,22 +156,22 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   void handleTyping() {
     if(messageC.text.isNotEmpty) {
-      // webSocketService.typing(
-      //   chatId: widget.chatId, 
-      //   recipientId: widget.recipientId,
-      //   isTyping: true,
-      // );
+      socketIoService.typing(
+        chatId: widget.chatId, 
+        recipientId: widget.recipientId,
+        isTyping: true,
+      );
 
       if (debounce != null) {
         debounce!.cancel();
       }
 
       debounce = Timer(const Duration(seconds: 1), () {
-        // webSocketService.typing(
-        //   chatId: widget.chatId, 
-        //   recipientId: widget.recipientId,
-        //   isTyping: false,
-        // );
+        socketIoService.typing(
+          chatId: widget.chatId, 
+          recipientId: widget.recipientId,
+          isTyping: false,
+        );
       });
     }
   }
@@ -255,14 +188,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     messageNotifier = context.read<GetMessagesNotifier>();
     insertMessageNotifier = context.read<InsertMessageNotifier>();
-    // webSocketService = context.read<WebSocketsService>();
+    socketIoService = context.read<SocketIoService>();
 
     messageNotifier.startTimer();
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);
-
-    monitorConnection();
 
     Future.microtask(() => getData());
   }
@@ -283,8 +214,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    
-
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) {

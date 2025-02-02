@@ -51,10 +51,6 @@ class RegisterFrPage extends StatefulWidget {
 
 class RegisterFrPageState extends State<RegisterFrPage> {
 
-  // webSocketsService.join();
-
-  // late WebSocketsService websocketService;
-  
   late CameraController controller;
 
   String text1 = "Please scan your face to register";
@@ -376,8 +372,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   @override
   void initState() {
     super.initState();
-
-    // websocketService = context.read<WebSocketsService>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

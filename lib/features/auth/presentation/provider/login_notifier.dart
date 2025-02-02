@@ -62,9 +62,6 @@ class LoginNotifier with ChangeNotifier {
           
           StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-          socketIoService.connect();
-          socketIoService.join();
-
           Navigator.pushReplacement(navigatorKey.currentContext!,
             MaterialPageRoute(builder: (context) {
               return const DashboardScreen();

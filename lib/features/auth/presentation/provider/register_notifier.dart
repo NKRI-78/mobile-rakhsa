@@ -21,14 +21,12 @@ import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/websockets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RegisterNotifier with ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
   final UpdatePassportUseCase updatePassport;
 
-  // final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
   final Gemini gemini;
 
@@ -68,7 +66,6 @@ class RegisterNotifier with ChangeNotifier {
   RegisterNotifier({
     required this.mediaUseCase,
     required this.updatePassport,
-    // required this.webSocketsService,
     required this.useCase,
     required this.gemini,
   });
@@ -79,8 +76,7 @@ class RegisterNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> register(
-      {
+  Future<void> register({
     required String countryCode,
     required String passportNumber,
     required String fullName,
@@ -127,10 +123,7 @@ class RegisterNotifier with ChangeNotifier {
       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-      // webSocketsService.join();
-
-      ShowSnackbar.snackbarOk(
-          "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
+      ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
 
       Navigator.pushAndRemoveUntil(
         navigatorKey.currentContext!,

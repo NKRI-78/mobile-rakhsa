@@ -41,7 +41,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   late SosNotifier sosNotifier;
   late ProfileNotifier profileNotifier;
 
-  Future<void> handleLongPressStart() async {
+  void handleLongPressStart() {
     if(profileNotifier.entity.data!.sos.running) {
       GeneralModal.infoEndSos(
         sosId: profileNotifier.entity.data!.sos.id,
@@ -167,7 +167,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                 ? () {} 
                 : widget.loadingGmaps 
                 ? () {} 
-                : await handleLongPressStart() 
+                : handleLongPressStart() 
                 : () {},
                 onLongPressEnd: (_) => widget.isConnected 
                 ? notifier.isTimerRunning 

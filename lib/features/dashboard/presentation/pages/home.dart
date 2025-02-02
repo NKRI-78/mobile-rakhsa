@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:location/location.dart' as loc;
-
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +8,7 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/single.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/location/current_location.dart';
+import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 
@@ -51,7 +50,6 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
-  late SocketIoService socketIoService;
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
@@ -79,9 +77,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> getData() async {
     if(!mounted) return;
-      socketIoService.join();
-
-    if(!mounted) return;
       await profileNotifier.getProfile();
 
     if(!mounted) return;
@@ -91,14 +86,14 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await requestNotificationPermission();
 
     if(!mounted) return;
-      await getCurrentLocation();
+      await requestLocationPermission();
   }
 
   Future<void> getCurrentLocation() async {
     try {
       
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
+        desiredAccuracy: LocationAccuracy.medium,
         forceAndroidLocationManager: true
       );
 
@@ -188,6 +183,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     await Permission.notification.request();
   }
 
+  Future<void> requestLocationPermission() async {
+    await Permission.location.request();
+
+    await getCurrentLocation();
+  }
+
   Future<void> checkNotificationPermission() async {
     bool isNotificationDenied = await Permission.notification.isDenied;
 
@@ -210,7 +211,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> checkLocationPermission() async {
     bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
 
-    bool isGpsEnabled = await loc.Location().serviceEnabled();
+    bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
 
     if(!isGpsEnabled) {
       if (!isDialogLocationShowing) {
@@ -267,7 +268,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
-    socketIoService = context.read<SocketIoService>();
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
@@ -286,6 +286,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
+    Provider.of<SocketIoService>(context);
 
     return Scaffold(
       body: Stack(
@@ -347,19 +349,19 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           ),
                         ),
                 
-                        // Container(
-                        //   margin: const EdgeInsets.only(
-                        //     top: 40.0
-                        //   ),
-                        //   child: SosButton(
-                        //     location: currentAddress,
-                        //     country: currentCountry,
-                        //     lat: currentLat,
-                        //     lng: currentLng,
-                        //     loadingGmaps: loadingGmaps,
-                        //     isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
-                        //   )
-                        // ),
+                        Container(
+                          margin: const EdgeInsets.only(
+                            top: 40.0
+                          ),
+                          child: SosButton(
+                            location: currentAddress,
+                            country: currentCountry,
+                            lat: currentLat,
+                            lng: currentLng,
+                            loadingGmaps: loadingGmaps,
+                            isConnected: context.watch<SocketIoService>().isConnected ? true : false,
+                          )
+                        ),
                 
                         Consumer<DashboardNotifier>(
                           builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {

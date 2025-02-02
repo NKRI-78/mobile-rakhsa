@@ -97,8 +97,8 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void updateUserTyping({required Map<String, dynamic> data}) {
-    String chatId = data["data"]["chat_id"];
-    bool isTyping = data["data"]["is_typing"];
+    String chatId = data["chat_id"];
+    bool isTyping = data["is_typing"];
 
     if (isTyping) {
       typingStatus[chatId] = true; 
@@ -174,9 +174,9 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void appendMessage({required Map<String, dynamic> data}) {
-    String incomingChatId = data["data"]["chat_id"];
-    String incomingMessageId = data["data"]["id"];
-    bool isRead = data["data"]["is_read"];
+    String incomingChatId = data["chat_id"];
+    String incomingMessageId = data["id"];
+    bool isRead = data["is_read"];
 
     if (incomingChatId != activeChatId) {
       return;
@@ -191,14 +191,14 @@ class GetMessagesNotifier with ChangeNotifier {
         id: incomingMessageId,
         chatId: incomingChatId,
         user: MessageUser(
-          id: data["data"]["user"]["id"],
-          isMe: data["data"]["user"]["is_me"],
-          avatar: data["data"]["user"]["avatar"],
-          name: data["data"]["user"]["name"],
+          id: data["user"]["id"],
+          isMe: data["user"]["is_me"],
+          avatar: data["user"]["avatar"],
+          name: data["user"]["name"],
         ),
         isRead: isRead,
-        sentTime: data["data"]["sent_time"],
-        text: data["data"]["text"],
+        sentTime: data["sent_time"],
+        text: data["text"],
         createdAt: DateTime.now(),
       ),
     );
