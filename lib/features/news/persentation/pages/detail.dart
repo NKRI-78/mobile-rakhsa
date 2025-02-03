@@ -255,6 +255,8 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(notifier.news[i].title.toString(),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
                                           style: robotoRegular.copyWith(
                                             fontWeight: FontWeight.w500,
                                             fontSize: Dimensions.fontSizeDefault,

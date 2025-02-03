@@ -14,9 +14,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
   GetMessagesNotifier({
     required this.useCase
-  }) {
-    sC = ScrollController();
-  }
+  });
 
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
@@ -32,8 +30,6 @@ class GetMessagesNotifier with ChangeNotifier {
   
   int _time = 60;
   int get time => _time;
-
-  late ScrollController sC;
 
   RecipientUser _recipient = RecipientUser();
   RecipientUser get recipient => _recipient;
@@ -149,16 +145,6 @@ class GetMessagesNotifier with ChangeNotifier {
       _messages = [];
       _messages.addAll(r.data.messages);
 
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (sC.hasClients) {
-          sC.animateTo(
-            sC.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300), 
-            curve: Curves.easeOut, 
-          );
-        }
-      });
-
       setStateProvider(ProviderState.loaded);
     });
 
@@ -218,19 +204,6 @@ class GetMessagesNotifier with ChangeNotifier {
     );
 
     Future.delayed(Duration.zero, () => notifyListeners());
-
-    // Future.delayed(const Duration(milliseconds: 300), () {
-    //   if (sC.hasClients) {
-    //     sC.animateTo(
-    //       sC.position.maxScrollExtent,
-    //       duration: const Duration(milliseconds: 300),
-    //       curve: Curves.easeOut,
-    //     );
-    //     Future.delayed(Duration.zero, () => notifyListeners());
-    //   }
-    // });
-
-    
   }
 
 }

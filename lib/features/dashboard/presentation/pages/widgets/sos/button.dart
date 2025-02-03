@@ -117,15 +117,6 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   @override
-  void dispose() {
-    sosNotifier.timerController?.dispose();
-    
-    sosNotifier.holdTimer?.cancel();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<SosNotifier>(
       builder: (BuildContext context, SosNotifier notifier, Widget? child) {

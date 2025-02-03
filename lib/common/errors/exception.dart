@@ -76,3 +76,10 @@ String handleDioException(DioException e) {
     return message;
   }
 }
+
+
+class PassportException implements Exception {
+  final String message;
+
+  PassportException(this.message);
+}

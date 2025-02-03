@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -60,12 +63,15 @@ class _WelcomePageState extends State<WelcomePage> {
                   const SizedBox(height: 100),
 
                   // login button
+                  // login button
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, RoutesNavigation.loginFr);
                     },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: blackColor,
+                      foregroundColor: whiteColor,
+                      backgroundColor: primaryColor,
+                      side: const BorderSide(color: whiteColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -87,7 +93,8 @@ class _WelcomePageState extends State<WelcomePage> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('Atau',
+                          child: Text(
+                            'Atau',
                             style: TextStyle(
                               color: whiteColor.withOpacity(0.5),
                             ),
@@ -102,23 +109,40 @@ class _WelcomePageState extends State<WelcomePage> {
                   const SizedBox(height: 24),
 
                   // register button
-                  OutlinedButton(
-                    onPressed: () => Navigator.pushNamed(
-                      context,
-                      RoutesNavigation.scanRegisterPassport,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      side: const BorderSide(color: whiteColor),
-                      foregroundColor: whiteColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Consumer<RegisterNotifier>(
+                      builder: (context, provider, child) {
+                    return OutlinedButton(
+                      onPressed: () async {
+                        if (provider.ssoLoading) {
+                          return;
+                        } else {
+                          await provider.registerWithGoogle(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: blackColor,
+                        backgroundColor: whiteColor,
+                        side: const BorderSide(color: whiteColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text('Registrasi'),
-                    ),
-                  ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: (provider.ssoLoading)
+                            ? const Center(
+                                child: SpinKitFadingCircle(
+                                    color: blackColor, size: 25.0),
+                              )
+                            : Text(
+                                'Registrasi',
+                                style: robotoRegular.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    );
+                  }),
                 ],
               ),
             )

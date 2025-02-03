@@ -108,7 +108,7 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
                             RoutesNavigation.registerFr,
                             arguments: {
                               "user_id": userId,
-                              "media":provider.media,
+                              "passport_pic":provider.mediaPassport,
                               "passport":  provider.passport
                             },
                           )

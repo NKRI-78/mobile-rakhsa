@@ -2,17 +2,24 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/promt_helper.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
+
+import 'package:firebase_auth/firebase_auth.dart' as fa;
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
@@ -31,6 +38,8 @@ class RegisterNotifier with ChangeNotifier {
   final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
   final Gemini gemini;
+  final FirebaseAuth firebaseAuth;
+  final GoogleSignIn googleSignIn;
 
   AuthModel _authModel = AuthModel();
   AuthModel get authModel => _authModel;
@@ -42,8 +51,20 @@ class RegisterNotifier with ChangeNotifier {
   ProviderState get providerState => _providerState;
 
   // media passport 
-  String _media = '';
-  String get media => _media;
+  String _mediaPassport = '';
+  String get mediaPassport => _mediaPassport;
+
+  // media avatar 
+  String _mediaAvatar = '';
+  String get mediaAvatar => _mediaAvatar;
+
+   // register google
+  bool _ssoLoading = false;
+  bool get ssoLoading => _ssoLoading;
+
+  // user
+  fa.User? _userGoogle;
+  fa.User? get userGoogle => _userGoogle;
 
   // register passport
   Passport? _passport;
@@ -70,6 +91,8 @@ class RegisterNotifier with ChangeNotifier {
     required this.updatePassport,
     required this.webSocketsService,
     required this.useCase,
+    required this.googleSignIn,
+    required this.firebaseAuth,
     required this.gemini,
   });
 
@@ -144,6 +167,59 @@ class RegisterNotifier with ChangeNotifier {
     });
   }
 
+
+  Future<void> registerWithGoogle(BuildContext context) async {
+    bool hasUser = firebaseAuth.currentUser != null;
+
+    if (hasUser) {
+      // navigate to register page
+      Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
+    } else {
+      final connection = await Connectivity().checkConnectivity();
+      if (connection == ConnectivityResult.mobile ||
+          connection == ConnectivityResult.wifi ||
+          connection == ConnectivityResult.vpn) {
+        try {
+          _ssoLoading = true;
+          notifyListeners();
+
+          final gUser = await googleSignIn.signIn();
+
+          final gAuth = await gUser?.authentication;
+
+          final credential = fa.GoogleAuthProvider.credential(
+            accessToken: gAuth?.accessToken,
+            idToken: gAuth?.idToken,
+          );
+
+          final user = await firebaseAuth.signInWithCredential(credential);
+
+          _userGoogle = user.user;
+          notifyListeners();
+
+          ShowSnackbar.snackbarOk(
+              'Berhasil login sebagai ${user.user?.email}');
+          // ignore: use_build_context_synchronously
+          Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
+        } on fa.FirebaseException catch (e) {
+          _ssoLoading = false;
+          notifyListeners();
+
+          ShowSnackbar.snackbarErr('Kesalahan authentikasi ${e.code}');
+        } catch (e) {
+          _ssoLoading = false;
+          notifyListeners();
+        } finally {
+          _ssoLoading = false;
+          notifyListeners();
+        }
+      } else {
+        // show snackbar
+        ShowSnackbar.snackbarErr('Tidak ada koneksi internet');
+      }
+    }
+  }
+
   Future<void> startScan(BuildContext context, String userId) async {
     try {
       final scanResult = await CunningDocumentScanner.getPictures(
@@ -159,7 +235,6 @@ class RegisterNotifier with ChangeNotifier {
         final passport = await _launchPromt(
           documentPath: scanResult.last,
           errorCallback: (e) {
-            
             debugPrint(e.toString());
 
             FailureDocumentDialog.launch(
@@ -173,11 +248,11 @@ class RegisterNotifier with ChangeNotifier {
               },
             );
           },
-          wrongDocumentCallback: () {
+          passportCallback: (e) {
             FailureDocumentDialog.launch(
               context,
               title: 'Data Tidak Valid',
-              content: 'Dokumen yang Anda Pindai Terdeketsi Bukan Passpor, Berikan Dokumen Paspor yang Benar',
+              content: e,
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
                 await startScan(context, userId);
@@ -198,7 +273,7 @@ class RegisterNotifier with ChangeNotifier {
             ShowSnackbar.snackbarErr(failure.message);
             notifyListeners();
           }, (picture) async {
-            _media = picture.path; 
+            _mediaPassport = picture.path; 
             notifyListeners();
           });
 
@@ -234,46 +309,80 @@ class RegisterNotifier with ChangeNotifier {
 
   Future<Passport?> _launchPromt({
     required String documentPath,
-    VoidCallback? wrongDocumentCallback,
+    ValueChanged<String>? passportCallback,
     ValueChanged<String>? errorCallback,
   }) async {
     log('memulai scanning');
     try {
       // scan promt
-      final scanResult = await gemini.prompt(model: 'gemini-1.5-pro',
-      parts: [
-        Part.bytes(await File(documentPath).readAsBytes()),
-        Part.text(PromptHelper.getPromt()),
-      ]);
+      final scanResult = await gemini.prompt(
+        model: 'gemini-1.5-pro',
+        generationConfig: GenerationConfig(temperature: 0),
+        parts: [
+          Part.bytes(await File(documentPath).readAsBytes()),
+          Part.text(PromptHelper.getPromt()),
+        ],
+      );
 
       if (int.tryParse(scanResult?.output ?? '400') == 400) {
-        log('bukan paspor');
-
-        _passportPath = '';
-        notifyListeners();
+        _resetScan();
 
         // show wrong document callback
-        wrongDocumentCallback?.call();
+        passportCallback?.call(
+          'Dokumen yang Anda Pindai Terdeketsi Bukan Passpor, Berikan Dokumen Paspor yang Benar',
+        );
 
         return null;
       } else {
         final rawJson = scanResult?.output;
-        log('raw = $rawJson');
+        log('raw data = $rawJson');
 
         final filteredJson = rawJson?.substring(8).replaceAll('```', '');
         log('paspor = $filteredJson');
 
-        return Passport.fromMap(jsonDecode(filteredJson ?? ''));
+        Map<String, dynamic> passportData = jsonDecode(filteredJson ?? '');
+
+        if (passportData['mrzCode'] == null ||
+            (passportData['mrzCode'] as String).isEmpty) {
+          throw PassportException(
+              'Kode MRZ tidak terbaca. Harap pindai ulang paspor dengan jelas.');
+        } else if ((passportData['mrzCode'] as String)[0].contains('V')) {
+          throw PassportException(
+              'MRZ terdeteksi sebagai visa. Harap masukkan paspor yang valid.');
+        } else if ((passportData['mrzCode'] as String)[0].contains('P')) {
+          return Passport.fromMap(passportData);
+        } else {
+          throw PassportException(
+              'Kode MRZ tidak lengkap atau tidak jelas. '
+              'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
+              'Pegang perangkat dengan stabil dan coba pindai ulang.'
+            );
+        }
       }
     } on GeminiException catch (e) {
       log('gemini exception = ${e.message.toString()}');
+
+      _resetScan();
 
       // show dialog
       errorCallback?.call('Kesalahan Server');
 
       return null;
+    } on PassportException catch (e) {
+      log('passport exception = ${e.toString()}');
+
+      _resetScan();
+
+      // show dialog
+      passportCallback?.call(e.message);
+
+      // exception
+      return null;
     } on FormatException catch (e) {
       log('format exception = ${e.toString()}');
+
+      _resetScan();
+
       // show dialog
       errorCallback?.call('Kesalahan Proses Pemformatan');
 
@@ -281,12 +390,20 @@ class RegisterNotifier with ChangeNotifier {
       return null;
     } catch (e) {
       log('exception = ${e.toString()}');
+
+      _resetScan();
+
       // show dialog
       errorCallback?.call('Kesalahan yang tidak diketahui');
 
       // exception
       return null;
     }
+  }
+
+  void _resetScan() {
+    _passportPath = '';
+    notifyListeners();
   }
 
 }

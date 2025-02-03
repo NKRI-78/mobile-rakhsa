@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>94689171996-jvnsr0me6lh3im1ma38v34du1tu5rk2g.apps.googleusercontent.com</string>
+	<string>39799101733-qg9t17nm6o7hnqdibs96i94ugjent3nn.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.94689171996-jvnsr0me6lh3im1ma38v34du1tu5rk2g</string>
+	<string>com.googleusercontent.apps.39799101733-qg9t17nm6o7hnqdibs96i94ugjent3nn</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>94689171996-993gd5stpp9hlg0eqhokr44gftr9fu27.apps.googleusercontent.com</string>
+	<string>39799101733-3540abkpvr9a451t3itrcvt8us3pgbv6.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyARjwS4kbh770FkAMYIt_InM9SuQb-A80E</string>
+	<string>AIzaSyBLpnNvT_RkdfgwTGael44wDGI2H6lug5Q</string>
 	<key>GCM_SENDER_ID</key>
-	<string>94689171996</string>
+	<string>39799101733</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.inovatif78.raksha-mobile</string>
+	<string>com.example.rakhsa.RunnerTests</string>
 	<key>PROJECT_ID</key>
-	<string>communityapp-67cba</string>
+	<string>marlinda-c26cd</string>
 	<key>STORAGE_BUCKET</key>
-	<string>communityapp-67cba.firebasestorage.app</string>
+	<string>marlinda-c26cd.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:94689171996:ios:fab1f80160dc4dc6ec5dd9</string>
+	<string>1:39799101733:ios:0fc89e79d79b1f770b22cc</string>
 </dict>
 </plist>

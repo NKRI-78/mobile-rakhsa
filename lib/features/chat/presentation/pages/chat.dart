@@ -131,12 +131,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       );  
 
       // Uncomment if needed to insert sent messages into a notifier
-      // await insertMessageNotifier.insertMessage(
-      //   chatId: widget.chatId,
-      //   recipient: widget.recipientId,
-      //   text: text,
-      //   createdAt: createdAt,
-      // );
+      await insertMessageNotifier.insertMessage(
+        chatId: widget.chatId,
+        recipient: widget.recipientId,
+        text: text,
+        createdAt: createdAt,
+      );
     } catch (e) {
       debugPrint("Failed to resend message: $e");
     }
@@ -336,7 +336,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    
+
+    Provider.of<WebSocketsService>(context);
 
     return PopScope(
       canPop: false,

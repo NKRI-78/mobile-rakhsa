@@ -69,12 +69,12 @@ void onStart(ServiceInstance service) async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
     debugPrint("=== SCHEDULER RUNNING ===");
-    DateTime now = DateTime.now();
+    // DateTime now = DateTime.now();
 
     // Check if current time is exactly 4:00 AM or 4:00 PM
-    if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
+    // if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
       String? userId = sharedPreferences.getString("user_id");
 
       if (userId == null) {
@@ -113,7 +113,7 @@ void onStart(ServiceInstance service) async {
       } catch (e) {
         debugPrint("Error posting data: $e");
       }
-    }
+    // }
   });
 
 }
