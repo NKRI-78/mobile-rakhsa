@@ -127,12 +127,12 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       );  
 
       // Uncomment if needed to insert sent messages into a notifier
-      // await insertMessageNotifier.insertMessage(
-      //   chatId: widget.chatId,
-      //   recipient: widget.recipientId,
-      //   text: text,
-      //   createdAt: createdAt,
-      // );
+      await insertMessageNotifier.insertMessage(
+        chatId: widget.chatId,
+        recipient: widget.recipientId,
+        text: text,
+        createdAt: createdAt,
+      );
     } catch (e) {
       debugPrint("Failed to resend message: $e");
     }
@@ -178,8 +178,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       return;
     }
 
-    await sendMessageOffline();
-
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     webSocketService.sendMessage(
@@ -188,6 +186,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       message: messageC.text,
       createdAt: createdAt
     );
+
+    await sendMessageOffline();
 
     setState(() {
       messageC.clear();
@@ -283,7 +283,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    
+
+    Provider.of<WebSocketsService>(context);
 
     return PopScope(
       canPop: false,

@@ -1,7 +1,9 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
 import 'package:rakhsa/data/repository/ecommerce/ecommerce.dart';
@@ -221,6 +223,8 @@ void init() {
     webSocketsService: locator(),
     useCase: locator(),
     gemini: locator(),
+    firebaseAuth: locator(),
+    googleSignIn: locator(),
   ));
   
   locator.registerFactory(() => EcommerceProvider(
@@ -255,4 +259,7 @@ void init() {
   locator.registerLazySingleton(() => getDio);
   locator.registerLazySingleton(() => DeviceInfoPlugin());
   locator.registerLazySingleton(() => Gemini.instance);
+  locator.registerLazySingleton(() => FirebaseAuth.instance);
+  locator.registerLazySingleton(() => GoogleSignIn());
+
 }

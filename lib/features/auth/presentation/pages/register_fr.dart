@@ -4,8 +4,11 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -21,6 +24,8 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
+import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
+import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 
 import 'package:rakhsa/global.dart';
 
@@ -37,12 +42,12 @@ import 'package:rakhsa/websockets.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
-  final String media;
+  final String passportPic;
   final Passport passport;
 
   const RegisterFrPage({
     required this.userId,
-    required this.media,
+    required this.passportPic,
     required this.passport,
     super.key
   });
@@ -56,7 +61,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   // webSocketsService.join();
 
   late WebSocketsService websocketService;
-  
+  late UploadMediaNotifier uploadMediaNotifier;
+
   late CameraController controller;
 
   String text1 = "Please scan your face to register";
@@ -149,6 +155,18 @@ class RegisterFrPageState extends State<RegisterFrPage> {
     }
   }
 
+  Future<File> convertImageToFile(img.Image image, String fileName) async {
+    Uint8List uint8List = Uint8List.fromList(img.encodePng(image));
+
+    Directory tempDir = await getTemporaryDirectory();
+    String filePath = '${tempDir.path}/$fileName.png';
+
+    File file = File(filePath);
+    await file.writeAsBytes(uint8List);
+
+    return file;
+  }
+
   Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
     Rect faceRect = face.boundingBox;
 
@@ -164,15 +182,21 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     if (recognition.distance > 0.6) {
       recognition.name = "Not Registered";
-      
-      setState(() => text1 = "");
-      setState(() => text2 = "Take your photo to register account");
-      setState(() => alreadyRegistered = false);
-      setState(() => waitForScanSucceded = false);
+
+      if(mounted) {
+        setState(() {
+          text1 = "";
+          text2 = "Take your photo to register account";
+          alreadyRegistered = false;
+          waitForScanSucceded = false;
+        });
+      }
     } else {
-      setState(() => text1 = "");
-      setState(() => text2 = "");
-      setState(() => alreadyRegistered = true);
+      setState(() {
+        text1 = "";
+        text2 = "";
+        alreadyRegistered = true;
+      });
     }
 
     return recognition;
@@ -209,6 +233,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
               builder: (BuildContext context, Function s) {
                 return ElevatedButton(
                   onPressed: () async {
+
                     // save to local
                     s(() => btnRegister = true);
 
@@ -218,10 +243,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       widget.passport.fullName.toString(), 
                       recognition.embeddings
                     );
-
-                    Future.delayed(const Duration(seconds: 2), () async {
-                      s(() => btnRegister = false);
-                    });
                   
                     // save to api (on progress)
 
@@ -230,12 +251,13 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       Dio dio = Dio();
                       Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/register-member-fr", 
                         data: {
+                          "email": FirebaseAuth.instance.currentUser?.email ?? '-',
                           "user_id": widget.userId,
                           "fullname": widget.passport.fullName.toString(),
                           "passport": widget.passport.passportNumber.toString(),
                           "citizen": widget.passport.nationality.toString(),
                           "birth_date": widget.passport.dateOfBirth.toString(),
-                          "place_birth": widget.passport.placeOfBirth.toString(),
+                          "birth_place": widget.passport.placeOfBirth.toString(),
                           "gender": widget.passport.gender.toString(),
                           "passport_expired": widget.passport.dateOfExpiry.toString(),
                           "passport_issued": widget.passport.dateOfIssue.toString(),
@@ -258,12 +280,21 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       
                       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
+                      File fr = await convertImageToFile(croppedFace, "face-recognition");
+
+                      await uploadMediaNotifier.send(file: fr, folderName: "face-recognition");
+                      
+                      String avatar = uploadMediaNotifier.entity?.path ?? "-";
+
                       await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/profile/update-passport", 
                         data: {
                           "user_id": widget.userId,
-                          "path": widget.media
+                          "avatar_pic": avatar,
+                          "passport_pic": widget.passportPic
                         }
                       );
+
+                      s(() => btnRegister = false);
 
                       websocketService.join();
 
@@ -380,6 +411,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
     super.initState();
 
     websocketService = context.read<WebSocketsService>();
+    uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,

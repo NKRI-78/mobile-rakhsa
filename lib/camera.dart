@@ -132,9 +132,11 @@ class CameraPageState extends State<CameraPage> {
           stopVideoRecording();
           timer.cancel();
         } else {
-          setState(() {
-            recordTimeLeft--;
-          });
+          if(mounted) {
+            setState(() {
+              recordTimeLeft--;
+            });
+          }
         }
       });
     } catch (e) {

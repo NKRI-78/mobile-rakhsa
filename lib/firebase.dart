@@ -13,9 +13,6 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-import 'package:rakhsa/features/news/persentation/pages/detail.dart';
-
-import 'package:rakhsa/global.dart';
 
 class NotificationType {
   static const resolvedSos = "resolved-sos";

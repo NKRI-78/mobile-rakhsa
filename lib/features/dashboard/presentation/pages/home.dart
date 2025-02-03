@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:location/location.dart' as loc;
-
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 
@@ -58,6 +56,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
   late WeatherNotifier weatherNotifier;
+  late WebSocketsService webSocketsService;
   
   Position? currentLocation;
   StreamSubscription? subscription;
@@ -88,8 +87,18 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if(!mounted) return;
       await requestNotificationPermission();
 
-    if(!mounted) return;
-      await getCurrentLocation();
+     if(!mounted) return;
+      await requestLocationPermission();
+  }
+
+  Future<void> requestNotificationPermission() async {
+    await Permission.notification.request();
+  }
+
+  Future<void> requestLocationPermission() async {
+    await Permission.location.request();
+
+    await getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
@@ -182,10 +191,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> requestNotificationPermission() async {
-    await Permission.notification.request();
-  }
-
   Future<void> checkNotificationPermission() async {
     bool isNotificationDenied = await Permission.notification.isDenied;
 
@@ -208,7 +213,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> checkLocationPermission() async {
     bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
 
-    bool isGpsEnabled = await loc.Location().serviceEnabled();
+    bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
 
     if(!isGpsEnabled) {
       if (!isDialogLocationShowing) {
@@ -253,7 +258,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await Future.delayed(const Duration(milliseconds: 500)); 
     
       await getData();
-      await getCurrentLocation();
 
       isResumedProcessing = false;
     }
@@ -270,6 +274,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
+    webSocketsService = context.read<WebSocketsService>();
 
     Future.microtask(() => getData());
   }
@@ -283,9 +288,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
+    Provider.of<WebSocketsService>(context);
+
     return Scaffold(
       body: Stack(
-        children: [  
+          children: [  
             SizedBox.expand(
               child: SafeArea(
                 child: RefreshIndicator.adaptive(

@@ -19,6 +19,7 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/websockets.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -27,12 +28,15 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => DashboardScreenState();
 }
  
-class DashboardScreenState extends State<DashboardScreen> {
+class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
 
   late EcommerceProvider ecommerceProvider;
   late FirebaseProvider firebaseProvider;
+  late WebSocketsService webSocketsService;
 
   late ProfileNotifier profileNotifier;
+
+  bool isLocked = false;
  
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
  
@@ -81,20 +85,40 @@ class DashboardScreenState extends State<DashboardScreen> {
       path: RoutesNavigation.itinerary,
     ),
   ];
- 
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      setState(() => isLocked = true);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
  
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     ecommerceProvider = context.read<EcommerceProvider>();
+    webSocketsService = context.read<WebSocketsService>();
  
     Future.microtask(() => getData());
+  }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    
+    super.dispose();
   }
  
   @override
   Widget build(BuildContext context) {
+
+    Provider.of<WebSocketsService>(context);
+
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) {
@@ -118,11 +142,21 @@ class DashboardScreenState extends State<DashboardScreen> {
         endDrawer: SafeArea(child: DrawerWidget(globalKey: globalKey)),
  
         // HOME PAGE
-        body: HomePage(globalKey: globalKey),
+        body: 
+        // isLocked 
+        // ? const Center(
+        //     child: Text("Locked")
+        //   ) 
+        // : 
+        HomePage(globalKey: globalKey),
  
         // MAIN MENU
         floatingActionButtonLocation: MainMenuNotchedBottomNavBar.position,
-        floatingActionButton: MainMenuNotchedBottomNavBar(onTap: () {
+        floatingActionButton: 
+        // isLocked 
+        // ? const SizedBox()
+        // :
+         MainMenuNotchedBottomNavBar(onTap: () {
           GeneralModal.showMainMenu(
             context,
             bottom: marginBottomMenuDialog,
@@ -131,28 +165,30 @@ class DashboardScreenState extends State<DashboardScreen> {
         }),
  
         // BOTTOM NAV BAR
-        bottomNavigationBar: NotchedBottomNavBar(
-          navBarHeight: botomNavBarHeight,
-          menus: [
-            IconButton(
-              onPressed: () => Navigator.pushNamed(context, RoutesNavigation.news),
-              icon: Image.asset(
-                AssetSource.iconMenuNews, 
-                color: ColorResources.white
-              ),
+        bottomNavigationBar: 
+        // isLocked 
+        // ? const SizedBox()
+        // : 
+        NotchedBottomNavBar(
+          height: botomNavBarHeight,
+          leftItem: IconButton(
+            onPressed: () => Navigator.pushNamed(context, RoutesNavigation.news),
+            icon: Image.asset(
+              AssetSource.iconMenuNews, 
+              color: ColorResources.white
             ),
-            IconButton(
-              onPressed: () {
-                GeneralModal.showMainMenu(
-                  context,
-                  bottom: marginBottomMenuDialog,
-                  showAlignment: Alignment.bottomRight,
-                  content: buildDocumentDialog(),
-                );
-              },
-              icon: Image.asset(AssetSource.iconNavBarWallet),
-            ),
-          ],
+          ),
+          rightItem: IconButton(
+            onPressed: () {
+              GeneralModal.showMainMenu(
+                context,
+                bottom: marginBottomMenuDialog,
+                showAlignment: Alignment.bottomRight,
+                content: buildDocumentDialog(),
+              );
+            },
+            icon: Image.asset(AssetSource.iconNavBarWallet),
+          ),
         ),
       ),
     );
