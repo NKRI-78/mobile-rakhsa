@@ -55,6 +55,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
   late WeatherNotifier weatherNotifier;
+  late SocketIoService socketIoService;
   
   Position? currentLocation;
   StreamSubscription? subscription;
@@ -272,6 +273,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
+    socketIoService = context.read<SocketIoService>();
+
+    socketIoService.connect();
 
     Future.microtask(() => getData());
   }
@@ -286,8 +290,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     
-    Provider.of<SocketIoService>(context);
-
     return Scaffold(
       body: Stack(
           children: [  

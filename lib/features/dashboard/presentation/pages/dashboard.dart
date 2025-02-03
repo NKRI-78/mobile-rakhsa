@@ -19,7 +19,6 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/socketio.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -114,8 +113,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
   @override
   Widget build(BuildContext context) {
-
-    Provider.of<SocketIoService>(context);
 
     return PopScope(
       canPop: false,
