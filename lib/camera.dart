@@ -18,9 +18,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/socketio.dart';
 
-
-import 'package:rakhsa/websockets.dart';
-
 class CameraPage extends StatefulWidget {
   final String location;
   final String country;
@@ -43,7 +40,6 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
-  late WebSocketsService webSocketsService;
   late SocketIoService socketIoService;
   late UploadMediaNotifier uploadMediaNotifier;
 
@@ -58,7 +54,6 @@ class CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
 
-    webSocketsService = context.read<WebSocketsService>();
     socketIoService = context.read<SocketIoService>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 

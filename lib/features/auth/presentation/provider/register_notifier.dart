@@ -28,14 +28,12 @@ import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/websockets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RegisterNotifier with ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
   final UpdatePassportUseCase updatePassport;
 
-  final WebSocketsService webSocketsService;
   final RegisterUseCase useCase;
   final Gemini gemini;
   final FirebaseAuth firebaseAuth;
@@ -89,7 +87,6 @@ class RegisterNotifier with ChangeNotifier {
   RegisterNotifier({
     required this.mediaUseCase,
     required this.updatePassport,
-    required this.webSocketsService,
     required this.useCase,
     required this.googleSignIn,
     required this.firebaseAuth,
@@ -149,8 +146,6 @@ class RegisterNotifier with ChangeNotifier {
       StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
-
-      webSocketsService.join();
 
       ShowSnackbar.snackbarOk(
           "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");

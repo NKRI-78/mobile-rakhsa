@@ -35,8 +35,7 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-
-import 'package:rakhsa/websockets.dart';
+import 'package:rakhsa/socketio.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -56,7 +55,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
   late WeatherNotifier weatherNotifier;
-  late WebSocketsService webSocketsService;
   
   Position? currentLocation;
   StreamSubscription? subscription;
@@ -274,7 +272,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
-    webSocketsService = context.read<WebSocketsService>();
 
     Future.microtask(() => getData());
   }
@@ -288,8 +285,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
-    Provider.of<WebSocketsService>(context);
+    
+    Provider.of<SocketIoService>(context);
 
     return Scaffold(
       body: Stack(
@@ -361,7 +358,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             lat: currentLat,
                             lng: currentLng,
                             loadingGmaps: loadingGmaps,
-                            isConnected: context.watch<WebSocketsService>().isConnected ? true : false,
+                            isConnected: context.watch<SocketIoService>().isConnected ? true : false,
                           )
                         ),
                 
@@ -485,13 +482,13 @@ class _HeaderSection extends StatelessWidget {
           width: 14.0,
           height: 14.0,
           decoration: BoxDecoration(
-            color: context.watch<WebSocketsService>().connectionIndicator ==
+            color: context.watch<SocketIoService>().connectionIndicator ==
                 ConnectionIndicator.green
                 ? ColorResources.green
-                : context.watch<WebSocketsService>().connectionIndicator ==
+                : context.watch<SocketIoService>().connectionIndicator ==
                     ConnectionIndicator.yellow
                     ? ColorResources.yellow
-                    : context.watch<WebSocketsService>().connectionIndicator ==
+                    : context.watch<SocketIoService>().connectionIndicator ==
                             ConnectionIndicator.red
                         ? ColorResources.error
                         : ColorResources.transparent,

@@ -13,8 +13,6 @@ import 'package:rakhsa/global.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 // check socket socket?.connected ?? false
@@ -29,7 +27,6 @@ class SocketIoService with ChangeNotifier {
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
-  WebSocketChannel? channel;
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
 

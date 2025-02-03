@@ -164,8 +164,6 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   : notifier.ownerModel.data!.haveStore 
                   ? CustomButton(
                       onTap: () async {
-                        StorageHelper.saveRecordScreen(isHome: false);
-
                         if(notifier.ownerModel.data!.haveStore) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => StoreInfoScreen(storeId: notifier.ownerModel.data!.storeId)));
                         } else {

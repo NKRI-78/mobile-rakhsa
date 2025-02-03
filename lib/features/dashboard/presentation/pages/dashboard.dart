@@ -19,7 +19,7 @@ import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/websockets.dart';
+import 'package:rakhsa/socketio.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -32,7 +32,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
 
   late EcommerceProvider ecommerceProvider;
   late FirebaseProvider firebaseProvider;
-  late WebSocketsService webSocketsService;
 
   late ProfileNotifier profileNotifier;
 
@@ -102,8 +101,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     ecommerceProvider = context.read<EcommerceProvider>();
-    webSocketsService = context.read<WebSocketsService>();
- 
+
     Future.microtask(() => getData());
   }
   
@@ -117,7 +115,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   @override
   Widget build(BuildContext context) {
 
-    Provider.of<WebSocketsService>(context);
+    Provider.of<SocketIoService>(context);
 
     return PopScope(
       canPop: false,

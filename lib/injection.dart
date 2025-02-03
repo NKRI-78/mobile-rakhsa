@@ -113,8 +113,6 @@ import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/socketio.dart';
 
-import 'package:rakhsa/websockets.dart';
-
 final locator = GetIt.instance;
 
 void init() {
@@ -215,13 +213,11 @@ void init() {
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(
-    webSocketsService: locator(),
     useCase: locator()
   ));
   locator.registerLazySingleton(() => RegisterNotifier(
     mediaUseCase: locator(),
     updatePassport: locator(),
-    webSocketsService: locator(),
     useCase: locator(),
     gemini: locator(),
     firebaseAuth: locator(),
@@ -252,8 +248,6 @@ void init() {
     deviceInfo: locator()
   ));
   
-  locator.registerFactory(() => WebSocketsService());
-
   locator.registerFactory(() => SocketIoService());
 
   DioHelper dio = DioHelper();

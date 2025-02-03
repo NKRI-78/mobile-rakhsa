@@ -112,7 +112,7 @@ dependencies:
   tuple: ^2.0.1
 
   # W
-  web_socket_channel: ^3.0.1
+  # web_socket_channel: ^3.0.1
   weather: ^3.1.1
   # workmanager: ^0.5.2
 

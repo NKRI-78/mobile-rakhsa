@@ -37,7 +37,6 @@ import 'package:flutter/material.dart';
 
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-import 'package:rakhsa/websockets.dart';
 
 class RegisterFrPage extends StatefulWidget {
   final String userId;
@@ -57,9 +56,6 @@ class RegisterFrPage extends StatefulWidget {
 
 class RegisterFrPageState extends State<RegisterFrPage> {
 
-  // webSocketsService.join();
-
-  late WebSocketsService websocketService;
   late UploadMediaNotifier uploadMediaNotifier;
 
   late CameraController controller;
@@ -295,8 +291,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
                       s(() => btnRegister = false);
 
-                      websocketService.join();
-
                       Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
                         RoutesNavigation.dashboard, (route) => false
                       );
@@ -409,7 +403,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   void initState() {
     super.initState();
 
-    websocketService = context.read<WebSocketsService>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     var options = FaceDetectorOptions(

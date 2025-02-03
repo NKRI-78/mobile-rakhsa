@@ -42,29 +42,5 @@ class GetChatsNotifier with ChangeNotifier {
       setStateProvider(ProviderState.loaded);
     });
   }
-
-  void appendMessage({required Map<String, dynamic> data}) {
-    bool isMe = data["data"]["user"]["is_me"];
-    bool isRead = data["data"]["is_read"];
-
-    int chatIndex = chats.indexWhere((el) => el.chat.id == data["data"]["chat_id"]);
-
-    if(chatIndex != -1) {
-
-      _chats[chatIndex].messages.insert(0, Message(
-        id: data["data"]["id"],
-        content: data["data"]["text"],
-        isRead: isRead,
-        isMe: isMe,
-        time: data["data"]["sent_time"],
-        type: data["data"]["type"]
-      ));
-
-      _chats[chatIndex].countUnread += 1;
-
-    }
-
-    Future.delayed(Duration.zero, () => notifyListeners());
-  }
   
 }

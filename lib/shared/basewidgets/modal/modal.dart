@@ -25,7 +25,6 @@ import 'package:rakhsa/features/event/persentation/provider/delete_event_notifie
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/socketio.dart';
-import 'package:rakhsa/websockets.dart';
 
 class GeneralModal {
 
@@ -966,6 +965,10 @@ class GeneralModal {
                                 height: 30.0,
                                 onTap: () {
                                   StorageHelper.removeToken();
+
+                                  context.read<SocketIoService>().socket?.emit("leave", {
+                                    "user_id": StorageHelper.getUserId()
+                                  });
 
                                   globalKey.currentState?.closeDrawer();
 
