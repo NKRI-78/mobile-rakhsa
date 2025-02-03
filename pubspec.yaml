@@ -88,6 +88,7 @@ dependencies:
 
   # S
   soundpool: ^2.3.0
+  socket_io_client: ^3.0.2
   shared_preferences: ^2.2.2
   
   # P

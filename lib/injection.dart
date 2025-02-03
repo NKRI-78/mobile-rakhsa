@@ -109,6 +109,7 @@ import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
+import 'package:rakhsa/socketio.dart';
 
 import 'package:rakhsa/websockets.dart';
 
@@ -248,6 +249,8 @@ void init() {
   ));
   
   locator.registerFactory(() => WebSocketsService());
+
+  locator.registerFactory(() => SocketIoService());
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();

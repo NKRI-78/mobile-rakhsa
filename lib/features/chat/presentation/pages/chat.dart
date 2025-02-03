@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:uuid/uuid.dart' as uuid;
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:rakhsa/connection.dart';
+import 'package:rakhsa/socketio.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +66,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier; 
   late WebSocketsService webSocketService;
+  late SocketIoService socketIoService;
 
   void monitorConnection() {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
@@ -178,16 +182,33 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       return;
     }
 
-    await sendMessageOffline();
-
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
-    webSocketService.sendMessage(
+    socketIoService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId, 
       message: messageC.text,
       createdAt: createdAt
     );
+
+    String sentTime = "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+    
+    Map<String, dynamic> message = {
+      "id": const uuid.Uuid().v4(),
+      "chat_id": widget.chatId,
+      "user": {
+        "id": StorageHelper.getUserId(),
+        "is_me": true,
+        "avatar": "-",
+        "name": "-",
+      },
+      "is_read": false,
+      "sent_time": sentTime,
+      "created_at": createdAt,
+      "text": messageC.text,
+    };
+
+    messageNotifier.appendMessage(data: message);
 
     setState(() {
       messageC.clear();
@@ -204,6 +225,37 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         setState(() {});
       }
     });
+    // WEBSOCKET
+    // if (messageC.text.trim().isEmpty) {
+    //   return;
+    // }
+
+    // await sendMessageOffline();
+
+    // String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    // webSocketService.sendMessage(
+    //   chatId: widget.chatId,
+    //   recipientId: widget.recipientId, 
+    //   message: messageC.text,
+    //   createdAt: createdAt
+    // );
+
+    // setState(() {
+    //   messageC.clear();
+    //   showAutoGreetings = false;
+    // });
+
+    // Future.delayed(const Duration(milliseconds: 300), () {
+    //   if (sC.hasClients) {
+    //     sC.animateTo(
+    //       sC.position.maxScrollExtent,
+    //       duration: const Duration(milliseconds: 300),
+    //       curve: Curves.easeOut,
+    //     );
+    //     setState(() {});
+    //   }
+    // });
   }
 
   @override
@@ -256,6 +308,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     messageNotifier = context.read<GetMessagesNotifier>();
     insertMessageNotifier = context.read<InsertMessageNotifier>();
     webSocketService = context.read<WebSocketsService>();
+    socketIoService = context.read<SocketIoService>();
 
     messageNotifier.startTimer();
 

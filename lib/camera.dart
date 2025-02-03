@@ -16,6 +16,7 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/socketio.dart';
 
 
 import 'package:rakhsa/websockets.dart';
@@ -43,6 +44,7 @@ class CameraPageState extends State<CameraPage> {
   List<CameraDescription>? cameras;
 
   late WebSocketsService webSocketsService;
+  late SocketIoService socketIoService;
   late UploadMediaNotifier uploadMediaNotifier;
 
   bool loading = false;
@@ -57,6 +59,7 @@ class CameraPageState extends State<CameraPage> {
     super.initState();
 
     webSocketsService = context.read<WebSocketsService>();
+    socketIoService = context.read<SocketIoService>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
     initializeCamera();
@@ -98,7 +101,7 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
 
-      webSocketsService.sos(
+      socketIoService.sos(
         location: widget.location,
         country: widget.country, 
         media: media,
@@ -132,9 +135,11 @@ class CameraPageState extends State<CameraPage> {
           stopVideoRecording();
           timer.cancel();
         } else {
-          setState(() {
-            recordTimeLeft--;
-          });
+          if(mounted) {
+            setState(() {
+              recordTimeLeft--;
+            });
+          }
         }
       });
     } catch (e) {
@@ -158,12 +163,13 @@ class CameraPageState extends State<CameraPage> {
       String media = uploadMediaNotifier.entity!.path;
       String ext = media.split('/').last.split('.').last;
       
-      webSocketsService.sos(
+      socketIoService.sos(
         location: widget.location,
         country: widget.country,
         media: media,
         ext: ext,
-        lat: widget.lat, lng: widget.lng, 
+        lat: widget.lat, 
+        lng: widget.lng, 
       );
 
       if(mounted) {
