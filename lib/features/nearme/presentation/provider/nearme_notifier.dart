@@ -12,10 +12,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
 
   GetNearbyPlacenNotifier({required this.useCase});
 
-  final List<Map<String, dynamic>> _entity = [];
-  List<Map<String, dynamic>> get entity => [..._entity];
-
-  final List<Marker> _markers = [];
+  List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
   ProviderState _state = ProviderState.empty;
@@ -51,25 +48,6 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
     _state = ProviderState.loading;
     Future.delayed(Duration.zero, () => notifyListeners());
 
-    _markers.clear();
-    _entity.clear();
-
-    _markers.add(
-      Marker(
-        markerId: const MarkerId("current_location"),
-        position: LatLng(currentLat, currentLng),
-        icon: await const TextOnImage(
-          icon: "current-location.png",
-          text: "Current Location",
-        ).toBitmapDescriptor(
-          logicalSize: const Size(150, 150), imageSize: const Size(150, 150)
-        ),
-        infoWindow: const InfoWindow(
-          title: "Lokasi Anda",
-        ),
-      ),
-    );
-
     final result = await useCase.execute(
       type: type,
       currentLat: currentLat,
@@ -83,6 +61,22 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
         Future.delayed(Duration.zero, () => notifyListeners());
       },
       (r) async {
+        _markers = [];
+        _markers.add(
+          Marker(
+            markerId: const MarkerId("current_location"),
+            position: LatLng(currentLat, currentLng),
+            icon: await const TextOnImage(
+              icon: "current-location.png",
+              text: "Current Location",
+            ).toBitmapDescriptor(
+              logicalSize: const Size(150, 150), imageSize: const Size(150, 150)
+            ),
+            infoWindow: const InfoWindow(
+              title: "Lokasi Anda",
+            ),
+          ),
+        );
         for (var el in r.results) {
           _markers.add(
             Marker(

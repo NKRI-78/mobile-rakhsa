@@ -19,7 +19,7 @@ import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
-import 'package:googleapis/calendar/v3.dart' as googleAPI;
+import 'package:googleapis/calendar/v3.dart' as googleapi;
 
 import 'package:http/http.dart' as http;
 
@@ -47,7 +47,7 @@ class EventListPageState extends State<EventListPage> {
 
   final GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: [
-      googleAPI.CalendarApi.calendarScope
+      googleapi.CalendarApi.calendarScope
     ]
   ); 
 
@@ -69,9 +69,9 @@ class EventListPageState extends State<EventListPage> {
         googleAuth.idToken.toString(),
       );
 
-      final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);
+      final googleapi.CalendarApi calendarAPI = googleapi.CalendarApi(authenticatedClient);
    
-      final googleAPI.Events events = await calendarAPI.events.list('primary');
+      final googleapi.Events events = await calendarAPI.events.list('primary');
 
       events.items?.forEach((event) {
         String summary = event.summary.toString();

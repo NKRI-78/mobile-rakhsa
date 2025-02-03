@@ -56,7 +56,6 @@ class AwesomeNotificationService {
 
   static Future<void> onNotificationCreated(ReceivedNotification receivedNotification) async {
 
-
   }
 
   static Future<void> onNotificationDisplay(ReceivedNotification receivedNotification) async {

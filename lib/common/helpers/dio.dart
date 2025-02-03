@@ -22,10 +22,8 @@ class DioHelper {
     dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
         String? token = await StorageHelper.getToken();
-        if (token != null) {
-          options.headers["Authorization"] = "Bearer $token";
-        }
-        return handler.next(options);
+        options.headers["Authorization"] = "Bearer $token";
+              return handler.next(options);
       }, onError: (DioException e, ErrorInterceptorHandler handler) async {
         if (e.error is SocketException) {
           return handler.next(e);

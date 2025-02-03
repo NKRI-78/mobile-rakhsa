@@ -413,10 +413,9 @@ class ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 18),
                             _passportField(
                               label: 'Tanggal Lahir',
-                              content: DateFormat('dd MMMM yyyy', 'id').format(
-                                  DateTime.parse(profileNotifier
-                                      .entity.data!.birthdate
-                                      .toString())),
+                              content: profileNotifier.entity.data!.birthdate == "-" 
+                              ? "-" 
+                              : DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(profileNotifier .entity.data!.birthdate.toString())),
                             ),
                             const SizedBox(height: 18),
                             _passportField(
@@ -439,18 +438,16 @@ class ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 18),
                             _passportField(
                               label: 'Tanggal Terbit Paspor',
-                              content: DateFormat('dd MMMM yyyy', 'id').format(
-                                  DateTime.parse(profileNotifier
-                                      .entity.data!.passportIssued
-                                      .toString())),
+                              content: profileNotifier.entity.data!.passportIssued == "-" 
+                              ? "-" 
+                              : DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(profileNotifier.entity.data!.passportIssued.toString())),
                             ),
                             const SizedBox(height: 18),
                             _passportField(
                               label: 'Tanggal Kadaluarsa Paspor',
-                              content: DateFormat('dd MMMM yyyy', 'id').format(
-                                  DateTime.parse(profileNotifier
-                                      .entity.data!.passportExpired
-                                      .toString())),
+                              content: profileNotifier.entity.data!.passportExpired == "-" 
+                              ? "-" 
+                              : DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(profileNotifier.entity.data!.passportExpired.toString())),
                             ),
                             _passportField(
                               label: 'Sisa masa berlaku',
