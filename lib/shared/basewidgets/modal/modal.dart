@@ -164,6 +164,7 @@ class GeneralModal {
     required String chatId, 
     required String recipientId,
     required String msg,
+    required bool isHome
   }) {
     return showDialog(
       context: navigatorKey.currentContext!,
@@ -246,19 +247,21 @@ class GeneralModal {
                                   onTap: () {
                                     Navigator.pop(context);
 
-                                    Future.delayed(const Duration(seconds: 1), () {
-                                      Navigator.push(navigatorKey.currentContext!, 
-                                        MaterialPageRoute(builder: (BuildContext context) {
-                                          return ChatPage(
-                                            sosId: sosId, 
-                                            chatId: chatId, 
-                                            status: "NONE", 
-                                            recipientId: recipientId, 
-                                            autoGreetings: false
-                                          ); 
-                                        })
-                                      );
-                                    });
+                                    if(isHome) {
+                                      Future.delayed(const Duration(seconds: 1), () {
+                                        Navigator.push(navigatorKey.currentContext!, 
+                                          MaterialPageRoute(builder: (BuildContext context) {
+                                            return ChatPage(
+                                              sosId: sosId, 
+                                              chatId: chatId, 
+                                              status: "NONE", 
+                                              recipientId: recipientId, 
+                                              autoGreetings: false
+                                            ); 
+                                          })
+                                        );
+                                      });
+                                    }
                                   },
                                   btnTxt: "Belum",
                                 ),
@@ -274,9 +277,14 @@ class GeneralModal {
                                   borderRadiusGeometry: const BorderRadius.only(bottomRight: Radius.circular(25.0)),
                                   height: 35.0,
                                   onTap: () async {
-                                    await ratingSos(sosId: sosId, isHome: true).then((_) {
-                                      Navigator.pop(context);
-                                    });
+                                    context.read<SosRatingNotifier>().sosRating(sosId: sosId);
+                                    context.read<SocketIoService>().userResolvedSos(sosId: sosId);
+
+                                    Navigator.pop(context);
+                                    
+                                    if(!isHome) {
+                                      Navigator.pushNamed(context, RoutesNavigation.dashboard);
+                                    }
                                   },
                                   btnTxt: "Sudah",
                                 ),

@@ -48,6 +48,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         chatId: profileNotifier.entity.data!.sos.chatId,
         recipientId: profileNotifier.entity.data!.sos.recipientId,
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
+        isHome: true
       );
     } else {
       if(StorageHelper.getUserId() == null) {

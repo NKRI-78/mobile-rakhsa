@@ -303,8 +303,11 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                 context.watch<GetMessagesNotifier>().isBtnSessionEnd 
                 ? CustomButton(
                     onTap: () async {
-                      GeneralModal.ratingSos(
+                      GeneralModal.infoEndSos(
                         sosId: widget.sosId,
+                        chatId: "-",
+                        recipientId: "-",
+                        msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
                         isHome: false
                       );
                     },

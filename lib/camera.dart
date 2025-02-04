@@ -179,7 +179,7 @@ class CameraPageState extends State<CameraPage> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    // controller?.dispose();
     super.dispose();
   }
 
@@ -201,8 +201,8 @@ class CameraPageState extends State<CameraPage> {
             child: CircularProgressIndicator()
           )
         : Stack(
-            clipBehavior: Clip.none,
-            children: [
+          clipBehavior: Clip.none,
+          children: [
       
             CameraPreview(controller!),
       

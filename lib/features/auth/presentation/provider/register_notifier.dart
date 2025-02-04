@@ -190,11 +190,9 @@ class RegisterNotifier with ChangeNotifier {
           ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
           // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
-        } on fa.FirebaseException catch (e) {
+        } on fa.FirebaseAuthException catch (_) { 
           _ssoLoading = false;
           notifyListeners();
-
-          ShowSnackbar.snackbarErr('Kesalahan authentikasi ${e.code}');
         } catch (e) {
           _ssoLoading = false;
           notifyListeners();
