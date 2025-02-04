@@ -99,8 +99,7 @@ class RegisterNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> register(
-      {
+  Future<void> register({
     required String countryCode,
     required String passportNumber,
     required String fullName,
@@ -147,16 +146,14 @@ class RegisterNotifier with ChangeNotifier {
       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-      ShowSnackbar.snackbarOk(
-          "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
+      ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
 
       Navigator.pushAndRemoveUntil(
         navigatorKey.currentContext!,
         MaterialPageRoute(builder: (context) {
           return RegisterOtp(email: email);
-        }),
-        (route) => false,
-      );
+        }
+      ), (route) => false);
 
       setStateProviderState(ProviderState.loaded);
     });
@@ -171,9 +168,7 @@ class RegisterNotifier with ChangeNotifier {
       Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
     } else {
       final connection = await Connectivity().checkConnectivity();
-      if (connection == ConnectivityResult.mobile ||
-          connection == ConnectivityResult.wifi ||
-          connection == ConnectivityResult.vpn) {
+      if (connection == ConnectivityResult.mobile || connection == ConnectivityResult.wifi || connection == ConnectivityResult.vpn) {
         try {
           _ssoLoading = true;
           notifyListeners();
@@ -192,8 +187,7 @@ class RegisterNotifier with ChangeNotifier {
           _userGoogle = user.user;
           notifyListeners();
 
-          ShowSnackbar.snackbarOk(
-              'Berhasil login sebagai ${user.user?.email}');
+          ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
           // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
         } on fa.FirebaseException catch (e) {

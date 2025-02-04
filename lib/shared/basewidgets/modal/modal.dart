@@ -725,7 +725,7 @@ class GeneralModal {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: "Raksha",
+                                      text: "Marlinda",
                                       style: robotoRegular.copyWith(
                                         fontSize: Dimensions.fontSizeDefault,
                                         fontWeight: FontWeight.bold,

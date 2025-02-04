@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -8,6 +7,7 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
 import 'package:rakhsa/features/document/presentation/widgets/document_button.dart';
 import 'package:rakhsa/features/document/presentation/widgets/document_preview.dart';
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class PassportDocumentPage extends StatefulWidget {
   const PassportDocumentPage({super.key});
@@ -73,20 +73,33 @@ class _PassportDocumentPageState extends State<PassportDocumentPage> {
                         loading: provider.passportIsLoading,
                       ),
                     ),
+                    const SizedBox(height: 8),
+
+                    // view passport
+                    Container(
+                      height: 250,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      child: SfBarcodeGenerator(
+                        value: 'https://www.imigrasi.go.id/',
+                        symbology: QRCode(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
 
                     // button update document
                     // tombol update dokumen hanya muncul ketika dokumen sudah terpilih
                     // document path != null
-                      Visibility(
-                        maintainAnimation: true,
-                          maintainState: true,
-                          visible: provider.hasPassport,                        
-                          child: DocumentButton(
-                          label: 'Update Passport',
-                          onTap: () async => await provider
-                              .updateDocument(context, DocumentType.passport),
-                        ),
+                    Visibility(
+                      maintainAnimation: true,
+                      maintainState: true,
+                      visible: provider.hasPassport,
+                      child: DocumentButton(
+                        label: 'Update Passport',
+                        onTap: () async => await provider.updateDocument(
+                            context, DocumentType.passport),
                       ),
+                    ),
                   ],
                 );
               },

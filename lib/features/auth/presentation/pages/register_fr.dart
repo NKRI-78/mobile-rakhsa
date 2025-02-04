@@ -384,7 +384,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   }
 
   void toggleCameraDirection() async {
-
     if (camDirec == CameraLensDirection.back) {
       camDirec = CameraLensDirection.front;
       description = cameras[1];

@@ -524,7 +524,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                     text: "Terima kasih telah menghubungi kami di ",
                                   ),
                                   TextSpan(
-                                    text: "Raksha",
+                                    text: "Marlinda",
                                     style: robotoRegular.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: ColorResources.white,

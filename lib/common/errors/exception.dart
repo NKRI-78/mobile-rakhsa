@@ -77,7 +77,6 @@ String handleDioException(DioException e) {
   }
 }
 
-
 class PassportException implements Exception {
   final String message;
 

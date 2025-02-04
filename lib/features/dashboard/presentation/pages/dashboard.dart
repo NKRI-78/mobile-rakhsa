@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 
+import 'package:rakhsa/firebase.dart';
+
+import 'package:rakhsa/features/auth/presentation/pages/verify_login_fr.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/main_menu_notched_bottom_navbar.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/notched_botton_navbar.dart';
 
-import 'package:rakhsa/firebase.dart';
-
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
+import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
@@ -29,23 +31,21 @@ class DashboardScreen extends StatefulWidget {
  
 class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
 
+  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+
   late EcommerceProvider ecommerceProvider;
   late FirebaseProvider firebaseProvider;
+  late DashboardNotifier dashboardNotifier;
 
   late ProfileNotifier profileNotifier;
 
-  bool isLocked = false;
- 
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
- 
   DateTime? lastTap;
  
   // bottom nav bar properties
-  final botomNavBarHeight = 78.0; // tinggi bottom nav bar
+  final bottomomNavBarHeight = 78.0; // tinggi bottom nav bar
   final marginBottomMenuDialog = 125.0; // jarak margin dialog menu aplikasi
  
   Future<void> getData() async {
-
     if(!mounted) return; 
       await ecommerceProvider.checkStoreOwner();
 
@@ -87,7 +87,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
-      setState(() => isLocked = true);
+      dashboardNotifier.setStateIsLocked(val: true);
     }
   }
 
@@ -100,6 +100,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     ecommerceProvider = context.read<EcommerceProvider>();
+    dashboardNotifier = context.read<DashboardNotifier>();
 
     Future.microtask(() => getData());
   }
@@ -113,7 +114,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
   @override
   Widget build(BuildContext context) {
-
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) {
@@ -137,21 +137,15 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
         endDrawer: SafeArea(child: DrawerWidget(globalKey: globalKey)),
  
         // HOME PAGE
-        body: 
-        // isLocked 
-        // ? const Center(
-        //     child: Text("Locked")
-        //   ) 
-        // : 
-        HomePage(globalKey: globalKey),
+        body: context.watch<DashboardNotifier>().isLocked 
+        ? const VerifyLoginFr()
+        : HomePage(globalKey: globalKey),
  
         // MAIN MENU
         floatingActionButtonLocation: MainMenuNotchedBottomNavBar.position,
-        floatingActionButton: 
-        // isLocked 
-        // ? const SizedBox()
-        // :
-         MainMenuNotchedBottomNavBar(onTap: () {
+        floatingActionButton: context.watch<DashboardNotifier>().isLocked 
+        ? const SizedBox()
+        : MainMenuNotchedBottomNavBar(onTap: () {
           GeneralModal.showMainMenu(
             context,
             bottom: marginBottomMenuDialog,
@@ -160,13 +154,11 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
         }),
  
         // BOTTOM NAV BAR
-        bottomNavigationBar: 
-        // isLocked 
-        // ? const SizedBox()
-        // : 
-        NotchedBottomNavBar(
-          height: botomNavBarHeight,
-          leftItem: IconButton(
+        bottomNavigationBar: context.watch<DashboardNotifier>().isLocked 
+        ? const SizedBox()
+        : NotchedBottomNavBar(
+            height: bottomomNavBarHeight,
+            leftItem: IconButton(
             onPressed: () => Navigator.pushNamed(context, RoutesNavigation.news),
             icon: Image.asset(
               AssetSource.iconMenuNews, 

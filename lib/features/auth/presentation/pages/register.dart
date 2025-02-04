@@ -65,21 +65,22 @@ class RegisterPageState extends State<RegisterPage> {
     }
 
     await registerNotifier.register(
-        countryCode: passportNotifier.passport?.countryCode ?? '',
-        passportNumber: passportNotifier.passport?.passportNumber ?? '',
-        fullName: passportNotifier.passport?.fullName ?? '',
-        nasionality: passportNotifier.passport?.nationality ?? '',
-        placeOfBirth: passportNotifier.passport?.placeOfBirth ?? '',
-        dateOfBirth: passportNotifier.passport?.dateOfBirth ?? '',
-        gender: passportNotifier.passport?.gender ?? '',
-        dateOfIssue: passportNotifier.passport?.dateOfIssue ?? '',
-        dateOfExpiry: passportNotifier.passport?.dateOfExpiry ?? '',
-        registrationNumber: passportNotifier.passport?.registrationNumber ?? '',
-        issuingAuthority: passportNotifier.passport?.issuingAuthority ?? '',
-        mrzCode: passportNotifier.passport?.mrzCode ?? '',
-        email: email,
-        emergencyContact: emergencyContact,
-        password: password);
+      countryCode: passportNotifier.passport?.countryCode ?? '',
+      passportNumber: passportNotifier.passport?.passportNumber ?? '',
+      fullName: passportNotifier.passport?.fullName ?? '',
+      nasionality: passportNotifier.passport?.nationality ?? '',
+      placeOfBirth: passportNotifier.passport?.placeOfBirth ?? '',
+      dateOfBirth: passportNotifier.passport?.dateOfBirth ?? '',
+      gender: passportNotifier.passport?.gender ?? '',
+      dateOfIssue: passportNotifier.passport?.dateOfIssue ?? '',
+      dateOfExpiry: passportNotifier.passport?.dateOfExpiry ?? '',
+      registrationNumber: passportNotifier.passport?.registrationNumber ?? '',
+      issuingAuthority: passportNotifier.passport?.issuingAuthority ?? '',
+      mrzCode: passportNotifier.passport?.mrzCode ?? '',
+      email: email,
+      emergencyContact: emergencyContact,
+      password: password
+    );
 
     if (registerNotifier.message != "") {
       ShowSnackbar.snackbarErr(registerNotifier.message);

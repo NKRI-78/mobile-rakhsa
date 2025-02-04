@@ -15,7 +15,10 @@ class DashboardNotifier with ChangeNotifier {
     required this.profileNotifier,
     required this.useCase
   });  
-  
+
+  bool _isLocked = false;
+  bool get isLocked => _isLocked;
+
   List<NewsData> _ews = [];
   List<NewsData> get ews =>[..._ews];
 
@@ -30,6 +33,12 @@ class DashboardNotifier with ChangeNotifier {
 
   String _message = "";
   String get message => _message;
+
+  void setStateIsLocked({required bool val}) {
+    _isLocked = val;
+
+    Future.delayed(Duration.zero, () => notifyListeners()); 
+  }
 
   void setStateNews(NewsProviderState newState) {
     _newsState = newState;

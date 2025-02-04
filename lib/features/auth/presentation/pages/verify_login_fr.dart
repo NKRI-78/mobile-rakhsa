@@ -1,48 +1,39 @@
-
-
 import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:image/image.dart' as img;
 
+import 'package:camera/camera.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
-import 'package:rakhsa/ML/Recognizer.dart';
+import 'package:image/image.dart' as img;
+import 'package:provider/provider.dart';
 
-// import 'package:dio/dio.dart';
+import 'package:rakhsa/Helper/Image.dart';
+
+import 'package:rakhsa/ML/Recognition.dart';
+import 'package:rakhsa/ML/Recognizer.dart';
 
 import 'package:rakhsa/Painter/face_detector.dart';
 
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
-import 'package:rakhsa/global.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
+
 import 'package:rakhsa/main.dart';
 
-import 'package:rakhsa/Helper/Image.dart';
-
-import 'package:flutter/material.dart';
-
-import 'package:camera/camera.dart';
-
-import 'package:rakhsa/ML/Recognition.dart';
-
-class LoginFrPage extends StatefulWidget {
-  final bool fromHome;
-  const LoginFrPage({
-    required this.fromHome,
-    super.key
-  });
+class VerifyLoginFr extends StatefulWidget {
+  const VerifyLoginFr({super.key});
 
   @override
-  LoginFrPageState createState() => LoginFrPageState();
+  State<VerifyLoginFr> createState() => VerifyLoginFrState();
 }
 
-class LoginFrPageState extends State<LoginFrPage> {
+class VerifyLoginFrState extends State<VerifyLoginFr> {
 
   late CameraController controller;
+  late DashboardNotifier dashboardNotifier;
 
   String text = "Please scan your face to login";
 
@@ -155,14 +146,10 @@ class LoginFrPageState extends State<LoginFrPage> {
         StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
         StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
         
-        debugPrint("===  USER ID ${StorageHelper.getUserId()} ===");
-
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
-          RoutesNavigation.dashboard, (route) => false
-        );
-
+        dashboardNotifier.setStateIsLocked(val: false);
+         
       } on DioException catch(e) {
         if(e.response!.statusCode == 400) {
           String message = e.response!.data["message"];
@@ -178,6 +165,22 @@ class LoginFrPageState extends State<LoginFrPage> {
     }
 
     return recognition;
+  }
+
+  void toggleCameraDirection() async {
+
+    if (camDirec == CameraLensDirection.back) {
+      camDirec = CameraLensDirection.front;
+      description = cameras[1];
+    } else {
+      camDirec = CameraLensDirection.back;
+      description = cameras[0];
+    }
+    await controller.stopImageStream();
+
+    setState(() => controller);
+
+    initializeCamera();
   }
 
   Widget buildResult() {
@@ -200,26 +203,12 @@ class LoginFrPageState extends State<LoginFrPage> {
     
     return CustomPaint(painter: painter);
   }
-
-  void toggleCameraDirection() async {
-
-    if (camDirec == CameraLensDirection.back) {
-      camDirec = CameraLensDirection.front;
-      description = cameras[1];
-    } else {
-      camDirec = CameraLensDirection.back;
-      description = cameras[0];
-    }
-    await controller.stopImageStream();
-
-    setState(() => controller);
-
-    initializeCamera();
-  }
   
   @override
   void initState() {
     super.initState();
+
+    dashboardNotifier = context.read<DashboardNotifier>();
 
     var options = FaceDetectorOptions(
       enableLandmarks: false,
@@ -285,14 +274,7 @@ class LoginFrPageState extends State<LoginFrPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         forceMaterialTransparency: true,
-        leading: widget.fromHome 
-        ? const SizedBox() 
-        : CupertinoNavigationBarBackButton(
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ) ,
+        automaticallyImplyLeading: false,
       ), 
       body: Container(
         color: Colors.black,
@@ -331,7 +313,6 @@ class LoginFrPageState extends State<LoginFrPage> {
               : const SizedBox(),
             ),
 
-            // for scanning image
             Positioned(
               top: 0.0,
               left: 0.0,

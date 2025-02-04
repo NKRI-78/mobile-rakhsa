@@ -228,35 +228,40 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       bottomNavigationBar: selectedFile != null
-          ? Container(
-              margin: const EdgeInsets.only(
-                  top: 20.0, bottom: 20.0, left: 10.0, right: 10.0),
-              child: CustomButton(
-                onTap: submit,
-                isBorder: false,
-                isBorderRadius: true,
-                btnColor: const Color(0xFFFE1717),
-                btnTxt: "Update Profile",
-              ),
-            )
-          : const SizedBox(),
+      ? Container(
+          margin: const EdgeInsets.only(
+            top: 20.0, 
+            bottom: 20.0, 
+            left: 10.0, 
+            right: 10.0
+          ),
+          child: CustomButton(
+            onTap: submit,
+            isBorder: false,
+            isBorderRadius: true,
+            btnColor: const Color(0xFFFE1717),
+            btnTxt: "Update Profile",
+          ),
+        )
+      : const SizedBox(),
       body: RefreshIndicator(
         onRefresh: () {
           return Future.sync(() => getData());
         },
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
+            parent: AlwaysScrollableScrollPhysics()
+          ),
           slivers: [
             SliverAppBar(
               backgroundColor: ColorResources.backgroundColor,
               centerTitle: true,
-              title: Text(
-                "Profile",
+              title: Text("Profile",
                 style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeLarge,
-                    fontWeight: FontWeight.bold),
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeLarge,
+                  fontWeight: FontWeight.bold
+                ),
               ),
               leading: CupertinoNavigationBarBackButton(
                 color: ColorResources.black,
@@ -265,122 +270,117 @@ class ProfilePageState extends State<ProfilePage> {
             ),
             if (context.watch<ProfileNotifier>().state == ProviderState.loading)
               const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                      child: SizedBox(
-                    width: 16.0,
-                    height: 16.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
-                    ),
-                  ))),
+                hasScrollBody: false,
+                child: Center(
+                  child: SizedBox(
+                  width: 16.0,
+                  height: 16.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                  ),
+                )
+              )),
             if (context.watch<ProfileNotifier>().state == ProviderState.error)
               SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                      child: Text(
-                    context.read<ProfileNotifier>().message,
-                    style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
-                        color: ColorResources.black),
-                  ))),
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(
+                  context.read<ProfileNotifier>().message,
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.black
+                  ),
+                )
+              )
+            ),
             if (context.watch<ProfileNotifier>().state == ProviderState.loaded)
-              SliverPadding(
+               SliverPadding(
                   padding: const EdgeInsets.only(
-                      left: 16.0, right: 16.0, bottom: 20.0),
+                    left: 16.0, 
+                    right: 16.0, 
+                    bottom: 20.0
+                  ),
                   sliver: SliverToBoxAdapter(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                       Container(
-                          margin: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 20.0, bottom: 22.0),
-                          child: Center(
-                            child: InkWell(
-                              onTap: () async => await chooseFile(),
-                              borderRadius: BorderRadius.circular(100),
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
-                                            spreadRadius: 3,
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 0.2),
+                        margin: const EdgeInsets.only(
+                          left: 16.0, 
+                          right: 16.0, 
+                          top: 20.0, 
+                          bottom: 22.0
+                        ),
+                        child: Center(
+                          child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 3,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 0.2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: selectedFile != null
+                                  ? CircleAvatar(
+                                      radius: 40.0,
+                                      backgroundColor:
+                                          ColorResources.white,
+                                      backgroundImage: FileImage(
+                                        selectedFile!,
+                                      ),
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl: profileNotifier.entity.data!.avatar.toString(),
+                                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                        return CircleAvatar(
+                                          radius: 40.0,
+                                          backgroundColor: ColorResources.white,
+                                          backgroundImage: imageProvider,
+                                        );
+                                      },
+                                      errorWidget: (BuildContext context, String url, Object error) {
+                                        return const CircleAvatar(
+                                          radius: 40.0,
+                                          backgroundColor: ColorResources.white,
+                                          backgroundImage: AssetImage(
+                                            'assets/images/default.jpeg'
                                           ),
-                                        ],
-                                      ),
-                                      child: selectedFile != null
-                                          ? CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundColor:
-                                                  ColorResources.white,
-                                              backgroundImage: FileImage(
-                                                selectedFile!,
-                                              ),
-                                            )
-                                          : CachedNetworkImage(
-                                              imageUrl: profileNotifier
-                                                  .entity.data!.avatar
-                                                  .toString(),
-                                              imageBuilder:
-                                                  (BuildContext context,
-                                                      ImageProvider<Object>
-                                                          imageProvider) {
-                                                return CircleAvatar(
-                                                  radius: 40.0,
-                                                  backgroundColor:
-                                                      ColorResources.white,
-                                                  backgroundImage:
-                                                      imageProvider,
-                                                );
-                                              },
-                                              errorWidget:
-                                                  (BuildContext context,
-                                                      String url,
-                                                      Object error) {
-                                                return const CircleAvatar(
-                                                  radius: 40.0,
-                                                  backgroundColor:
-                                                      ColorResources.white,
-                                                  backgroundImage: AssetImage(
-                                                      'assets/images/default.jpeg'),
-                                                );
-                                              },
-                                              placeholder:
-                                                  (BuildContext context,
-                                                      String url) {
-                                                return const CircleAvatar(
-                                                  radius: 40.0,
-                                                  backgroundColor:
-                                                      ColorResources.white,
-                                                  backgroundImage: AssetImage(
-                                                      'assets/images/default.jpeg'),
-                                                );
-                                              },
-                                            )),
-                                  const Positioned(
-                                    right: 0.0,
-                                    bottom: 0.0,
-                                    child: CircleAvatar(
-                                      backgroundColor: ColorResources.white,
-                                      maxRadius: 12.0,
-                                      child: Icon(
-                                        Icons.camera_alt,
-                                        size: 14.0,
-                                        color: ColorResources.black,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                        );
+                                      },
+                                      placeholder: (BuildContext context, String url) {
+                                        return const CircleAvatar(
+                                          radius: 40.0,
+                                          backgroundColor:ColorResources.white,
+                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
+                                        );
+                                      },
+                                    )
+                                  ),
+                                // const Positioned(
+                                //   right: 0.0,
+                                //   bottom: 0.0,
+                                //   child: CircleAvatar(
+                                //     backgroundColor: ColorResources.white,
+                                //     maxRadius: 12.0,
+                                //     child: Icon(
+                                //       Icons.camera_alt,
+                                //       size: 14.0,
+                                //       color: ColorResources.black,
+                                //     ),
+                                //   ),
+                                // )
+                              ],
                             ),
-                          )),
+                        )
+                      ),
                       Center(
                         child: Text(
                           profileNotifier.entity.data!.username.toString(),
@@ -389,6 +389,18 @@ class ProfilePageState extends State<ProfilePage> {
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: ColorResources.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Center(
+                        child: Text(
+                          profileNotifier.entity.data!.email.toString(),
+                          textAlign: TextAlign.center,
+                          style: robotoRegular.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade600,
                           ),
                         ),
                       ),
@@ -404,14 +416,14 @@ class ProfilePageState extends State<ProfilePage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _passportField(
+                            passportField(
                               label: 'Jenis Kelamin',
                               content: getGender(profileNotifier
                                   .entity.data!.gender
                                   .toString()),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Tanggal Lahir',
                               content: DateFormat('dd MMMM yyyy', 'id').format(
                                   DateTime.parse(profileNotifier
@@ -419,25 +431,25 @@ class ProfilePageState extends State<ProfilePage> {
                                       .toString())),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Tempat Lahir',
                               content: profileNotifier.entity.data!.birthplace
                                   .toString(),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Kewarganegaraan',
                               content: profileNotifier.entity.data!.citizen
                                   .toString(),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Kode Paspor',
                               content: profileNotifier.entity.data!.passport
                                   .toString(),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Tanggal Terbit Paspor',
                               content: DateFormat('dd MMMM yyyy', 'id').format(
                                   DateTime.parse(profileNotifier
@@ -445,27 +457,27 @@ class ProfilePageState extends State<ProfilePage> {
                                       .toString())),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Tanggal Kadaluarsa Paspor',
                               content: DateFormat('dd MMMM yyyy', 'id').format(
                                   DateTime.parse(profileNotifier
                                       .entity.data!.passportExpired
                                       .toString())),
                             ),
-                            _passportField(
+                            passportField(
                               label: 'Sisa masa berlaku',
                               content: getPeriod(profileNotifier
                                       .entity.data!.passportExpired) ??
                                   '-',
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Nomor Registrasi',
                               content:
                                   profileNotifier.entity.data!.noReg.toString(),
                             ),
                             const SizedBox(height: 18),
-                            _passportField(
+                            passportField(
                               label: 'Kode MRZ',
                               content: profileNotifier.entity.data!.mrzCode
                                   .toString(),
@@ -474,14 +486,16 @@ class ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ],
-                  ))),
+                  )
+                )
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _passportField({required String label, required String content}) {
+  Widget passportField({required String label, required String content}) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,

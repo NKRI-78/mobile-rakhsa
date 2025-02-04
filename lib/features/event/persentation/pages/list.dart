@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,6 +8,8 @@ import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
+
+import 'package:firebase_auth/firebase_auth.dart' as fa;
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -45,6 +48,8 @@ class EventListPage extends StatefulWidget {
 
 class EventListPageState extends State<EventListPage> {
 
+  late FirebaseAuth firebaseAuth;
+
   final GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: [
       googleAPI.CalendarApi.calendarScope
@@ -58,15 +63,18 @@ class EventListPageState extends State<EventListPage> {
      
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-      if (googleUser == null) {
-        throw Exception("Google Sign-In failed");
-      } 
+      final gAuth = await googleUser?.authentication;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = fa.GoogleAuthProvider.credential(
+        accessToken: gAuth?.accessToken,
+        idToken: gAuth?.idToken,
+      );
 
-       final GoogleAuthClient authenticatedClient = GoogleAuthClient(
-        googleAuth.accessToken.toString(),
-        googleAuth.idToken.toString(),
+      final user = await firebaseAuth.signInWithCredential(credential);
+
+      final GoogleAuthClient authenticatedClient = GoogleAuthClient(
+        user.credential?.accessToken.toString() ?? "-",
+        user.credential?.token.toString() ?? "-",
       );
 
       final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);

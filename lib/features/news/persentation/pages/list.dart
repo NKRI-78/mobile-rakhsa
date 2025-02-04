@@ -212,7 +212,7 @@ class NewsListPageState extends State<NewsListPage> {
                                 width: 100.0,
                                 height: double.infinity,
                                 child: CachedNetworkImage(
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                   imageUrl: notifier.news[i].img.toString(),
                                   placeholder: (BuildContext context, String url) {
                                     return Image.asset('assets/images/default.jpeg');
@@ -235,7 +235,6 @@ class NewsListPageState extends State<NewsListPage> {
                                       style: robotoRegular.copyWith(
                                         overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.w500,
-                                        fontSize: Dimensions.fontSizeLarge,
                                       ),
                                     ),
                                     const SizedBox(
