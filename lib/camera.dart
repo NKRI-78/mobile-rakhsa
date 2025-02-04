@@ -179,7 +179,6 @@ class CameraPageState extends State<CameraPage> {
 
   @override
   void dispose() {
-    // controller?.dispose();
     super.dispose();
   }
 

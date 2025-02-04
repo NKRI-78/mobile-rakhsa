@@ -28,6 +28,14 @@ class StorageHelper {
     );
   }
 
+  static void setIsLocked({required bool val}) {
+    sharedPreferences.setBool("is_locked", val);
+  }
+
+  static bool isLocked() {
+    return sharedPreferences.getBool("is_locked") ?? false;
+  }
+
   static Future<String> getToken() async {
     String token = await storage.read(key: 'token') ?? "-";
 

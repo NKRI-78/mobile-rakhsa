@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 
 import 'package:rakhsa/firebase.dart';
@@ -54,6 +55,9 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
     if (!mounted) return;
       await firebaseProvider.initFcm();
+
+    if(!mounted) return; 
+      dashboardNotifier.checkIsLocked();
   }
  
   final menus = [
@@ -87,6 +91,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      StorageHelper.setIsLocked(val: true);
       dashboardNotifier.setStateIsLocked(val: true);
     }
   }

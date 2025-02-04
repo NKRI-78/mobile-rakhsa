@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
@@ -33,6 +34,12 @@ class DashboardNotifier with ChangeNotifier {
 
   String _message = "";
   String get message => _message;
+
+  void checkIsLocked() {
+    _isLocked = StorageHelper.isLocked();
+
+    Future.delayed(Duration.zero, () => notifyListeners()); 
+  }
 
   void setStateIsLocked({required bool val}) {
     _isLocked = val;

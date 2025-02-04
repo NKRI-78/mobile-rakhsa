@@ -148,6 +148,8 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
         
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
+        StorageHelper.setIsLocked(val: false);
+        
         dashboardNotifier.setStateIsLocked(val: false);
          
       } on DioException catch(e) {
