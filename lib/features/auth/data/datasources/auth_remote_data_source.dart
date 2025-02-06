@@ -6,6 +6,7 @@ import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
+import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 
 abstract class AuthRemoteDataSource {
@@ -49,6 +50,9 @@ abstract class AuthRemoteDataSource {
   });
   Future<void> resendOtp({
     required String email,
+  });
+  Future<PassportDataExtraction> registerPassport({
+    required String imagePath,
   });
 }
 
@@ -248,6 +252,40 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw Exception(e.toString());
     }
   
+  }
+  
+  @override
+  Future<PassportDataExtraction> registerPassport({
+    required String imagePath,
+  }) async {
+    try {
+      final fileName = imagePath.split('/').last;
+      final formData = FormData.fromMap({
+        "media": await MultipartFile.fromFile(
+          imagePath,
+          filename: fileName,
+        ),
+        "folder": 'passport-scan',
+        "subfolder": "broadcast-raksha"
+      });
+
+      final scanResult = await client.post(
+        '${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/extract-passport',
+        data: formData,
+      );
+
+      return PassportDataExtraction.fromMap(scanResult.data['data']);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        throw ServerException('Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.');
+      } else {
+        String message = handleDioException(e);
+        throw ServerException(message);
+      }
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
   }
 
 }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/pages/login_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_fr.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_passport_page.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
@@ -28,15 +26,15 @@ class RoutesNavigation {
   static const mart = '/mart';
   static const nearMe = '/near-me';
   static const welcomePage = '/welcome';
-  static const register = '/register';
+  // static const register = '/register';
   static const weather = '/weather';
   static const chats = '/chats';
   static const chat = '/chat';
   static const loginFr = '/login-fr';
   static const login = '/login';
   static const registerFr = '/register-fr';
+  // static const registerPassport = '/register-passport';
   static const registerPassport = '/register-passport';
-  static const scanRegisterPassport = '/scan-register-passport';
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
@@ -56,11 +54,11 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case mart: 
         return MaterialPageRoute(builder: (_) => const ProductsScreen());
-      case register: 
-        return MaterialPageRoute(builder: (_) => const RegisterPage());
+      // case register: 
+      //   return MaterialPageRoute(builder: (_) => const RegisterPage());
+      // case registerPassport: 
+      //   return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
       case registerPassport: 
-        return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
-      case scanRegisterPassport: 
         return MaterialPageRoute(builder: (_) => const ScanRegisterPassportPage());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());

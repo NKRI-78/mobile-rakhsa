@@ -1,7 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -14,10 +13,10 @@ import 'package:rakhsa/features/administration/presentation/provider/get_country
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
+import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/passport_scanner_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
@@ -176,6 +175,7 @@ void init() {
   locator.registerLazySingleton(() => ForgotPasswordUseCase(locator()));
   locator.registerLazySingleton(() => UpdatePassportUseCase(locator()));
   locator.registerLazySingleton(() => UpdateVisaUseCase(locator()));
+  locator.registerLazySingleton(() => RegisterPassportUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -219,7 +219,7 @@ void init() {
     mediaUseCase: locator(),
     updatePassport: locator(),
     useCase: locator(),
-    gemini: locator(),
+    registerPassport: locator(),
     firebaseAuth: locator(),
     googleSignIn: locator(),
   ));
@@ -235,9 +235,9 @@ void init() {
     dio: locator()
   ));
 
-  locator.registerLazySingleton(() => PassportScannerNotifier(
-    gemini: locator(),
-  ));
+  // locator.registerLazySingleton(() => PassportScannerNotifier(
+  //   gemini: locator(),
+  // ));
 
   locator.registerFactory(() => DocumentNotifier(
     mediaUseCase: locator(),
@@ -255,7 +255,6 @@ void init() {
 
   locator.registerLazySingleton(() => getDio);
   locator.registerLazySingleton(() => DeviceInfoPlugin());
-  locator.registerLazySingleton(() => Gemini.instance);
   locator.registerLazySingleton(() => FirebaseAuth.instance);
   locator.registerLazySingleton(() => GoogleSignIn());
 

@@ -8,7 +8,6 @@ import 'package:rakhsa/features/administration/presentation/provider/get_state_n
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/passport_scanner_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
@@ -81,7 +80,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<PassportNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<EcommerceProvider>()),
-  ChangeNotifierProvider.value(value: di.locator<PassportScannerNotifier>()),
+  // ChangeNotifierProvider.value(value: di.locator<PassportScannerNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),

@@ -1,16 +1,12 @@
-import 'dart:convert';
-import 'dart:developer';
+
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/promt_helper.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -22,6 +18,7 @@ import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
+import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
@@ -35,9 +32,9 @@ class RegisterNotifier with ChangeNotifier {
   final UpdatePassportUseCase updatePassport;
 
   final RegisterUseCase useCase;
-  final Gemini gemini;
   final FirebaseAuth firebaseAuth;
   final GoogleSignIn googleSignIn;
+  final RegisterPassportUseCase registerPassport;
 
   AuthModel _authModel = AuthModel();
   AuthModel get authModel => _authModel;
@@ -90,7 +87,7 @@ class RegisterNotifier with ChangeNotifier {
     required this.useCase,
     required this.googleSignIn,
     required this.firebaseAuth,
-    required this.gemini,
+    required this.registerPassport,
   });
 
   void setStateProviderState(ProviderState param) {
@@ -165,10 +162,12 @@ class RegisterNotifier with ChangeNotifier {
 
     if (hasUser) {
       // navigate to register page
-      Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
+      Navigator.pushNamed(context, RoutesNavigation.registerPassport);
     } else {
       final connection = await Connectivity().checkConnectivity();
-      if (connection == ConnectivityResult.mobile || connection == ConnectivityResult.wifi || connection == ConnectivityResult.vpn) {
+      if (connection == ConnectivityResult.mobile ||
+          connection == ConnectivityResult.wifi ||
+          connection == ConnectivityResult.vpn) {
         try {
           _ssoLoading = true;
           notifyListeners();
@@ -189,8 +188,8 @@ class RegisterNotifier with ChangeNotifier {
 
           ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, RoutesNavigation.scanRegisterPassport);
-        } on fa.FirebaseAuthException catch (_) { 
+          Navigator.pushNamed(context, RoutesNavigation.registerPassport);
+        } on fa.FirebaseAuthException catch (_) {
           _ssoLoading = false;
           notifyListeners();
         } catch (e) {
@@ -218,59 +217,84 @@ class RegisterNotifier with ChangeNotifier {
         _passportPath = scanResult.last;
         notifyListeners();
 
-        // start extract data
-        final passport = await _launchPromt(
-          documentPath: scanResult.last,
-          errorCallback: (e) {
-            debugPrint(e.toString());
+        final passportData = await registerPassport.execute(scanResult.last);
 
-            FailureDocumentDialog.launch(
-              context,
-              title: 'Kesalahan Ekstraksi Data Paspor',
-              content:
-                  'Kami mengalami kendala saat memproses paspor Anda. Pastikan gambar jelas dan tidak buram, lalu coba lagi. [${e.toString()}]',
-              actionCallback: () async {
-                Navigator.of(context).pop(); // close dialog
-                await startScan(context, userId);
-              },
-            );
-          },
-          passportCallback: (e) {
+        passportData.fold((failure) {
+          _resetScan();
+          FailureDocumentDialog.launch(
+            context,
+            title: 'Kesalahan Ekstraksi Data Passpor',
+            content:
+                'Kami mengalami kendala saat memproses paspor Anda. [${failure.message}]',
+            actionCallback: () async {
+              Navigator.of(context).pop(); // close dialog
+              await startScan(context, userId);
+            },
+          );
+        }, (passportData) async {
+          if (passportData.errorScanning) {
+            _resetScan();
             FailureDocumentDialog.launch(
               context,
               title: 'Data Tidak Valid',
-              content: e,
+              content:
+              'Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.',
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
                 await startScan(context, userId);
               },
             );
-          },
-        );
+          } else {
+            if (passportData.passport?.mrzCode?[0].contains('V') ?? false) {
+              _resetScan();
+              FailureDocumentDialog.launch(
+                context,
+                title: 'Data Tidak Valid',
+                content:
+                'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
+                actionCallback: () async {
+                  Navigator.of(context).pop(); // close dialog
+                  await startScan(context, userId);
+                },
+              );
+            } else if (passportData.passport?.mrzCode?[0].contains('P') ?? false) {
+              final uploadPassportToServer = await mediaUseCase.execute(
+                file: File(_passportPath),
+                folderName: 'passport',
+              );
 
-        // valid response
-        if (passport != null) {
+              uploadPassportToServer.fold((failure) {
+                ShowSnackbar.snackbarErr(failure.message);
+                notifyListeners();
+              }, (picture) async {
+                _mediaPassport = picture.path;
+                notifyListeners();
 
-          final uploadPassportToServer = await mediaUseCase.execute(
-            file: File(_passportPath),
-            folderName: 'passport',
-          );
-          
-          uploadPassportToServer.fold((failure) {
-            ShowSnackbar.snackbarErr(failure.message);
-            notifyListeners();
-          }, (picture) async {
-            _mediaPassport = picture.path; 
-            notifyListeners();
-          });
+              });
 
-          _passport = passport;
-          _panelMinHeight = _panelMinHeightActualy;
-          notifyListeners();
+              _passport = passportData.passport;
+              _panelMinHeight = _panelMinHeightActualy;
+              notifyListeners();
 
-          // open panel
-          _panelController.open();
-        }
+              // open panel
+              _panelController.open();
+            } else {
+              _resetScan();
+              FailureDocumentDialog.launch(
+                context,
+                title: 'Data Tidak Valid',
+                content:
+                  'Kode MRZ tidak lengkap atau tidak jelas. '
+                  'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
+                  'Pegang perangkat dengan stabil dan coba pindai ulang.',
+                actionCallback: () async {
+                  Navigator.of(context).pop(); // close dialog
+                  await startScan(context, userId);
+                },
+              );
+            }
+          }
+        });
       }
     } catch (e) {
       // kondisi untuk catch error dari _launchPromt
@@ -292,100 +316,6 @@ class RegisterNotifier with ChangeNotifier {
     _passportPath = '';
     _passport = null;
     _panelMinHeight = 0.0;
-  }
-
-  Future<Passport?> _launchPromt({
-    required String documentPath,
-    ValueChanged<String>? passportCallback,
-    ValueChanged<String>? errorCallback,
-  }) async {
-    log('memulai scanning');
-    try {
-      // scan promt
-      final scanResult = await gemini.prompt(
-        model: 'gemini-1.5-pro',
-        generationConfig: GenerationConfig(temperature: 0),
-        parts: [
-          Part.bytes(await File(documentPath).readAsBytes()),
-          Part.text(PromptHelper.getPromt()),
-        ],
-      );
-
-      if (int.tryParse(scanResult?.output ?? '400') == 400) {
-        _resetScan();
-
-        // show wrong document callback
-        passportCallback?.call(
-          'Dokumen yang Anda Pindai Terdeketsi Bukan Passpor, Berikan Dokumen Paspor yang Benar',
-        );
-
-        return null;
-      } else {
-        final rawJson = scanResult?.output;
-        log('raw data = $rawJson');
-
-        final filteredJson = rawJson?.substring(8).replaceAll('```', '');
-        log('paspor = $filteredJson');
-
-        Map<String, dynamic> passportData = jsonDecode(filteredJson ?? '');
-
-        if (passportData['mrzCode'] == null ||
-            (passportData['mrzCode'] as String).isEmpty) {
-          throw PassportException(
-              'Kode MRZ tidak terbaca. Harap pindai ulang paspor dengan jelas.');
-        } else if ((passportData['mrzCode'] as String)[0].contains('V')) {
-          throw PassportException(
-              'MRZ terdeteksi sebagai visa. Harap masukkan paspor yang valid.');
-        } else if ((passportData['mrzCode'] as String)[0].contains('P')) {
-          return Passport.fromMap(passportData);
-        } else {
-          throw PassportException(
-              'Kode MRZ tidak lengkap atau tidak jelas. '
-              'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
-              'Pegang perangkat dengan stabil dan coba pindai ulang.'
-            );
-        }
-      }
-    } on GeminiException catch (e) {
-      log('gemini exception = ${e.message.toString()}');
-
-      _resetScan();
-
-      // show dialog
-      errorCallback?.call('Kesalahan Server');
-
-      return null;
-    } on PassportException catch (e) {
-      log('passport exception = ${e.toString()}');
-
-      _resetScan();
-
-      // show dialog
-      passportCallback?.call(e.message);
-
-      // exception
-      return null;
-    } on FormatException catch (e) {
-      log('format exception = ${e.toString()}');
-
-      _resetScan();
-
-      // show dialog
-      errorCallback?.call('Kesalahan Proses Pemformatan');
-
-      // exception
-      return null;
-    } catch (e) {
-      log('exception = ${e.toString()}');
-
-      _resetScan();
-
-      // show dialog
-      errorCallback?.call('Kesalahan yang tidak diketahui');
-
-      // exception
-      return null;
-    }
   }
 
   void _resetScan() {

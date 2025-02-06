@@ -60,7 +60,7 @@ class Passport {
       log('expiry date str: $expiryDateStr');
 
       if (expiryDate.isBefore(now)) {
-        return "Paspor sudah kedaluwarsa";
+        return "Paspor sudah kadaluwarsa";
       }
 
       final totalDays = expiryDate.difference(now).inDays;
@@ -85,5 +85,48 @@ class Passport {
     } catch (_) {
       return null;
     }
+  }
+}
+
+class PassportDataExtraction {
+  final bool errorScanning;
+  final Passport? passport;
+  final String serviceTier;
+  final LimitUsagePassportDataExtraction limit;
+
+  PassportDataExtraction({
+    required this.errorScanning, 
+    required this.passport, 
+    required this.serviceTier, 
+    required this.limit,
+  });
+
+  factory PassportDataExtraction.fromMap(Map<String, dynamic> data){
+    return PassportDataExtraction(
+      passport: Passport.fromMap(data['result']),
+      errorScanning: data['error'],
+      serviceTier: data['service_tier'],
+      limit: LimitUsagePassportDataExtraction.fromMap(data['usage'])
+    );
+  }
+}
+
+class LimitUsagePassportDataExtraction {
+  final int promtTokens;
+  final int completionTokens;
+  final int totalTokens;
+
+  LimitUsagePassportDataExtraction({
+    required this.promtTokens,
+    required this.completionTokens,
+    required this.totalTokens,
+  });
+
+  factory LimitUsagePassportDataExtraction.fromMap(Map<String, dynamic> data) {
+    return LimitUsagePassportDataExtraction(
+      promtTokens: data['prompt_tokens'],
+      completionTokens: data['completion_tokens'],
+      totalTokens: data['total_tokens'],
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
+import 'package:rakhsa/features/auth/data/models/passport.dart';
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
@@ -164,6 +165,20 @@ class AuthRepositoryImpl implements AuthRepository {
         oldPassword: oldPassword,
         newPassword: newPassword
       );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PassportDataExtraction>> registerPassport({
+    required String imagePath,
+  }) async {
+    try {
+      var result = await remoteDataSource.registerPassport(imagePath: imagePath);
       return Right(result);
     } on ServerException catch(e) {
       return Left(ServerFailure(e.message.toString()));

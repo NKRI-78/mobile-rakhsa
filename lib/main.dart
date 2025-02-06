@@ -11,14 +11,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
@@ -106,10 +104,15 @@ void onStart(ServiceInstance service) async {
             "user_id": userId,
             "address": address,
             "device": androidInfo.model,
+            "product_name": androidInfo.product,
+            "no_serial": androidInfo.serialNumber,
+            "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
             "lat": position.latitude,
             "lng": position.longitude,
           },
         );
+      } on DioException catch(e) {
+        debugPrint(e.response?.data.toString());
       } catch (e) {
         debugPrint("Error posting data: $e");
       }
@@ -171,12 +174,6 @@ Future<void> main() async {
   await StorageHelper.init();
 
   di.init();
-
-  Gemini.init(apiKey: RemoteDataSourceConsts.geminiApiKey);
-
-  EasyLoading.instance
-  ..userInteractions = false
-  ..dismissOnTap = false;
 
   runApp(MultiProvider(
     providers: providers, 
@@ -248,7 +245,6 @@ class MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
       home: home,
-      builder: EasyLoading.init(),
     );
   }
 }
