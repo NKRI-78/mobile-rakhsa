@@ -67,7 +67,7 @@ void onStart(ServiceInstance service) async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
+  Timer.periodic(const Duration(minutes: 2), (timer) async {
     debugPrint("=== SCHEDULER RUNNING ===");
     // DateTime now = DateTime.now();
 

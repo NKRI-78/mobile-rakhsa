@@ -75,7 +75,6 @@ class DashboardNotifier with ChangeNotifier {
       _message = l.message;
       setStateNews(NewsProviderState.error);
     }, (r) {
-
       _news = [];
       _news.addAll(r.data);
       setStateNews(NewsProviderState.loaded);
@@ -102,7 +101,6 @@ class DashboardNotifier with ChangeNotifier {
       _message = l.message;
       setStateProvider(ProviderState.error);
     }, (r) {
-
       _ews = [];
       _ews.addAll(r.data);
       setStateProvider(ProviderState.loaded);

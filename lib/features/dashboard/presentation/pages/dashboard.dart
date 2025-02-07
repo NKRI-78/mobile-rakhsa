@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 
 import 'package:rakhsa/firebase.dart';
 
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/pages/verify_login_fr.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/main_menu_notched_bottom_navbar.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/notched_botton_navbar.dart';
@@ -18,6 +16,7 @@ import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
@@ -92,7 +91,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       StorageHelper.setIsLocked(val: true);
-      dashboardNotifier.setStateIsLocked(val: true);
     }
   }
 
