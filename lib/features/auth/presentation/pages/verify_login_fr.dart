@@ -187,13 +187,7 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
 
   Widget buildResult() {
     if (!controller.value.isInitialized) {
-      return const Center(
-        child: Text('Camera is not initialized',
-          style: TextStyle(
-            color: Colors.white
-          ),
-        )
-      );
+      return const SizedBox();
     }
 
     final Size imageSize = Size(
@@ -229,8 +223,6 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
 
   @override
   void dispose() {
-    controller.dispose();
-
     super.dispose();
   }
 

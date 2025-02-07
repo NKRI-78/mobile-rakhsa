@@ -364,13 +364,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
   Widget buildResult() {
     if (!controller.value.isInitialized) {
-      return const Center(
-        child: Text('Camera is not initialized',
-          style: TextStyle(
-            color: Colors.white
-          ),
-        )
-      );
+      return const SizedBox();
     }
 
     final Size imageSize = Size(
