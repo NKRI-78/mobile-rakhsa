@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -84,6 +85,16 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
       },
       (r) async {
         for (var el in r.results) {
+
+        double distanceInMeters = Geolocator.distanceBetween(
+          currentLat,
+          currentLng,
+          el.geometry.location.lat,
+          el.geometry.location.lng,
+        );
+
+        double distanceInKm = distanceInMeters / 1000;
+        
           _markers.add(
             Marker(
               markerId: MarkerId(el.placeId),
@@ -97,6 +108,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
               ),
               infoWindow: InfoWindow(
                 title: el.name,
+                snippet: "${distanceInKm.toStringAsFixed(2)} km away",
               ),
             ),
           );

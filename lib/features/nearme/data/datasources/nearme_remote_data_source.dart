@@ -26,9 +26,6 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
     required String type,
   }) async {
     try { 
-
-      debugPrint("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=5000&key=${RemoteDataSourceConsts.gmaps}");
-
       final response = await client.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=5000&key=${RemoteDataSourceConsts.gmaps}");
       Map<String, dynamic> data = response.data;
       NearbyplaceModel nearby = NearbyplaceModel.fromJson(data);
