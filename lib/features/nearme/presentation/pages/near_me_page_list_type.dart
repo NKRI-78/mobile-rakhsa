@@ -17,6 +17,15 @@ class NearMeListTypePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final types = [
       NearMeType(
+        title: 'Kantor Polisi',
+        assets: AssetSource.iconKantorPolisi,
+        action: () => Navigator.pushNamed(
+          context,
+          RoutesNavigation.nearMe,
+          arguments:  "police"
+        ),
+      ),
+      NearMeType(
         title: 'Tempat Ibadah',
         assets: AssetSource.iconTempatIbadah,
         action: () => Navigator.pushNamed(
@@ -32,15 +41,6 @@ class NearMeListTypePage extends StatelessWidget {
           context,
           RoutesNavigation.nearMe,
           arguments:  "lodging"
-        ),
-      ),
-      NearMeType(
-        title: 'Kantor Polisi',
-        assets: AssetSource.iconKantorPolisi,
-        action: () => Navigator.pushNamed(
-          context,
-          RoutesNavigation.nearMe,
-          arguments:  "police"
         ),
       ),
       NearMeType(
@@ -86,8 +86,8 @@ class NearMeListTypePage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList.separated(
               itemCount: types.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
+              separatorBuilder: (BuildContext context, int i) => const SizedBox(height: 16),
+              itemBuilder: (BuildContext context, int index) {
                 final category = types[index];
                 return TypeTile(category, onTap: category.action);
               },
