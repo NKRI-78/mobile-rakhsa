@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/firebase.dart';
 
@@ -66,8 +67,8 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     //   path: RoutesNavigation.mart,
     // ),
     MainMenu(
-      title: 'Near Me',
-      menuIcon: AssetSource.iconMenuNearme,
+      title: 'PBOB',
+      menuIcon: AssetSource.iconNavBarWallet,
       path: RoutesNavigation.nearMeTypeList,
     ),
     MainMenu(
@@ -159,12 +160,13 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
         // BOTTOM NAV BAR
         bottomNavigationBar: context.watch<DashboardNotifier>().isLocked 
         ? const SizedBox()
-        : NotchedBottomNavBar(
+        : 
+NotchedBottomNavBar(
             height: bottomomNavBarHeight,
             leftItem: IconButton(
-            onPressed: () => Navigator.pushNamed(context, RoutesNavigation.news),
+            onPressed: () => Navigator.pushNamed(context, RoutesNavigation.nearMeTypeList),
             icon: Image.asset(
-              AssetSource.iconMenuNews, 
+              AssetSource.iconMenuNearme,
               color: ColorResources.white
             ),
           ),
@@ -179,7 +181,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
             },
             icon: Image.asset(AssetSource.iconNavBarWallet),
           ),
-        ),
+        )
       ),
     );
   }
@@ -240,6 +242,10 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
           final menu = menus[index];
           return InkWell(
             onTap: () {
+              if (menu.title == 'PBOB') {
+                Navigator.pop(context);
+                return;
+              }
               Navigator.pop(context);
               Navigator.pushNamed(context, menu.path);
             },
@@ -251,6 +257,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
                   menu.menuIcon,
                   width: 32,
                   height: 32,
+                  color: redColor,
                 ),
                 const SizedBox(height: 6),
                 Text(

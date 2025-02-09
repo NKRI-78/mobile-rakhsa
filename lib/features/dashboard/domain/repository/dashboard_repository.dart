@@ -7,9 +7,9 @@ import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 
 abstract class DashboardRepository {
   Future<Either<Failure, NewsModel>> getNews({
-    required String type,
     required double lat, 
-    required double lng
+    required double lng,
+    required String state,
   });
   Future<Either<Failure, NewsDetailModel>> detailNews({
     required int id

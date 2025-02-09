@@ -11,12 +11,12 @@ class GetNewsUseCase {
   GetNewsUseCase(this.repository);
 
   Future<Either<Failure, NewsModel>> execute({
-    required String type,
+    required String state,
     required double lat, 
     required double lng
   }) {
     return repository.getNews(
-      type: type,
+      state: state,
       lat: lat, 
       lng: lng
     );

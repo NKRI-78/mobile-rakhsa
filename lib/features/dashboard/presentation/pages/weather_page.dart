@@ -192,9 +192,7 @@ class _WeatherViewState extends StatelessWidget {
               ),
             ),
             Image.asset(
-              provider.getWeatherIcon(
-                provider.weather?.weatherConditionCode ?? 300,
-              ),
+              provider.getWeatherIcon(),
               errorBuilder: (context, error, stackTrace) => Container(),
             ),
             Center(

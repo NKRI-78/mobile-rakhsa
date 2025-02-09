@@ -52,8 +52,8 @@ class WeatherNotifier extends ChangeNotifier {
     }
   }
 
-  String getWeatherIcon(int code) {
-    switch (code) {
+  String getWeatherIcon() {
+    switch (_weather?.weatherConditionCode ?? 300) {
       case > 200 && < 300:
         return 'assets/images/weather/1.png';
 

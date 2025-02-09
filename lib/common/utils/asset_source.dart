@@ -1,11 +1,15 @@
 class AssetSource {
   // logo marlinda
   static const String logoMarlinda = 'assets/images/logo-marlinda.png';
+  static const String logoMarlindaNoTitle = 'assets/images/logo-marlinda-no-title.png';
+
+  static const String homeBanner = 'assets/images/home-banner.png';
 
   static const String logoutTitle = "assets/images/logout.png";
   static const String loginOrnament = "assets/images/login-ornament.png";
   static const String signWithGoogle = "assets/images/sign-with-google.png";
   static const String iconCalendar = "assets/images/icon-calendar.png";
+  static const String iconNoProfile = "assets/images/default.png";
   static const String iconDefaultImg = "assets/images/default_image.png";
   static const String iconAlert = "assets/images/ic-alert.png";
   static const String iconInfo = "assets/images/icon-info.png";

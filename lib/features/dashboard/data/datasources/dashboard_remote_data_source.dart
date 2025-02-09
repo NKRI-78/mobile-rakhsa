@@ -10,9 +10,9 @@ import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<NewsModel> getNews({
-    required String type,
     required double lat, 
-    required double lng
+    required double lng,
+    required String state,
   });
   Future<NewsDetailModel> getNewsDetail({
     required int id
@@ -43,12 +43,20 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   @override
   Future<NewsModel> getNews({
-    required String type,
     required double lat,
-    required double lng
+    required double lng,
+    required String state,
+
   }) async {
     try { 
-      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/news?type=$type&lat=$lat&lng=$lng&is_admin=false");
+      final response = await client.post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/news/list-v2",
+        data: {
+          "lat": lat.toString(),
+          "lng": lng.toString(),
+          "state": state,
+        },
+      );
       Map<String, dynamic> data = response.data;
       NewsModel newsModel = NewsModel.fromJson(data);
       return newsModel;

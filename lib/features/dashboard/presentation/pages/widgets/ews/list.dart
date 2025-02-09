@@ -28,7 +28,9 @@ class EwsListWidget extends StatelessWidget {
           options: CarouselOptions(
             autoPlayInterval: const Duration(seconds: 5),
             autoPlay: true,
+            enableInfiniteScroll: (notifier.ews.length == 1) ? false : true,
             viewportFraction: 1.0,
+
             height: 200.0 
           ),
           items: notifier.ews.map((item) {

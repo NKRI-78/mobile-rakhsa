@@ -15,15 +15,15 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
   @override
   Future<Either<Failure, NewsModel>> getNews({
-    required String type,
     required double lat,
-    required double lng
+    required double lng,
+    required String state,
   }) async {
     try {
       var result = await remoteDataSource.getNews(
-        type: type, 
         lat: lat, 
-        lng: lng
+        lng: lng,
+        state: state, 
       );
       return Right(result);
     } on ServerException catch(e) {

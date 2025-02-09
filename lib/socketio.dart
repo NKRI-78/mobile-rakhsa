@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -27,10 +30,46 @@ class SocketIoService with ChangeNotifier {
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
+  StreamSubscription<ConnectivityResult>? connection;
+
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
 
   bool isConnected = false;
+
+  Color get indicatorColor {
+    switch (_connectionIndicator) {
+      case ConnectionIndicator.green:
+        return ColorResources.green;
+      case ConnectionIndicator.yellow:
+        return ColorResources.yellow;
+      case ConnectionIndicator.red:
+        return ColorResources.error;
+    }
+  }
+
+  void startListenConnection() {
+    connection = Connectivity().onConnectivityChanged.listen((result) {
+
+      final hasConnectionResult = (result == ConnectivityResult.mobile) 
+                                    || (result == ConnectivityResult.vpn) 
+                                    || (result == ConnectivityResult.wifi);
+      
+      isConnected = hasConnectionResult;
+      notifyListeners();
+
+      if (hasConnectionResult) {
+        setStateConnectionIndicator(ConnectionIndicator.green);
+      } else {
+        setStateConnectionIndicator(ConnectionIndicator.red);
+      }
+    });
+  }
+
+  void stopListenConnection() async {
+    connection?.cancel();
+    connection = null;
+  }
 
   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
     _connectionIndicator = connectionIndicators;
