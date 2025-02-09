@@ -94,6 +94,14 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
         );
 
         double distanceInKm = distanceInMeters / 1000;
+
+        _entity.add({
+          "id": el.placeId,
+          "name": el.name,
+          "lat": el.geometry.location.lat.toString(),
+          "lng": el.geometry.location.lng.toString(),
+          "distance": distanceInKm.toStringAsFixed(2),
+        });
         
           _markers.add(
             Marker(
