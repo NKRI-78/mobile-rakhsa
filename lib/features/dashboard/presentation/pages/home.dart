@@ -238,7 +238,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           type: "camera"
         );
         Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogCameraShowing = false);
+          if(mounted) {
+            setState(() => isDialogCameraShowing = false);
+          }
         });
 
         return;
@@ -257,7 +259,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           type: "microphone"
         );
         Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogMicrophoneShowing = false);
+          if(mounted) {
+            setState(() => isDialogMicrophoneShowing = false);
+          }
         });
 
         return;
@@ -279,7 +283,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         );
 
         Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogLocationShowing = false);
+          if(mounted) {
+            setState(() => isDialogLocationShowing = false);
+          }
         });
       }
     } else {
@@ -295,7 +301,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         );
 
         Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogLocationShowing = false);
+          if(mounted) {
+            setState(() => isDialogLocationShowing = false);
+          }
         });
       }
     } else {
@@ -321,7 +329,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
     
     firebaseProvider = context.read<FirebaseProvider>();

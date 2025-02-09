@@ -69,54 +69,54 @@ void onStart(ServiceInstance service) async {
 
   Timer.periodic(const Duration(minutes: 2), (timer) async {
     debugPrint("=== SCHEDULER RUNNING ===");
-    // DateTime now = DateTime.now();
+    DateTime now = DateTime.now();
 
     // Check if current time is exactly 4:00 AM or 4:00 PM
-    // if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
-      // String? userId = sharedPreferences.getString("user_id");
+    if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
+      String? userId = sharedPreferences.getString("user_id");
 
-      // if (userId == null) {
-      //   return;
-      // }
+      if (userId == null) {
+        return;
+      }
 
-      // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-      // Position position = await Geolocator.getCurrentPosition(
-      //   desiredAccuracy: LocationAccuracy.best,
-      // );
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
 
-      // List<Placemark> placemarks = await placemarkFromCoordinates(
-      //   position.latitude,
-      //   position.longitude,
-      // );
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-      // String address = [
-      //   placemarks[0].administrativeArea,
-      //   placemarks[0].subAdministrativeArea,
-      //   placemarks[0].street,
-      //   placemarks[0].country,
-      // ].where((part) => part != null && part.isNotEmpty).join(", ");
+      String address = [
+        placemarks[0].administrativeArea,
+        placemarks[0].subAdministrativeArea,
+        placemarks[0].street,
+        placemarks[0].country,
+      ].where((part) => part != null && part.isNotEmpty).join(", ");
 
-      // try {
-      //   await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-      //     data: {
-      //       "user_id": userId,
-      //       "address": address,
-      //       "device": androidInfo.model,
-      //       "product_name": androidInfo.product,
-      //       "no_serial": androidInfo.serialNumber,
-      //       "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
-      //       "lat": position.latitude,
-      //       "lng": position.longitude,
-      //     },
-      //   );
-      // } on DioException catch(e) {
-      //   debugPrint(e.response?.data.toString());
-      // } catch (e) {
-      //   debugPrint("Error posting data: $e");
-      // }
-    // }
+      try {
+        await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+          data: {
+            "user_id": userId,
+            "address": address,
+            "device": androidInfo.model,
+            "product_name": androidInfo.product,
+            "no_serial": androidInfo.serialNumber,
+            "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
+            "lat": position.latitude,
+            "lng": position.longitude,
+          },
+        );
+      } on DioException catch(e) {
+        debugPrint(e.response?.data.toString());
+      } catch (e) {
+        debugPrint("Error posting data: $e");
+      }
+    }
   });
 
 }

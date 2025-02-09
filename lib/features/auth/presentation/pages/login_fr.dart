@@ -108,6 +108,12 @@ class LoginFrPageState extends State<LoginFrPage> {
       recognitions.add(recognition);
     }
 
+    if(recognitions.isEmpty) {
+      setState(() {
+        text = "Please scan your face to login";
+      });
+    }
+
     if (mounted) {
       setState(() {
         isBusy = false;
@@ -129,7 +135,7 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.4) {
+    if (recognition.distance > 0.3) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
 

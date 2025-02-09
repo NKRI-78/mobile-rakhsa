@@ -55,8 +55,8 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     if (!mounted) return;
       await firebaseProvider.initFcm();
 
-    if(!mounted) return; 
-      dashboardNotifier.checkIsLocked();
+    // if(!mounted) return; 
+      // dashboardNotifier.checkIsLocked();
   }
  
   final menus = [
@@ -89,9 +89,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      dashboardNotifier.checkIsLocked();
-    }
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       StorageHelper.setIsLocked(val: true);
     }

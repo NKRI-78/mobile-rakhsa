@@ -74,11 +74,6 @@ class LoginPageState extends State<LoginPage> {
       ShowSnackbar.snackbarErr(loginNotifier.message);
       return;
     } else {
-      await updateIsLoggedinNotifier.updateIsLoggedIn(
-        userId: loginNotifier.authModel.data!.user.id, 
-        type: "login"
-      );
-
       if(updateIsLoggedinNotifier.message != "") {
         ShowSnackbar.snackbarErr(updateIsLoggedinNotifier.message);
         return;
