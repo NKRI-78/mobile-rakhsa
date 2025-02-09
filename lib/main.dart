@@ -16,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
@@ -37,6 +38,7 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:workmanager/workmanager.dart';
@@ -188,17 +190,23 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   late FirebaseProvider firebaseProvider;
 
   Widget home = const SizedBox();
 
+  bool isDialogLocationShowing = false;
+  bool isDialogNotificationShowing = false;
+  bool isDialogMicrophoneShowing = false;
+  bool isDialogCameraShowing = false;
+
+  bool isResumedProcessing = false;
+
   Future<void> getData() async {
     bool? isLoggedIn = await StorageHelper.isLoggedIn();
     
     if(isLoggedIn != null) {
-
       if(isLoggedIn) {
         if(mounted) {
           setState(() => home = const DashboardScreen()); 
@@ -208,7 +216,6 @@ class MyAppState extends State<MyApp> {
           setState(() => home = const WelcomePage()); 
         }
       }
-
     } else {
       if(mounted) {
         setState(() => home = const WelcomePage()); 
@@ -220,11 +227,163 @@ class MyAppState extends State<MyApp> {
 
     if(!mounted) return;
       firebaseProvider.listenNotification(context);
+
+    if(!mounted) return;
+      await requestNotificationPermission();
+
+    if(!mounted) return;
+      await requestLocationMicrophoneCameraPermission();
+  }
+
+  Future<void> requestNotificationPermission() async {
+    await Permission.notification.request();
+  }
+
+  Future<void> requestLocationMicrophoneCameraPermission() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.microphone,
+      Permission.camera,
+    ].request();
+
+    if(statuses[Permission.location] == PermissionStatus.denied || statuses[Permission.location] == PermissionStatus.permanentlyDenied) {
+      await checkPermissionLocation();
+      return;
+    }
+
+    if(statuses[Permission.microphone] == PermissionStatus.denied || statuses[Permission.microphone] == PermissionStatus.permanentlyDenied) {
+      await checkPermissionMicrophone();
+      return;
+    }
+
+    if(statuses[Permission.camera] == PermissionStatus.denied || statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
+      await checkPermissionCamera();
+      return;
+    }
+  }
+
+  Future<void> checkPermissionNotification() async {
+    bool isNotificationDenied = await Permission.notification.isDenied;
+
+    if(isNotificationDenied) {
+      if (!isDialogNotificationShowing) {
+        setState(() => isDialogNotificationShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Izin Notifikasi Dibutuhkan",
+          type: "notification"
+        );
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogNotificationShowing = false);
+        });
+
+        return;
+      }
+    }
+  }
+
+  Future<void> checkPermissionCamera() async {
+    bool isCameraDenied = await Permission.camera.isDenied || await Permission.camera.isPermanentlyDenied;
+
+    if(isCameraDenied) {
+      if (!isDialogCameraShowing) {
+        setState(() => isDialogCameraShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Izin Kamera Dibutuhkan",
+          type: "camera"
+        );
+        Future.delayed(const Duration(seconds: 2),() {
+          if(mounted) {
+            setState(() => isDialogCameraShowing = false);
+          }
+        });
+
+        return;
+      }
+    }
+  }
+
+  Future<void> checkPermissionMicrophone() async {
+    bool isMicrophoneDenied = await Permission.microphone.isDenied || await Permission.microphone.isPermanentlyDenied;  
+
+    if(isMicrophoneDenied) {
+      if (!isDialogMicrophoneShowing) {
+        setState(() => isDialogMicrophoneShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Izin Microphone Dibutuhkan",
+          type: "microphone"
+        );
+        Future.delayed(const Duration(seconds: 2),() {
+          if(mounted) {
+            setState(() => isDialogMicrophoneShowing = false);
+          }
+        });
+
+        return;
+      }
+    }
+  }
+
+  Future<void> checkPermissionLocation() async {
+    bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
+
+    bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if(!isGpsEnabled) {
+      if (!isDialogLocationShowing) {
+        setState(() => isDialogLocationShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type: "location-gps"
+        );
+
+        Future.delayed(const Duration(seconds: 2),() {
+          if(mounted) {
+            setState(() => isDialogLocationShowing = false);
+          }
+        });
+      }
+    } else {
+      await checkPermissionNotification();
+    }
+
+    if(isLocationDenied) {
+      if (!isDialogLocationShowing) {
+        setState(() => isDialogLocationShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type: "location-app"
+        );
+
+        Future.delayed(const Duration(seconds: 2),() {
+          if(mounted) {
+            setState(() => isDialogLocationShowing = false);
+          }
+        });
+      }
+    } else {
+      await checkPermissionNotification();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed && !isResumedProcessing) {
+      debugPrint("=== APP RESUME ===");
+
+      isResumedProcessing = true;
+
+      await Future.delayed(const Duration(milliseconds: 500)); 
+    
+      await getData();
+
+      isResumedProcessing = false;
+    }
   }
 
   @override 
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     firebaseProvider = context.read<FirebaseProvider>();
 
@@ -233,6 +392,8 @@ class MyAppState extends State<MyApp> {
 
   @override 
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
     super.dispose();
   }
 

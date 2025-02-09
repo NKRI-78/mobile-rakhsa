@@ -129,19 +129,6 @@ class EventCreatePageState extends State<EventCreatePage> {
       Navigator.pop(context, "refetch");
   }
 
-  void clear() {
-    titleC.clear();
-    descC.clear();
-
-    setState(() {
-      rangeStart = null;
-      rangeEnd = null;
-
-      continentId = -1;
-      stateId = -1;
-    });
-  }
-
   Future<void> insertToGoogleCalendar(DateTime? rangeStart, DateTime? rangeEnd) async {
     try {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -177,6 +164,19 @@ class EventCreatePageState extends State<EventCreatePage> {
     } catch (e) {
       debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
     }
+  }
+
+  void clear() {
+    titleC.clear();
+    descC.clear();
+
+    setState(() {
+      rangeStart = null;
+      rangeEnd = null;
+
+      continentId = -1;
+      stateId = -1;
+    });
   }
 
   @override 

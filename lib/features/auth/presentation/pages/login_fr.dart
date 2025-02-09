@@ -138,10 +138,6 @@ class LoginFrPageState extends State<LoginFrPage> {
     if (recognition.distance > 0.3) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
-
-      Future.delayed(const Duration(seconds: 3), () {
-        setState(() => text = "");
-      });
     } else {
 
       String? userId = StorageHelper.getUserId();

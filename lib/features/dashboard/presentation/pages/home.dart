@@ -4,13 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
 
-import 'package:permission_handler/permission_handler.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/single.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/location/current_location.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
+
 import 'package:rakhsa/firebase.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,11 +22,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rakhsa/main.dart';
 
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
-
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -87,228 +84,91 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       await firebaseProvider.initFcm();
 
     if(!mounted) return;
-      await requestNotificationPermission();
-
-    if(!mounted) return;
-      await requestLocationMicrophoneCameraPermission();
-  }
-
-  Future<void> requestNotificationPermission() async {
-    await Permission.notification.request();
-  }
-
-  Future<void> requestLocationMicrophoneCameraPermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.location,
-      Permission.microphone,
-      Permission.camera,
-    ].request();
-
-    if(statuses[Permission.camera] == PermissionStatus.denied || statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
-      await checkPermissionCamera();
-      return;
-    }
-    
-    if(statuses[Permission.microphone] == PermissionStatus.denied || statuses[Permission.microphone] == PermissionStatus.permanentlyDenied) {
-      await checkPermissionMicrophone();
-      return;
-    }
-    
-    await getCurrentLocation();
+      await getCurrentLocation();
   }
 
   Future<void> getCurrentLocation() async {
-    try {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best,
+      forceAndroidLocationManager: true
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    String country = placemarks[0].country ?? "-";
+    String street = placemarks[0].street ?? "-";
+    String administrativeArea = placemarks[0].administrativeArea ?? "-";
+    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+
+    String address = "$administrativeArea $subadministrativeArea\n$street, $country";
+
+    setState(() {
+      currentAddress = address;
+      currentCountry = country;
+      subAdministrativeArea = subadministrativeArea;
+
+      currentLat = position.latitude.toString();
+      currentLng = position.longitude.toString();
+
+      _markers = [];
+      _markers.add(
+        Marker(
+          markerId: const MarkerId("currentPosition"),
+          position: LatLng(
+            position.latitude, 
+            position.longitude
+          ),
+          icon: BitmapDescriptor.defaultMarker,
+        )
+      );
       
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-        forceAndroidLocationManager: true
+      loadingGmaps = false;
+    });
+
+    await weatherNotifier.getCurrentWeather(
+      double.parse(currentLat),
+      double.parse(currentLng),
+    );
+
+    String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
+    String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
+
+    Future.delayed(Duration.zero, () async {
+      await updateAddressNotifier.updateAddress(
+        address: address, 
+        state: placemarks[0].country!,
+        lat: position.latitude, 
+        lng: position.longitude
       );
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      String country = placemarks[0].country ?? "-";
-      String street = placemarks[0].street ?? "-";
-      String administrativeArea = placemarks[0].administrativeArea ?? "-";
-      String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+      StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
 
-      String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-  
-      setState(() {
-        currentAddress = address;
-        currentCountry = country;
-        subAdministrativeArea = subadministrativeArea;
-
-        currentLat = position.latitude.toString();
-        currentLng = position.longitude.toString();
-
-        _markers = [];
-        _markers.add(
-          Marker(
-            markerId: const MarkerId("currentPosition"),
-            position: LatLng(
-              position.latitude, 
-              position.longitude
-            ),
-            icon: BitmapDescriptor.defaultMarker,
-          )
-        );
-        
-        loadingGmaps = false;
-      });
-
-      await weatherNotifier.getCurrentWeather(
-        double.parse(currentLat),
-        double.parse(currentLng),
+      await dashboardNotifier.getEws(
+        lat: position.latitude,
+        lng: position.longitude
       );
 
-      String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
-      String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
+      await service.configure(
+        iosConfiguration: IosConfiguration(
+          autoStart: true,
+          onForeground: onStart,
+          onBackground: onIosBackground,
+        ),
+        androidConfiguration: AndroidConfiguration(
+          onStart: onStart,
+          isForegroundMode: true,
+          foregroundServiceNotificationId: notificationId,
+          foregroundServiceTypes: [
+            AndroidForegroundType.location
+          ],
+          initialNotificationTitle: "$celcius $subAdministrativeArea",
+          initialNotificationContent: weatherDesc,
+          notificationChannelId: "notification"
+        ),
+      );
 
-      Future.delayed(Duration.zero, () async {
-        await updateAddressNotifier.updateAddress(
-          address: address, 
-          state: placemarks[0].country!,
-          lat: position.latitude, 
-          lng: position.longitude
-        );
+      startBackgroundService();
 
-        StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
-
-        await dashboardNotifier.getEws(
-          lat: position.latitude,
-          lng: position.longitude
-        );
-
-        await service.configure(
-          iosConfiguration: IosConfiguration(
-            autoStart: true,
-            onForeground: onStart,
-            onBackground: onIosBackground,
-          ),
-          androidConfiguration: AndroidConfiguration(
-            onStart: onStart,
-            isForegroundMode: true,
-            foregroundServiceNotificationId: notificationId,
-            foregroundServiceTypes: [
-              AndroidForegroundType.location
-            ],
-            initialNotificationTitle: "$celcius $subAdministrativeArea",
-            initialNotificationContent: weatherDesc,
-            notificationChannelId: "notification"
-          ),
-        );
-
-        startBackgroundService();
-
-      });
-    } catch(e) {
-
-      checkPermissionLocation();
-
-    }
-  }
-
-  Future<void> checkPermissionNotification() async {
-    bool isNotificationDenied = await Permission.notification.isDenied;
-
-    if(isNotificationDenied) {
-      if (!isDialogNotificationShowing) {
-        setState(() => isDialogNotificationShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Izin Notifikasi Dibutuhkan",
-          type: "notification"
-        );
-        Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogNotificationShowing = false);
-        });
-
-        return;
-      }
-    }
-  }
-
-  Future<void> checkPermissionCamera() async {
-    bool isCameraDenied = await Permission.camera.isDenied || await Permission.camera.isPermanentlyDenied;
-
-    if(isCameraDenied) {
-      if (!isDialogCameraShowing) {
-        setState(() => isDialogCameraShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Izin Kamera Dibutuhkan",
-          type: "camera"
-        );
-        Future.delayed(const Duration(seconds: 2),() {
-          if(mounted) {
-            setState(() => isDialogCameraShowing = false);
-          }
-        });
-
-        return;
-      }
-    }
-  }
-
-  Future<void> checkPermissionMicrophone() async {
-    bool isMicrophoneDenied = await Permission.microphone.isDenied || await Permission.microphone.isPermanentlyDenied;  
-
-    if(isMicrophoneDenied) {
-      if (!isDialogMicrophoneShowing) {
-        setState(() => isDialogMicrophoneShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Izin Microphone Dibutuhkan",
-          type: "microphone"
-        );
-        Future.delayed(const Duration(seconds: 2),() {
-          if(mounted) {
-            setState(() => isDialogMicrophoneShowing = false);
-          }
-        });
-
-        return;
-      }
-    }
-  }
-
-  Future<void> checkPermissionLocation() async {
-    bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
-
-    bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if(!isGpsEnabled) {
-      if (!isDialogLocationShowing) {
-        setState(() => isDialogLocationShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "location-gps"
-        );
-
-        Future.delayed(const Duration(seconds: 2),() {
-          if(mounted) {
-            setState(() => isDialogLocationShowing = false);
-          }
-        });
-      }
-    } else {
-      await checkPermissionNotification();
-    }
-
-    if(isLocationDenied) {
-      if (!isDialogLocationShowing) {
-        setState(() => isDialogLocationShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "location-app"
-        );
-
-        Future.delayed(const Duration(seconds: 2),() {
-          if(mounted) {
-            setState(() => isDialogLocationShowing = false);
-          }
-        });
-      }
-    } else {
-      await checkPermissionNotification();
-    }
+    });
   }
 
   @override
