@@ -24,6 +24,7 @@ abstract class DashboardRemoteDataSource {
   }); 
   Future<void> updateAddress({
     required String address, 
+    required String state,
     required double lat, 
     required double lng
   });
@@ -105,6 +106,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   @override
   Future<void> updateAddress({
     required String address, 
+    required String state,
     required double lat, 
     required double lng
   }) async {
@@ -113,6 +115,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         data: {
           "user_id": StorageHelper.getUserId(),
           "address": address,
+          "state": state,
           "lat": lat, 
           "lng": lng
         }

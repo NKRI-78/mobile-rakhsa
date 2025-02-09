@@ -21,6 +21,7 @@ abstract class DashboardRepository {
   });
   Future<Either<Failure, void>> updateAddress({
     required String address, 
+    required String state,
     required double lat, 
     required double lng
   });

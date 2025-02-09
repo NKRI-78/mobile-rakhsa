@@ -11,11 +11,13 @@ class UpdateAddressUseCase {
 
   Future<Either<Failure, void>> execute({
     required String address,
+    required String state,
     required double lat,
     required double lng 
   }) {
     return repository.updateAddress(
       address: address,
+      state: state,
       lat: lat,
       lng: lng
     );

@@ -142,6 +142,15 @@ class RegisterFrPageState extends State<RegisterFrPage> {
       recognitions.add(recognition);
     }
 
+    if(recognitions.isNotEmpty) {
+      setState(() {
+        text1 = "";
+        text2 = "Take your photo to register account";
+        alreadyRegistered = false;
+        waitForScanSucceded = false;
+      });
+    }
+
     if (mounted) {
       setState(() {
         isBusy = false;
@@ -175,17 +184,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.6) {
+    if (recognition.distance > 0.4) {
       recognition.name = "Not Registered";
-
-      if(mounted) {
-        setState(() {
-          text1 = "";
-          text2 = "Take your photo to register account";
-          alreadyRegistered = false;
-          waitForScanSucceded = false;
-        });
-      }
     } else {
       setState(() {
         text1 = "";

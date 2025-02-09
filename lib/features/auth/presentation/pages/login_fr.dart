@@ -129,7 +129,7 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.6) {
+    if (recognition.distance > 0.4) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
 

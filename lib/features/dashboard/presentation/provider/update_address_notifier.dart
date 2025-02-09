@@ -34,6 +34,7 @@ class UpdateAddressNotifier with ChangeNotifier {
 
   Future<void> updateAddress({
     required String address, 
+    required String state,
     required double lat,
     required double lng
   }) async {
@@ -41,6 +42,7 @@ class UpdateAddressNotifier with ChangeNotifier {
 
     final result = await useCase.execute(
       address: address,
+      state: state,
       lat: lat,
       lng: lng
     );

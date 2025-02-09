@@ -74,6 +74,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   bool isDialogLocationShowing = false;
   bool isDialogNotificationShowing = false;
+  bool isDialogMicrophoneShowing = false;
+  bool isDialogCameraShowing = false;
   
   bool loadingGmaps = true;
 
@@ -87,17 +89,31 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if(!mounted) return;
       await requestNotificationPermission();
 
-     if(!mounted) return;
-      await requestLocationPermission();
+    if(!mounted) return;
+      await requestLocationMicrophoneCameraPermission();
   }
 
   Future<void> requestNotificationPermission() async {
     await Permission.notification.request();
   }
 
-  Future<void> requestLocationPermission() async {
-    await Permission.location.request();
+  Future<void> requestLocationMicrophoneCameraPermission() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.microphone,
+      Permission.camera,
+    ].request();
 
+    if(statuses[Permission.camera] == PermissionStatus.denied || statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
+      await checkPermissionCamera();
+      return;
+    }
+    
+    if(statuses[Permission.microphone] == PermissionStatus.denied || statuses[Permission.microphone] == PermissionStatus.permanentlyDenied) {
+      await checkPermissionMicrophone();
+      return;
+    }
+    
     await getCurrentLocation();
   }
 
@@ -151,6 +167,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       Future.delayed(Duration.zero, () async {
         await updateAddressNotifier.updateAddress(
           address: address, 
+          state: placemarks[0].country!,
           lat: position.latitude, 
           lng: position.longitude
         );
@@ -186,12 +203,12 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
       });
     } catch(e) {
 
-      checkLocationPermission();
+      checkPermissionLocation();
 
     }
   }
 
-  Future<void> checkNotificationPermission() async {
+  Future<void> checkPermissionNotification() async {
     bool isNotificationDenied = await Permission.notification.isDenied;
 
     if(isNotificationDenied) {
@@ -210,7 +227,45 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> checkLocationPermission() async {
+  Future<void> checkPermissionCamera() async {
+    bool isCameraDenied = await Permission.camera.isDenied || await Permission.camera.isPermanentlyDenied;
+
+    if(isCameraDenied) {
+      if (!isDialogCameraShowing) {
+        setState(() => isDialogCameraShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Izin Kamera Dibutuhkan",
+          type: "camera"
+        );
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogCameraShowing = false);
+        });
+
+        return;
+      }
+    }
+  }
+
+  Future<void> checkPermissionMicrophone() async {
+    bool isMicrophoneDenied = await Permission.microphone.isDenied || await Permission.microphone.isPermanentlyDenied;  
+
+    if(isMicrophoneDenied) {
+      if (!isDialogMicrophoneShowing) {
+        setState(() => isDialogMicrophoneShowing = true);
+        await GeneralModal.dialogRequestPermission(
+          msg: "Izin Microphone Dibutuhkan",
+          type: "microphone"
+        );
+        Future.delayed(const Duration(seconds: 2),() {
+          setState(() => isDialogMicrophoneShowing = false);
+        });
+
+        return;
+      }
+    }
+  }
+
+  Future<void> checkPermissionLocation() async {
     bool isLocationDenied = await Permission.location.isDenied || await Permission.location.isPermanentlyDenied;
 
     bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
@@ -228,7 +283,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
       }
     } else {
-      await checkNotificationPermission();
+      await checkPermissionNotification();
     }
 
     if(isLocationDenied) {
@@ -244,7 +299,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
       }
     } else {
-      await checkNotificationPermission();
+      await checkPermissionNotification();
     }
   }
 

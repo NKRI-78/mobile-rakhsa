@@ -120,13 +120,9 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.6) {
+    if (recognition.distance > 0.4) {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
-
-      Future.delayed(const Duration(seconds: 3), () {
-        setState(() => text = "");
-      });
     } else {
 
       String? userId = StorageHelper.getUserId();

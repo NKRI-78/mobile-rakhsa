@@ -63,10 +63,9 @@ class _WelcomePageState extends State<WelcomePage> {
                   const SizedBox(height: 100),
 
                   // login button
-                  // login button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                      Navigator.pushNamed(context, RoutesNavigation.login);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,

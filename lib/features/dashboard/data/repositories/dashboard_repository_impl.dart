@@ -62,10 +62,16 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
   
   @override
-  Future<Either<Failure, void>> updateAddress({required String address, required double lat, required double lng}) async {
+  Future<Either<Failure, void>> updateAddress({
+    required String address, 
+    required String state, 
+    required double lat,
+    required double lng
+  }) async {
     try {
       var result = await remoteDataSource.updateAddress(
         address: address,
+        state: state,
         lat: lat, 
         lng: lng
       );
