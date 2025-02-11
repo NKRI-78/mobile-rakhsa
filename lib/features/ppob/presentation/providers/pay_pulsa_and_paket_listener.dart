@@ -4,10 +4,10 @@ import 'package:rakhsa/common/helpers/enum.dart';
 
 import 'package:rakhsa/features/ppob/domain/usecases/pay_pulsa_paket_data_usecase.dart';
 
-class PayPulsaAndPaketDataProvider with ChangeNotifier {
-  final PayPulsaAndPaketDataUseCase useCase;
+class PayPpobNotifier with ChangeNotifier {
+  final PayPpobUseCase useCase;
 
-  PayPulsaAndPaketDataProvider({
+  PayPpobNotifier({
     required this.useCase
   });
 
@@ -18,16 +18,22 @@ class PayPulsaAndPaketDataProvider with ChangeNotifier {
   String get message => _message;
 
   Future<void> pay({
-    required String productCode,
-    required String phone
+    required String idpel,
+    required String productId,
+    required String paymentChannel,
+    required String paymentCode,
+    required String type 
   }) async {
 
     _state = ProviderState.loading;
     notifyListeners();
 
     final result = await useCase.execute(
-      productCode: productCode,
-      phone: phone
+      productId: productId,
+      idpel: idpel,
+      paymentChannel: paymentChannel,
+      paymentCode: paymentCode,
+      type: type 
     );
 
     result.fold((l) {

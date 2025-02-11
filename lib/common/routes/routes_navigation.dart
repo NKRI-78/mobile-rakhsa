@@ -10,8 +10,7 @@ import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/weather_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/passport_document_page.dart';
 import 'package:rakhsa/features/document/presentation/pages/visa_document_page.dart';
-import 'package:rakhsa/features/event/persentation/pages/create.dart';
-import 'package:rakhsa/features/event/persentation/pages/list.dart';
+import 'package:rakhsa/features/event/persentation/pages/event_page.dart';
 import 'package:rakhsa/features/information/presentation/pages/list.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
@@ -46,7 +45,6 @@ class RoutesNavigation {
   static const deviceNotSupport = '/device-not-support';
 
   static const itinerary = '/itinerary';
-  static const itineraryCreate = '/itinerary/create';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -117,9 +115,7 @@ class RoutesNavigation {
           type: data['type'],
         ));
       case itinerary:
-        return MaterialPageRoute(builder: (_) => const EventListPage());
-      case itineraryCreate:
-        return MaterialPageRoute(builder: (_) => const EventCreatePage());
+        return MaterialPageRoute(builder: (_) => const EventPage());
       default:
         return MaterialPageRoute(builder: (_) => const _InvalidRoute());
     }

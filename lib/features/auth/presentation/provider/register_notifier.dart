@@ -6,6 +6,7 @@ import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
@@ -64,7 +65,26 @@ class RegisterNotifier with ChangeNotifier {
   // register passport
   Passport? _passport;
   Passport? get passport => _passport;
-  bool get hasPassport => _passport != null;
+  bool _passportExpired = false;
+
+  void _setPassport(PassportDataExtraction passportData){
+    _passport = passportData.passport;
+    _panelMinHeight = _panelMinHeightActualy;
+    notifyListeners();
+
+    // open panel
+    _panelController.open();
+  }
+
+  bool get scanningSuccess => _passport != null && !_passportExpired;
+
+  String _scanningText = '';
+  String get scanningText => _scanningText;
+
+  void _setScanningText(String message){
+    _scanningText = message;
+    notifyListeners();
+  }
 
   // path
   String _passportPath = '';
@@ -217,6 +237,8 @@ class RegisterNotifier with ChangeNotifier {
         _passportPath = scanResult.last;
         notifyListeners();
 
+        _setScanningText('Pemindaian Paspor sedang berlangsung');
+
         final passportData = await registerPassport.execute(scanResult.last);
 
         passportData.fold((failure) {
@@ -232,6 +254,7 @@ class RegisterNotifier with ChangeNotifier {
             },
           );
         }, (passportData) async {
+          // lakukan cek apakah ada error saat scan passport
           if (passportData.errorScanning) {
             _resetScan();
             FailureDocumentDialog.launch(
@@ -245,6 +268,10 @@ class RegisterNotifier with ChangeNotifier {
               },
             );
           } else {
+
+            _setScanningText('Memvalidasi Dokumen');
+
+            // validasi apakah ini visa
             if (passportData.passport?.mrzCode?[0].contains('V') ?? false) {
               _resetScan();
               FailureDocumentDialog.launch(
@@ -257,27 +284,44 @@ class RegisterNotifier with ChangeNotifier {
                   await startScan(context, userId);
                 },
               );
+
+              // validasi berhasil menyatakan bahwa ini adalah passport
             } else if (passportData.passport?.mrzCode?[0].contains('P') ?? false) {
-              final uploadPassportToServer = await mediaUseCase.execute(
-                file: File(_passportPath),
-                folderName: 'passport',
-              );
-
-              uploadPassportToServer.fold((failure) {
-                ShowSnackbar.snackbarErr(failure.message);
-                notifyListeners();
-              }, (picture) async {
-                _mediaPassport = picture.path;
-                notifyListeners();
-
-              });
-
-              _passport = passportData.passport;
-              _panelMinHeight = _panelMinHeightActualy;
+              final expiryDate = passportData.passport?.dateOfExpiry;
+              bool expiryPassport = getExpiredPassport(expiryDate);
+              _passportExpired = expiryPassport;
               notifyListeners();
+              
+              // jika passport sudah kadaluarsa
+              if (expiryPassport) {
+                _resetScan();
+                FailureDocumentDialog.launch(
+                  context,
+                  title: 'Paspor Sudah Kadaluarsa',
+                  content: 'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.' 
+                  ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
+                  showScanButton: false,
+                );
 
-              // open panel
-              _panelController.open();
+                // positive case [scan berhasil]
+              } else {
+                final uploadPassportToServer = await mediaUseCase.execute(
+                  file: File(_passportPath),
+                  folderName: 'passport',
+                );
+
+                uploadPassportToServer.fold((failure) {
+                  ShowSnackbar.snackbarErr(failure.message);
+                  notifyListeners();
+                }, (picture) async {
+                  _mediaPassport = picture.path;
+                  notifyListeners();
+                });
+
+                _setPassport(passportData);
+              }
+
+              // error saat membaca kode mrz (karakter pertama tidak terbaca)
             } else {
               _resetScan();
               FailureDocumentDialog.launch(
@@ -312,6 +356,59 @@ class RegisterNotifier with ChangeNotifier {
     }
   }
 
+  bool getExpiredPassport(String? expiryDateStr){
+    try {
+      if(expiryDateStr != null) {
+        DateTime now = DateTime.now();
+        DateTime expiryDate = DateTime.parse(expiryDateStr);
+
+        return expiryDate.isBefore(now);
+      } else {
+        return false;
+      }
+      
+    } catch (e) {
+      return false;
+    }
+  }
+
+  String? getPassportPeriod(String? expiryDateStr) {
+    try {
+      if (expiryDateStr != null) {
+        DateTime now = DateTime.now();
+        DateTime expiryDate = DateTime.parse(expiryDateStr);
+
+        if (expiryDate.isBefore(now)) {
+          return "Paspor sudah kadaluwarsa";
+        }
+
+        final totalDays = expiryDate.difference(now).inDays;
+        final years = totalDays ~/ 365;
+        final remainingDaysAfterYears = totalDays % 365;
+        final months = remainingDaysAfterYears ~/ 30;
+        final remainingDaysAfterMonths = remainingDaysAfterYears % 30;
+        final weeks = remainingDaysAfterMonths ~/ 7;
+        final days = remainingDaysAfterMonths % 7;
+
+        if (years > 0 && months > 0) {
+          return "$years tahun $months bulan";
+        } else if (years > 0) {
+          return "$years tahun";
+        } else if (months > 0) {
+          return "$months bulan";
+        } else if (weeks > 0) {
+          return "$weeks minggu";
+        } else {
+          return "$days hari";
+        }
+      } else {
+        return null;
+      }
+    } catch (_) {
+      return null;
+    }
+  }
+
   void deleteData() {
     _passportPath = '';
     _passport = null;
@@ -325,23 +422,27 @@ class RegisterNotifier with ChangeNotifier {
 
 }
 
+
 class FailureDocumentDialog extends StatelessWidget {
   const FailureDocumentDialog({
     super.key,
-    required this.actionCallback,
+    this.actionCallback,
     required this.title,
     required this.content,
+    this.showScanButton = true,
   });
 
-  final VoidCallback actionCallback;
+  final VoidCallback? actionCallback;
   final String title;
   final String content;
+  final bool showScanButton;
 
   static void launch(
     BuildContext context, {
     required String title,
     required String content,
-    required VoidCallback actionCallback,
+    VoidCallback? actionCallback,
+    bool showScanButton = true,
   }) {
     showDialog(
       context: context,
@@ -353,6 +454,7 @@ class FailureDocumentDialog extends StatelessWidget {
             title: title,
             content: content,
             actionCallback: actionCallback,
+            showScanButton: showScanButton,
           ),
         );
       },
@@ -413,18 +515,21 @@ class FailureDocumentDialog extends StatelessWidget {
                         btnTxt: 'Kembali',
                       ),
                     ),
-                    const Expanded(child: SizedBox()),
-                    Expanded(
-                      flex: 5,
-                      child: CustomButton(
-                        isBorderRadius: true,
-                        isBoxShadow: false,
-                        btnColor: ColorResources.error,
-                        btnTextColor: ColorResources.white,
-                        onTap: actionCallback,
-                        btnTxt: "Scan Ulang",
+                    if (showScanButton)
+                      Expanded(
+                        flex: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: CustomButton(
+                            isBorderRadius: true,
+                            isBoxShadow: false,
+                            btnColor: ColorResources.error,
+                            btnTextColor: ColorResources.white,
+                            onTap: actionCallback ?? (){},
+                            btnTxt: "Scan Ulang",
+                          ),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ],

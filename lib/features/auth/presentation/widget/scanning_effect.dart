@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 
 class ScanningEffect extends StatefulWidget {
   final Widget child;
@@ -62,27 +66,51 @@ class _ScanningEffectState extends State<ScanningEffect>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            widget.child,
-            if (!widget.endScan)
-              AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  final position = _animation.value * constraints.maxHeight;
-                  return Positioned(
-                    top: position - (widget.lineThickness / 2),
-                    left: 0,
-                    right: 0,
+        return Consumer<RegisterNotifier>(
+          builder: (context, notifier, child) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                widget.child,
+                if (!widget.endScan && notifier.scanningText.isNotEmpty)
+                  Center(
                     child: Container(
-                      height: widget.lineThickness,
-                      color: widget.lineColor.withOpacity(0.7),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black38,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        notifier.scanningText,
+                        textAlign: TextAlign.center,
+                        style: robotoRegular.copyWith(
+                          color: whiteColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-          ],
+                  ),
+                if (!widget.endScan)
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) {
+                      final position = _animation.value * constraints.maxHeight;
+                      return Positioned(
+                        top: position - (widget.lineThickness / 2),
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: widget.lineThickness,
+                          color: widget.lineColor.withOpacity(0.7),
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            );
+          }
         );
       },
     );

@@ -47,10 +47,7 @@ import 'package:rakhsa/features/administration/domain/usecases/get_country.dart'
 import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/update_event.dart';
-import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
 import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
 import 'package:rakhsa/features/information/data/repositories/information_remote_datasource_impl.dart';
 import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
@@ -92,7 +89,6 @@ import 'package:rakhsa/features/media/data/repositories/media_repository_impl.da
 
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
@@ -192,7 +188,7 @@ void init() {
   locator.registerLazySingleton(() => RegisterPassportUseCase(locator()));
   locator.registerLazySingleton(() => PaymentChannelUseCase(locator()));
   locator.registerLazySingleton(() => InquiryPulsaUseCase(locator()));
-  locator.registerLazySingleton(() => PayPulsaAndPaketDataUseCase(locator()));
+  locator.registerLazySingleton(() => PayPpobUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -205,11 +201,7 @@ void init() {
   locator.registerFactory(() => UpdateProfileNotifier(useCase: locator()));
   locator.registerFactory(() => SosNotifier(useCase: locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
-  locator.registerFactory(() => ListEventNotifier(useCase: locator()));
-  locator.registerFactory(() => SaveEventNotifier(useCase: locator()));
-  locator.registerFactory(() => UpdateEventNotifier(useCase: locator()));
-  locator.registerFactory(() => DetailEventNotifier(useCase: locator()));
-  locator.registerFactory(() => DeleteEventNotifier(useCase: locator()));
+  locator.registerFactory(() => EventNotifier(useCase: locator(), listEventUseCase: locator()));
   locator.registerFactory(() => VisaNotifier(useCase: locator()));
   locator.registerFactory(() => PassportNotifier(useCase: locator()));
   locator.registerFactory(() => KbriIdNotifier(useCase: locator()));
@@ -229,8 +221,7 @@ void init() {
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
-
-  locator.registerFactory(() => PayPulsaAndPaketDataProvider(useCase: locator()));
+  locator.registerFactory(() => PayPpobNotifier(useCase: locator()));
   locator.registerFactory(() => InquiryPulsaProvider(useCase: locator()));
   locator.registerFactory(() => PaymentChannelProvider(useCase: locator()));
 

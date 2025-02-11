@@ -107,46 +107,50 @@ class EwsListWidget extends StatelessWidget {
                               const SizedBox(height: 8.0),
                               Text(
                                 item.title.toString(),
+                                maxLines: 2,
                                 style: robotoRegular.copyWith(
                                   color: ColorResources.white,
                                   fontSize: Dimensions.fontSizeDefault,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              fh.Html(
-                                data: item.desc.toString(),
-                                shrinkWrap: true,
-                                style: {
-                                  'body': fh.Style(
-                                    maxLines: 1,
-                                    margin: fh.Margins.zero,
-                                    textOverflow: TextOverflow.ellipsis,
-                                    color: ColorResources.white.withOpacity(0.8),
-                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                              SizedBox(
+                                height: 20, 
+                                child: OverflowBox(
+                                  alignment: Alignment.topLeft,
+                                  maxHeight: 20,
+                                  child: fh.Html(
+                                    data: item.desc.toString(),
+                                    shrinkWrap: true,
+                                    style: {
+                                      'body': fh.Style(
+                                        margin: fh.Margins.zero,
+                                        color: ColorResources.white.withOpacity(0.8),
+                                        fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        display: fh.Display.inline,
+                                      ),
+                                      'p': fh.Style(
+                                        margin: fh.Margins.zero,
+                                        color: ColorResources.white.withOpacity(0.8),
+                                        fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        display: fh.Display.inline,
+                                      ),
+                                      'span': fh.Style(
+                                        margin: fh.Margins.zero,
+                                        color: ColorResources.white.withOpacity(0.8),
+                                        fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        display: fh.Display.inline,
+                                      ),
+                                      'div': fh.Style(
+                                        margin: fh.Margins.zero,
+                                        color: ColorResources.white.withOpacity(0.8),
+                                        fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                                        display: fh.Display.inline,
+                                      ),
+                                    },
                                   ),
-                                  'p': fh.Style(
-                                    maxLines: 1,
-                                    textOverflow: TextOverflow.ellipsis,
-                                    margin: fh.Margins.zero,
-                                    color: ColorResources.white.withOpacity(0.8),
-                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                  ),
-                                  'span': fh.Style(
-                                    maxLines: 1,
-                                    textOverflow: TextOverflow.ellipsis,
-                                    margin: fh.Margins.zero,
-                                    color: ColorResources.white.withOpacity(0.8),
-                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                  ),
-                                  'div': fh.Style(
-                                    maxLines: 1,
-                                    textOverflow: TextOverflow.ellipsis,
-                                    margin: fh.Margins.zero,
-                                    color: ColorResources.white.withOpacity(0.8),
-                                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                                  )
-                                },
-                              ),
+                                ),
+                              )
                             ],
                           ),
                         ),

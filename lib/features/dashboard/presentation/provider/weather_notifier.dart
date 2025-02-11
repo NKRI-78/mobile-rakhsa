@@ -53,6 +53,8 @@ class WeatherNotifier extends ChangeNotifier {
   }
 
   String getWeatherIcon() {
+    var hour = DateTime.now().hour;
+    
     switch (_weather?.weatherConditionCode ?? 300) {
       case > 200 && < 300:
         return 'assets/images/weather/1.png';
@@ -73,7 +75,11 @@ class WeatherNotifier extends ChangeNotifier {
         return 'assets/images/weather/6.png';
 
       case > 800 && <= 804:
-        return 'assets/images/weather/7.png';
+        if(hour > 18){
+          return 'assets/images/weather/12.png';
+        } else {
+          return 'assets/images/weather/7.png';
+        }
 
       default:
         return 'assets/images/weather/7.png';

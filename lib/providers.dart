@@ -25,11 +25,7 @@ import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notif
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/delete_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/detail_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/save_event_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/update_event_notifier.dart';
+import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
@@ -56,7 +52,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<SosNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosRatingNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<ListEventNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<ProfileNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<LoginNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DocumentNotifier>()),
@@ -68,10 +63,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetCountryNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetStateNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<SaveEventNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<DetailEventNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<DeleteEventNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<UpdateEventNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<EventNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateAddressNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateProfileNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateIsLoggedinNotifier>()),
@@ -87,7 +79,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InquiryPulsaProvider>()),
   ChangeNotifierProvider.value(value: di.locator<PaymentChannelProvider>()),
-  ChangeNotifierProvider.value(value: di.locator<PayPulsaAndPaketDataProvider>()),
+  ChangeNotifierProvider.value(value: di.locator<PayPpobNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),
 ];

@@ -14,9 +14,12 @@ abstract class PPOBRemoteDataSource {
   Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({required String idpel});
   Future<PaymentModel> paymentChannelList();
   Future<int> getBalance();
-  Future<void> payPulsaAndPaketData({
-    required String productCode,
-    required String phone
+  Future<void> payPpob({
+    required String idpel,
+    required String productId,
+    required String paymentCode, 
+    required String paymentChannel, 
+    required String type
   });
   Future<void> payPraPLN({
     required String idpel, 
@@ -185,16 +188,23 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   }
 
   @override 
-  Future<void> payPulsaAndPaketData({
-    required String productCode,
-    required String phone
+  Future<void> payPpob({
+    required String idpel,
+    required String productId,
+    required String paymentCode, 
+    required String paymentChannel, 
+    required String type
   }) async {
     try {
-      await client.post("${RemoteDataSourceConsts.baseUrlPpob}/pay/pulsa", 
+      await client.post("", 
         data: {
-          "product_code": productCode,
-          "phone": phone,
-          "user_id": StorageHelper.getUserId()
+          "app": "marlinda",
+          "idpel": idpel,
+          "user_id": StorageHelper.getUserId(),
+          "product_id": productId,
+          "payment_code": paymentCode, 
+          "payment_channel": paymentChannel, 
+          "type": type
         }
       );
     } on DioException catch(e) {

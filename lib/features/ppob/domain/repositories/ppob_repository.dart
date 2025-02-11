@@ -20,9 +20,12 @@ abstract interface class PPOBRepository {
 
   Future<Either<Failure, int>> getBalance();
 
-  Future<Either<Failure, void>> payPulsaAndPaketData({
-    required String productCode,
-    required String phone
+  Future<Either<Failure, void>> payPpob({
+    required String idpel, 
+    required String paymentChannel, 
+    required String paymentCode, 
+    required String productId,
+    required String type,
   });
 
   Future<Either<Failure, void>> payPraPLN({

@@ -28,7 +28,7 @@ class PPOBDetailPulsaPage extends StatefulWidget {
 
 class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
 
-  String productCode = "";
+  String productId = "";
   int productPrice = 0;
   int selected = -1;
 
@@ -227,11 +227,11 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               setState(() {
                                 if(selected != i) {
                                   selected = i;
-                                  productCode = notifier.entity[i].code;
+                                  productId = notifier.entity[i].code;
                                   productPrice = notifier.entity[i].price;
                                 } else {
                                   selected = -1;
-                                  productCode = "";
+                                  productId = "";
                                   productPrice = 0;
                                 }
                               });
@@ -320,7 +320,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: productCode.isEmpty 
+            backgroundColor: productId.isEmpty 
             ?Colors.grey
             :const Color(0XFFC82927),
             shape: RoundedRectangleBorder(
@@ -328,7 +328,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
             )
           ),
           onPressed: () {
-            if(productCode.isEmpty) {
+            if(productId.isEmpty) {
               ShowSnackbar.snackbarErr("Anda belum memilih denom");
               return;
             }
@@ -340,7 +340,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
               context, MaterialPageRoute(builder: (context) => PaymentPage(
                 customerName: "-", 
                 customerNo: getC.text, 
-                productCode: productCode, 
+                productId: productId, 
                 productPrice: productPrice, 
                 topupby: "-", 
                 ref2: "-", 

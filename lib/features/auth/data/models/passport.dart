@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:developer';
-
 class Passport {
   final String type;
   final String countryCode;
@@ -16,7 +14,6 @@ class Passport {
   final String? registrationNumber;
   final String? issuingAuthority;
   final String? mrzCode;
-  final String? period;
 
   Passport({
     this.type = 'P',
@@ -32,7 +29,6 @@ class Passport {
     required this.registrationNumber,
     required this.issuingAuthority,
     required this.mrzCode,
-    required this.period,
   });
 
   factory Passport.fromMap(Map<String, dynamic> map) {
@@ -47,44 +43,7 @@ class Passport {
       registrationNumber: map['registrationNumber'],
       issuingAuthority: map['issuingAuthority'],
       mrzCode: map['mrzCode'],
-      period: _getPeriod(map['dateOfExpiry']),
     );
-  }
-
-  static String? _getPeriod(String expiryDateStr) {
-    try {
-      DateTime now = DateTime.now();
-      DateTime expiryDate = DateTime.parse(expiryDateStr);
-
-      log('expiry date: ${expiryDate.toString()}');
-      log('expiry date str: $expiryDateStr');
-
-      if (expiryDate.isBefore(now)) {
-        return "Paspor sudah kadaluwarsa";
-      }
-
-      final totalDays = expiryDate.difference(now).inDays;
-      final years = totalDays ~/ 365;
-      final remainingDaysAfterYears = totalDays % 365;
-      final months = remainingDaysAfterYears ~/ 30;
-      final remainingDaysAfterMonths = remainingDaysAfterYears % 30;
-      final weeks = remainingDaysAfterMonths ~/ 7;
-      final days = remainingDaysAfterMonths % 7;
-
-      if (years > 0 && months > 0) {
-        return "$years tahun $months bulan";
-      } else if (years > 0) {
-        return "$years tahun";
-      } else if (months > 0) {
-        return "$months bulan";
-      } else if (weeks > 0) {
-        return "$weeks minggu";
-      } else {
-        return "$days hari";
-      }
-    } catch (_) {
-      return null;
-    }
   }
 }
 

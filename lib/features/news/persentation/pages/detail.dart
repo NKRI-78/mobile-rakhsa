@@ -31,16 +31,9 @@ class NewsDetailPage extends StatefulWidget {
 
 class NewsDetailPageState extends State<NewsDetailPage> {
 
-  late DashboardNotifier dashboardNotifier; 
   late DetailNewsNotifier detailNewsNotifier;
 
   Future<void> getData() async {
-    if(!mounted) return;
-      await dashboardNotifier.getNews(
-        lat: 0.0, 
-        lng: 0.0
-      );
-
     if(!mounted) return;
       await detailNewsNotifier.detailNews(id: widget.id);
   }
@@ -49,7 +42,6 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   void initState() {
     super.initState();
 
-    dashboardNotifier = context.read<DashboardNotifier>();
     detailNewsNotifier = context.read<DetailNewsNotifier>();
 
     Future.microtask(() => getData());
@@ -178,7 +170,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 ? const SizedBox() 
                 : context.watch<DashboardNotifier>().state == ProviderState.empty 
                 ? const SizedBox() 
-                : const Text('Baca Berita Lainnya',
+                : const Text('',
                     style: TextStyle(
                     fontWeight: FontWeight.bold,
                       fontSize: 17,

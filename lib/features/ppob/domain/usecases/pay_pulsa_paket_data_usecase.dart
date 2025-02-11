@@ -4,18 +4,24 @@ import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 
-class PayPulsaAndPaketDataUseCase {
+class PayPpobUseCase {
   final PPOBRepository repository;
 
-  PayPulsaAndPaketDataUseCase(this.repository);
+  PayPpobUseCase(this.repository);
 
   Future<Either<Failure, void>> execute({
-    required String productCode,
-    required String phone
+    required String idpel,
+    required String paymentChannel,
+    required String paymentCode,
+    required String productId,
+    required String type
   }) async {
-    return repository.payPulsaAndPaketData(
-      productCode: productCode,
-      phone: phone
+    return repository.payPpob(
+      idpel: idpel,
+      paymentChannel: paymentChannel,
+      paymentCode: paymentCode,
+      productId: productId,
+      type: type 
     );
   }
 }

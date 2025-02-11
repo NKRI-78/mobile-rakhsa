@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -102,7 +103,7 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
                 height: actionButtonHeight,
                 padding: const EdgeInsets.all(12),
                 child: ElevatedButton(
-                  onPressed: provider.hasPassport
+                  onPressed: provider.scanningSuccess
                       ? () => Navigator.pushNamed(
                             context,
                             RoutesNavigation.registerFr,
@@ -165,14 +166,18 @@ class _ScanningResultState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String getDateFormat(String? date){
-    //   final formatted = DateFormat('dd MMMM yyy', 'id');
-    //   if (date != null) {
-    //     return formatted.format(DateTime.parse(date));
-    //   } else {
-    //     return formatted.format(DateTime.now());
-    //   }
-    // }
+    String getDateFormat(String? date){
+      final formatted = DateFormat('dd MMMM yyy', 'id');
+      try {
+        if (date != null) {
+          return formatted.format(DateTime.parse(date));
+        } else {
+          return formatted.format(DateTime.now());
+        }
+      } catch (e) {
+        return formatted.format(DateTime.now());
+      }
+    }
 
     return ListView(
       shrinkWrap: true,
@@ -210,7 +215,7 @@ class _ScanningResultState extends StatelessWidget {
         // date of birth
         _PassportField(
           'Tanggal Lahir',
-          provider.passport?.dateOfBirth ?? '-',
+          getDateFormat(provider.passport?.dateOfBirth),
         ),
         // gender
         _PassportField(
@@ -220,17 +225,17 @@ class _ScanningResultState extends StatelessWidget {
         // date of issue
         _PassportField(
           'Tanggal Penerbitan',
-          provider.passport?.dateOfIssue ?? '-',
+          getDateFormat(provider.passport?.dateOfIssue),
         ),
         // date of expiry
         _PassportField(
           'Tanggal Habis Berlaku',
-          provider.passport?.dateOfExpiry ?? '-',
+          getDateFormat(provider.passport?.dateOfExpiry),
         ),
         // period
         _PassportField(
           'Sisa Masa Berlaku',
-          provider.passport?.period ?? '-',
+          provider.getPassportPeriod(provider.passport?.dateOfExpiry) ?? '-',
         ),
         // registration number
         _PassportField(
@@ -318,7 +323,7 @@ class _ScanningViewState extends StatelessWidget {
           builder: (context, provider, child) {
             if (provider.hasPath) {
               return ScanningEffect(
-                endScan: provider.hasPassport,
+                endScan: provider.scanningSuccess,
                 child: Image.file(
                   File(provider.passportPath),
                 ),

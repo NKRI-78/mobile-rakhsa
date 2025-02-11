@@ -12,9 +12,9 @@ class PaymentChannelProvider with ChangeNotifier {
     required this.useCase
   });
 
-  String? paymentChannel = "";
-  String? paymentCode = "";
-  String? paymentName = "";
+  String? paymentChannel = "-";
+  String paymentCode = "-";
+  String paymentName = "-";
 
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;

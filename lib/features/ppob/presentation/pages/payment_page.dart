@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/capitalize.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -14,8 +15,6 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 
-import 'package:rakhsa/features/ppob/presentation/providers/inquiry_topup_listener.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/pay_pln_pra_pln_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
@@ -25,7 +24,7 @@ class PaymentPage extends StatefulWidget {
   
   final String customerName;
   final String customerNo;
-  final String productCode;
+  final String productId;
   final int productPrice;
   final String topupby;
   final String ref2;
@@ -34,7 +33,7 @@ class PaymentPage extends StatefulWidget {
   const PaymentPage({
     required this.customerName,
     required this.customerNo,
-    required this.productCode,
+    required this.productId,
     required this.productPrice,
     required this.topupby,
     required this.ref2,
@@ -372,7 +371,7 @@ class PaymentPageState extends State<PaymentPage> {
         
                                       SizedBox(
                                         width: 180.0,
-                                        child: Text(paymentChannelNotifier.paymentName ?? "-",
+                                        child: Text(paymentChannelNotifier.paymentName,
                                         textAlign: TextAlign.end,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -420,8 +419,8 @@ class PaymentPageState extends State<PaymentPage> {
           margin: const EdgeInsets.all(20.0),
           child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: context.watch<PaymentChannelProvider>().paymentName != null 
-            ? const Color(0xFFC82927) 
+            backgroundColor: context.watch<PaymentChannelProvider>().paymentName != "" 
+            ?  primaryColor
             : Colors.grey,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)
@@ -430,9 +429,7 @@ class PaymentPageState extends State<PaymentPage> {
           onPressed: () async {
 
             PaymentChannelProvider paymentChannelProvider = context.read<PaymentChannelProvider>();
-            PayPulsaAndPaketDataProvider payPulsaAndPaketDataProvider = context.read<PayPulsaAndPaketDataProvider>();
-            PayPlnPraProvider payPlnPraProvider = context.read<PayPlnPraProvider>();
-            InquiryTopupProvider inquiryTopupProvider = context.read<InquiryTopupProvider>();
+            PayPpobNotifier payPpobProvider = context.read<PayPpobNotifier>();
 
             if(paymentChannelProvider.paymentName == "") {
               await ShowSnackbar.snackbarErr("Metode pembayaran belum dipilih");
@@ -441,105 +438,27 @@ class PaymentPageState extends State<PaymentPage> {
 
             switch (widget.type) {
               case "pulsa":
-                await payPulsaAndPaketDataProvider.pay(
-                  productCode: widget.productCode,
-                  phone: widget.customerNo
+                await payPpobProvider.pay(
+                  idpel: widget.customerNo,
+                  productId: widget.productId,
+                  paymentCode: paymentChannelProvider.paymentCode,
+                  paymentChannel: paymentChannelProvider.paymentName,
+                  type: "PULSA",
                 );
-
-                Future.delayed(Duration.zero, () async {
-                  if(payPulsaAndPaketDataProvider.message != "") {
-                    await ShowSnackbar.snackbarErr(
-                      payPulsaAndPaketDataProvider.message
-                    );
-                  } else {
-                    await ShowSnackbar.snackbarOk(
-                      "Pembayaran berhasil"
-                    );
-                  }
-                });
-              break;
-              case "data":
-                await payPulsaAndPaketDataProvider.pay(
-                  productCode: widget.productCode,
-                  phone: widget.customerNo
-                );
-
-                Future.delayed(Duration.zero, () async {
-                  if(payPulsaAndPaketDataProvider.message != "") {
-                    await ShowSnackbar.snackbarErr(payPulsaAndPaketDataProvider.message);
-                  } else {
-                    await ShowSnackbar.snackbarOk("Pembayaran berhasil");
-                  }
-                });
-              break;
-              case "Token Listrik":
-                await payPlnPraProvider.pay(
-                  idpel: widget.customerNo, 
-                  ref2: widget.ref2, 
-                  nominal: widget.productPrice.toString()
-                );
-
-                Future.delayed(Duration.zero, () async {
-                  if(payPlnPraProvider.message != "") {
-                    await ShowSnackbar.snackbarErr(
-                      payPlnPraProvider.message
-                    );
-                  } else {
-                    await ShowSnackbar.snackbarOk("Pembayaran berhasil");
-                  }
-                });
-              break;  
-              case "topup":
-
-               if(paymentChannelProvider.paymentChannel == "" || paymentChannelProvider.paymentChannel == null) {
-                  await ShowSnackbar.snackbarErr("Metode pembayaran belum dipilih");
-                }
-
-                await inquiryTopupProvider.inquiryTopup(
-                  productId: widget.productCode, 
-                  productPrice: widget.productPrice,
-                  topupby: widget.topupby,
-                  channel: paymentChannelProvider.paymentChannel!,
-                );
-
-                Future.delayed(Duration.zero, () async {
-                  if(inquiryTopupProvider.message != "") {
-                    await ShowSnackbar.snackbarErr(inquiryTopupProvider.message);
-                  } else {
-                    await ShowSnackbar.snackbarOk("Segera melakukan pembayaran, info mengenai pembayaran akan dikirimkan melalui Inbox");
-                  }
-                });
               break;
               default:
             }
 
           },
-          child: widget.type == "topup" 
-          ? (context.watch<InquiryTopupProvider>().state == ProviderState.loading 
-            ? const CircularProgressIndicator.adaptive(
-                backgroundColor: Colors.white,
+          child: (context.watch<PayPpobNotifier>().state == ProviderState.loading 
+          ? const Center(
+              child: SizedBox(
+                width: 16.0, 
+                height: 16.0,
+                child: SpinKitChasingDots(
+                  color: primaryColor
+                )
               )
-            : Text('Bayar',
-              style: robotoRegular.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold
-              ),
-            ))
-          : widget.type == "Token Listrik" 
-          ? (context.watch<PayPlnPraProvider>().state == ProviderState.loading 
-            ? const CircularProgressIndicator.adaptive(
-                backgroundColor: Colors.white,
-              )
-            : Text('Bayar',
-                style: robotoRegular.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-                ),
-              )
-            )
-          : (context.watch<PayPulsaAndPaketDataProvider>().state == ProviderState.loading 
-          ? const CircularProgressIndicator.adaptive(
-             backgroundColor: Colors.white,
             )
           : Text('Bayar',
             style: robotoRegular.copyWith(

@@ -69,14 +69,20 @@ class PPOBRepositoryImpl implements PPOBRepository {
   }
 
   @override 
-  Future<Either<Failure, void>> payPulsaAndPaketData({
-    required String productCode,
-    required String phone
+  Future<Either<Failure, void>> payPpob({
+    required String idpel, 
+    required String paymentChannel, 
+    required String paymentCode, 
+    required String productId,
+    required String type
   }) async {
     try {
-      var result = await remoteDatasource.payPulsaAndPaketData(
-        productCode: productCode,
-        phone: phone
+      var result = await remoteDatasource.payPpob(
+        idpel: idpel,
+        paymentChannel: paymentChannel,
+        paymentCode: paymentCode,
+        productId: productId, 
+        type: type,
       );
       return Right(result);
     } on ServerException catch (e) {

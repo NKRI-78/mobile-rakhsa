@@ -2,18 +2,30 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/features/event/data/models/list.dart';
+import 'package:rakhsa/features/event/domain/usecases/list_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
 
-class SaveEventNotifier extends ChangeNotifier {
+class EventNotifier extends ChangeNotifier {
   final SaveEventUseCase useCase;
+  final ListEventUseCase listEventUseCase;
 
-  SaveEventNotifier({required this.useCase});
+  EventNotifier({required this.useCase, required this.listEventUseCase});
+
+  List<EventData> _entity = [];
+  List<EventData> get entity => [..._entity];
 
   ProviderState _state = ProviderState.empty;
   ProviderState get state => _state;
 
+  ProviderState _getEventtate = ProviderState.empty;
+  ProviderState get getEventState => _getEventtate;
+
   String _message = '';
   String get message => _message;
+
+  String _getEventMessage = '';
+  String get getEventMessaage => _getEventMessage;
 
   Future<void> save(BuildContext context, {
     required String title,
@@ -46,6 +58,26 @@ class SaveEventNotifier extends ChangeNotifier {
 
       Navigator.of(context).pop();
       ShowSnackbar.snackbarOk('Berhasil membuat agenda');
+    });
+  }
+
+  Future<void> list() async {
+    _getEventtate = ProviderState.loading;
+    Future.delayed(Duration.zero, () => notifyListeners());
+
+    final result = await listEventUseCase.execute();
+
+    result.fold((l) {
+      _getEventtate = ProviderState.error;
+      Future.delayed(Duration.zero, () => notifyListeners());
+
+      _getEventMessage = l.message;
+    }, (r) {
+      _entity = [];
+      _entity.addAll(r.data);
+      
+      _getEventtate = ProviderState.loaded;
+      Future.delayed(Duration.zero, () => notifyListeners());
     });
   }
 }
