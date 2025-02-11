@@ -56,17 +56,9 @@ class HeaderSection extends StatelessWidget {
             // title marlinda
             Flexible(
               fit: FlexFit.tight,
-              child: Text(
-                'MARLINDA',
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.fade,
-                style: robotoRegular.copyWith(
-                  color: redColor,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.bold,
-                  fontSize: Dimensions.fontSizeExtraLarge,
-                ),
-              ),
+              child: Image.asset(AssetSource.titleMarlinda,
+                height: 38.0,
+              )
             ),
 
             // logo marlinda
