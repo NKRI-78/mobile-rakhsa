@@ -12,7 +12,7 @@ class PaymentChannelProvider with ChangeNotifier {
     required this.useCase
   });
 
-  String? paymentChannel = "-";
+  String paymentChannel = "-";
   String paymentCode = "-";
   String paymentName = "-";
 
@@ -32,6 +32,7 @@ class PaymentChannelProvider with ChangeNotifier {
   }
 
   void selectPaymentChannel({required PaymentData paymentData}) {
+    paymentChannel = paymentData.id.toString();
     paymentCode = paymentData.nameCode;
     paymentName = paymentData.name;
     

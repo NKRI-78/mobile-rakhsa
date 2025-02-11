@@ -442,7 +442,7 @@ class PaymentPageState extends State<PaymentPage> {
                   idpel: widget.customerNo,
                   productId: widget.productId,
                   paymentCode: paymentChannelProvider.paymentCode,
-                  paymentChannel: paymentChannelProvider.paymentName,
+                  paymentChannel: paymentChannelProvider.paymentChannel,
                   type: "PULSA",
                 );
               break;
