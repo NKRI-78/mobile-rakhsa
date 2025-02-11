@@ -16,8 +16,6 @@ import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listen
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 class PPOBDetailPulsaPage extends StatefulWidget {
-  static const route = '/ppob/pulsa/detail';
-
   final String title;
   const PPOBDetailPulsaPage({
     required this.title,
@@ -289,15 +287,15 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                                     ),
                                   ),
                           
-                                  Positioned(
-                                    top: 0.0,
-                                    left: 0.0,
-                                    right: 0.0,
-                                    child: Image.asset('assets/image/icons/ic-coin.png',
-                                      width: 50.0,
-                                      height: 50.0,
-                                    )
-                                  ),
+                                  // Positioned(
+                                  //   top: 0.0,
+                                  //   left: 0.0,
+                                  //   right: 0.0,
+                                  //   child: Image.asset('assets/image/icons/ic-coin.png',
+                                  //     width: 50.0,
+                                  //     height: 50.0,
+                                  //   )
+                                  // ),
                           
                                 ],
                               ),
@@ -324,7 +322,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: productCode.isEmpty 
             ?Colors.grey
-            :const Color(0xFFC82927),
+            :const Color(0XFFC82927),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0)
             )
@@ -338,17 +336,16 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
               ShowSnackbar.snackbarErr("Anda belum mengisi nomor ponsel");
               return;
             }
-            Navigator.pushNamed(
-              context, PaymentPage.route, 
-              arguments: {
-                "customer_name": "-",
-                "customer_no": getC.text,
-                "product_code": productCode, 
-                "product_price": productPrice,
-                "topupby": "-",
-                "ref2": "-",
-                "type": "pulsa"
-              }
+            Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PaymentPage(
+                customerName: "-", 
+                customerNo: getC.text, 
+                productCode: productCode, 
+                productPrice: productPrice, 
+                topupby: "-", 
+                ref2: "-", 
+                type: "pulsa"
+              ))
             );
           }, 
           child: Text("Selanjutnya",

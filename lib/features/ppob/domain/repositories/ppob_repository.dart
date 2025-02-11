@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 
 import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
 import 'package:rakhsa/features/ppob/domain/entities/denom_topup.dart';
 import 'package:rakhsa/features/ppob/domain/entities/inquiry_tokenlistrik.dart';
-import 'package:rakhsa/features/ppob/domain/entities/payment.dart';
 
-abstract class PPOBRepository {
+abstract interface class PPOBRepository {
 
   Future<Either<Failure, List<PPOBPulsaInquiryData>>> inquiryPulsa({
     required String prefix,
@@ -16,7 +16,7 @@ abstract class PPOBRepository {
     required String idpel
   });
 
-  Future<Either<Failure, List<PaymentDataEntity>>> getPaymentChannel();
+  Future<Either<Failure, List<PaymentData>>> getPaymentChannel();
 
   Future<Either<Failure, int>> getBalance();
 

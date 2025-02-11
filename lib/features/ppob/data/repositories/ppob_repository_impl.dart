@@ -4,11 +4,11 @@ import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/ppob/data/datasources/ppob_remote_datasource.dart';
+import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
 import 'package:rakhsa/features/ppob/domain/entities/denom_topup.dart';
 
 import 'package:rakhsa/features/ppob/domain/entities/inquiry_tokenlistrik.dart';
-import 'package:rakhsa/features/ppob/domain/entities/payment.dart';
 import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 
 class PPOBRepositoryImpl implements PPOBRepository {
@@ -45,10 +45,10 @@ class PPOBRepositoryImpl implements PPOBRepository {
   }
 
   @override 
-  Future<Either<Failure, List<PaymentDataEntity>>> getPaymentChannel() async {
+  Future<Either<Failure, List<PaymentData>>> getPaymentChannel() async {
     try {
       var result = await remoteDatasource.paymentChannelList();
-      return Right(result.data?.map((e) => e.toEntity()).toList() ?? []);
+      return Right(result.data);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
     } catch (e) {

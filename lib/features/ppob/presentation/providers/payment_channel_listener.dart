@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 
-import 'package:rakhsa/features/ppob/domain/entities/payment.dart';
 import 'package:rakhsa/features/ppob/domain/usecases/payment_channel_usecase.dart';
 
 class PaymentChannelProvider with ChangeNotifier {
@@ -22,8 +22,8 @@ class PaymentChannelProvider with ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  List<PaymentDataEntity> _entity = [];
-  List<PaymentDataEntity> get entity => [..._entity];
+  List<PaymentData> _entity = [];
+  List<PaymentData> get entity => [..._entity];
 
   void reset() {
     paymentChannel = "";
@@ -31,14 +31,9 @@ class PaymentChannelProvider with ChangeNotifier {
     paymentName = "";
   }
 
-  void selectPaymentChannel({
-    required String paymentChannelSelect,
-    required String paymentCodeSelect,
-    required String paymentNameSelect
-  }) {
-    paymentChannel = paymentChannelSelect;
-    paymentCode = paymentCodeSelect;
-    paymentName = paymentNameSelect;
+  void selectPaymentChannel({required PaymentData paymentData}) {
+    paymentCode = paymentData.nameCode;
+    paymentName = paymentData.name;
     
     notifyListeners();
   }

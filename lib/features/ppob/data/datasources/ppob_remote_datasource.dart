@@ -32,13 +32,6 @@ abstract class PPOBRemoteDataSource {
   });
 }
 
-// static const inquiryPulsa = "/inquiry/pulsa";
-// static const payPulsa = "";
-// static const inquiryPlnPra = "/inquiry/pln-prabayar";
-// static const payPlnPra = "/pay/pln-prabayar";
-// static const getBalance = "/get/balance";
-// static const paymentList = "/payment_v2/pub/v1/payment/channels";
-
 class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   final Dio client;
 
@@ -106,7 +99,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   @override 
   Future<PaymentModel> paymentChannelList() async {
     try {
-      Response res = await client.get("${RemoteDataSourceConsts.baseUrlPpob}/payment_v2/pub/v1/payment/channels");
+      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/payment");
       Map<String, dynamic> data = res.data;
       PaymentModel pm = PaymentModel.fromJson(data);
       return pm;

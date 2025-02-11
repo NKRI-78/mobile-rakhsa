@@ -109,6 +109,15 @@ import 'package:rakhsa/features/nearme/data/repositories/nearme_repository_impl.
 import 'package:rakhsa/features/nearme/domain/repository/nearme_repository.dart';
 import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
+import 'package:rakhsa/features/ppob/data/datasources/ppob_remote_datasource.dart';
+import 'package:rakhsa/features/ppob/data/repositories/ppob_repository_impl.dart';
+import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
+import 'package:rakhsa/features/ppob/domain/usecases/inquiry_pulsa_usecase.dart';
+import 'package:rakhsa/features/ppob/domain/usecases/pay_pulsa_paket_data_usecase.dart';
+import 'package:rakhsa/features/ppob/domain/usecases/payment_channel_usecase.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/socketio.dart';
@@ -126,8 +135,10 @@ void init() {
   locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<EventRemoteDataSource>(() => EventRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<NearmeRemoteDataSource>(() => NearmeRemoteDataSourceImpl(client: locator()));
+  locator.registerLazySingleton<PPOBRemoteDataSource>(() => PPOBRemoteDataSourceImpl(client: locator()));
   locator.registerLazySingleton<DocumentRemoteDatasource>(() => DocumentRemoteDatasourceImpl(client: locator()));
-  
+  locator.registerLazySingleton<PPOBRemoteDataSourceImpl>(() => PPOBRemoteDataSourceImpl(client: locator()));
+
   // REPOSITORY 
   locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(remoteDataSource: locator()));
@@ -139,6 +150,7 @@ void init() {
   locator.registerLazySingleton<NearmeRepository>(() => NearmeRepositoryImpl(remoteDataSource: locator()));
   locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
   locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
+  locator.registerLazySingleton<PPOBRepository>(() => PPOBRepositoryImpl(remoteDatasource: locator()));
   locator.registerLazySingleton<DocumentRepository>(() => DocumentRepositoryImpl(remoteDatasource: locator()));
 
   // USE CASE
@@ -178,6 +190,9 @@ void init() {
   locator.registerLazySingleton(() => UpdatePassportUseCase(locator()));
   locator.registerLazySingleton(() => UpdateVisaUseCase(locator()));
   locator.registerLazySingleton(() => RegisterPassportUseCase(locator()));
+  locator.registerLazySingleton(() => PaymentChannelUseCase(locator()));
+  locator.registerLazySingleton(() => InquiryPulsaUseCase(locator()));
+  locator.registerLazySingleton(() => PayPulsaAndPaketDataUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -214,6 +229,10 @@ void init() {
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
+
+  locator.registerFactory(() => PayPulsaAndPaketDataProvider(useCase: locator()));
+  locator.registerFactory(() => InquiryPulsaProvider(useCase: locator()));
+  locator.registerFactory(() => PaymentChannelProvider(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(
     useCase: locator()

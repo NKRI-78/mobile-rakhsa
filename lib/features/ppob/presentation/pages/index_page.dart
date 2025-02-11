@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 
-import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata_page.dart';
 import 'package:rakhsa/features/ppob/presentation/pages/detail_pulsa_page.dart';
-import 'package:rakhsa/features/ppob/presentation/pages/detail_tokenlistrik_page.dart';
+// import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata_page.dart';
+// import 'package:rakhsa/features/ppob/presentation/pages/detail_tokenlistrik_page.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
@@ -24,44 +24,43 @@ class PPOBPageState extends State<PPOBPage> {
       "name": "Pulsa",
       "image": "assets/image/icons/ic-pulsa.png",
     },
-    {
-      "id": 2,
-      "name": "Paket Data",
-      "image": "assets/image/icons/ic-paketdata.png",
-    },
-    {
-      "id": 3,
-      "name": "Token Listrik",
-      "image": "assets/image/icons/ic-listrik.png",
-    },
+    // {
+    //   "id": 2,
+    //   "name": "Paket Data",
+    //   "image": "assets/image/icons/ic-paketdata.png",
+    // },
+    // {
+    //   "id": 3,
+    //   "name": "Token Listrik",
+    //   "image": "assets/image/icons/ic-listrik.png",
+    // },
   ];
 
   void onChangeCategories(int i) {
     switch (categories[i]["name"]) {
       case "Pulsa":
-        Navigator.pushNamed(context, 
-          PPOBDetailPulsaPage.route,
-          arguments: {
-            "title": categories[i]["name"]
-          }  
+        Navigator.push(context, 
+          MaterialPageRoute(builder: (context) {
+            return PPOBDetailPulsaPage(title: categories[i]["name"]);
+          })
         );
       break;
-      case "Paket Data":
-        Navigator.pushNamed(context, 
-          PPOBDetailPaketDataPage.route,
-          arguments: {
-            "title": categories[i]["name"]
-          }  
-        );
-      break;
-      case "Token Listrik":
-        Navigator.pushNamed(context, 
-          PPOBDetailTokenListrikPage.route,
-          arguments: {
-            "title": categories[i]["name"]
-          }
-        );
-      break;
+      // case "Paket Data":
+      //   Navigator.pushNamed(context, 
+      //     PPOBDetailPaketDataPage.route,
+      //     arguments: {
+      //       "title": categories[i]["name"]
+      //     }  
+      //   );
+      // break;
+      // case "Token Listrik":
+      //   Navigator.pushNamed(context, 
+      //     PPOBDetailTokenListrikPage.route,
+      //     arguments: {
+      //       "title": categories[i]["name"]
+      //     }
+      //   );
+      // break;
       default:
     }
   }
@@ -149,16 +148,16 @@ class PPOBPageState extends State<PPOBPage> {
                         ),
                       ),
               
-                      Positioned(
-                        top: 0.0,
-                        left: 0.0,
-                        right: 0.0,
-                        child:Image.asset(
-                          categories[i]["image"],
-                          width: 80.0,
-                          height: 80.0,
-                        ),
-                      ),
+                      // Positioned(
+                      //   top: 0.0,
+                      //   left: 0.0,
+                      //   right: 0.0,
+                      //   child:Image.asset(
+                      //     categories[i]["image"],
+                      //     width: 80.0,
+                      //     height: 80.0,
+                      //   ),
+                      // ),
               
                     ],
                   ),

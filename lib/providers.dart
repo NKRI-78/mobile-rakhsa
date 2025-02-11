@@ -36,6 +36,9 @@ import 'package:rakhsa/features/information/presentation/provider/passport_notif
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -64,6 +67,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetCountryNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<GetStateNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SaveEventNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailEventNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DeleteEventNotifier>()),
@@ -72,7 +76,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<UpdateProfileNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateIsLoggedinNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UploadMediaNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<GetStateNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<KbriIdNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<KbriNameNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<VisaNotifier>()),
@@ -82,6 +85,9 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<EcommerceProvider>()),
   // ChangeNotifierProvider.value(value: di.locator<PassportScannerNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<InquiryPulsaProvider>()),
+  ChangeNotifierProvider.value(value: di.locator<PaymentChannelProvider>()),
+  ChangeNotifierProvider.value(value: di.locator<PayPulsaAndPaketDataProvider>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),
 ];

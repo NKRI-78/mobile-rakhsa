@@ -8,7 +8,7 @@ import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 class InquiryPlnPraUseCase {
   final PPOBRepository repository;
 
-  InquiryPlnPraUseCase({required this.repository});
+  InquiryPlnPraUseCase(this.repository);
 
   Future<Either<Failure, PPOBTokenListrikInquiryDataEntity>> execute({
     required String idpel,

@@ -1,14 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/capitalize.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 
-import 'package:rakhsa/features/ppob/presentation/providers/get_balance_listener.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/inquiry_topup_listener.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/pay_pln_pra_pln_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
@@ -51,9 +56,6 @@ class PaymentPageState extends State<PaymentPage> {
       context.read<PaymentChannelProvider>().fetch();
 
     if(!mounted) return;
-      context.read<GetBalanceProvider>().fetch();
-
-    if(!mounted) return;
       context.read<ProfileNotifier>().getProfile();
   }
 
@@ -71,60 +73,27 @@ class PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body:  NestedScrollView(
+    return Scaffold( 
+      body: NestedScrollView(
         physics: const NeverScrollableScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    top: 20.0,
-                    bottom: 20.0
+              SliverAppBar(
+                centerTitle: true,
+                leading: CupertinoNavigationBarBackButton(
+                  color: Colors.black,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: Text("Pembayaran",
+                  style: robotoRegular.copyWith(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      
-                          Container(
-                            margin: const EdgeInsets.only(
-                              top: 35.0,
-                              bottom: 35.0,
-                              left: 20.0,
-                              right: 20.0
-                            ),
-                            child: Bouncing(
-                              onPress: () {
-                                Navigator.pop(context);
-                              },
-                              child: Image.asset('assets/image/icons/ic-appbar-back.png',
-                                width: 30.0,
-                                height: 30.0,
-                              ),
-                            ),
-                          ),
-                      
-                        ],
-                      ),  
-                      
-                      Text("Pembayaran",
-                        style: robotoRegular.copyWith(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      
-                    ],
-                  ),
-                )
-              ),
-                  
+                ),
+              )
             ];
           }, 
           body: Container(
@@ -172,108 +141,100 @@ class PaymentPageState extends State<PaymentPage> {
                                 right: 16.0
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   
-                                  if(paymentChannelNotifier.paymentChannel == "")
-                                    Text("Metode Pembayaran",
-                                      style: robotoRegular.copyWith(
-                                        color: Colors.grey,
-                                        fontSize: 9.0,
-                                        fontWeight: FontWeight.bold
-                                      ),
-                                    ),
-        
-                                  if(widget.type == "data" && paymentChannelNotifier.paymentName != null)
-                                    Consumer<GetBalanceProvider>(
-                                      builder: (BuildContext context, GetBalanceProvider wallet, Widget? child) {
-                                        return Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-        
-                                          Text(paymentChannelNotifier.paymentName ?? "",
-                                            style: robotoRegular.copyWith(
-                                              color: Colors.black,
-                                              fontSize: 10.0,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-        
-                                          const SizedBox(width: 10.0),
-        
-                                          if(wallet.state == ProviderState.loading) 
-                                            const Text("..."),
-        
-                                          if(wallet.state == ProviderState.error)
-                                            const Text("..."),
-        
-                                          if(wallet.state == ProviderState.loaded)
-                                            Text(formatCurrency(wallet.balance),
-                                              style: robotoRegular.copyWith(
-                                                color: Colors.black,
-                                                fontSize: 10.0,
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-        
-                                        ],
-                                      );
-                                    },
-                                  ),
-        
-                                  if(widget.type == "pulsa" && paymentChannelNotifier.paymentName != null)
-                                    Consumer<GetBalanceProvider>(
-                                      builder: (BuildContext context, GetBalanceProvider wallet, Widget? child) {
-                                        return Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-        
-                                          Text(paymentChannelNotifier.paymentName ?? "",
-                                            style: robotoRegular.copyWith(
-                                              color: Colors.black,
-                                              fontSize: 10.0,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-        
-                                          const SizedBox(width: 10.0),
-        
-                                          if(wallet.state == ProviderState.loading) 
-                                            const Text("..."),
-        
-                                          if(wallet.state == ProviderState.error)
-                                            const Text("..."),
-        
-                                          if(wallet.state == ProviderState.loaded)
-                                            Text(formatCurrency(wallet.balance),
-                                              style: robotoRegular.copyWith(
-                                                color: Colors.black,
-                                                fontSize: 10.0,
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-        
-                                        ],
-                                      );
-                                    },
-                                  ),
-        
-                                  if(widget.type != "data" && widget.type != "pulsa")
-                                    Text(paymentChannelNotifier.paymentName ?? "",
-                                      style: robotoRegular.copyWith(
-                                        color: Colors.black,
-                                        fontSize: 10.0,
-                                        fontWeight: FontWeight.bold
-                                      ),
-                                    ),
-                            
                                   Bouncing(
                                     onPress: () async {
-                                      
-                                    },
+                                      showModalBottomSheet(
+                                        context: context, 
+                                        builder: (BuildContext context) {
+                                          return Consumer<PaymentChannelProvider>(
+                                            builder: (BuildContext context, PaymentChannelProvider paymentChannelProvider, Widget? child) {
+                                              if(paymentChannelNotifier.state == ProviderState.loading) {
+                                                return const Center(
+                                                  child: SizedBox(
+                                                    width: 16.0,
+                                                    height: 16.0,
+                                                    child: SpinKitChasingDots(
+                                                      color: Color(0XFFC82927),
+                                                    ),
+                                                  )
+                                                );
+                                              }
+                                              if(paymentChannelNotifier.state == ProviderState.error) {
+                                                return const Center(
+                                                  child: SizedBox(
+                                                    width: 16.0,
+                                                    height: 16.0,
+                                                    child: SpinKitChasingDots(
+                                                      color: Color(0XFFC82927),
+                                                    ),
+                                                  )
+                                                );
+                                              }
+                                              return Container(
+                                                margin: const EdgeInsets.all(16.0),
+                                                width: double.infinity,
+                                                child: ListView.separated(
+                                                  separatorBuilder: (BuildContext context, int i) {
+                                                    return const Divider(
+                                                      color: Colors.grey,
+                                                    );
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  itemCount: paymentChannelNotifier.entity.length,
+                                                  itemBuilder: (BuildContext context, int i) {
+                                                    PaymentData paymentData = paymentChannelNotifier.entity[i];
+
+                                                    return InkWell(
+                                                      onTap: () {
+                                                        paymentChannelNotifier.selectPaymentChannel(paymentData: paymentData);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Container(
+                                                        margin: const EdgeInsets.only(
+                                                          top: 6.0,
+                                                          bottom: 6.0,
+                                                          left: 8.0, 
+                                                          right: 8.0,
+                                                        ),
+                                                        padding: const EdgeInsets.only(
+                                                          top: 6.0,
+                                                          bottom: 6.0,
+                                                          left: 6.0,
+                                                          right: 6.0
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          mainAxisSize: MainAxisSize.max,
+                                                          children: [
+                                                      
+                                                            Text(paymentData.name,
+                                                              style: robotoRegular.copyWith(
+                                                                fontWeight: FontWeight.bold,
+                                                                color: ColorResources.black
+                                                              ),
+                                                            ),
+                                                      
+                                                            const Icon(
+                                                              Icons.chevron_right,
+                                                              color: ColorResources.black,
+                                                              size: 20.0,
+                                                            )
+                                                          ],
+                                                        ) 
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                              );
+                                            }
+                                          );
+                                        },
+                                      );
+                                    },  
                                     child: Text("Pilih Metode Pembayaran",
                                       style: robotoRegular.copyWith(
                                         color: const Color(0xff0055A6),
@@ -282,11 +243,10 @@ class PaymentPageState extends State<PaymentPage> {
                                       ),
                                     ),
                                   )
-                            
+                          
                                 ],
                               ),
                             ),
-        
         
                             const SizedBox(height: 10.0),
         
@@ -308,46 +268,34 @@ class PaymentPageState extends State<PaymentPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
         
-                                  const Text("Billing Information"),
+                                  Text("Billing Information",
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorResources.black
+                                    ),
+                                  ),
         
                                   const SizedBox(height: 12.0),
                                   
-                                  if(widget.type != "iuran")
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-        
-                                        Text("Service",
-                                          style: robotoRegular.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 13.0
-                                          ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+      
+                                      Text("Service",
+                                        style: robotoRegular.copyWith(
+                                          color: Colors.grey,
+                                          fontSize: 13.0
                                         ),
-        
-                                        Text(widget.type.capitalize())
-        
-                                      ],
-                                    ),
-        
-        
-                                  if(widget.type == "iuran")
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-        
-                                        Text("Service",
-                                          style: robotoRegular.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 13.0
-                                          ),
-                                        ),
-        
-                                        Text(widget.productCode)
-        
-                                      ],
-                                    ),
+                                      ),
+      
+                                      Text(widget.type.capitalize())
+      
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 5.0),
         
                                   if(widget.type == "pulsa" || widget.type == "data")
                                     Row(
@@ -370,31 +318,6 @@ class PaymentPageState extends State<PaymentPage> {
         
                                       ],
                                     ),
-        
-                                  if(widget.type == "iuran")
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-        
-                                        Text("Customer name",
-                                          style: robotoRegular.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 13.0
-                                          ),
-                                        ),
-                                      
-                                        context.watch<ProfileNotifier>().state == ProviderState.loading 
-                                        ? const Text("...") 
-                                        : context.watch<ProfileNotifier>().state == ProviderState.error 
-                                        ? const Text("...") 
-                                        : Text(context.read<ProfileNotifier>().entity.data?.username ?? "-")
-        
-                                      ],
-                                    ),
-        
-                                  if(widget.type == "iuran")
-                                    const SizedBox(height: 5.0),
         
                                   if(widget.type == "pulsa" || widget.type == "data")
                                     const SizedBox(height: 5.0),

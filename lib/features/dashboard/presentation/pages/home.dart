@@ -106,8 +106,6 @@ class HomePageState extends State<HomePage> {
     String administrativeArea = placemarks[0].administrativeArea ?? "-";
     String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
 
-    debugPrint(country.toString());
-
     String address = "$administrativeArea $subadministrativeArea\n$street, $country";
 
     setState(() {

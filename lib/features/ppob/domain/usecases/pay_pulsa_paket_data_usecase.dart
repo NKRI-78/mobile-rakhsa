@@ -7,7 +7,7 @@ import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 class PayPulsaAndPaketDataUseCase {
   final PPOBRepository repository;
 
-  PayPulsaAndPaketDataUseCase({required this.repository});
+  PayPulsaAndPaketDataUseCase(this.repository);
 
   Future<Either<Failure, void>> execute({
     required String productCode,
