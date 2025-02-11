@@ -2,10 +2,12 @@ import 'package:dartz/dartz.dart';
 
 import 'package:rakhsa/common/errors/failure.dart';
 
+import 'package:rakhsa/features/dashboard/data/models/banner.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 
 abstract class DashboardRepository {
+  Future<Either<Failure, BannerModel>> getBanner();
   Future<Either<Failure, NewsModel>> getNews({
     required double lat, 
     required double lng,

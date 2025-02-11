@@ -100,7 +100,6 @@ dependencies:
   readmore: ^2.2.0
 
   # S
-  shimmer: ^2.0.0
   sliding_up_panel: ^2.0.0+1
 
   # U

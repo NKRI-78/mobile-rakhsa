@@ -24,6 +24,7 @@ import 'package:rakhsa/features/chat/domain/usecases/insert_message.dart';
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/detail_news.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/get_banner.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/track_user.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
@@ -146,6 +147,7 @@ void init() {
   locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
+  locator.registerLazySingleton(() => GetBannerUseCase(locator()));
   locator.registerLazySingleton(() => SaveEventUseCase(locator()));
   locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => ListEventUseCase(locator()));
@@ -181,6 +183,7 @@ void init() {
   // NOTIFIER 
   locator.registerLazySingleton(() => DashboardNotifier(
     profileNotifier: locator(),
+    bannerUseCase: locator(),
     useCase: locator()
   ));
   locator.registerFactory(() => ProfileNotifier(useCase: locator()));

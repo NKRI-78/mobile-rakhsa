@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/features/dashboard/data/models/banner.dart';
 
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/data/models/news_detail.dart';
 
 abstract class DashboardRemoteDataSource {
+  Future<BannerModel> getBanner();
   Future<NewsModel> getNews({
     required double lat, 
     required double lng,
@@ -41,12 +43,28 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   DashboardRemoteDataSourceImpl({required this.client});
 
+  @override 
+  Future<BannerModel> getBanner() async {
+    try { 
+      final response = await client.get("${RemoteDataSourceConsts.baseUrlProd}/api/v1/banner",  
+      );
+      Map<String, dynamic> data = response.data;
+      BannerModel bannerModel = BannerModel.fromJson(data);
+      return bannerModel;
+    } on DioException catch (e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  } 
+
   @override
   Future<NewsModel> getNews({
     required double lat,
     required double lng,
     required String state,
-
   }) async {
     try { 
       final response = await client.post(

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/routes/routes_navigation.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/header/header_home.dart';
@@ -22,6 +24,7 @@ import 'package:geocoding/geocoding.dart';
 
 import 'package:rakhsa/main.dart';
 
+import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
@@ -47,7 +50,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
 
-  late FirebaseProvider firebaseProvider;
+  late FirebaseProvider firebaseNotifier;
   late DashboardNotifier dashboardNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
   late ProfileNotifier profileNotifier;
@@ -61,6 +64,8 @@ class HomePageState extends State<HomePage> {
 
   List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
+
+  List<Widget> banners = []; 
 
   String currentAddress = "";
   String currentCountry = "";
@@ -80,8 +85,11 @@ class HomePageState extends State<HomePage> {
       await profileNotifier.getProfile();
 
     if(!mounted) return;
-      await firebaseProvider.initFcm();
-      
+      await firebaseNotifier.initFcm();
+
+    if(!mounted) return; 
+      await dashboardNotifier.getBanner();
+
     if(!mounted) return;
       socketIoService.startListenConnection();
   }
@@ -177,7 +185,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     
-    firebaseProvider = context.read<FirebaseProvider>();
+    firebaseNotifier = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
@@ -186,9 +194,33 @@ class HomePageState extends State<HomePage> {
 
     socketIoService.connect();
 
-    getCurrentLocation();
+    banners = [];
+
+    banners.add(
+      WeatherContent(
+        subAdministrativeArea, 
+        loadingGmaps, 
+        LatLng(
+          double.tryParse(currentLat) ?? 0.0,
+          double.tryParse(currentLng) ?? 0.0,
+        )
+      )
+    );
+
+    Future.delayed(const Duration(seconds: 1), () async {
+      await getCurrentLocation();
+      
+      for (var banner in dashboardNotifier.banners) {
+        banners.add(ImgBanner(
+          banner.link,
+          banner.imageUrl
+        ));
+      }      
+    });
 
     Future.microtask(() => getData());
+
+
   }
 
   @override
@@ -281,22 +313,43 @@ class HomePageState extends State<HomePage> {
                                 )
                               );
                             }
+
+                            if(notifier.bannerState == BannerProviderState.loading) {
+                              return const SizedBox(
+                                height: 200.0,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 16.0,
+                                    height: 16.0,
+                                    child: CircularProgressIndicator()
+                                  )
+                                ),
+                              );
+                            }
+
+                            if(notifier.bannerState == BannerProviderState.error) {
+                              return SizedBox(
+                                height: 200.0,
+                                child: Center(
+                                  child: Text(notifier.message,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      color: ColorResources.black,
+                                    ),
+                                  )
+                                )
+                              );
+                            }
                             
                             return Padding(
-                                padding: const EdgeInsets.only(top: 45),
-                                child: (notifier.ews.isNotEmpty) 
-                                ? EwsListWidget(
-                                    getData: getData,
-                                  )
-                                
-                                : HomeHightlightBanner(
-                                    loadingGMaps: loadingGmaps, 
-                                    area: subAdministrativeArea,
-                                    coordinate: LatLng(
-                                      double.tryParse(currentLat) ?? 0.0,
-                                      double.tryParse(currentLng) ?? 0.0,
-                                    ),
-                                  ),
+                              padding: const EdgeInsets.only(top: 45),
+                              child: (notifier.ews.isNotEmpty) 
+                              ? EwsListWidget(
+                                  getData: getData,
+                                )
+                              : HomeHightlightBanner(
+                                  banners: banners,
+                                ),
                               );
                             },
                           ),
@@ -312,6 +365,125 @@ class HomePageState extends State<HomePage> {
         ],
       )
     ); 
+  }
+}
+
+class ImgBanner extends StatelessWidget {
+  const ImgBanner(
+    this.link,
+    this.img, {super.key});
+
+  final String link;
+  final String img;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        await launchUrl(Uri.parse(link));
+      },
+      child: Image.network(
+        img,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+}
+
+class WeatherContent extends StatelessWidget {
+  const WeatherContent(
+    this.area,
+    this.loadingGMaps,
+    this.coordinate, {super.key}
+  );
+
+  final String area;
+  final bool loadingGMaps;
+  final LatLng coordinate;
+
+  @override
+  Widget build(BuildContext context) {
+     
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: Colors.grey.shade200,
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutesNavigation.weather,
+              arguments: {
+                'area': area,
+                'coordinate': coordinate,
+              },
+            );
+          },
+          child: Consumer<WeatherNotifier>(
+            builder: (context, notifier, child) {
+              return Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    // icon
+                    Flexible(
+                      flex: 2,
+                      child: Image.asset(notifier.getWeatherIcon()),
+                    ),
+                    const SizedBox(width: 16),
+                                            
+                    // weather data
+                    Flexible(
+                      flex: 3,
+                      fit: FlexFit.tight,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hari ini',
+                            style: robotoRegular.copyWith(),
+                          ),
+                                      
+                          // celcius
+                          Text(
+                            '${(notifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C',
+                            style: robotoRegular.copyWith(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                            
+                          // deskripsi cuaca
+                          Text(
+                            (notifier.weather?.weatherDescription ?? '').toUpperCase(),
+                            maxLines: 2,
+                            overflow: TextOverflow.clip,
+                            style: robotoRegular.copyWith(
+                              fontSize: 12,
+                            ),
+                          ),
+                            
+                          // kota
+                          Text(
+                            (notifier.loading && loadingGMaps)
+                            ? 'Memuat'
+                            : area,
+                            maxLines: 2,
+                            overflow: TextOverflow.clip,
+                            style: robotoRegular.copyWith(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          ),
+        ),
+      ),
+    );
   }
 }
 

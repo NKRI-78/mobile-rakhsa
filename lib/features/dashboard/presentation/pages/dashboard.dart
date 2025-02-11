@@ -61,26 +61,16 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   }
  
   final menus = [
-    // MainMenu(
-    //   title: 'Raksha Mart',
-    //   menuIcon: AssetSource.iconMenuMart,
-    //   path: RoutesNavigation.mart,
-    // ),
     MainMenu(
       title: 'Pulsa dan Tagihan',
       menuIcon: AssetSource.iconNavBarWallet,
-      path: RoutesNavigation.nearMeTypeList,
+      path: RoutesNavigation.ppob,
     ),
     MainMenu(
       title: 'Information',
       menuIcon: AssetSource.iconMenuInformation,
       path: RoutesNavigation.information,
     ),
-    // MainMenu(
-    //   title: 'News',
-    //   menuIcon: AssetSource.iconMenuNews,
-    //   path: RoutesNavigation.news,
-    // ),
     MainMenu(
       title: 'Itinerary',
       menuIcon: AssetSource.iconMenuItinerary,
@@ -262,6 +252,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
                 const SizedBox(height: 6),
                 Text(
                   menu.title,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

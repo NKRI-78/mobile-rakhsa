@@ -52,8 +52,8 @@ class SocketIoService with ChangeNotifier {
     connection = Connectivity().onConnectivityChanged.listen((result) {
 
       final hasConnectionResult = (result == ConnectivityResult.mobile) 
-                                    || (result == ConnectivityResult.vpn) 
-                                    || (result == ConnectivityResult.wifi);
+      || (result == ConnectivityResult.vpn) 
+      || (result == ConnectivityResult.wifi);
       
       isConnected = hasConnectionResult;
       notifyListeners();

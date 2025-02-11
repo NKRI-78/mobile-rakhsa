@@ -3,28 +3,39 @@ import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/dashboard/data/models/banner.dart';
 import 'package:rakhsa/features/dashboard/data/models/news.dart';
+import 'package:rakhsa/features/dashboard/domain/usecases/get_banner.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
+enum BannerProviderState {idle, loading, empty, loaded, error }
 enum NewsProviderState { idle, loading, empty, loaded, error }
 
 class DashboardNotifier with ChangeNotifier {
   final ProfileNotifier profileNotifier;
   final GetNewsUseCase useCase;
+  final GetBannerUseCase bannerUseCase;
 
   DashboardNotifier({
     required this.profileNotifier,
-    required this.useCase
+    required this.useCase,
+    required this.bannerUseCase
   });  
 
   bool _isLocked = false;
   bool get isLocked => _isLocked;
+
+  List<BannerData> _banners = [];
+  List<BannerData> get banners => [..._banners];
 
   List<NewsData> _ews = [];
   List<NewsData> get ews =>[..._ews];
 
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
+
+  BannerProviderState _bannerState = BannerProviderState.loading;
+  BannerProviderState get bannerState => _bannerState;
 
   NewsProviderState _newsState = NewsProviderState.loading;
   NewsProviderState get newsState => _newsState;
@@ -47,6 +58,12 @@ class DashboardNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners()); 
   }
 
+  void setStateBanner(BannerProviderState newState) {
+    _bannerState = newState;
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   void setStateNews(NewsProviderState newState) {
     _newsState = newState;
 
@@ -57,6 +74,25 @@ class DashboardNotifier with ChangeNotifier {
     _state = newState;
 
     Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  Future<void> getBanner() async {
+    setStateBanner(BannerProviderState.loading);
+
+    final result = await bannerUseCase.execute();
+
+    result.fold((l) {
+      _message = l.message;
+      setStateBanner(BannerProviderState.error);
+    }, (r) {
+      _banners = [];
+      _banners.addAll(r.data);
+      setStateBanner(BannerProviderState.loaded);
+
+      if(news.isEmpty) {
+        setStateBanner(BannerProviderState.empty);
+      }
+    });
   }
 
   Future<void> getNews({

@@ -7,8 +7,6 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:shimmer/shimmer.dart';
-
 import 'package:gallery_saver_plus/gallery_saver.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -171,15 +169,16 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
                 );
               },
               placeholder: (BuildContext context, String url) {
-                return Shimmer.fromColors(
-                  highlightColor: ColorResources.white,
-                  baseColor: Colors.grey[200]!,
-                  child: Container(
-                    margin: const EdgeInsets.all(0.0),
-                    padding: const EdgeInsets.all(0.0),
-                    width: double.infinity,
-                    color: ColorResources.white
-                  )  
+                return Container(
+                  margin: const EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage("assets/images/logo/logo.png")
+                    )
+                  ),
                 );
               } 
             );

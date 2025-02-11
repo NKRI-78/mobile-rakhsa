@@ -9,7 +9,7 @@ import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 class InquiryPulsaUseCase {
   final PPOBRepository repository;
 
-  InquiryPulsaUseCase({required this.repository});
+  InquiryPulsaUseCase(this.repository);
 
   Future<Either<Failure, List<PPOBPulsaInquiryData>>> execute({
     required String prefix,
