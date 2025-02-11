@@ -226,8 +226,8 @@ class PPOBDetailPaketDataPageState extends State<PPOBDetailPaketDataPage> {
                               setState(() {
                                 if(selected != i) {
                                   selected = i;
-                                  productCode = notifier.entity[i].productCode!;
-                                  productPrice = notifier.entity[i].productPrice!;
+                                  productCode = notifier.entity[i].code;
+                                  productPrice = notifier.entity[i].price;
                                 } else {
                                   selected = -1;
                                   productCode = "";
@@ -263,7 +263,7 @@ class PPOBDetailPaketDataPageState extends State<PPOBDetailPaketDataPage> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Text(notifier.entity[i].productName!,
+                                            Text(notifier.entity[i].name,
                                               textAlign: TextAlign.center,
                                               style: robotoRegular.copyWith(
                                                 fontSize: 8.0,
@@ -273,7 +273,7 @@ class PPOBDetailPaketDataPageState extends State<PPOBDetailPaketDataPage> {
                                                 : Colors.black
                                               ),
                                             ),
-                                            Text(formatCurrency(notifier.entity[i].productPrice!),
+                                            Text(formatCurrency(notifier.entity[i].price),
                                               style: robotoRegular.copyWith(
                                                 fontSize: 10.0,
                                                 fontWeight: FontWeight.w600,

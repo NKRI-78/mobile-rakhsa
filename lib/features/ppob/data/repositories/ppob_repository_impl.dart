@@ -4,9 +4,9 @@ import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/errors/failure.dart';
 
 import 'package:rakhsa/features/ppob/data/datasources/ppob_remote_datasource.dart';
+import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
 import 'package:rakhsa/features/ppob/domain/entities/denom_topup.dart';
 
-import 'package:rakhsa/features/ppob/domain/entities/inquiry_pulsa.dart';
 import 'package:rakhsa/features/ppob/domain/entities/inquiry_tokenlistrik.dart';
 import 'package:rakhsa/features/ppob/domain/entities/payment.dart';
 import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
@@ -17,16 +17,14 @@ class PPOBRepositoryImpl implements PPOBRepository {
   PPOBRepositoryImpl({required this.remoteDatasource});
 
   @override
-  Future<Either<Failure, List<PPOBPulsaInquiryDataEntity>>> inquiryPulsa({
+  Future<Either<Failure, List<PPOBPulsaInquiryData>>> inquiryPulsa({
     required String prefix,
-    required String type
   }) async {
     try {
       var result = await remoteDatasource.inquiryPulsa(
         prefix: prefix,
-        type: type
       );
-      return Right(result.data?.map((e) => e.toEntity()).toList() ?? []);
+      return Right(result.data);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
     } catch (e) {

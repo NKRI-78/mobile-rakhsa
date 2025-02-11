@@ -89,7 +89,8 @@ dependencies:
   soundpool: ^2.3.0
   socket_io_client: ^3.0.2
   shared_preferences: ^2.2.2
-  syncfusion_flutter_barcodes: ^25.1.35
+  syncfusion_flutter_barcodes: ^24.2.9
+  syncfusion_flutter_calendar: ^24.1.46
   
   # P
   permission_handler: ^11.3.1

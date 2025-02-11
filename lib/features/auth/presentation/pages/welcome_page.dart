@@ -12,10 +12,10 @@ class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
   @override
-  State<WelcomePage> createState() => _WelcomePageState();
+  State<WelcomePage> createState() => WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -109,7 +109,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
                   // register button
                   Consumer<RegisterNotifier>(
-                      builder: (context, provider, child) {
+                    builder: (context, provider, child) {
                     return OutlinedButton(
                       onPressed: () async {
                         if (provider.ssoLoading) {
@@ -129,16 +129,17 @@ class _WelcomePageState extends State<WelcomePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: (provider.ssoLoading)
-                            ? const Center(
-                                child: SpinKitFadingCircle(
-                                    color: blackColor, size: 25.0),
-                              )
-                            : Text(
-                                'Registrasi',
-                                style: robotoRegular.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                        ? const Center(
+                            child: SpinKitFadingCircle(
+                              color: blackColor, 
+                              size: 25.0
+                            ),
+                          )
+                        : Text('Registrasi',
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                       ),
                     );
                   }),

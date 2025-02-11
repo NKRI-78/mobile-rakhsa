@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/header/header_home.dart';
@@ -44,7 +45,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class HomePageState extends State<HomePage> {
 
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
@@ -80,9 +81,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     if(!mounted) return;
       await firebaseProvider.initFcm();
-
-    if(!mounted) return;
-      await getCurrentLocation();
       
     if(!mounted) return;
       socketIoService.startListenConnection();
@@ -176,24 +174,8 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed && !isResumedProcessing) {
-      debugPrint("=== APP RESUME ===");
-
-      isResumedProcessing = true;
-
-      await Future.delayed(const Duration(milliseconds: 500)); 
-    
-      await getData();
-
-      isResumedProcessing = false;
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
@@ -204,19 +186,25 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     socketIoService.connect();
 
+    getCurrentLocation();
+
     Future.microtask(() => getData());
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: whiteColor,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+
     return Scaffold(
       body: Stack(
           children: [  

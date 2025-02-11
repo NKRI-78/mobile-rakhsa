@@ -110,6 +110,7 @@ class EventCreatePageState extends State<EventCreatePage> {
     String endDate = DateFormat('yyyy-MM-dd').format(rangeEnd!);
 
     await saveEventNotifier.save(
+      context,
       title: title, 
       startDate: startDate, 
       endDate: endDate, 

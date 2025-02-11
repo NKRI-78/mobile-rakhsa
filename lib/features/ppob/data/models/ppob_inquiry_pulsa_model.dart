@@ -1,52 +1,42 @@
-import 'package:rakhsa/features/ppob/domain/entities/inquiry_pulsa.dart';
 
 class PPOBPulsaInquiryModel {
-  final int? code;
-  dynamic error;
-  final String? message;
-  final List<PPOBPulsaInquiryData>? data;
+  int status;
+  bool error;
+  String message;
+  List<PPOBPulsaInquiryData> data;
 
   PPOBPulsaInquiryModel({
-    this.code,
-    this.error,
-    this.message,
-    this.data,
+    required this.status,
+    required this.error,
+    required this.message,
+    required this.data,
   });
 
   factory PPOBPulsaInquiryModel.fromJson(Map<String, dynamic> json) => PPOBPulsaInquiryModel(
-    code: json["code"],
+    status: json["status"],
     error: json["error"],
     message: json["message"],
-    data: List<PPOBPulsaInquiryData>.from(json["body"].map((x) => PPOBPulsaInquiryData.fromJson(x))),
+    data: List<PPOBPulsaInquiryData>.from(json["data"].map((x) => PPOBPulsaInquiryData.fromJson(x))),
   );
 }
 
 class PPOBPulsaInquiryData {
-  final String? productCode;
-  final int? productPrice;
-  final int? productFee;
-  final String? productName;
+  String id;
+  String code;
+  int price;
+  String name;
 
   PPOBPulsaInquiryData({
-    this.productCode,
-    this.productPrice,
-    this.productFee,
-    this.productName,
+    required this.id,
+    required this.code,
+    required this.price,
+    required this.name,
   });
 
   factory PPOBPulsaInquiryData.fromJson(Map<String, dynamic> json) => PPOBPulsaInquiryData(
-    productCode: json["product_code"],
-    productPrice: json["product_price"],
-    productFee: json["product_fee"],
-    productName: json["product_name"],
+    id: json["id"],
+    code: json["code"],
+    price: json["price"],
+    name: json["name"],
   );
-
-  PPOBPulsaInquiryDataEntity toEntity() {
-    return PPOBPulsaInquiryDataEntity(
-      productCode: productCode!,
-      productFee: productFee!,
-      productName: productName!,
-      productPrice: productPrice!
-    );
-  }
 }

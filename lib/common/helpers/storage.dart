@@ -72,10 +72,6 @@ class StorageHelper {
     return nationality; 
   }
 
-  static bool getRecordScreen() {
-    return sharedPreferences.getBool("is_home") ?? true;
-  }
-
   static void setMiddlewareLogin({required bool val}) async {
     await sharedPreferences.setBool("middleware_login", val);
   }

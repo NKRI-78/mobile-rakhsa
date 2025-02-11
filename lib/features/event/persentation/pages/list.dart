@@ -1,43 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 
-import 'package:firebase_auth/firebase_auth.dart' as fa;
-
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/event/data/models/list.dart';
+import 'package:rakhsa/features/event/persentation/pages/create_event_page.dart';
 import 'package:rakhsa/features/event/persentation/pages/detail.dart';
 import 'package:rakhsa/features/event/persentation/pages/edit.dart';
 import 'package:rakhsa/features/event/persentation/provider/list_event_notifier.dart';
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-
-import 'package:googleapis/calendar/v3.dart' as googleAPI;
-
-import 'package:http/http.dart' as http;
-
-class GoogleAuthClient extends http.BaseClient {
-  final String accessToken;
-  final String idToken;
-
-  GoogleAuthClient(this.accessToken, this.idToken);
-
- @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    request.headers['Authorization'] = 'Bearer $accessToken';
-    return await http.Client().send(request);
-  }
-}
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class EventListPage extends StatefulWidget {
   const EventListPage({super.key});
@@ -48,58 +29,7 @@ class EventListPage extends StatefulWidget {
 
 class EventListPageState extends State<EventListPage> {
 
-  late FirebaseAuth firebaseAuth;
-
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    scopes: [
-      googleAPI.CalendarApi.calendarScope
-    ]
-  ); 
-
-  late ListEventNotifier listEventNotifier; 
-
-  Future<void> initializeCalendarApi() async {
-    try {
-     
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-
-      final gAuth = await googleUser?.authentication;
-
-      final credential = fa.GoogleAuthProvider.credential(
-        accessToken: gAuth?.accessToken,
-        idToken: gAuth?.idToken,
-      );
-
-      final user = await firebaseAuth.signInWithCredential(credential);
-
-      final GoogleAuthClient authenticatedClient = GoogleAuthClient(
-        user.credential?.accessToken.toString() ?? "-",
-        user.credential?.token.toString() ?? "-",
-      );
-
-      final googleAPI.CalendarApi calendarAPI = googleAPI.CalendarApi(authenticatedClient);
-   
-      final googleAPI.Events events = await calendarAPI.events.list('primary');
-
-      events.items?.forEach((event) {
-        String summary = event.summary.toString();
-        String description = event.description.toString();
-        DateTime startDatetime = event.start?.dateTime ?? DateTime.now();
-        DateTime endDatetime = event.end?.dateTime ?? DateTime.now();
-
-        listEventNotifier.appendToEventGoogleCalendar(
-          summary: summary, 
-          description: description,
-          startDate: DateFormat.yMMMMEEEEd().format(startDatetime),
-          endDate: DateFormat.yMMMMEEEEd().format(endDatetime)
-        );
-      });
-
-      debugPrint("=== SUCCESFULLY SIGNED GOOGLE ===");
-    } catch(e) {
-      debugPrint("=== ERROR SIGNED GOOGLE: ${e.toString()} ===");
-    }
-  }
+  late ListEventNotifier listEventNotifier;
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -144,45 +74,94 @@ class EventListPageState extends State<EventListPage> {
           )
         ),
       ),
-      body: Consumer<ListEventNotifier>(
-        builder: (BuildContext context, ListEventNotifier notifier, Widget? child) {
-          if(notifier.state == ProviderState.loading) {
-            return const Center(
-              child: SizedBox(
-                width: 16.0,
-                height: 16.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
-                ),
-              )
-            );
-          }
-          if(notifier.state == ProviderState.empty) {
-            return Text('Belum ada Rencana yang di Buat',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade700
-              ),
-            );
-          }
-          if(notifier.state == ProviderState.error) {
-            return Center(
-              child: Text(notifier.message,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Consumer<ListEventNotifier>(
+          builder: (BuildContext context, ListEventNotifier notifier, Widget? child) {
+            if(notifier.state == ProviderState.loading) {
+              return const Center(
+                child: SizedBox(
+                  width: 16.0,
+                  height: 16.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                  ),
+                )
+              );
+            }
+            if(notifier.state == ProviderState.empty) {
+              return Text('Belum ada Rencana yang di Buat',
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade700
                 ),
+              );
+            }
+            if(notifier.state == ProviderState.error) {
+              return Center(
+                child: Text(notifier.message,
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.black
+                  ),
+                ),
+              );
+            }
+            return SfCalendar(
+              view: CalendarView.month,
+              allowedViews: const [
+                CalendarView.day,
+                CalendarView.month,
+                CalendarView.schedule,
+              ],
+              showWeekNumber: true,
+              showNavigationArrow: true,
+              showDatePickerButton: true,
+              showCurrentTimeIndicator: true,
+              todayHighlightColor: redColor,
+              selectionDecoration: BoxDecoration(
+                border: Border.all(color: redColor, width: 2),
               ),
+              initialSelectedDate: DateTime.now(),
+              minDate: DateTime.now(),
+              dataSource: EventsDatasource(notifier.entity),
+              monthViewSettings: const MonthViewSettings(
+                showAgenda: true,
+                agendaViewHeight: 150,
+                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+              ),
+              onTap: (selectedDetails) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return CreateEventPage(selectedDetails);
+                },));
+              },
             );
-          }
-          return EventListView(
-            events: notifier.entity,
-            getData: getData,
-          );
-        },
+          },
+        ),
       )
     );
+  }
+}
+
+class EventsDatasource extends CalendarDataSource {
+  EventsDatasource(List<EventData> source){
+    appointments = source;
+  }
+
+  @override
+  String getSubject(int index) {
+    return appointments?[index].title ?? '';
+  }
+
+  @override
+  DateTime getStartTime(int index) {
+    return DateTime.parse(appointments![index].startDate);
+  }
+
+  @override
+  DateTime getEndTime(int index) {
+    return DateTime.parse(appointments![index].endDate);
   }
 }
 

@@ -10,7 +10,7 @@ import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
 import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_tokenlistrik_model.dart';
 
 abstract class PPOBRemoteDataSource {
-  Future<PPOBPulsaInquiryModel> inquiryPulsa({required String prefix, required String type});
+  Future<PPOBPulsaInquiryModel> inquiryPulsa({required String prefix});
   Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({required String idpel});
   Future<PaymentModel> paymentChannelList();
   Future<int> getBalance();
@@ -47,10 +47,9 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   @override 
   Future<PPOBPulsaInquiryModel> inquiryPulsa({
     required String prefix,
-    required String type
   }) async {
     try {
-      Response res = await client.get("${RemoteDataSourceConsts.baseUrlPpob}/inquiry/pulsa?prefix=$prefix&type=$type");
+      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pln-prabayar");
       Map<String, dynamic> data = res.data;
       PPOBPulsaInquiryModel ppobPulsaInquiryModel = PPOBPulsaInquiryModel.fromJson(data);
       return ppobPulsaInquiryModel;

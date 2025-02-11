@@ -5,16 +5,12 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-// import 'package:device_info_plus/device_info_plus.dart';
-// import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geocoding/geocoding.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -40,21 +36,10 @@ import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/providers.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:workmanager/workmanager.dart';
 
 late List<CameraDescription> cameras;
 
 final service = FlutterBackgroundService();
-
-void initializeNotifications() {
-  an.AwesomeNotifications().setListeners(
-    onActionReceivedMethod: AwesomeNotificationService.onActionReceivedMethod,
-    onNotificationCreatedMethod: AwesomeNotificationService.onNotificationCreated,
-    onNotificationDisplayedMethod: AwesomeNotificationService.onNotificationDisplay,
-    onDismissActionReceivedMethod: AwesomeNotificationService.onDismissAction,
-  );
-}
 
 const notificationId = 888;
 
@@ -71,10 +56,10 @@ void onStart(ServiceInstance service) async {
 
   Timer.periodic(const Duration(minutes: 2), (timer) async {
     debugPrint("=== SCHEDULER RUNNING ===");
-    DateTime now = DateTime.now();
+    // DateTime now = DateTime.now();
 
     // Check if current time is exactly 4:00 AM or 4:00 PM
-    if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
+    // if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
       String? userId = sharedPreferences.getString("user_id");
 
       if (userId == null) {
@@ -118,7 +103,7 @@ void onStart(ServiceInstance service) async {
       } catch (e) {
         debugPrint("Error posting data: $e");
       }
-    }
+    // }
   });
 
 }
@@ -197,6 +182,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget home = const SizedBox();
 
   bool isDialogLocationShowing = false;
+  bool isDialogLocationGpsShowing = false;
   bool isDialogNotificationShowing = false;
   bool isDialogMicrophoneShowing = false;
   bool isDialogCameraShowing = false;
@@ -223,11 +209,13 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
 
     if (!mounted) return;
-      await context.read<FirebaseProvider>().setupInteractedMessage(context);
+      await firebaseProvider.setupInteractedMessage(context);
 
     if(!mounted) return;
       firebaseProvider.listenNotification(context);
+  }
 
+  Future<void> getDataPermission() async {
     if(!mounted) return;
       await requestNotificationPermission();
 
@@ -237,6 +225,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> requestNotificationPermission() async {
     await Permission.notification.request();
+    return;
   }
 
   Future<void> requestLocationMicrophoneCameraPermission() async {
@@ -263,7 +252,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> checkPermissionNotification() async {
-    bool isNotificationDenied = await Permission.notification.isDenied;
+    bool isNotificationDenied = await Permission.notification.isDenied || await Permission.notification.isPermanentlyDenied;
 
     if(isNotificationDenied) {
       if (!isDialogNotificationShowing) {
@@ -272,7 +261,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           msg: "Izin Notifikasi Dibutuhkan",
           type: "notification"
         );
-        Future.delayed(const Duration(seconds: 2),() {
+        Future.delayed(const Duration(seconds: 1),() {
           setState(() => isDialogNotificationShowing = false);
         });
 
@@ -291,7 +280,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           msg: "Izin Kamera Dibutuhkan",
           type: "camera"
         );
-        Future.delayed(const Duration(seconds: 2),() {
+        Future.delayed(const Duration(seconds: 1),() {
           if(mounted) {
             setState(() => isDialogCameraShowing = false);
           }
@@ -312,7 +301,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           msg: "Izin Microphone Dibutuhkan",
           type: "microphone"
         );
-        Future.delayed(const Duration(seconds: 2),() {
+        Future.delayed(const Duration(seconds: 1),() {
           if(mounted) {
             setState(() => isDialogMicrophoneShowing = false);
           }
@@ -329,16 +318,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
 
     if(!isGpsEnabled) {
-      if (!isDialogLocationShowing) {
-        setState(() => isDialogLocationShowing = true);
+      if (!isDialogLocationGpsShowing) {
+        setState(() => isDialogLocationGpsShowing = true);
         await GeneralModal.dialogRequestPermission(
           msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
           type: "location-gps"
         );
 
-        Future.delayed(const Duration(seconds: 2),() {
+        Future.delayed(const Duration(seconds: 1),() {
           if(mounted) {
-            setState(() => isDialogLocationShowing = false);
+            setState(() => isDialogLocationGpsShowing = false);
           }
         });
       }
@@ -354,7 +343,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           type: "location-app"
         );
 
-        Future.delayed(const Duration(seconds: 2),() {
+        Future.delayed(const Duration(seconds: 1),() {
           if(mounted) {
             setState(() => isDialogLocationShowing = false);
           }
@@ -374,7 +363,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
       await Future.delayed(const Duration(milliseconds: 500)); 
     
-      await getData();
+      await getDataPermission();
 
       isResumedProcessing = false;
     }
@@ -388,6 +377,8 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     firebaseProvider = context.read<FirebaseProvider>();
 
     Future.microtask(() => getData());
+
+    Future.microtask(() => getDataPermission());
   }
 
   @override 

@@ -67,7 +67,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     //   path: RoutesNavigation.mart,
     // ),
     MainMenu(
-      title: 'PBOB',
+      title: 'Pulsa dan Tagihan',
       menuIcon: AssetSource.iconNavBarWallet,
       path: RoutesNavigation.nearMeTypeList,
     ),
@@ -159,9 +159,9 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
         // BOTTOM NAV BAR
         bottomNavigationBar: context.watch<DashboardNotifier>().isLocked 
-        ? const SizedBox()
-        : 
-NotchedBottomNavBar(
+          ? const SizedBox()
+          : 
+          NotchedBottomNavBar(
             height: bottomomNavBarHeight,
             leftItem: IconButton(
             onPressed: () => Navigator.pushNamed(context, RoutesNavigation.nearMeTypeList),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
 
 class SaveEventNotifier extends ChangeNotifier {
@@ -14,7 +15,7 @@ class SaveEventNotifier extends ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  Future<void> save({
+  Future<void> save(BuildContext context, {
     required String title,
     required String startDate,
     required String endDate,
@@ -37,9 +38,14 @@ class SaveEventNotifier extends ChangeNotifier {
       _state = ProviderState.error;
       Future.delayed(Duration.zero, () => notifyListeners());
       _message = l.message;
-    }, (r) {
+
+      ShowSnackbar.snackbarErr('Gagal membuat agenda [${l.message}]');
+    }, (r) async {
       _state = ProviderState.loaded;
       Future.delayed(Duration.zero, () => notifyListeners());
+
+      Navigator.of(context).pop();
+      ShowSnackbar.snackbarOk('Berhasil membuat agenda');
     });
   }
 }

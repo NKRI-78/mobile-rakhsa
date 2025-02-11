@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 
 import 'package:rakhsa/features/ppob/presentation/pages/payment_page.dart';
-
 import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 class PPOBDetailPulsaPage extends StatefulWidget {
@@ -228,8 +229,8 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               setState(() {
                                 if(selected != i) {
                                   selected = i;
-                                  productCode = notifier.entity[i].productCode!;
-                                  productPrice = notifier.entity[i].productPrice!;
+                                  productCode = notifier.entity[i].code;
+                                  productPrice = notifier.entity[i].price;
                                 } else {
                                   selected = -1;
                                   productCode = "";
@@ -264,7 +265,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Text(formatCurrency((notifier.entity[i].productPrice! - 2000)),
+                                            Text(formatCurrency((notifier.entity[i].price - 2000)),
                                               style: robotoRegular.copyWith(
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.bold,
@@ -273,7 +274,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                                                 : Colors.black
                                               ),
                                             ),
-                                            Text(formatCurrency(notifier.entity[i].productPrice!),
+                                            Text(formatCurrency(notifier.entity[i].price),
                                               style: robotoRegular.copyWith(
                                                 fontSize: 10.0,
                                                 fontWeight: FontWeight.w600,

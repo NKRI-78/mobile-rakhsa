@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
-import 'package:rakhsa/features/ppob/domain/entities/inquiry_pulsa.dart';
+import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
+
 import 'package:rakhsa/features/ppob/domain/usecases/inquiry_pulsa_usecase.dart';
 
 class InquiryPulsaProvider with ChangeNotifier {
@@ -18,8 +19,8 @@ class InquiryPulsaProvider with ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  List<PPOBPulsaInquiryDataEntity> _entity = [];
-  List<PPOBPulsaInquiryDataEntity> get entity => [..._entity];
+  List<PPOBPulsaInquiryData> _entity = [];
+  List<PPOBPulsaInquiryData> get entity => [..._entity];
 
   void reset() {
     _entity = [];
@@ -34,7 +35,6 @@ class InquiryPulsaProvider with ChangeNotifier {
 
     final result = await useCase.execute(
       prefix: prefix,
-      type: type
     );
 
     result.fold((l) {
