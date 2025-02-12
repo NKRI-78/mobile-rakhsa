@@ -63,7 +63,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
   final menus = [
     MainMenu(
-      title: 'Pulsa dan Tagihan',
+      title: 'Pulsa & Tagihan',
       menuIcon: AssetSource.iconNavBarWallet,
       path: RoutesNavigation.ppob,
     ),

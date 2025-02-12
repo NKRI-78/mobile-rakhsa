@@ -12,6 +12,7 @@ import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/features/chat/presentation/pages/expire.dart';
 
 import 'package:rakhsa/features/chat/presentation/provider/detail_inbox_notifier.dart';
 
@@ -46,6 +47,28 @@ class InboxDetailPageState extends State<InboxDetailPage> {
   @override 
   void dispose() {
     super.dispose();
+  }
+
+  String getStatusLabel(dynamic date) {
+    if (date == "-") return "";
+    
+    try {
+      final DateTime expiryDate = DateTime.parse(date.toString());
+      return expiryDate.isBefore(DateTime.now()) ? "Expired" : "Active";
+    } catch (e) {
+      return "Invalid Date";
+    }
+  }
+
+  Color getStatusColor(dynamic date) {
+    if (date == null) return Colors.grey;
+    
+    try {
+      final DateTime expiryDate = DateTime.parse(date.toString());
+      return expiryDate.isBefore(DateTime.now()) ? Colors.red : Colors.green;
+    } catch (e) {
+      return Colors.grey;
+    }
   }
   
   @override
@@ -128,13 +151,32 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                               ),
                             ),
 
-                            Text(notifier.inbox.field2.toString(),
-                              maxLines: 2,
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall,
-                                color: ColorResources.black
-                              ),
+                            ExpiryWidget(
+                              field2: notifier.inbox.field2.toString(), 
+                              field5: notifier.inbox.field5
                             )
+
+                            // Column(
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   mainAxisSize: MainAxisSize.min,
+                            //   children: [
+                            //     Text(notifier.inbox.field2.toString(),
+                            //       maxLines: 2,
+                            //       style: robotoRegular.copyWith(
+                            //         fontSize: Dimensions.fontSizeSmall,
+                            //         color: ColorResources.black,
+                            //       ),
+                            //     ),
+                            //     const SizedBox(height: 5.0),
+                            //     Text(getStatusLabel(notifier.inbox.field5),
+                            //       style: robotoRegular.copyWith(
+                            //         fontSize: Dimensions.fontSizeSmall,
+                            //         fontWeight: FontWeight.bold,
+                            //         color: getStatusColor(notifier.inbox.field5),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // )
                           ],
                         )
                       ),

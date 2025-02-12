@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/constants/theme.dart';
 
+import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/capitalize.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
@@ -484,32 +484,6 @@ class PaymentPageState extends State<PaymentPage> {
             ? primaryColor
             :Colors.grey, 
           )
-          
-        //   ElevatedButton(
-        //   style: ElevatedButton.styleFrom(
-        //     backgroundColor: context.watch<PaymentChannelProvider>().paymentName != "" 
-        //     ?  primaryColor
-        //     : Colors.grey,
-        //     shape: RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.circular(20.0)
-        //     )
-        //   ),
-        //   onPressed: () async {
-      
-        //   },
-        //   child: (context.watch<PayPpobNotifier>().state == ProviderState.loading 
-        //   ? const Center(
-        //       child: SpinKitChasingDots(
-        //         color: primaryColor
-        //       )
-        //     )
-        //   : Text('Bayar',
-        //     style: robotoRegular.copyWith(
-        //       color: Colors.white,
-        //       fontWeight: FontWeight.bold
-        //     ),
-        //   ))
-        // )
       )
     );
   }

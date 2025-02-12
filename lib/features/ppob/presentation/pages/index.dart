@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/ppob/presentation/pages/detail_pulsa.dart';
 // import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata_page.dart';
@@ -78,10 +82,24 @@ class PPOBPageState extends State<PPOBPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Container(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Pulsa & Tagihan",
+          style: robotoRegular.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: Dimensions.fontSizeDefault,
+            color: ColorResources.black
+          ),
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: ColorResources.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
         margin: const EdgeInsets.only( 
-          top: 20.0,
-          bottom: 20.0,
           left: 15.0, 
           right: 15.0
         ),
@@ -120,20 +138,17 @@ class PPOBPageState extends State<PPOBPage> {
                           boxShadow: kElevationToShadow[1],
                           borderRadius: BorderRadius.circular(25.0),
                         ),
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 30.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(categories[i]["name"],
-                                style: robotoRegular.copyWith(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(categories[i]["name"],
+                              style: robotoRegular.copyWith(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ) 
                       ),
                     ),

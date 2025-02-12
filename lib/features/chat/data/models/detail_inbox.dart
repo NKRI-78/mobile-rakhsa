@@ -26,6 +26,7 @@ class InboxDetailData {
   String? field2;
   String? field3;
   String? field4;
+  dynamic field5;
   String? link;
   bool? isRead;
 
@@ -36,6 +37,7 @@ class InboxDetailData {
     this.field2,
     this.field3,
     this.field4,
+    this.field5,
     this.link,
     this.isRead,
   });
@@ -47,6 +49,7 @@ class InboxDetailData {
     field2: json["field2"],
     field3: json["field3"],
     field4: json["field4"],
+    field5: json["field5"],
     link: json["link"],
     isRead: json["is_read"],
   );
