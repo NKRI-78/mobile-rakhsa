@@ -27,7 +27,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override 
   Future<InboxModel> getInbox() async {
     try {
-      final response = await client.post("https://api-ppob.langitdigital78.com/api/v1/inbox",
+      final response = await client.post("http://api-ppob.langitdigital78.com/api/v1/inbox",
         data: {
           "user_id": StorageHelper.getUserId()
         }
@@ -47,7 +47,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<InboxDetailModel> detailInbox({required int id}) async {
    try {
-      final response = await client.post("https://api-ppob.langitdigital78.com/api/v1/inbox/detail",
+      final response = await client.post("http://api-ppob.langitdigital78.com/api/v1/inbox/detail",
         data: {
           "id": id,
         }
