@@ -33,7 +33,6 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
   late TextEditingController passwordNewC;
 
   Future<void> submit() async {
-
     if (emailC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Alamat E-mail tidak boleh kosong");
       return;

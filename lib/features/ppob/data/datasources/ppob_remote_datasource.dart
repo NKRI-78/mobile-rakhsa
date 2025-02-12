@@ -45,7 +45,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
     required String prefix,
   }) async {
     try {
-      Response res = await client.get("http://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data?prefix=$prefix");
+      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data?prefix=$prefix");
       Map<String, dynamic> data = res.data;
       PPOBPulsaInquiryModel ppobPulsaInquiryModel = PPOBPulsaInquiryModel.fromJson(data);
       return ppobPulsaInquiryModel;
@@ -102,7 +102,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   @override 
   Future<PaymentModel> paymentChannelList() async {
     try {
-      Response res = await client.get("http://api-ppob.langitdigital78.com/api/v1/payment");
+      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/payment");
       Map<String, dynamic> data = res.data;
       PaymentModel pm = PaymentModel.fromJson(data);
       return pm;
@@ -196,7 +196,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
     required String type
   }) async {
     try {
-      await client.post("http://api-ppob.langitdigital78.com/api/v1/payment/inquiry", 
+      await client.post("https://api-ppob.langitdigital78.com/api/v1/payment/inquiry", 
         data: {
           "app": "marlinda",
           "idpel": idpel,
