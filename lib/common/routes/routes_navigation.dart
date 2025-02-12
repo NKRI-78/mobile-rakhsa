@@ -16,7 +16,7 @@ import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
 import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 import 'package:rakhsa/features/news/persentation/pages/list.dart';
-import 'package:rakhsa/features/ppob/presentation/pages/index_page.dart';
+import 'package:rakhsa/features/ppob/presentation/pages/index.dart';
 import 'package:rakhsa/views/screens/ecommerce/product/products.dart';
 
 class RoutesNavigation {

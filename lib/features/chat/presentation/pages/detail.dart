@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -96,8 +98,8 @@ class InboxDetailPageState extends State<InboxDetailPage> {
               if(notifier.state == ProviderState.loaded)
                 SliverPadding(
                   padding: const EdgeInsets.only(
-                    top: 10.0,
-                    bottom: 10.0
+                    top: 5.0,
+                    bottom: 5.0
                   ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
@@ -105,7 +107,6 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                       Container(
                         margin: const EdgeInsets.only(
                           top: 12.0,
-                          bottom: 12.0,
                           left: 16.0,
                           right: 16.0
                         ),
@@ -161,23 +162,55 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
 
-                            Text(notifier.inbox.field4.toString(),
+                            Text(notifier.inbox.field4.toString().toUpperCase(),
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black
                               ),
                             ),
 
+                            const SizedBox(height: 12.0),
+
                             notifier.inbox.field3 == "va" 
-                            ? Text(notifier.inbox.link!,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  color: ColorResources.black
-                                ),
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                      color: primaryColor
+                                    ),
+                                    child: Text(notifier.inbox.link.toString(),
+                                      style: robotoRegular.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Dimensions.fontSizeLarge,
+                                        color: ColorResources.white
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12.0),
+                                  InkWell(
+                                    onTap: () async {
+                                      await Clipboard.setData(
+                                        ClipboardData(text: notifier.inbox.link.toString()
+                                      ));
+                                      ShowSnackbar.snackbarDefault("${notifier.inbox.link.toString()} disalin");
+                                    },
+                                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(6.0),
+                                      child: Icon(Icons.copy,
+                                        size: 15.0,
+                                        color: ColorResources.black,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ) 
                             : CachedNetworkImage(
-                                imageUrl: notifier.inbox.link!,
-                                imageBuilder: (context, imageProvider) {
+                                imageUrl: notifier.inbox.link.toString(),
+                                imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                   return Container(
                                     width: double.infinity,
                                     height: 330.0,

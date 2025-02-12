@@ -10,7 +10,7 @@ import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/ppob/presentation/pages/payment_page.dart';
+import 'package:rakhsa/features/ppob/presentation/pages/payment.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/get_denom_topup_listener.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 

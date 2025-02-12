@@ -14,10 +14,12 @@ import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
+import 'package:rakhsa/features/ppob/presentation/pages/success_create_transaction.dart';
 
 import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
+import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class PaymentPage extends StatefulWidget {
   static const route = '/payment';
@@ -103,9 +105,9 @@ class PaymentPageState extends State<PaymentPage> {
                 topRight: Radius.circular(20.0)
               ),
             ),
-            child: RefreshIndicator(
+            child: RefreshIndicator.adaptive(
               onRefresh: () {
-                return Future.sync(() {});
+                return getData();
               },
               child: Consumer<PaymentChannelProvider>(
                 builder: (BuildContext context, PaymentChannelProvider paymentChannelNotifier, Widget? child) {
@@ -157,7 +159,7 @@ class PaymentPageState extends State<PaymentPage> {
                                                     width: 16.0,
                                                     height: 16.0,
                                                     child: SpinKitChasingDots(
-                                                      color: Color(0XFFC82927),
+                                                      color: primaryColor,
                                                     ),
                                                   )
                                                 );
@@ -168,7 +170,7 @@ class PaymentPageState extends State<PaymentPage> {
                                                     width: 16.0,
                                                     height: 16.0,
                                                     child: SpinKitChasingDots(
-                                                      color: Color(0XFFC82927),
+                                                      color: primaryColor,
                                                     ),
                                                   )
                                                 );
@@ -237,7 +239,7 @@ class PaymentPageState extends State<PaymentPage> {
                                     child: Text("Pilih Metode Pembayaran",
                                       style: robotoRegular.copyWith(
                                         color: const Color(0xff0055A6),
-                                        fontSize: 12.0,
+                                        fontSize: Dimensions.fontSizeSmall,
                                         fontWeight: FontWeight.bold
                                       ),
                                     ),
@@ -285,11 +287,16 @@ class PaymentPageState extends State<PaymentPage> {
                                       Text("Service",
                                         style: robotoRegular.copyWith(
                                           color: Colors.grey,
-                                          fontSize: 13.0
+                                          fontSize: Dimensions.fontSizeSmall
                                         ),
                                       ),
       
-                                      Text(widget.type.capitalize())
+                                      Text(widget.type.capitalize(),
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall,
+                                          color: ColorResources.black
+                                        ),
+                                      )
       
                                     ],
                                   ),
@@ -305,7 +312,7 @@ class PaymentPageState extends State<PaymentPage> {
                                         Text("Top-up for",
                                           style: robotoRegular.copyWith(
                                             color: Colors.grey,
-                                            fontSize: 13.0
+                                            fontSize: Dimensions.fontSizeSmall
                                           ),
                                         ),
                                       
@@ -313,7 +320,12 @@ class PaymentPageState extends State<PaymentPage> {
                                         ? const Text("...") 
                                         : context.watch<ProfileNotifier>().state == ProviderState.error 
                                         ? const Text("...") 
-                                        : Text(context.read<ProfileNotifier>().entity.data?.username ?? "-")
+                                        : Text(context.read<ProfileNotifier>().entity.data?.username ?? "-",
+                                          style: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeSmall,
+                                            color: ColorResources.black
+                                          ),
+                                        )
         
                                       ],
                                     ),
@@ -329,11 +341,16 @@ class PaymentPageState extends State<PaymentPage> {
                                         Text("Top-up for",
                                           style: robotoRegular.copyWith(
                                             color: Colors.grey,
-                                            fontSize: 13.0
+                                            fontSize: Dimensions.fontSizeSmall
                                           ),
                                         ),
                                       
-                                        Text(widget.customerName)
+                                        Text(widget.customerName,
+                                          style: robotoRegular.copyWith(
+                                            color: Colors.black,
+                                            fontSize: Dimensions.fontSizeSmall
+                                          ),
+                                        )
                                       ],
                                     ),
         
@@ -346,11 +363,16 @@ class PaymentPageState extends State<PaymentPage> {
                                         Text("Phone number",
                                           style: robotoRegular.copyWith(
                                             color: Colors.grey,
-                                            fontSize: 13.0
+                                            fontSize: Dimensions.fontSizeSmall
                                           ),
                                         ),
         
-                                        Text(widget.customerNo)
+                                        Text(widget.customerNo,
+                                          style: robotoRegular.copyWith(
+                                            color: ColorResources.black,
+                                            fontSize: Dimensions.fontSizeSmall
+                                          ),
+                                        )
         
                                       ],
                                     ),
@@ -365,13 +387,17 @@ class PaymentPageState extends State<PaymentPage> {
                                       Text("Metode Pembayaran",
                                         style: robotoRegular.copyWith(
                                           color: Colors.grey,
-                                          fontSize: 13.0
+                                          fontSize: Dimensions.fontSizeSmall
                                         ),
                                       ),
         
                                       SizedBox(
                                         width: 180.0,
                                         child: Text(paymentChannelNotifier.paymentName,
+                                        style: robotoRegular.copyWith(
+                                          color: ColorResources.black,
+                                          fontSize: Dimensions.fontSizeSmall
+                                        ),
                                         textAlign: TextAlign.end,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -390,12 +416,15 @@ class PaymentPageState extends State<PaymentPage> {
                                       Text("Total Pembayaran",
                                         style: robotoRegular.copyWith(
                                           color: Colors.grey,
-                                          fontSize: 13.0
+                                          fontSize: Dimensions.fontSizeSmall
                                         ),
                                       ),
         
                                       Text(formatCurrency(widget.productPrice),
-                                        style: robotoRegular,
+                                        style: robotoRegular.copyWith(
+                                          color: ColorResources.black,
+                                          fontSize: Dimensions.fontSizeSmall
+                                        ),
                                       )
                                     ],
                                   ),
@@ -417,27 +446,17 @@ class PaymentPageState extends State<PaymentPage> {
         ),
         bottomNavigationBar: Container(
           margin: const EdgeInsets.all(20.0),
-          child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.watch<PaymentChannelProvider>().paymentName != "" 
-            ?  primaryColor
-            : Colors.grey,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0)
-            )
-          ),
-          onPressed: () async {
+          child: CustomButton(
+            onTap: context.watch<PaymentChannelProvider>().paymentName != "" 
+            ? () async {
+                PaymentChannelProvider paymentChannelProvider = context.read<PaymentChannelProvider>();
+                PayPpobNotifier payPpobProvider = context.read<PayPpobNotifier>();
 
-            PaymentChannelProvider paymentChannelProvider = context.read<PaymentChannelProvider>();
-            PayPpobNotifier payPpobProvider = context.read<PayPpobNotifier>();
+                if(paymentChannelProvider.paymentName == "") {
+                  await ShowSnackbar.snackbarErr("Metode pembayaran belum dipilih");
+                  return;
+                }
 
-            if(paymentChannelProvider.paymentName == "") {
-              await ShowSnackbar.snackbarErr("Metode pembayaran belum dipilih");
-              return;
-            }
-
-            switch (widget.type) {
-              case "pulsa":
                 await payPpobProvider.pay(
                   idpel: widget.customerNo,
                   productId: widget.productId,
@@ -445,28 +464,52 @@ class PaymentPageState extends State<PaymentPage> {
                   paymentChannel: paymentChannelProvider.paymentChannel,
                   type: "PULSA",
                 );
-              break;
-              default:
-            }
-
-          },
-          child: (context.watch<PayPpobNotifier>().state == ProviderState.loading 
-          ? const Center(
-              child: SizedBox(
-                width: 16.0, 
-                height: 16.0,
-                child: SpinKitChasingDots(
-                  color: primaryColor
-                )
-              )
-            )
-          : Text('Bayar',
-            style: robotoRegular.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold
-            ),
-          ))
-        )
+                
+                Future.delayed(Duration.zero, () {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+                    return const SuccessCreateTransactioPage();
+                  }), (route) => route.isFirst);
+                });
+              } 
+            : () {},
+            isBorder: false,
+            isBorderRadius: true,
+            isBoxShadow: false,
+            isLoading: context.watch<PayPpobNotifier>().state == ProviderState.loading 
+            ? true 
+            : false,
+            sizeBorderRadius: 20.0,
+            btnTxt: "Bayar",
+            btnColor: context.watch<PaymentChannelProvider>().paymentName != "" 
+            ? primaryColor
+            :Colors.grey, 
+          )
+          
+        //   ElevatedButton(
+        //   style: ElevatedButton.styleFrom(
+        //     backgroundColor: context.watch<PaymentChannelProvider>().paymentName != "" 
+        //     ?  primaryColor
+        //     : Colors.grey,
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(20.0)
+        //     )
+        //   ),
+        //   onPressed: () async {
+      
+        //   },
+        //   child: (context.watch<PayPpobNotifier>().state == ProviderState.loading 
+        //   ? const Center(
+        //       child: SpinKitChasingDots(
+        //         color: primaryColor
+        //       )
+        //     )
+        //   : Text('Bayar',
+        //     style: robotoRegular.copyWith(
+        //       color: Colors.white,
+        //       fontWeight: FontWeight.bold
+        //     ),
+        //   ))
+        // )
       )
     );
   }
