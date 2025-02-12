@@ -45,7 +45,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
     required String prefix,
   }) async {
     try {
-      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data");
+      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data?prefix=$prefix");
       Map<String, dynamic> data = res.data;
       PPOBPulsaInquiryModel ppobPulsaInquiryModel = PPOBPulsaInquiryModel.fromJson(data);
       return ppobPulsaInquiryModel;

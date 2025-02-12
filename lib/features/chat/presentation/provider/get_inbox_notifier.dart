@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
-import 'package:rakhsa/features/chat/data/models/chats.dart';
+import 'package:rakhsa/features/chat/data/models/inbox.dart';
 
-import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
+import 'package:rakhsa/features/chat/domain/usecases/get_inbox.dart';
 
-class GetChatsNotifier with ChangeNotifier {
-  final GetChatsUseCase useCase;
+class GetInboxNotifier with ChangeNotifier {
+  final GetInboxUseCase useCase;
 
-  GetChatsNotifier({
+  GetInboxNotifier({
     required this.useCase
   });  
 
-  List<ChatsData> _chats = [];
-  List<ChatsData> get chats => [..._chats];
+  List<InboxData> _inbox = [];
+  List<InboxData> get inbox => [..._inbox];
 
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
@@ -28,19 +28,18 @@ class GetChatsNotifier with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> getChats() async {
+  Future<void> getInbox() async {
     final result = await useCase.execute();
 
     result.fold((l) {
       _message = l.message;
       setStateProvider(ProviderState.error);
     }, (r) {
-
-      _chats = [];
-      _chats.addAll(r.data);
+      _inbox = [];
+      _inbox.addAll(r.data);
       setStateProvider(ProviderState.loaded);
 
-      if(chats.isEmpty) {
+      if(inbox.isEmpty) {
         setStateProvider(ProviderState.empty);
       }
     });

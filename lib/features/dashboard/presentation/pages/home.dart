@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/ews/list.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/header/header_home.dart';
@@ -22,8 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
-import 'package:rakhsa/main.dart';
 
+import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
@@ -217,8 +218,6 @@ class HomePageState extends State<HomePage> {
     });
 
     Future.microtask(() => getData());
-
-
   }
 
   @override
@@ -229,6 +228,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: whiteColor,
       statusBarBrightness: Brightness.dark,
@@ -340,7 +340,7 @@ class HomePageState extends State<HomePage> {
                             }
                             
                             return Padding(
-                              padding: const EdgeInsets.only(top: 45),
+                              padding: const EdgeInsets.only(top: 45.0),
                               child: (notifier.ews.isNotEmpty) 
                               ? EwsListWidget(
                                   getData: getData,

@@ -4,9 +4,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
-
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
-
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
@@ -14,7 +12,9 @@ import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.d
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/detail_inbox_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_inbox_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
@@ -81,5 +81,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<PaymentChannelProvider>()),
   ChangeNotifierProvider.value(value: di.locator<PayPpobNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<DetailInboxNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<GetInboxNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),
 ];

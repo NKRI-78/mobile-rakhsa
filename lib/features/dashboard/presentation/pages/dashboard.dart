@@ -22,6 +22,7 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/socketio.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -37,7 +38,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
   late EcommerceProvider ecommerceProvider;
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
-
+  late SocketIoService socketIoService;
   late ProfileNotifier profileNotifier;
 
   DateTime? lastTap;
@@ -93,8 +94,11 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<ProfileNotifier>();
-    ecommerceProvider = context.read<EcommerceProvider>();
+    ecommerceProvider = context.read<EcommerceProvider>();  
     dashboardNotifier = context.read<DashboardNotifier>();
+    socketIoService = context.read<SocketIoService>();
+
+    socketIoService.connect();
 
     Future.microtask(() => getData());
   }
@@ -108,6 +112,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
  
   @override
   Widget build(BuildContext context) {
+    
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) {

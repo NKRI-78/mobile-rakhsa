@@ -20,7 +20,11 @@ import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notif
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:rakhsa/features/chat/domain/usecases/detail_inbox.dart';
+import 'package:rakhsa/features/chat/domain/usecases/get_inbox.dart';
 import 'package:rakhsa/features/chat/domain/usecases/insert_message.dart';
+import 'package:rakhsa/features/chat/presentation/provider/detail_inbox_notifier.dart';
+import 'package:rakhsa/features/chat/presentation/provider/get_inbox_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/detail_news.dart';
@@ -189,6 +193,8 @@ void init() {
   locator.registerLazySingleton(() => PaymentChannelUseCase(locator()));
   locator.registerLazySingleton(() => InquiryPulsaUseCase(locator()));
   locator.registerLazySingleton(() => PayPpobUseCase(locator()));
+  locator.registerLazySingleton(() => GetInboxUseCase(locator()));
+  locator.registerLazySingleton(() => DetailInboxUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -221,9 +227,11 @@ void init() {
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
+  locator.registerFactory(() => DetailInboxNotifier(useCase: locator()));
   locator.registerFactory(() => PayPpobNotifier(useCase: locator()));
   locator.registerFactory(() => InquiryPulsaProvider(useCase: locator()));
   locator.registerFactory(() => PaymentChannelProvider(useCase: locator()));
+  locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
 
   locator.registerLazySingleton(() => LoginNotifier(
     useCase: locator()
