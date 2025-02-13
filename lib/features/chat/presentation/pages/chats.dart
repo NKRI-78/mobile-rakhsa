@@ -136,6 +136,42 @@ class ChatsPageState extends State<ChatsPage> {
                 ),
               ),
 
+            // SliverToBoxAdapter(
+            //   child:  Container(
+            //     margin: const EdgeInsets.only(
+            //       top: 20.0,
+            //       left: 16.0,
+            //       right: 16.0
+            //     ),
+            //     child: Text("Chats",
+            //       style: robotoRegular.copyWith(
+            //         fontSize: Dimensions.fontSizeLarge,
+            //         fontWeight: FontWeight.bold,
+            //         color: ColorResources.black
+            //       ),
+            //     )
+            //   ),
+            // ),
+
+            SliverToBoxAdapter(
+              child: context.watch<GetChatsNotifier>().state == ProviderState.empty 
+              ? const SizedBox() 
+              : Container(
+                  margin: const EdgeInsets.only(
+                    top: 20.0,
+                    left: 16.0,
+                    right: 16.0
+                  ),
+                  child: Text("Chats",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      fontWeight: FontWeight.bold,
+                      color: ColorResources.black
+                    ),
+                  )
+                ),
+              ),
+
             SliverList.builder(
               itemCount: context.read<GetChatsNotifier>().chats.length * 2 - 1,
               itemBuilder: (BuildContext context, int i) {
@@ -242,6 +278,25 @@ class ChatsPageState extends State<ChatsPage> {
               },
             ),
 
+            SliverToBoxAdapter(
+              child: context.watch<GetInboxNotifier>().state == ProviderState.empty 
+              ? const SizedBox() 
+              : Container(
+                  margin: const EdgeInsets.only(
+                    top: 20.0,
+                    left: 16.0,
+                    right: 16.0
+                  ),
+                  child: Text("Payment",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      fontWeight: FontWeight.bold,
+                      color: ColorResources.black
+                    ),
+                  )
+                ),
+              ),
+
             SliverList.builder(
               itemCount: context.read<GetInboxNotifier>().inbox.length * 2 - 1,
               itemBuilder: (BuildContext context, int i) {
@@ -274,7 +329,11 @@ class ChatsPageState extends State<ChatsPage> {
                           fontSize: Dimensions.fontSizeSmall
                         ),
                       ),
-                      trailing: Text(inbox.field2)
+                      trailing: Text(inbox.field2),
+                      leading: const Icon(
+                        Icons.payment,
+                        color: ColorResources.black,
+                      ),
                     ),
                   );
                 } else {

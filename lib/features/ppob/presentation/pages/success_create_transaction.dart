@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:rakhsa/common/helpers/format_currency.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
-
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
+
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
 class SuccessCreateTransactioPage extends StatefulWidget {
