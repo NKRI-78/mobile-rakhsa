@@ -66,7 +66,7 @@ class EcommerceRepo {
           "path": path
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed create product image");
     } catch(e, stacktrace) {
@@ -86,7 +86,7 @@ class EcommerceRepo {
           "id": id
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed delete product image");
     } catch(e, stacktrace) {
@@ -102,7 +102,7 @@ class EcommerceRepo {
     try {
       Dio dio = DioManager.shared.getClient();
       await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/delete/$productId");
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed delete product");
     } catch(e, stacktrace) {
@@ -139,7 +139,7 @@ class EcommerceRepo {
           "app_name": "raksha"
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed create product");
     } catch(e, stacktrace) {
@@ -172,7 +172,7 @@ class EcommerceRepo {
           "cat_id": catId,
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed update product");
     } catch(e, stacktrace) {
@@ -193,7 +193,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed fetch all product");
     } catch(e, stacktrace) {
@@ -215,7 +215,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed fetch all product seller");
     } catch(e, stacktrace) {
@@ -331,7 +331,7 @@ class EcommerceRepo {
           "app": "raksha"
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed confirm order");
     } catch(e) {
@@ -349,7 +349,7 @@ class EcommerceRepo {
           "app": "raksha"
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed cancel order");
     } catch(e) {
@@ -411,7 +411,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       DetailOrderModel detailOrderModel = DetailOrderModel.fromJson(data);
       return detailOrderModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed order detail");
     } catch(e, stacktrace) {
@@ -437,7 +437,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       DetailOrderSellerModel detailOrderSellerModel = DetailOrderSellerModel.fromJson(data);
       return detailOrderSellerModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed order seller detail");
     } catch(e, stacktrace) {
@@ -499,7 +499,7 @@ class EcommerceRepo {
       );
       Map<String, dynamic> data = response.data;
       return data["data"]["cart_id"];
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       ShowSnackbar.snackbarErr(e.response!.data["message"]);
       debugPrint(e.response!.data.toString());
     } catch(e) {
@@ -525,7 +525,7 @@ class EcommerceRepo {
       );
       Map<String, dynamic> data = response.data;
       return data["data"]["cart_id"];
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       ShowSnackbar.snackbarErr(e.response!.data["message"]);
       debugPrint(e.response!.data.toString());
     } catch(e) {
@@ -587,7 +587,7 @@ class EcommerceRepo {
           "qty": qty
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -607,7 +607,7 @@ class EcommerceRepo {
           "selected": selected
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -626,7 +626,7 @@ class EcommerceRepo {
           "selected": selected
         }
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -700,7 +700,7 @@ class EcommerceRepo {
 
       CheckoutListModel checkoutListModel = CheckoutListModel.fromJson(data);
       return checkoutListModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception('Failed get checkout list');
     } catch(e) {
@@ -729,7 +729,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       CourierListModel courierListModel = CourierListModel.fromJson(data);
       return courierListModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       ShowSnackbar.snackbarErr(e.response!.data["message"]);
       throw Exception('Failed get courier');
     } catch(e) {
@@ -1056,7 +1056,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransVa responseMidtransVa = ResponseMidtransVa.fromJson(data);
       return responseMidtransVa;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed pay");
@@ -1092,7 +1092,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransEmoney responseMidtransEmoney = ResponseMidtransEmoney.fromJson(data);
       return responseMidtransEmoney;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed emoneyPay");
@@ -1125,7 +1125,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransVa responseMidtransVa = ResponseMidtransVa.fromJson(data);
       return responseMidtransVa;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed payTopup");
@@ -1147,7 +1147,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = res.data;
       StoreModel storeModel = StoreModel.fromJson(data);
       return storeModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed Get Store");
     } catch(e, stacktrace) {  
@@ -1198,7 +1198,7 @@ class EcommerceRepo {
       await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/stores/assign",
         data: dataObj
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed Create Store");
@@ -1220,7 +1220,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       OwnerModel ownerModel = OwnerModel.fromJson(data);
       return ownerModel;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed Check Store Owner");
@@ -1254,7 +1254,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransEmoney responseMidtransEmoney = ResponseMidtransEmoney.fromJson(data);
       return responseMidtransEmoney;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbarErr("Hmm... Mohon tunggu yaa");
       throw Exception("Failed emoneyPayTopup");

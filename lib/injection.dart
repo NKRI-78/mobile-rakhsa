@@ -113,10 +113,10 @@ import 'package:rakhsa/features/ppob/data/datasources/ppob_remote_datasource.dar
 import 'package:rakhsa/features/ppob/data/repositories/ppob_repository_impl.dart';
 import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 import 'package:rakhsa/features/ppob/domain/usecases/inquiry_pulsa_usecase.dart';
-import 'package:rakhsa/features/ppob/domain/usecases/pay_pulsa_paket_data_usecase.dart';
+import 'package:rakhsa/features/ppob/domain/usecases/pay_ppob_usecase.dart';
 import 'package:rakhsa/features/ppob/domain/usecases/payment_channel_usecase.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/pay_ppob_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';

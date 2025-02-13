@@ -33,7 +33,7 @@ import 'package:rakhsa/features/information/presentation/provider/visa_notifier.
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/pay_pulsa_and_paket_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/pay_ppob_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 

@@ -25,27 +25,33 @@ class PPOBPageState extends State<PPOBPage> {
   List<Map<String, dynamic>> categories = [
     {
       "id": 1,
-      "name": "Pulsa",
+      "name": "Pulsa & Paket Data",
+      "link": "pulsapaketdata",
       "image": "assets/image/icons/ic-pulsa.png",
     },
     // {
     //   "id": 2,
     //   "name": "Paket Data",
     //   "image": "assets/image/icons/ic-paketdata.png",
+    //   "link": "paketdata"
     // },
     // {
     //   "id": 3,
     //   "name": "Token Listrik",
     //   "image": "assets/image/icons/ic-listrik.png",
+    //   "link": "tokenlistrik"
     // },
   ];
 
   void onChangeCategories(int i) {
-    switch (categories[i]["name"]) {
-      case "Pulsa":
+    switch (categories[i]["link"]) {
+      case "pulsapaketdata":
         Navigator.push(context, 
           MaterialPageRoute(builder: (context) {
-            return PPOBDetailPulsaPage(title: categories[i]["name"]);
+            return PPOBDetailPulsaPage(
+              title: categories[i]["name"],
+              type: "Pulsa / Paket Data",
+            );
           })
         );
       break;

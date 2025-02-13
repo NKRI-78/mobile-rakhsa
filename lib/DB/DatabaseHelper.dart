@@ -3,8 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseHelper {
-  static const _databaseName = "MyDatabase.db";
-  static const _databaseVersion = 1;
+  static const databaseName = "MyDatabase.db";
+  static const databaseVersion = 1;
 
   static const table = 'my_table';
 
@@ -19,19 +19,17 @@ class DatabaseHelper {
 
   late Database db;
 
-  // this opens the database (and creates it if it doesn't exist)
   Future<void> init() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, _databaseName);
+    final path = join(documentsDirectory.path, databaseName);
     db = await openDatabase(
       path,
-      version: _databaseVersion,
-      onCreate: _onCreate,
+      version: databaseVersion,
+      onCreate: onCreate,
     );
   }
 
-  // SQL code to create the database table
-  Future _onCreate(Database db, int version) async {
+  Future onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $table (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT,

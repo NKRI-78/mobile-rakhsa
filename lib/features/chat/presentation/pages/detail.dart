@@ -155,28 +155,6 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                               field2: notifier.inbox.field2.toString(), 
                               field5: notifier.inbox.field5
                             )
-
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   mainAxisSize: MainAxisSize.min,
-                            //   children: [
-                            //     Text(notifier.inbox.field2.toString(),
-                            //       maxLines: 2,
-                            //       style: robotoRegular.copyWith(
-                            //         fontSize: Dimensions.fontSizeSmall,
-                            //         color: ColorResources.black,
-                            //       ),
-                            //     ),
-                            //     const SizedBox(height: 5.0),
-                            //     Text(getStatusLabel(notifier.inbox.field5),
-                            //       style: robotoRegular.copyWith(
-                            //         fontSize: Dimensions.fontSizeSmall,
-                            //         fontWeight: FontWeight.bold,
-                            //         color: getStatusColor(notifier.inbox.field5),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // )
                           ],
                         )
                       ),

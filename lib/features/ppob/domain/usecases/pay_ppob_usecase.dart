@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import 'package:rakhsa/common/errors/failure.dart';
 
+import 'package:rakhsa/features/ppob/data/models/inquiry_model.dart';
 import 'package:rakhsa/features/ppob/domain/repositories/ppob_repository.dart';
 
 class PayPpobUseCase {
@@ -9,7 +10,7 @@ class PayPpobUseCase {
 
   PayPpobUseCase(this.repository);
 
-  Future<Either<Failure, void>> execute({
+  Future<Either<Failure, InquiryPayPpobModel>> execute({
     required String idpel,
     required String paymentChannel,
     required String paymentCode,

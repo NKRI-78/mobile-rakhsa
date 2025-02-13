@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 
 import 'package:rakhsa/common/errors/failure.dart';
+
+import 'package:rakhsa/features/ppob/data/models/inquiry_model.dart';
 import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_pulsa_model.dart';
 import 'package:rakhsa/features/ppob/domain/entities/denom_topup.dart';
@@ -20,7 +22,7 @@ abstract interface class PPOBRepository {
 
   Future<Either<Failure, int>> getBalance();
 
-  Future<Either<Failure, void>> payPpob({
+  Future<Either<Failure, InquiryPayPpobModel>> payPpob({
     required String idpel, 
     required String paymentChannel, 
     required String paymentCode, 

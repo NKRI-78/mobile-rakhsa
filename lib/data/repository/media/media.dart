@@ -18,7 +18,7 @@ class MediaRepo {
       });
       Response res = await dio.post("https://api-media.inovatiftujuh8.com/api/v1/media/upload", data: formData);
       response = res;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
-import 'package:rakhsa/features/ppob/domain/usecases/pay_pulsa_paket_data_usecase.dart';
+import 'package:rakhsa/features/ppob/domain/usecases/pay_ppob_usecase.dart';
 
 class PayPpobNotifier with ChangeNotifier {
   final PayPpobUseCase useCase;
@@ -10,6 +10,9 @@ class PayPpobNotifier with ChangeNotifier {
   PayPpobNotifier({
     required this.useCase
   });
+
+  String paymentAccess = "";
+  String paymentType = "";
 
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
@@ -40,6 +43,9 @@ class PayPpobNotifier with ChangeNotifier {
       _state = ProviderState.error;
       _message = l.message;
     }, (r) {
+      paymentAccess = r.data.paymentAccess;
+      paymentType = r.data.paymentType;
+
       _state = ProviderState.loaded;
     });
     notifyListeners();

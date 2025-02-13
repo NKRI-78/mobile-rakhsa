@@ -3,6 +3,7 @@ import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 
 import 'package:rakhsa/common/errors/exception.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/features/ppob/data/models/inquiry_model.dart';
 
 import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 import 'package:rakhsa/features/ppob/data/models/ppob_denom_topup_model.dart';
@@ -188,7 +189,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
   }
 
   @override 
-  Future<void> payPpob({
+  Future<InquiryPayPpobModel> payPpob({
     required String idpel,
     required String productId,
     required String paymentCode, 
@@ -196,7 +197,7 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
     required String type
   }) async {
     try {
-      await client.post("https://api-ppob.langitdigital78.com/api/v1/payment/inquiry", 
+      Response res = await client.post("https://api-ppob.langitdigital78.com/api/v1/payment/inquiry", 
         data: {
           "app": "marlinda",
           "idpel": idpel,
@@ -207,6 +208,9 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
           "type": type
         }
       );
+      Map<String, dynamic> data = res.data;
+      InquiryPayPpobModel inqiuryPayPpobModel = InquiryPayPpobModel.fromJson(data);
+      return inqiuryPayPpobModel;
     } on DioException catch(e) {
       String message = handleDioException(e);
       throw ServerException(message);

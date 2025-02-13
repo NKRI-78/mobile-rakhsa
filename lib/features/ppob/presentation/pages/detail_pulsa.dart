@@ -22,8 +22,11 @@ import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
 class PPOBDetailPulsaPage extends StatefulWidget {
   final String title;
+  final String type;
+
   const PPOBDetailPulsaPage({
     required this.title,
+    required this.type,
     super.key
   });
 
@@ -34,6 +37,8 @@ class PPOBDetailPulsaPage extends StatefulWidget {
 class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
 
   String productId = "";
+  String productName = "";
+
   int productPrice = 0;
   int selected = -1;
 
@@ -108,10 +113,11 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                 customerName: "-", 
                 customerNo: getC.text, 
                 productId: productId, 
+                productName: productName,
                 productPrice: productPrice, 
                 topupby: "-", 
                 ref2: "-", 
-                type: "pulsa"
+                type: widget.type
               ))
             );
           }, 
@@ -285,6 +291,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               if(selected != i) {
                                 selected = i;
                                 productId = notifier.entity[i].code;
+                                productName = notifier.entity[i].name;
                                 productPrice = notifier.entity[i].price;
                               } else {
                                 selected = -1;
