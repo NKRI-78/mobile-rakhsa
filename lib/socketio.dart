@@ -86,18 +86,22 @@ class SocketIoService with ChangeNotifier {
   Future<void> init() async {
     String token = await StorageHelper.getToken();
 
-    socket = IO.io('https://socketio-rakhsa.langitdigital78.com', 
-      OptionBuilder().setTransports(['websocket'])
-      .setAuth({
-        'token': token
-      })
-      .disableAutoConnect()
-      .enableForceNew()
-      .enableForceNewConnection()
-      .build()
-    );
+    if(token != "-") {
 
-    socket?.connect();
+      socket = IO.io('https://socketio-rakhsa.langitdigital78.com', 
+        OptionBuilder().setTransports(['websocket'])
+        .setAuth({
+          'token': token
+        })
+        .disableAutoConnect()
+        .enableForceNew()
+        .enableForceNewConnection()
+        .build()
+      );
+
+      socket?.connect();
+
+    }
 
     socket?.onConnect((_) {
       debugPrint("=== CONNECTED SOCKET IO ===");

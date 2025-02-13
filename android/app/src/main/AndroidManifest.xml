@@ -38,6 +38,8 @@
         android:showWhenLocked="true"
         android:turnScreenOn="true"
         android:requestLegacyExternalStorage="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher">
 
         <meta-data

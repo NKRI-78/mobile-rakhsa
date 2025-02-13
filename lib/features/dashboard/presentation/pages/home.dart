@@ -165,7 +165,7 @@ class HomePageState extends State<HomePage> {
         androidConfiguration: AndroidConfiguration(
           onStart: onStart,
           isForegroundMode: true,
-          foregroundServiceNotificationId: notificationId,
+          foregroundServiceNotificationId: 888,
           foregroundServiceTypes: [
             AndroidForegroundType.location
           ],

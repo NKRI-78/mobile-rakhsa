@@ -41,8 +41,6 @@ late List<CameraDescription> cameras;
 
 final service = FlutterBackgroundService();
 
-const notificationId = 888;
-
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   service.on("stop").listen((event) {
@@ -127,14 +125,12 @@ void stopBackgroundService() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  cameras = await availableCameras();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
-
+  
   await initializeDateFormatting('id_ID', null);
 
   await an.AwesomeNotifications().initialize('resource://drawable/ic_notification',
@@ -161,6 +157,8 @@ Future<void> main() async {
   await StorageHelper.init();
 
   di.init();
+
+  cameras = await availableCameras();
 
   runApp(MultiProvider(
     providers: providers, 
