@@ -98,8 +98,6 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
     dashboardNotifier = context.read<DashboardNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    socketIoService.connect();
-
     Future.microtask(() => getData());
   }
   

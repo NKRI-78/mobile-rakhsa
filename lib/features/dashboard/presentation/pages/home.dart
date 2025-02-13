@@ -196,8 +196,6 @@ class HomePageState extends State<HomePage> {
     weatherNotifier = context.read<WeatherNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    socketIoService.connect();
-
     banners = [];
 
     banners.add(

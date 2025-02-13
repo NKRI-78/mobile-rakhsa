@@ -83,5 +83,5 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailInboxNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetInboxNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<SocketIoService>()..connect()),
+  ChangeNotifierProvider.value(value: di.locator<SocketIoService>()),
 ];

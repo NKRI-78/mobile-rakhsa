@@ -25,6 +25,10 @@ enum ConnectionIndicator { red, yellow, green }
 class SocketIoService with ChangeNotifier {
   static final shared = SocketIoService();
 
+  SocketIoService() {
+    connect();
+  }
+
   IO.Socket? socket;
 
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
