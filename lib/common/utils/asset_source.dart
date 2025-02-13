@@ -7,6 +7,8 @@ class AssetSource {
 
   static const String titleMarlinda = 'assets/images/title-marlinda.png';
 
+  static const String bgWeather = 'assets/images/weather/bg.png';
+
   static const String logoutTitle = "assets/images/logout.png";
   static const String loginOrnament = "assets/images/login-ornament.png";
   static const String signWithGoogle = "assets/images/sign-with-google.png";

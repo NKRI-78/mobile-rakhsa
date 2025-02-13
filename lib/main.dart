@@ -331,6 +331,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       }
     } else {
       await checkPermissionNotification();
+      return;
     }
 
     if(isLocationDenied) {
@@ -349,6 +350,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       }
     } else {
       await checkPermissionNotification();
+      return;
     }
   }
 

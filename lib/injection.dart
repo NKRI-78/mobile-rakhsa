@@ -121,6 +121,7 @@ import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_list
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/socketio.dart';
+import 'package:weather/weather.dart';
 
 final locator = GetIt.instance;
 
@@ -207,7 +208,6 @@ void init() {
   locator.registerFactory(() => UpdateProfileNotifier(useCase: locator()));
   locator.registerFactory(() => SosNotifier(useCase: locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
-  locator.registerFactory(() => EventNotifier(useCase: locator(), listEventUseCase: locator()));
   locator.registerFactory(() => VisaNotifier(useCase: locator()));
   locator.registerFactory(() => PassportNotifier(useCase: locator()));
   locator.registerFactory(() => KbriIdNotifier(useCase: locator()));
@@ -232,6 +232,13 @@ void init() {
   locator.registerFactory(() => InquiryPulsaProvider(useCase: locator()));
   locator.registerFactory(() => PaymentChannelProvider(useCase: locator()));
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
+  locator.registerFactory(() => EventNotifier  (
+    useCase: locator(), 
+    listEventUseCase: locator(),
+    deleteEventUseCase: locator(),
+    updateEventUseCase: locator(),
+  ));
+
 
   locator.registerLazySingleton(() => LoginNotifier(
     useCase: locator()
@@ -250,7 +257,9 @@ void init() {
     mr: locator()
   ));
 
-  locator.registerFactory(() => WeatherNotifier());
+  locator.registerFactory(() => WeatherNotifier(
+    weather: locator(),
+  ));
 
   locator.registerFactory(() => FirebaseProvider(
     dio: locator()
@@ -278,5 +287,9 @@ void init() {
   locator.registerLazySingleton(() => DeviceInfoPlugin());
   locator.registerLazySingleton(() => FirebaseAuth.instance);
   locator.registerLazySingleton(() => GoogleSignIn());
+  locator.registerLazySingleton(() => WeatherFactory(
+    '067cd306a519e9153f2ae44e71c8b4f3', 
+    language: Language.INDONESIAN,
+  ));
 
 }

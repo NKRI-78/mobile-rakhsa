@@ -32,7 +32,7 @@ class _WeatherPageState extends State<WeatherPage> {
 
   Future<void> loadData() async {
     final coordinate = widget.data['coordinate'] as LatLng;
-    await weatherNotifier.getCurrentWeather(
+    await weatherNotifier.getForecastWeather(
       coordinate.latitude,
       coordinate.longitude,
     );
@@ -162,6 +162,7 @@ class _WeatherViewState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final weather = provider.weathers.first;
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -192,12 +193,14 @@ class _WeatherViewState extends StatelessWidget {
               ),
             ),
             Image.asset(
-              provider.getWeatherIcon(),
+              provider.getWeatherIcon(
+                weather.weatherConditionCode,
+              ),
               errorBuilder: (context, error, stackTrace) => Container(),
             ),
             Center(
               child: Text(
-                '${provider.weather?.temperature!.celsius!.round()}°C',
+                '${weather.temperature!.celsius!.round()}°C',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 55,
@@ -207,7 +210,7 @@ class _WeatherViewState extends StatelessWidget {
             ),
             Center(
               child: Text(
-                (provider.weather?.weatherDescription ?? '').toUpperCase(),
+                (weather.weatherDescription ?? '').toUpperCase(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
@@ -223,7 +226,7 @@ class _WeatherViewState extends StatelessWidget {
               child: Text(
                 DateFormat('EEEE dd MMMM yyyy •', 'id')
                     .add_jm()
-                    .format(provider.weather?.date ?? DateTime.now()),
+                    .format(weather.date ?? DateTime.now()),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -261,7 +264,7 @@ class _WeatherViewState extends StatelessWidget {
                         ),
                         Text(
                           DateFormat().add_jm().format(
-                              provider.weather?.sunrise ?? DateTime.now()),
+                              weather.sunrise ?? DateTime.now()),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -296,7 +299,7 @@ class _WeatherViewState extends StatelessWidget {
                         Text(
                           DateFormat()
                               .add_jm()
-                              .format(provider.weather?.sunset ?? DateTime.now()),
+                              .format(weather.sunset ?? DateTime.now()),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -340,7 +343,7 @@ class _WeatherViewState extends StatelessWidget {
                           height: 3,
                         ),
                         Text(
-                          "${provider.weather?.tempMax!.celsius!.round()} °C",
+                          "${weather.tempMax!.celsius!.round()} °C",
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -373,7 +376,7 @@ class _WeatherViewState extends StatelessWidget {
                           height: 3,
                         ),
                         Text(
-                          "${provider.weather?.tempMin!.celsius!.round()} °C",
+                          "${weather.tempMin!.celsius!.round()} °C",
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,

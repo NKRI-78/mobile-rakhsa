@@ -1,5 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -9,11 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/event/data/models/list.dart';
-import 'package:rakhsa/features/event/persentation/pages/create_event_page.dart';
 import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
-
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:rakhsa/features/event/persentation/widget/calendar_view.dart';
+import 'package:rakhsa/features/event/persentation/widget/itinerary_button.dart';
+import 'package:rakhsa/features/event/persentation/widget/itinerary_list_tile.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
@@ -23,26 +24,15 @@ class EventPage extends StatefulWidget {
 }
 
 class EventPageState extends State<EventPage> {
-
-  late EventNotifier eventNotifier;
-
-  Future<void> getData() async {
-    if(!mounted) return;
-      await eventNotifier.list();
-  }
+  DateTime _selectedDay = DateTime.now();
 
   @override 
   void initState() {
     super.initState();
 
-    eventNotifier = context.read<EventNotifier>();
-
-    Future.microtask(() => getData());
-  }
-
-  @override 
-  void dispose() {
-    super.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EventNotifier>().getEvent();
+    });
   }
 
   @override
@@ -73,78 +63,135 @@ class EventPageState extends State<EventPage> {
         padding: const EdgeInsets.all(16),
         child: Consumer<EventNotifier>(
           builder: (context, notifier, child) {
-            if(notifier.state == ProviderState.loading) {
+            final events = notifier.events[_selectedDay] ?? [];
+        
+            if(notifier.getEventState == ProviderState.loading) {
               return const Center(
-                child: SizedBox(
-                  width: 16.0,
-                  height: 16.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
-                  ),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(redColor),
                 )
               );
-            }
-            if(notifier.state == ProviderState.error) {
+            } else if(notifier.getEventState == ProviderState.error) {
               return Center(
-                child: Text(notifier.message,
+                child: Text(notifier.errorMessageGetEvent!,
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
                     color: ColorResources.black
                   ),
                 ),
               );
+            } else {
+        
+              // success view
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    CalendarView(
+                      selectedDay: _selectedDay,
+                      eventLoader: (day) {
+                        debugPrint(day.toString());
+                        return notifier.events[day] ?? [];
+                      },
+                      onDaySelected: (selectedDay, _) {
+                        setState(() {
+                          _selectedDay = DateTime(
+                            selectedDay.year,
+                            selectedDay.month,
+                            selectedDay.day,
+                          );
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                        
+                    // add event
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 5,
+                          fit: FlexFit.tight,
+                          child: ItineraryButton(
+                            label: 'Buat Agenda',
+                            action: () {
+                              notifier.navigateToCreateEventPage(context, _selectedDay);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Flexible(
+                          child: Material(
+                            color: redColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(100),
+                            child: InkWell(
+                              onTap: () => notifier.navigateToAllEventPage(context),
+                              borderRadius: BorderRadius.circular(100),
+                              child: const Padding(
+                                padding: EdgeInsets.all(14),
+                                child: Icon(
+                                  Icons.arrow_forward, 
+                                  color: redColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                        
+                    // showing event
+                    if(events.isNotEmpty)...[
+                      ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: events.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, index) {
+                          final event = events[index];
+                          return ItineraryListTile(event);
+                        },
+                      ),
+                    ]else...[
+                      // empty events view
+                      SizedBox(
+                        width: double.infinity,
+                        height: 150,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // tanggal
+                            Text(
+                              _selectedDay.day.toString(),
+                              style: robotoRegular.copyWith(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            // message
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  'Tidak ada reminder di tanggal ini',
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              );
             }
-            return SfCalendar(
-              view: CalendarView.month,
-              allowedViews: const [
-                CalendarView.day,
-                CalendarView.month,
-                CalendarView.schedule,
-              ],
-              showWeekNumber: true,
-              showNavigationArrow: true,
-              showDatePickerButton: true,
-              showCurrentTimeIndicator: true,
-              todayHighlightColor: redColor,
-              selectionDecoration: BoxDecoration(
-                border: Border.all(color: redColor, width: 2),
-              ),
-              initialSelectedDate: DateTime.now(),
-              minDate: DateTime.now(),
-              dataSource: EventsDatasource(notifier.entity),
-              monthViewSettings: const MonthViewSettings(
-                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-              ),
-              onTap: (selectedDetails) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return CreateEventPage(selectedDetails);
-                },));
-              },
-            );
           },
         ),
       )
     );
-  }
-}
-
-class EventsDatasource extends CalendarDataSource {
-  EventsDatasource(List<EventData> source){
-    appointments = source;
-  }
-
-  @override
-  String getSubject(int index) {
-    return appointments?[index].title ?? '';
-  }
-
-  @override
-  DateTime getStartTime(int index) {
-    return DateTime.parse(appointments![index].startDate);
-  }
-
-  @override
-  DateTime getEndTime(int index) {
-    return DateTime.parse(appointments![index].endDate);
   }
 }

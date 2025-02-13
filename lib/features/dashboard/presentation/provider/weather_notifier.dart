@@ -1,11 +1,15 @@
+
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 
 class WeatherNotifier extends ChangeNotifier {
-  final _apiKey = '067cd306a519e9153f2ae44e71c8b4f3';
 
-  Weather? _weather;
-  Weather? get weather => _weather;
+  final WeatherFactory _weatherFactory;
+
+  WeatherNotifier({required WeatherFactory weather}) : _weatherFactory = weather;
+
+  List<Weather> _weathers = [];
+  List<Weather> get weathers => _weathers;
 
   bool _loading = true;
   bool get loading => _loading;
@@ -13,31 +17,44 @@ class WeatherNotifier extends ChangeNotifier {
   bool _error = false;
   bool get error => _error;
 
-  Future<Weather> getCurrentWeather(double lat, double long) async {
+  Future<void> getForecastWeather(double lat, double long) async {
     _loading = true;
     _error = false;
     notifyListeners();
     try {
-      final wf = WeatherFactory(_apiKey, language: Language.INDONESIAN);
+      final weathers = await _weatherFactory.fiveDayForecastByLocation(lat, long);
 
-      final weather = await wf.currentWeatherByLocation(lat, long);
-
-      _weather = weather;
+      _weathers = _extractUniqueDailyWeathers(weathers);
       notifyListeners();
 
-      return weather;
     } catch (e) {
       _loading = false;
       _error = true;
-      notifyListeners();
-      debugPrint(e.toString());
-      throw Exception(e.toString());
     } finally {
       _loading = false;
       _error = false;
-      notifyListeners();
     }
   }
+
+  List<Weather> _extractUniqueDailyWeathers(List<Weather> weathers) {
+    final Map<String, Weather> uniqueWeathers = {};
+    
+    for (var weather in weathers) {
+      final date = weather.date;
+      if (date == null) continue;
+      
+      final dateKey = "${date.year}-${date.month}-${date.day}";
+      
+      // Simpan hanya cuaca pertama untuk setiap tanggal
+      uniqueWeathers.putIfAbsent(dateKey, () => weather);
+      
+      // Jika sudah 5 tanggal unik, hentikan iterasi
+      if (uniqueWeathers.length == 5) break;
+    }
+
+    return uniqueWeathers.values.toList();
+  }
+
 
   String getGreeting() {
     var hour = DateTime.now().hour;
@@ -52,37 +69,28 @@ class WeatherNotifier extends ChangeNotifier {
     }
   }
 
-  String getWeatherIcon() {
-    var hour = DateTime.now().hour;
-    
-    switch (_weather?.weatherConditionCode ?? 300) {
-      case > 200 && < 300:
-        return 'assets/images/weather/1.png';
+  String getWeatherIcon(int? weatherConditionCode) {
+    DateTime now = DateTime.now();
+    bool isNight = now.hour >= 18 || now.hour < 6;
 
-      case > 300 && < 400:
-        return 'assets/images/weather/2.png';
+    // Map kondisi ke ikon
+    final Map<int, String> dayIcons = {
+      200: 'assets/images/weather/1.png', // petir
+      300: 'assets/images/weather/2.png', // gerimis
+      500: 'assets/images/weather/2.png', // hujan ringan
+      502: 'assets/images/weather/3.png', // hujan lebat
+      800: 'assets/images/weather/11.png', // cerah
+      801: 'assets/images/weather/7.png', // cerah berawan
+    };
 
-      case > 500 && < 600:
-        return 'assets/images/weather/3.png';
+    final Map<int, String> nightIcons = {
+      800: 'assets/images/weather/12.png', // cerah malam
+      801: 'assets/images/weather/12.png', // cerah berawan malam
+    };
 
-      case > 600 && < 700:
-        return 'assets/images/weather/4.png';
-
-      case > 700 && < 800:
-        return 'assets/images/weather/5.png';
-
-      case == 800:
-        return 'assets/images/weather/6.png';
-
-      case > 800 && <= 804:
-        if(hour > 18){
-          return 'assets/images/weather/12.png';
-        } else {
-          return 'assets/images/weather/7.png';
-        }
-
-      default:
-        return 'assets/images/weather/7.png';
+    if (isNight && nightIcons.containsKey(weatherConditionCode)) {
+      return nightIcons[weatherConditionCode]!;
     }
+    return dayIcons[weatherConditionCode] ?? 'assets/images/weather/8.png';
   }
 }

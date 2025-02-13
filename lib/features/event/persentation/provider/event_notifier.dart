@@ -1,83 +1,254 @@
+import 'dart:developer';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/features/event/data/models/list.dart';
+import 'package:rakhsa/features/event/domain/usecases/delete_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/list_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
+import 'package:rakhsa/features/event/domain/usecases/update_event.dart';
+import 'package:rakhsa/features/event/persentation/pages/all_event_page.dart';
+import 'package:rakhsa/features/event/persentation/pages/create_event_page.dart';
 
 class EventNotifier extends ChangeNotifier {
   final SaveEventUseCase useCase;
   final ListEventUseCase listEventUseCase;
+  final UpdateEventUseCase updateEventUseCase;
+  final DeleteEventUseCase deleteEventUseCase;
 
-  EventNotifier({required this.useCase, required this.listEventUseCase});
+  EventNotifier({
+    required this.useCase, 
+    required this.listEventUseCase,
+    required this.updateEventUseCase,
+    required this.deleteEventUseCase,
+  });
 
-  List<EventData> _entity = [];
-  List<EventData> get entity => [..._entity];
+  ProviderState _getEventState = ProviderState.empty;
+  ProviderState get getEventState => _getEventState;
 
-  ProviderState _state = ProviderState.empty;
-  ProviderState get state => _state;
+  ProviderState _createEventState = ProviderState.empty;
+  ProviderState get createEventState => _createEventState;
 
-  ProviderState _getEventtate = ProviderState.empty;
-  ProviderState get getEventState => _getEventtate;
+  ProviderState _editEventState = ProviderState.empty;
+  ProviderState get editEventState => _editEventState;
 
-  String _message = '';
-  String get message => _message;
+  ProviderState _deleteEventState = ProviderState.empty;
+  ProviderState get deleteEventState => _deleteEventState;
 
-  String _getEventMessage = '';
-  String get getEventMessaage => _getEventMessage;
+  Map<DateTime, List<EventData>> _events = {};
+  Map<DateTime, List<EventData>> get events => _events;
 
-  Future<void> save(BuildContext context, {
-    required String title,
-    required String startDate,
-    required String endDate,
-    required int continentId,
-    required int stateId,
-    required String description
-  }) async {
-    _state = ProviderState.loading;
-    Future.delayed(Duration.zero, () => notifyListeners());
+  List<EventData> _eventList = [];
+  List<EventData> get eventList => _eventList;
 
-    final result = await useCase.execute(
-      title: title,
-      startDate: startDate,
-      endDate: endDate,
-      continentId: continentId,
-      stateId: stateId,
-      description: description
-    );
-    result.fold((l) {
-      _state = ProviderState.error;
-      Future.delayed(Duration.zero, () => notifyListeners());
-      _message = l.message;
+  String? _errorMessageGetEvent;
+  String? get errorMessageGetEvent => _errorMessageGetEvent;
 
-      ShowSnackbar.snackbarErr('Gagal membuat agenda [${l.message}]');
-    }, (r) async {
-      _state = ProviderState.loaded;
-      Future.delayed(Duration.zero, () => notifyListeners());
-
-      Navigator.of(context).pop();
-      ShowSnackbar.snackbarOk('Berhasil membuat agenda');
-    });
-  }
-
-  Future<void> list() async {
-    _getEventtate = ProviderState.loading;
-    Future.delayed(Duration.zero, () => notifyListeners());
+  Future<void> getEvent() async {    
+    _getEventState = ProviderState.loading;
+    notifyListeners();
 
     final result = await listEventUseCase.execute();
 
     result.fold((l) {
-      _getEventtate = ProviderState.error;
-      Future.delayed(Duration.zero, () => notifyListeners());
-
-      _getEventMessage = l.message;
+      _errorMessageGetEvent = l.message;
+      _getEventState = ProviderState.error;
+      notifyListeners();
     }, (r) {
-      _entity = [];
-      _entity.addAll(r.data);
-      
-      _getEventtate = ProviderState.loaded;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      Map<DateTime, List<EventData>> newEvents = {};
+
+      for (var event in r.data) {
+        DateTime eventDate = DateTime.parse(event.startDate);
+        DateTime dateKey = DateTime(
+          eventDate.year, eventDate.month, eventDate.day,
+        );
+
+        if (newEvents[dateKey] == null) {
+          newEvents[dateKey] = [];
+        }
+        newEvents[dateKey]!.add(event);
+      }
+
+      _events = newEvents;
+      _eventList = r.data;
+      _getEventState = ProviderState.loaded;
+      notifyListeners();
     });
+  }
+
+  Future<void> createEvent(
+    BuildContext context, {
+    required String message,
+    required String date,
+  }) async {
+    _createEventState = ProviderState.loading;
+    notifyListeners();
+
+    final result = await useCase.execute(
+      title: message,
+      startDate: date,
+      endDate: date,
+      continentId: 1,
+      stateId: 1,
+      description: 'none',
+    );
+
+    result.fold((l) {
+      _createEventState = ProviderState.error;
+      notifyListeners();
+
+      ShowSnackbar.snackbarErr('Gagal membuat agenda [${l.message}]');
+    }, (r) async {
+      // create notification
+      _createEventNotification(
+        message,
+        DateTime.parse(date),
+      );
+
+      _createEventState = ProviderState.loaded;
+      notifyListeners();
+
+      if(context.mounted) Navigator.of(context).pop();
+      ShowSnackbar.snackbarOk('Berhasil membuat agenda');
+
+      // dapatkan event kembali
+      await getEvent();
+    });
+  }
+
+  Future<void> editEvent(BuildContext context, EventData event) async {
+    _editEventState = ProviderState.loading;
+    notifyListeners();
+
+    final editEvent = await updateEventUseCase.execute(
+      id: event.id, 
+      title: event.title, 
+      startDate: event.startDate, 
+      endDate: event.endDate,
+      continentId: 1, 
+      stateId: 1, 
+      description: event.description,
+    );
+
+    editEvent.fold((l) {
+      _editEventState = ProviderState.error;
+      notifyListeners();
+    }, (r) async {
+
+      await _updateEventNotification(event);
+
+      _editEventState = ProviderState.loaded;
+      notifyListeners();
+
+      if(context.mounted) Navigator.of(context).pop();
+      ShowSnackbar.snackbarOk('Berhasil mengupdate agenda');
+
+      // dapatkan event kembali
+      await getEvent();
+    });
+  }
+
+  Future<void> deleteEvent(EventData event) async {
+    _deleteEventState = ProviderState.loading;
+    notifyListeners();
+
+    final deleteEvent = await deleteEventUseCase.execute(id: event.id);
+
+    deleteEvent.fold((l) {
+      _deleteEventState = ProviderState.error;
+      notifyListeners();
+    }, (r) async {
+      _deleteEventState = ProviderState.loaded;
+      notifyListeners();
+
+      // id notifikasi diambil dari selected date (millisecond)
+      _cancelEventNotification(DateTime.parse(event.startDate).millisecond);
+
+      await getEvent();
+    });
+  }
+
+  Future<void> _createEventNotification(String message, DateTime date) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: date.millisecond,
+        body: message,
+        title: 'Reminder',
+        wakeUpScreen: true,
+        displayOnBackground: true,
+        displayOnForeground: true,
+        channelKey: 'notification',
+        payload: {'screen': 'itinerary'},
+        category: NotificationCategory.Reminder,
+        notificationLayout: NotificationLayout.Default,
+      ),
+      schedule: NotificationCalendar(
+        year: date.year,
+        month: date.month,
+        day: date.day,
+        hour: date.hour,
+        minute: date.minute,
+        second: date.second,
+        timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
+        preciseAlarm: true,
+      ),
+    );
+  }
+
+  Future<void> _cancelEventNotification(int id) async {
+    await AwesomeNotifications().cancel(id);
+  }
+
+  Future<void> _updateEventNotification(EventData event) async {
+    // hapus notif
+    // id notifikasi diambil dari selected date (millisecond)
+    await _cancelEventNotification(DateTime.parse(event.startDate).millisecond);
+
+    // create ulang notif
+    await _createEventNotification(event.title, DateTime.parse(event.startDate));
+  }
+
+  void navigateToCreateEventPage(BuildContext context, DateTime selectedDay, {
+    EventData? event,
+  }) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => CreateEventPage(
+          selectedDay,
+          event: event,
+        ),
+        transitionDuration: const Duration(milliseconds: 600),
+        reverseTransitionDuration: const Duration(milliseconds: 400),
+        transitionsBuilder: (context, a1, a2, child) => _transition(a1, child),
+      ),
+    );
+  }
+
+   Widget _transition(Animation<double> a, Widget child) {
+    const begin = Offset(0.0, 1.0);
+    const end = Offset.zero;
+    const curve = Curves.easeInOut;
+    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    var offsetAnimation = a.drive(tween);
+    return SlideTransition(
+      position: offsetAnimation,
+      child: child,
+    );
+  }
+
+  void navigateToAllEventPage(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const AllEventPage(),
+        transitionDuration: const Duration(milliseconds: 600),
+        reverseTransitionDuration: const Duration(milliseconds: 400),
+        transitionsBuilder: (context, a1, a2, child) => _transition(a1, child),
+      ),
+    );
   }
 }

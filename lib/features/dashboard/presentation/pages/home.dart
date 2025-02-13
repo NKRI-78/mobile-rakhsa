@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -90,6 +92,9 @@ class HomePageState extends State<HomePage> {
 
     if(!mounted) return; 
       await dashboardNotifier.getBanner();
+    
+    if(!mounted) return; 
+      await getCurrentLocation();
 
     if(!mounted) return;
       socketIoService.startListenConnection();
@@ -132,13 +137,13 @@ class HomePageState extends State<HomePage> {
       loadingGmaps = false;
     });
 
-    await weatherNotifier.getCurrentWeather(
+    await weatherNotifier.getForecastWeather(
       double.parse(currentLat),
       double.parse(currentLng),
     );
 
-    String celcius = "${(weatherNotifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C";
-    String weatherDesc = "${weatherNotifier.weather?.weatherDescription?.toUpperCase()}";
+    String celcius = "${(weatherNotifier.weathers.first.temperature?.celsius ?? 0).round()}\u00B0C";
+    String weatherDesc = "${weatherNotifier.weathers.first.weatherDescription?.toUpperCase()}";
 
     Future.delayed(Duration.zero, () async {
       await updateAddressNotifier.updateAddress(
@@ -196,9 +201,8 @@ class HomePageState extends State<HomePage> {
     banners = [];
 
     banners.add(
-      WeatherContent(
-        subAdministrativeArea, 
-        loadingGmaps, 
+      _WeatherContent(
+        subAdministrativeArea,
         LatLng(
           double.tryParse(currentLat) ?? 0.0,
           double.tryParse(currentLng) ?? 0.0,
@@ -388,99 +392,179 @@ class ImgBanner extends StatelessWidget {
   }
 }
 
-class WeatherContent extends StatelessWidget {
-  const WeatherContent(
+class _WeatherContent extends StatelessWidget {
+  const _WeatherContent(
     this.area,
-    this.loadingGMaps,
-    this.coordinate, {super.key}
+    this.coordinate,
   );
 
   final String area;
-  final bool loadingGMaps;
   final LatLng coordinate;
+
+  void _navigateToWeatherDetail(BuildContext context){
+     Navigator.pushNamed(
+      context,
+      RoutesNavigation.weather,
+      arguments: {
+        'area': area,
+        'coordinate': coordinate,
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
      
     return SizedBox(
+      height: 190,
       width: double.infinity,
-      child: Material(
-        color: Colors.grey.shade200,
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              RoutesNavigation.weather,
-              arguments: {
-                'area': area,
-                'coordinate': coordinate,
-              },
-            );
-          },
-          child: Consumer<WeatherNotifier>(
-            builder: (context, notifier, child) {
-              return Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    // icon
-                    Flexible(
-                      flex: 2,
-                      child: Image.asset(notifier.getWeatherIcon()),
-                    ),
-                    const SizedBox(width: 16),
-                                            
-                    // weather data
-                    Flexible(
-                      flex: 3,
-                      fit: FlexFit.tight,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Hari ini',
-                            style: robotoRegular.copyWith(),
-                          ),
-                                      
-                          // celcius
-                          Text(
-                            '${(notifier.weather?.temperature?.celsius ?? 0).round()}\u00B0C',
-                            style: robotoRegular.copyWith(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                            
-                          // deskripsi cuaca
-                          Text(
-                            (notifier.weather?.weatherDescription ?? '').toUpperCase(),
-                            maxLines: 2,
-                            overflow: TextOverflow.clip,
-                            style: robotoRegular.copyWith(
-                              fontSize: 12,
-                            ),
-                          ),
-                            
-                          // kota
-                          Text(
-                            (notifier.loading && loadingGMaps)
-                            ? 'Memuat'
-                            : area,
-                            maxLines: 2,
-                            overflow: TextOverflow.clip,
-                            style: robotoRegular.copyWith(),
-                          ),
-                        ],
+      child: Stack(
+        children: [
+          // bg
+          Image.asset(
+            AssetSource.bgWeather,
+            fit: BoxFit.cover,
+          ),
+
+          // content
+          InkWell(
+            onTap: () => _navigateToWeatherDetail(context),
+            child: Consumer<WeatherNotifier>(
+              builder: (context, notifier, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      // cuaca hari ini
+                      Flexible(
+                        flex: 2,
+                        child: _todayWeather(notifier, area),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }
+                      const SizedBox(width: 8),
+
+                      // divider
+                      const VerticalDivider(),
+                      const SizedBox(width: 8),
+                                              
+                      // ramalan cuaca 5 hari kedepan
+                      Flexible(
+                        flex: 3,
+                        fit: FlexFit.tight,
+                        child: _forecastWeather(notifier),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _todayWeather(WeatherNotifier notifier, String area){
+    final today = notifier.weathers.first;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // icon cuaca
+        Image.asset(
+          notifier.getWeatherIcon(
+            notifier.weathers.first.weatherConditionCode,
+          ),
+          height: 50,
+        ),
+    
+        // cuaca hari ini (suhu°C)
+        Text(
+          '${(today.temperature?.celsius ?? 0).round()} °C',
+          textAlign: TextAlign.center,
+          style: robotoRegular.copyWith(
+            fontSize: 16,
+            color: whiteColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ),
+        
+        // title cuaca hari ini
+        Text(
+          'Hari ini',
+          style: robotoRegular.copyWith(
+            color: whiteColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+    
+        // title cuaca hari ini
+        Text(
+          (today.weatherDescription ?? '').toUpperCase(),
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: robotoRegular.copyWith(
+            fontSize: 10,
+            color: whiteColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+    
+        // kota
+        Text(
+          area,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: robotoRegular.copyWith(
+            fontSize: 10,
+            color: whiteColor,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _forecastWeather(WeatherNotifier notifier) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: notifier.weathers.map((weather) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // icon cuaca
+            Image.asset(
+              notifier.getWeatherIcon(weather.weatherConditionCode),
+              height: 30,
+            ),
+
+            // hari
+            Text(
+              DateFormat('EEEE', 'id').format(weather.date ?? DateTime.now()),
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: robotoRegular.copyWith(
+                color: whiteColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // suhu°C
+            Text(
+              '${(weather.temperature?.celsius ?? 0).round()} °C',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: robotoRegular.copyWith(
+                color: whiteColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 }

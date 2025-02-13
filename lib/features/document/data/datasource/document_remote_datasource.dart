@@ -36,7 +36,7 @@ class DocumentRemoteDatasourceImpl implements DocumentRemoteDatasource {
     try {
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/update-passport",
-        data: {'user_id': userId, 'path': path},
+        data: {'user_id': userId, 'passport_pic': path},
       );
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());

@@ -1,7 +1,4 @@
 
-import 'dart:developer';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,15 +7,17 @@ import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/features/event/data/models/list.dart';
 import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
+import 'package:rakhsa/features/event/persentation/widget/itinerary_button.dart';
 import 'package:rakhsa/features/event/persentation/widget/itinerary_text_field.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class CreateEventPage extends StatefulWidget {
-  const CreateEventPage(this.details, {super.key});
+  const CreateEventPage(this.selectedDate, {super.key, this.event});
 
-  final CalendarTapDetails  details;
+  final DateTime selectedDate;
+  final EventData? event;
 
   @override
   State<CreateEventPage> createState() => _CreateEventPageState();
@@ -27,81 +26,94 @@ class CreateEventPage extends StatefulWidget {
 class _CreateEventPageState extends State<CreateEventPage> {
   late EventNotifier _saveEventNotifier;
 
-  late TextEditingController _titileC;
+  late TextEditingController _messageC;
 
   late TimePickerSpinnerController _pickerSpinnerController;
 
-  late DateTime _selectedDateTime;
+  late DateTime _selectedDate;
 
-  String _titleValue = '';
+  String _messageValue = '';
 
   @override
   void initState() {
     super.initState();
     _saveEventNotifier = context.read<EventNotifier>();
     _pickerSpinnerController = TimePickerSpinnerController();
-    _selectedDateTime = widget.details.date!;
+    _selectedDate = widget.selectedDate;
 
-    _titileC = TextEditingController();
+    _messageC = TextEditingController(text: widget.event?.title ?? '');
   }
 
   @override
   void dispose() {
     _reset();
-    _titileC.dispose();
+    _messageC.dispose();
     _pickerSpinnerController.dispose();
-
-    // get agenda saat back dari halaman create event
-    _saveEventNotifier.list();
+    
     super.dispose();
   }
 
   void _reset(){
-    _titileC.clear();
-  }
-
-  bool validateForm(){
-    return _titleValue.isNotEmpty;
+    _messageC.clear();
   }
 
   void _createEvent() async {
-    final date = _selectedDateTime;
-    if (validateForm()) {
-      await _saveEventNotifier.save(
-        context,
-        title: _titileC.text, 
-        startDate: DateFormat('yyyy-MM-dd').format(date),
-        endDate: DateFormat('yyyy-MM-dd').format(date), 
-        continentId: 1, stateId: 1,
-        description: 'none',
-      );
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 0,
-          channelKey: 'notification',
-          title: 'Reminder',
-          body: _titileC.text,
-          payload: {'screen': 'itinerary'},
-          displayOnBackground: true,
-          wakeUpScreen: true,
-          category: NotificationCategory.Reminder,
-          displayOnForeground: true,
-          notificationLayout: NotificationLayout.Default,
-        ),
+    final date = _selectedDate;
+    final event = widget.event;
 
-        schedule: NotificationCalendar(
-          year: date.year,
-          month: date.month,
-          day: date.day,
-          hour: date.hour,
-          minute: date.minute,
-          second: date.second,
-          timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
-          preciseAlarm: true,
-          
+    if (widget.event != null) {
+      // update 
+      await context.read<EventNotifier>().editEvent(
+        context, EventData(
+          id: event!.id, 
+          title: _messageC.text, 
+          description: event.description, 
+          state: event.state, 
+          continent: event.continent, 
+          startDay: event.startDay, 
+          endDay: event.endDay, 
+          startDate: date.toString(), 
+          endDate: event.endDate, 
+          user: event.user, 
+          type: event.type,
         ),
       );
-      _reset();
+    } else {
+      // add
+      await _saveEventNotifier.createEvent(
+        context,
+        message: _messageC.text,
+        date: date.toString(),
+      ).then((_) => _reset());
+    }
+    
+  }
+
+  String get _title {
+    if (widget.event != null) {
+      return 'Update Agenda';
+    } else {
+      return 'Buat Agenda';
+    }
+  }
+
+  void _showTimePicker(BuildContext context) async {
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_selectedDate),
+
+    );
+
+    if (selectedTime != null) {
+      setState(() {
+        _selectedDate = DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+      });
     }
   }
 
@@ -111,7 +123,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: primaryColor,
-        title: const Text('Buat Agenda'),
+        title: Text(_title),
         titleTextStyle: robotoRegular.copyWith(
           fontSize: 20,
           color: whiteColor,
@@ -120,8 +132,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           color: whiteColor,
           onPressed: () async {
             Navigator.pop(context);
-            _saveEventNotifier.list();
-            log('save event dipanggil');
+            _saveEventNotifier.getEvent();
           },
         ),
         flexibleSpace: FlexibleSpaceBar(
@@ -141,22 +152,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
             children: [
               // input judul
               ItineraryTextField(
-                controller: _titileC,
-                title: 'Reminder',
-                hint: 'Masukan Reminder',
+                controller: _messageC,
+                title: 'Agenda',
+                hint: 'Masukan agenda anda',
                 autofocus: true,
                 onChanged: (value) => setState(() {
                   if (value.isEmpty){
-                    _titleValue = '';
+                    _messageValue = '';
                   } else {
-                    _titleValue = value;
+                    _messageValue = value;
                   }
                 }),
                 onSubmitted: (_) => _pickerSpinnerController.showMenu(),
               ),
               const SizedBox(height: 16),
 
-              // pilih
+              // pilih tanggal dan waktu
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -171,7 +182,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           style: robotoRegular.copyWith(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 8),
-                        Container(
+                        Container( 
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
                             vertical: 14, 
@@ -183,7 +194,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             border: Border.all(color: Colors.grey),
                           ),
                           child: Text(
-                            DateFormat('dd MMMM yyyy', 'id').format(widget.details.date!),
+                            DateFormat('dd MMMM yyyy', 'id').format(widget.selectedDate),
                             style: robotoRegular.copyWith(
                               fontSize: 16,
                             ),
@@ -206,28 +217,36 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
-                          child: TimePickerSpinnerPopUp(
-                            mode: CupertinoDatePickerMode.time,
-                            use24hFormat: true,
-                            cancelText: 'Batal',
-                            initTime: _selectedDateTime,
-                            confirmTextStyle: robotoRegular.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: blackColor,
+                          child: Material(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: const BorderSide(color: Colors.grey),
                             ),
-                            confirmText: 'OK',
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14, 
-                              horizontal: 12,
+                            child: InkWell(
+                              onTap: () => _showTimePicker(context),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14, 
+                                  horizontal: 12,
+                                ),
+                                child: Text.rich(
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                  TextSpan(
+                                    text: '${_selectedDate.hour}',
+                                    children: [
+                                      const TextSpan(text: ' : '),
+                                      TextSpan(
+                                        text: '${_selectedDate.minute}',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                            textStyle: robotoRegular.copyWith(
-                              fontSize: 16,
-                            ),
-                            isCancelTextLeft: true,
-                            controller: _pickerSpinnerController,
-                            onChange: (date) {
-                              _selectedDateTime = date;
-                            },
                           ),
                         ),
                       ],
@@ -237,36 +256,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
               const SizedBox(height: 24),
 
+              // button
               Consumer<EventNotifier>(
                 builder: (context, notifier, child) {
-                  return Container(
-                    width: double.infinity,
-                    color: whiteColor,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6,
-                      horizontal: 12,
-                    ),
-                    child: ElevatedButton(
-                      onPressed: validateForm()
-                            ? () => _createEvent()
-                            : null,
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        backgroundColor: primaryColor,
-                        foregroundColor: whiteColor,
-                        padding: const EdgeInsets.all(16),
-                        textStyle: robotoRegular.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                      ),
-                      child: (notifier.state == ProviderState.loading) 
-                          ? const Text('Memuat..') 
-                          : const Text('Submit'),
-                    ),
+                  bool validForm = _messageValue.isNotEmpty;
+                  bool loading = notifier.createEventState == ProviderState.loading 
+                          || notifier.editEventState == ProviderState.loading;
+                  
+                  return ItineraryButton(
+                    label: loading 
+                          ? 'Memuat' 
+                          : (widget.event != null) 
+                                ? 'update' 
+                                : 'Submit',
+                    action: validForm && !loading
+                          ? () => _createEvent()
+                          : null,
                   );
                 }
               ),
