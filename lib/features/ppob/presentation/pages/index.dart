@@ -6,9 +6,9 @@ import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
-import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata.dart';
-import 'package:rakhsa/features/ppob/presentation/pages/detail_pulsa.dart';
-import 'package:rakhsa/features/ppob/presentation/pages/detail_tokenlistrik.dart';
+// import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata.dart';
+// import 'package:rakhsa/features/ppob/presentation/pages/detail_pulsa.dart';
+// import 'package:rakhsa/features/ppob/presentation/pages/detail_tokenlistrik.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
@@ -23,57 +23,59 @@ class PPOBPage extends StatefulWidget {
 
 class PPOBPageState extends State<PPOBPage> {
 
+  int selectedIndex = -1;
+
   List<Map<String, dynamic>> categories = [
     {
       "id": 1,
       "name": "Pulsa",
       "link": "pulsapaketdata",
-      "image": "assets/image/ppob/ic-pulsa.png",
+      "image": "assets/images/ppob/ic-pulsa.png",
     },
     {
       "id": 2,
       "name": "Paket Data",
-      "image": "assets/image/ppob/ic-paketdata.png",
+      "image": "assets/images/ppob/ic-paket.png",
       "link": "paketdata"
     },
     {
       "id": 3,
       "name": "Listrik",
-      "image": "assets/image/ppob/ic-listrik.png",
+      "image": "assets/images/ppob/ic-listrik.png",
       "link": "tokenlistrik"
     },
   ];
 
   void onChangeCategories(int i) {
-    switch (categories[i]["link"]) {
-      case "pulsapaketdata":
-        Navigator.push(context, 
-          MaterialPageRoute(builder: (context) {
-            return PPOBDetailPulsaPage(
-              title: categories[i]["name"],
-              type: "Pulsa / Paket Data",
-            );
-          })
-        );
-      break;
-      case "Paket Data":
-        Navigator.pushNamed(context, 
-          PPOBDetailPaketDataPage.route,
-          arguments: {
-            "title": categories[i]["name"]
-          }  
-        );
-      break;
-      case "Token Listrik":
-        Navigator.pushNamed(context, 
-          PPOBDetailTokenListrikPage.route,
-          arguments: {
-            "title": categories[i]["name"]
-          }
-        );
-      break;
-      default:
-    }
+    // switch (categories[i]["link"]) {
+    //   case "pulsapaketdata":
+    //     Navigator.push(context, 
+    //       MaterialPageRoute(builder: (context) {
+    //         return PPOBDetailPulsaPage(
+    //           title: categories[i]["name"],
+    //           type: "Pulsa / Paket Data",
+    //         );
+    //       })
+    //     );
+    //   break;
+    //   case "Paket Data":
+    //     Navigator.pushNamed(context, 
+    //       PPOBDetailPaketDataPage.route,
+    //       arguments: {
+    //         "title": categories[i]["name"]
+    //       }  
+    //     );
+    //   break;
+    //   case "Token Listrik":
+    //     Navigator.pushNamed(context, 
+    //       PPOBDetailTokenListrikPage.route,
+    //       arguments: {
+    //         "title": categories[i]["name"]
+    //       }
+    //     );
+    //   break;
+    //   default:
+    // }
   }
 
   @override 
@@ -128,48 +130,37 @@ class PPOBPageState extends State<PPOBPage> {
             return Bouncing(
               onPress: () {
                 onChangeCategories(i);
+                setState(() => selectedIndex = i);
               },
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  
-                  Align(
-                    alignment:Alignment.bottomCenter,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        boxShadow: kElevationToShadow[1],
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(categories[i]["name"],
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              fontWeight: FontWeight.w600,
-                              color: ColorResources.white
-                            ),
-                          ),
-                        ],
-                      ) 
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: selectedIndex == i 
+                  ? primaryColor 
+                  : ColorResources.white,
+                  boxShadow: kElevationToShadow[1],
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(categories[i]["image"],
+                      height: 50.0,
+                      fit: BoxFit.scaleDown,
                     ),
-                  ),
-                          
-                  // Positioned(
-                  //   top: 0.0,
-                  //   left: 0.0,
-                  //   right: 0.0,
-                  //   child:Image.asset(
-                  //     categories[i]["image"],
-                  //     width: 80.0,
-                  //     height: 80.0,
-                  //   ),
-                  // ),
-                          
-                ],
+                    const SizedBox(height: 10.0),
+                    Text(categories[i]["name"],
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.w600,
+                        color: selectedIndex == i 
+                        ? ColorResources.white
+                        : ColorResources.black ,
+                      ),
+                    ),
+                  ],
+                ) 
               ),
             );
           
