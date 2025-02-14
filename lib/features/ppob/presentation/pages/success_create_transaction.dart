@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -15,6 +16,8 @@ class SuccessCreateTransactioPage extends StatefulWidget {
   final String productName;
   final int productPrice;
   final String productType;
+  final String orderId;
+  final String paymentName;
   final String paymentAccess;
   final String paymentType;
 
@@ -23,6 +26,8 @@ class SuccessCreateTransactioPage extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productType,
+    required this.orderId,
+    required this.paymentName,
     required this.paymentAccess,
     required this.paymentType
   });
@@ -47,7 +52,7 @@ class SuccessCreateTransactioPageState extends State<SuccessCreateTransactioPage
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) {
+      onPopInvokedWithResult: (bool didPop, Object? val) {
         if(!didPop) return;
       },
       child: Scaffold(
@@ -95,87 +100,146 @@ class SuccessCreateTransactioPageState extends State<SuccessCreateTransactioPage
               ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
+                  fieldTransaction(name: "Order ID", value: widget.orderId),
+
+                  const SizedBox(height: 14.0),
 
                   fieldTransaction(name: "Nama Produk", value: widget.productName),
 
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 14.0),
 
                   fieldTransaction(name: "Jenis Produk", value: widget.productType),
 
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 14.0),
 
-                  fieldTransaction(name: "Metode Pembayaran", value: widget.paymentType),
+                  fieldTransaction(name: "Metode Pembayaran", value: widget.paymentType.toUpperCase()),
 
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 14.0),
+
+                  fieldTransaction(name: "Nama Pembayaran", value: widget.paymentName.toUpperCase()),
+
+                  const SizedBox(height: 14.0),
 
                   fieldTransaction(name: "Harga", value: formatCurrency(widget.productPrice)),
 
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 14.0),
 
                   if(widget.paymentType == "va") 
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                          child: Row(
-                            children: [
-                              Text(
-                                "No Virtual Akun",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorResources.black,
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 30.0,
+                        left: 16.0,
+                        right: 16.0
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("No Virtual Account",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeLarge,
+                                color: ColorResources.black,
+                              )
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(widget.paymentAccess,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeOverLarge,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorResources.black,
+                                  )
                                 ),
-                              ),
-                              Expanded(
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.copy, 
-                                    size: 13.0, 
-                                    color: Colors.grey
-                                  ),
-                                  onPressed: () {
-                                    Clipboard.setData(ClipboardData(text: "${widget.paymentAccess} disalin"));
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          widget.paymentAccess,
-                                          style: robotoRegular.copyWith(
-                                            color: ColorResources.black,
-                                            fontSize: Dimensions.fontSizeDefault
-                                          ),
-                                        )
-                                      ),
-                                    );
+                                const SizedBox(width: 5.0),
+                                InkWell(
+                                  onTap: () async {
+                                    await Clipboard.setData(
+                                      ClipboardData(text: widget.paymentAccess.toString()
+                                    ));
+                                    ShowSnackbar.snackbarDefault("${widget.paymentAccess.toString()} disalin");
                                   },
+                                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Icon(Icons.copy,
+                                      size: 20.0,
+                                      color: ColorResources.black,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 6,
-                          child: Text(
-                            ":",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                              ],
                             ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Text(
-                            widget.paymentAccess,
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              color: ColorResources.black,
-                            ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        ) 
+                      ),
                     ),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisSize: MainAxisSize.max,
+                    //   children: [
+                    //     Expanded(
+                    //       flex: 6,
+                    //       child: Row(
+                    //         children: [
+                    //           Text(
+                    //             "No Virtual Akun",
+                    //             style: robotoRegular.copyWith(
+                    //               fontSize: Dimensions.fontSizeDefault,
+                    //               fontWeight: FontWeight.bold,
+                    //               color: ColorResources.black,
+                    //             ),
+                    //           ),
+                    //           Expanded(
+                    //             child: IconButton(
+                    //               icon: const Icon(
+                    //                 Icons.copy, 
+                    //                 size: 13.0, 
+                    //                 color: Colors.grey
+                    //               ),
+                    //               onPressed: () {
+                    //                 Clipboard.setData(ClipboardData(text: "${widget.paymentAccess} disalin"));
+                    //                 ScaffoldMessenger.of(context).showSnackBar(
+                    //                   SnackBar(
+                    //                     content: Text(
+                    //                       widget.paymentAccess,
+                    //                       style: robotoRegular.copyWith(
+                    //                         color: ColorResources.black,
+                    //                         fontSize: Dimensions.fontSizeDefault
+                    //                       ),
+                    //                     )
+                    //                   ),
+                    //                 );
+                    //               },
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       flex: 6,
+                    //       child: Text(
+                    //         ":",
+                    //         style: robotoRegular.copyWith(
+                    //           fontSize: Dimensions.fontSizeDefault,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       flex: 4,
+                    //       child: Text(
+                    //         widget.paymentAccess,
+                    //         style: robotoRegular.copyWith(
+                    //           fontSize: Dimensions.fontSizeDefault,
+                    //           color: ColorResources.black,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
 
                     // Row(
                     //   mainAxisSize: MainAxisSize.max,
@@ -267,7 +331,7 @@ class SuccessCreateTransactioPageState extends State<SuccessCreateTransactioPage
           flex: 6,
           child: Text(name,
             style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
+              fontSize: Dimensions.fontSizeLarge,
               fontWeight: FontWeight.bold,
               color: ColorResources.black
             ),
@@ -284,10 +348,10 @@ class SuccessCreateTransactioPageState extends State<SuccessCreateTransactioPage
         ),
 
         Expanded(
-          flex: 4,
+          flex: 6,
           child: Text(value,
             style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
+              fontSize: Dimensions.fontSizeLarge,
               color: ColorResources.black
             ),
           )

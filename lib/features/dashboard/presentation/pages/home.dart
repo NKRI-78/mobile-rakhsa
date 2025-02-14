@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/helpers/capitalize.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -89,15 +91,18 @@ class HomePageState extends State<HomePage> {
 
     if(!mounted) return;
       await firebaseNotifier.initFcm();
-
-    if(!mounted) return; 
-      await dashboardNotifier.getBanner();
     
     if(!mounted) return; 
       await getCurrentLocation();
+    
+    if(!mounted) return;
+      await dashboardNotifier.getBanner();
 
     if(!mounted) return;
       socketIoService.startListenConnection();
+    
+    initBanners();
+    setStatusBarStyle();
   }
 
   Future<void> getCurrentLocation() async {
@@ -185,7 +190,39 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  @override
+  void initBanners() {
+    banners.clear();
+
+    banners.add(
+      _WeatherContent(
+        subAdministrativeArea,
+        LatLng(
+          double.tryParse(currentLat) ?? 0.0,
+          double.tryParse(currentLng) ?? 0.0,
+        ),
+      ),
+    );
+
+    Future.delayed(const Duration(seconds: 1), () async {
+      for (var banner in dashboardNotifier.banners) {
+        banners.add(ImgBanner(
+          banner.link,
+          banner.imageUrl,
+        ));
+      }
+      setState(() {});
+    });
+  }
+
+  void setStatusBarStyle(){
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: whiteColor,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+  }
+
+   @override
   void initState() {
     super.initState();
     
@@ -196,28 +233,7 @@ class HomePageState extends State<HomePage> {
     weatherNotifier = context.read<WeatherNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    banners = [];
-
-    banners.add(
-      _WeatherContent(
-        subAdministrativeArea,
-        LatLng(
-          double.tryParse(currentLat) ?? 0.0,
-          double.tryParse(currentLng) ?? 0.0,
-        )
-      )
-    );
-
-    Future.delayed(const Duration(seconds: 1), () async {
-      await getCurrentLocation();
-      
-      for (var banner in dashboardNotifier.banners) {
-        banners.add(ImgBanner(
-          banner.link,
-          banner.imageUrl
-        ));
-      }      
-    });
+    socketIoService.connect();
 
     Future.microtask(() => getData());
   }
@@ -230,12 +246,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: whiteColor,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-    ));
 
     return Scaffold(
       body: Stack(
@@ -246,6 +256,8 @@ class HomePageState extends State<HomePage> {
                 onRefresh: () => Future.sync(() => getData()),
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
+                  // padding bawah untuk memberikan ruang scrolling bagian bawah
+                  padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -382,9 +394,12 @@ class ImgBanner extends StatelessWidget {
       onTap: () async {
         await launchUrl(Uri.parse(link));
       },
-      child: Image.network(
-        img,
-        fit: BoxFit.cover,
+      child: CachedNetworkImage(
+        imageUrl: img,
+        errorWidget: (_, __, ___) => Image.asset(AssetSource.iconDefaultImg),
+        placeholder: (_, ___) => const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
@@ -416,107 +431,130 @@ class _WeatherContent extends StatelessWidget {
     return SizedBox(
       height: 190,
       width: double.infinity,
-      child: Stack(
-        children: [
-          // bg
-          Image.asset(
-            AssetSource.bgWeather,
-            fit: BoxFit.cover,
-          ),
-
-          // content
-          InkWell(
-            onTap: () => _navigateToWeatherDetail(context),
+      child: Material(
+        color: Colors.grey.shade800,
+        child: InkWell(
+          onTap: () => _navigateToWeatherDetail(context),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Consumer<WeatherNotifier>(
               builder: (context, notifier, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      // cuaca hari ini
-                      Flexible(
-                        flex: 2,
-                        child: _todayWeather(notifier, area),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // divider
-                      const VerticalDivider(),
-                      const SizedBox(width: 8),
-                                              
-                      // ramalan cuaca 5 hari kedepan
-                      Flexible(
-                        flex: 3,
-                        fit: FlexFit.tight,
-                        child: _forecastWeather(notifier),
-                      ),
-                    ],
-                  ),
+                return Column(
+                  children: [
+                    // cuaca hari ini
+                    Expanded(
+                      child: _todayWeather(notifier, area),
+                    ),
+                
+                    // divider
+                    const SizedBox(height: 8),
+                                            
+                    // ramalan cuaca 5 hari kedepan
+                    _forecastWeather(notifier),
+                  ],
                 );
               }
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _todayWeather(WeatherNotifier notifier, String area){
     final today = notifier.weathers.first;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // icon cuaca
-        Image.asset(
-          notifier.getWeatherIcon(
-            notifier.weathers.first.weatherConditionCode,
+        // suhu & icon
+        Flexible(
+          fit: FlexFit.tight,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // icon cuaca
+              Row(
+                children: [
+                  ClipRRect(
+                   borderRadius: BorderRadius.circular(100), 
+                    child: Image.asset(
+                      notifier.getWeatherIcon(
+                        notifier.weathers.first.weatherConditionCode,
+                      ),
+                      height: 48,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+          
+                  Text(
+                    '${(today.temperature?.celsius ?? 0).round()} °C',
+                    textAlign: TextAlign.center,
+                    style: robotoRegular.copyWith(
+                      fontSize: 22,
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+          
+              Text(
+                (today.weatherDescription ?? '').capitalizeEachWord(),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  fontSize: 10,
+                  color: whiteColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-          height: 50,
         ),
     
-        // cuaca hari ini (suhu°C)
-        Text(
-          '${(today.temperature?.celsius ?? 0).round()} °C',
-          textAlign: TextAlign.center,
-          style: robotoRegular.copyWith(
-            fontSize: 16,
-            color: whiteColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        
-        // title cuaca hari ini
-        Text(
-          'Hari ini',
-          style: robotoRegular.copyWith(
-            color: whiteColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-    
-        // title cuaca hari ini
-        Text(
-          (today.weatherDescription ?? '').toUpperCase(),
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: robotoRegular.copyWith(
-            fontSize: 10,
-            color: whiteColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-    
-        // kota
-        Text(
-          area,
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: robotoRegular.copyWith(
-            fontSize: 10,
-            color: whiteColor,
-            fontWeight: FontWeight.w300,
+        // suhu & icon & wilayah
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // title hari ini
+              Text(
+                'Hari ini',
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  fontSize: 11,
+                  color: whiteColor,
+                ),
+              ),
+          
+              // hari ini
+              Text(
+                DateFormat('EEEE', 'id').format(today.date ?? DateTime.now()),
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  fontSize: 16,
+                  color: whiteColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          
+              // area
+              Text(
+                area,
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  fontSize: 11,
+                  color: whiteColor,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -524,11 +562,10 @@ class _WeatherContent extends StatelessWidget {
   }
 
   Widget _forecastWeather(WeatherNotifier notifier) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: notifier.weathers.map((weather) {
-        return Row(
+        return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // icon cuaca
@@ -539,13 +576,13 @@ class _WeatherContent extends StatelessWidget {
 
             // hari
             Text(
-              DateFormat('EEEE', 'id').format(weather.date ?? DateTime.now()),
+              DateFormat('EE', 'id').format(weather.date ?? DateTime.now()),
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: robotoRegular.copyWith(
                 color: whiteColor,
-                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
             ),
 
@@ -557,7 +594,7 @@ class _WeatherContent extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: robotoRegular.copyWith(
                 color: whiteColor,
-                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
             ),
           ],

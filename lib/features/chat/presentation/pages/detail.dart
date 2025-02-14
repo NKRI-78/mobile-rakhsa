@@ -126,14 +126,38 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                   ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                  
+
                       Container(
                         margin: const EdgeInsets.only(
                           top: 12.0,
                           left: 16.0,
+                          right: 16.0,
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 12.0,
+                          left: 12.0,
+                          right: 12.0 
+                        ),
+                        child: Text(notifier.inbox.field6.toString(),
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ),
+                  
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 8.0,
+                          left: 16.0,
                           right: 16.0
                         ),
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.only(
+                          left: 12.0,
+                          right: 12.0,
+                          bottom: 5.0
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,19 +205,33 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(notifier.inbox.field4.toString().toUpperCase(),
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black
+                                  ),
+                                ),
 
-                            Text(notifier.inbox.field4.toString().toUpperCase(),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
-                                color: ColorResources.black
-                              ),
+                                Text("${notifier.inbox.description.toString()}, -",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black
+                                  ),
+                                ),
+                              ],
                             ),
 
-                            const SizedBox(height: 12.0),
+                            const SizedBox(height: 8.0),
 
                             notifier.inbox.field3 == "va" 
                             ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.all(8.0),
@@ -209,7 +247,7 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 12.0),
+                                  const SizedBox(width: 6.0),
                                   InkWell(
                                     onTap: () async {
                                       await Clipboard.setData(

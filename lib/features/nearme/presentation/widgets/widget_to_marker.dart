@@ -42,8 +42,15 @@ Future<Uint8List> createImageFromWidget(Widget widget, {Size? logicalSize, requi
       alignment: Alignment.center,
       child: repaintBoundary
     ),
-    configuration: ViewConfiguration(
-      size: logicalSize,
+    configuration: const ViewConfiguration(
+      physicalConstraints: BoxConstraints(
+        maxHeight: 150.0,
+        maxWidth: 150.0
+      ),
+      logicalConstraints: BoxConstraints(
+        maxHeight: 150.0,
+        maxWidth: 150.0
+      ),
       devicePixelRatio: 1.0,
     ),
   );

@@ -22,14 +22,17 @@ class InquiryPayPpobModel {
 class InquiryDataPayPpobData {
   String paymentAccess;
   String paymentType;
+  String orderId;
 
   InquiryDataPayPpobData({
     required this.paymentAccess,
     required this.paymentType,
+    required this.orderId,
   });
 
   factory InquiryDataPayPpobData.fromJson(Map<String, dynamic> json) => InquiryDataPayPpobData(
     paymentAccess: json["payment_access"],
     paymentType: json["payment_type"],
+    orderId: json["order_id"]
   );
 }

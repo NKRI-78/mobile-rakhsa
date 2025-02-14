@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:image/image.dart' as img;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/Helper/Image.dart';
@@ -23,7 +22,6 @@ import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 
 import 'package:rakhsa/main.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class VerifyLoginFr extends StatefulWidget {
   const VerifyLoginFr({super.key});
@@ -81,40 +79,8 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
     });
   }
 
-  Future<void> getData() async {
-    if(!mounted) return;
-      await requestLocationMicrophoneCameraPermission();
-  }
 
-  Future<void> requestLocationMicrophoneCameraPermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.camera,
-    ].request();
 
-    if(statuses[Permission.camera] == PermissionStatus.denied || statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
-      await checkPermissionCamera();
-      return;
-    }
-  }
-
-  Future<void> checkPermissionCamera() async {
-    bool isCameraDenied = await Permission.camera.isDenied || await Permission.camera.isPermanentlyDenied;
-
-    if(isCameraDenied) {
-      if (!isDialogCameraShowing) {
-        setState(() => isDialogCameraShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Izin Kamera Dibutuhkan",
-          type: "camera"
-        );
-        Future.delayed(const Duration(seconds: 2),() {
-          setState(() => isDialogCameraShowing = false);
-        });
-
-        return;
-      }
-    }
-  }
 
   Future<void> doFaceDetectionOnFrame() async {
     InputImage? inputImage = ImageHelper.getInputImage(controller, camDirec, cameras, frame!);
@@ -260,8 +226,6 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
     recognizer = Recognizer();
     
     initializeCamera();
-
-    Future.microtask(() => getData());
   }
 
   @override

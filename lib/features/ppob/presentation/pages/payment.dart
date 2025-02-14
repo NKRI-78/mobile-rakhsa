@@ -301,7 +301,7 @@ class PaymentPageState extends State<PaymentPage> {
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
                                       ),
-                                      Text(widget.productName.capitalize(),
+                                      Text(widget.productName.capitalizeEachWord(),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall,
                                           color: ColorResources.black
@@ -322,7 +322,7 @@ class PaymentPageState extends State<PaymentPage> {
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
                                       ),
-                                      Text(widget.type.capitalize(),
+                                      Text(widget.type.capitalizeEachWord(),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall,
                                           color: ColorResources.black
@@ -464,6 +464,8 @@ class PaymentPageState extends State<PaymentPage> {
                       productName: widget.productName,
                       productPrice: widget.productPrice,
                       productType: widget.type,
+                      orderId: payPpobProvider.orderId,
+                      paymentName: paymentChannelProvider.paymentName,
                       paymentAccess: payPpobProvider.paymentAccess,
                       paymentType: payPpobProvider.paymentType
                     );

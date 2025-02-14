@@ -11,7 +11,6 @@ import 'package:rakhsa/features/event/data/models/list.dart';
 import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
 import 'package:rakhsa/features/event/persentation/widget/itinerary_button.dart';
 import 'package:rakhsa/features/event/persentation/widget/itinerary_text_field.dart';
-import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage(this.selectedDate, {super.key, this.event});
@@ -28,8 +27,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   late TextEditingController _messageC;
 
-  late TimePickerSpinnerController _pickerSpinnerController;
-
   late DateTime _selectedDate;
 
   String _messageValue = '';
@@ -38,7 +35,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   void initState() {
     super.initState();
     _saveEventNotifier = context.read<EventNotifier>();
-    _pickerSpinnerController = TimePickerSpinnerController();
     _selectedDate = widget.selectedDate;
 
     _messageC = TextEditingController(text: widget.event?.title ?? '');
@@ -48,7 +44,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   void dispose() {
     _reset();
     _messageC.dispose();
-    _pickerSpinnerController.dispose();
     
     super.dispose();
   }
@@ -163,7 +158,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     _messageValue = value;
                   }
                 }),
-                onSubmitted: (_) => _pickerSpinnerController.showMenu(),
               ),
               const SizedBox(height: 16),
 

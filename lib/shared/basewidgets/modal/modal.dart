@@ -550,10 +550,7 @@ class GeneralModal {
                                 openAppSettings();
                               }
 
-                              Future.delayed(Duration.zero, () {
-                                Navigator.pop(context);
-                              });
-
+                              Navigator.pop(context);
 
                             },
                             btnTxt: "Ok",

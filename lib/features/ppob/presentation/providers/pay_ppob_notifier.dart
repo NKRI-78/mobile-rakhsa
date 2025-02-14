@@ -13,6 +13,7 @@ class PayPpobNotifier with ChangeNotifier {
 
   String paymentAccess = "";
   String paymentType = "";
+  String orderId = "";
 
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
@@ -45,6 +46,7 @@ class PayPpobNotifier with ChangeNotifier {
     }, (r) {
       paymentAccess = r.data.paymentAccess;
       paymentType = r.data.paymentType;
+      orderId = r.data.orderId;
 
       _state = ProviderState.loaded;
     });

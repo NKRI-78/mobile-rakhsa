@@ -110,7 +110,6 @@ dependencies:
   table_calendar: ^3.1.2
   timelines: ^0.1.0
   tuple: ^2.0.1
-  time_picker_spinner_pop_up: ^2.0.0
 
   # W
   # web_socket_channel: ^3.0.1
@@ -131,6 +130,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/icons/
+    - assets/images/ppob/
     - assets/images/weather/
     - assets/images/update/
     - assets/sounds/

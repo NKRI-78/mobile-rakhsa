@@ -222,9 +222,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                           onPress: () async {
                             final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
                             getC.text = contact.phoneNumber!.number!.replaceAll(RegExp("[()+\\s-]+"), "");
-                            Future.delayed(Duration.zero, () {
-                              context.read<InquiryPulsaProvider>().fetch(prefix: getC.text, type: "pulsa");
-                            });
+                            context.read<InquiryPulsaProvider>().fetch(prefix: getC.text, type: "pulsa");
                             onPhoneChange();
                           },
                           child: Container(
@@ -268,7 +266,6 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                 SliverToBoxAdapter(
                   child: Container(
                     margin: const EdgeInsets.only( 
-                      top: 20.0,
                       bottom: 20.0,
                       left: 15.0, 
                       right: 15.0
@@ -279,9 +276,9 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: 200.0,
-                        childAspectRatio: 3.8 / 3.0,
-                        crossAxisSpacing: 50.0,
-                        mainAxisSpacing: 50.0,
+                        childAspectRatio: 3.6 / 3.0,
+                        crossAxisSpacing: 15.0,
+                        mainAxisSpacing: 15.0,
                       ),
                       itemCount: notifier.entity.length,
                       itemBuilder: (BuildContext context, int i) {
@@ -300,68 +297,62 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               }
                             });
                           },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorResources.white,
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                
-                                Align(
-                                  alignment:Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 80.0,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: selected == i
-                                      ? primaryColor
-                                      : const Color(0xFFF4F4F4),
-                                      boxShadow: kElevationToShadow[1],
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(notifier.entity[i].name,
-                                          maxLines: 1,
-                                          textAlign: TextAlign.center,
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeExtraSmall,
-                                            color: selected == i 
-                                            ? ColorResources.white 
-                                            : ColorResources.black
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        Text(formatCurrency(notifier.entity[i].price),
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeExtraSmall,
-                                            fontWeight: FontWeight.w600,
-                                            color: selected == i 
-                                            ? ColorResources.white 
-                                            : ColorResources.black
-                                          ),
-                                        ),
-                                      ],
-                                    ) 
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              
+                              Align(
+                                alignment:Alignment.bottomCenter,
+                                child: Container(
+                                  height: 80.0,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: selected == i
+                                    ? primaryColor
+                                    : const Color(0xFFF4F4F4),
+                                    boxShadow: kElevationToShadow[1],
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(notifier.entity[i].name,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall,
+                                          color: selected == i 
+                                          ? ColorResources.white 
+                                          : ColorResources.black
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5.0),
+                                      Text(formatCurrency(notifier.entity[i].price),
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeExtraSmall,
+                                          fontWeight: FontWeight.w600,
+                                          color: selected == i 
+                                          ? ColorResources.white 
+                                          : ColorResources.black
+                                        ),
+                                      ),
+                                    ],
+                                  ) 
                                 ),
-                        
-                                // Positioned(
-                                //   top: 0.0,
-                                //   left: 0.0,
-                                //   right: 0.0,
-                                //   child: Image.asset('assets/image/icons/ic-coin.png',
-                                //     width: 50.0,
-                                //     height: 50.0,
-                                //   )
-                                // ),
-                        
-                              ],
-                            ),
+                              ),
+                                                  
+                              // Positioned(
+                              //   top: 0.0,
+                              //   left: 0.0,
+                              //   right: 0.0,
+                              //   child: Image.asset('assets/image/icons/ic-coin.png',
+                              //     width: 50.0,
+                              //     height: 50.0,
+                              //   )
+                              // ),
+                                                  
+                            ],
                           ),
                         );
                       

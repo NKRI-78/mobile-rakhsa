@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -60,12 +62,13 @@ class WelcomePageState extends State<WelcomePage> {
                       fontSize: fontSizeExtraLarge,
                     ),
                   ),
-                  const SizedBox(height: 100),
+
+                  const SizedBox(height: 100.0),
 
                   // login button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                      Navigator.pushNamed(context, RoutesNavigation.login);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
@@ -80,7 +83,8 @@ class WelcomePageState extends State<WelcomePage> {
                       child: Text('Login'),
                     ),
                   ),
-                  const SizedBox(height: 24),
+
+                  const SizedBox(height: 24.0),
 
                   // divider
                   Row(
@@ -105,7 +109,7 @@ class WelcomePageState extends State<WelcomePage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 24.0),
 
                   // register button
                   Consumer<RegisterNotifier>(

@@ -15,7 +15,6 @@ import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notif
 import 'package:rakhsa/global.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
-
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 // check socket socket?.connected ?? false
@@ -24,10 +23,6 @@ enum ConnectionIndicator { red, yellow, green }
 
 class SocketIoService with ChangeNotifier {
   static final shared = SocketIoService();
-
-  SocketIoService() {
-    connect();
-  }
 
   IO.Socket? socket;
 
@@ -42,7 +37,7 @@ class SocketIoService with ChangeNotifier {
   bool isConnected = false;
 
   Color get indicatorColor {
-    switch (_connectionIndicator) {
+    switch (connectionIndicator) {
       case ConnectionIndicator.green:
         return ColorResources.green;
       case ConnectionIndicator.yellow:
@@ -91,7 +86,6 @@ class SocketIoService with ChangeNotifier {
     String token = await StorageHelper.getToken();
 
     if(token != "-") {
-
       socket = IO.io('https://socketio-rakhsa.langitdigital78.com', 
         OptionBuilder().setTransports(['websocket'])
         .setAuth({
@@ -104,7 +98,6 @@ class SocketIoService with ChangeNotifier {
       );
 
       socket?.connect();
-
     }
 
     socket?.onConnect((_) {
@@ -202,8 +195,9 @@ class SocketIoService with ChangeNotifier {
   }
 
   void connect() {
-    init();
-
+    if (socket == null || !(socket?.connected ?? false)) {
+      init();
+    }
     isConnected = true;
     Future.delayed(Duration.zero, () => notifyListeners());
   }

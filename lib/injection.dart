@@ -278,7 +278,7 @@ void init() {
     deviceInfo: locator()
   ));
   
-  locator.registerFactory(() => SocketIoService());
+  locator.registerLazySingleton(() => SocketIoService());
 
   DioHelper dio = DioHelper();
   Dio getDio = dio.getClient();
