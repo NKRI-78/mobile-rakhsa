@@ -101,6 +101,7 @@ class GeneralModal {
                               children: [
                             
                                 Text(msg, 
+                                  textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.w600,

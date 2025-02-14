@@ -33,7 +33,6 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
         "folder": folderName,
         "subfolder": "broadcast-raksha"
       });
-      
       final res = await client.post('https://api-media.inovatiftujuh8.com/api/v1/media/upload',
         data: formData
       );

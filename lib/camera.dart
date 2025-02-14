@@ -151,7 +151,12 @@ class CameraPageState extends State<CameraPage> {
 
       setState(() => loading = true);
       
-      await uploadMediaNotifier.send(file: file, folderName: "videos");
+      await uploadMediaNotifier.send(file: file, folderName: "videos").timeout(
+        const Duration(seconds: 10), 
+        onTimeout: () {
+          setState(() => loading = false);
+        },
+      );
 
       setState(() => loading = false);
 
