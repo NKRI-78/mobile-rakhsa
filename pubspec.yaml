@@ -57,6 +57,7 @@ dependencies:
   firebase_core: ^3.4.0
   firebase_messaging: ^15.0.0
   flutter_typeahead: ^4.3.7
+  flutter_time_picker_spinner: ^2.0.0
     
   # G
   google_sign_in: ^6.0.2

@@ -1,6 +1,9 @@
 
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
@@ -52,6 +55,21 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _messageC.clear();
   }
 
+  bool _validForm() {
+    DateTime now = DateTime.now();
+
+    if (widget.event != null){
+      return true;
+    } else if (_messageValue.isEmpty) {
+      return false;
+    } else if (_selectedDate.isBefore(now)) {
+      return false;
+    }
+
+    // valid
+    return true;
+  }
+
   void _createEvent() async {
     final date = _selectedDate;
     final event = widget.event;
@@ -92,28 +110,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
     }
   }
 
-  void _showTimePicker(BuildContext context) async {
-    final selectedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_selectedDate),
-
-    );
-
-    if (selectedTime != null) {
-      setState(() {
-        _selectedDate = DateTime(
-          _selectedDate.year,
-          _selectedDate.month,
-          _selectedDate.day,
-          selectedTime.hour,
-          selectedTime.minute,
-        );
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    log('selected date $_selectedDate');
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -161,99 +160,69 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
               const SizedBox(height: 16),
 
+              Text(
+                'Waktu Agenda',
+                style: robotoRegular.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Container( 
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14, 
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Text.rich(
+                  TextSpan(
+                    text: DateFormat('EEEE dd MMMM yyyy', 'id').format(_selectedDate),
+                    children: [
+                      const TextSpan(text: ', Jam '),
+                      TextSpan(
+                        text: DateFormat('HH:mm', 'id').format(_selectedDate),
+                      ),
+                    ],
+                  ),
+                  style: robotoRegular.copyWith(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
               // pilih tanggal dan waktu
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tanggal Agenda',
-                          style: robotoRegular.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 8),
-                        Container( 
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 14, 
-                            horizontal: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey),
-                          ),
-                          child: Text(
-                            DateFormat('dd MMMM yyyy', 'id').format(widget.selectedDate),
-                            style: robotoRegular.copyWith(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Pilih Waktu',
-                          style: robotoRegular.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Material(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: const BorderSide(color: Colors.grey),
-                            ),
-                            child: InkWell(
-                              onTap: () => _showTimePicker(context),
-                              borderRadius: BorderRadius.circular(8),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14, 
-                                  horizontal: 12,
-                                ),
-                                child: Text.rich(
-                                  textAlign: TextAlign.center,
-                                  style: robotoRegular.copyWith(
-                                    fontSize: 16,
-                                  ),
-                                  TextSpan(
-                                    text: '${_selectedDate.hour}',
-                                    children: [
-                                      const TextSpan(text: ' : '),
-                                      TextSpan(
-                                        text: '${_selectedDate.minute}',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              Text(
+                'Pilih Jam',
+                style: robotoRegular.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+
+              // pilih waktu
+              TimePickerSpinner(
+                spacing: 50,
+                time: _selectedDate,
+                isForce2Digits: true,
+                normalTextStyle: robotoRegular.copyWith(
+                  fontSize: 24,
+                  color: Colors.grey.shade700,
+                ),
+                highlightedTextStyle: robotoRegular.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                  color: redColor,
+                ),
+                onTimeChange: (time) {
+                  setState(() => _selectedDate = time);
+                },
               ),
               const SizedBox(height: 24),
 
               // button
               Consumer<EventNotifier>(
                 builder: (context, notifier, child) {
-                  bool validForm = _messageValue.isNotEmpty;
                   bool loading = notifier.createEventState == ProviderState.loading 
                           || notifier.editEventState == ProviderState.loading;
                   
@@ -263,7 +232,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           : (widget.event != null) 
                                 ? 'update' 
                                 : 'Submit',
-                    action: validForm && !loading
+                    action: _validForm() && !loading
                           ? () => _createEvent()
                           : null,
                   );

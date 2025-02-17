@@ -1,3 +1,6 @@
+
+import 'dart:collection';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +13,7 @@ import 'package:rakhsa/features/event/domain/usecases/save_event.dart';
 import 'package:rakhsa/features/event/domain/usecases/update_event.dart';
 import 'package:rakhsa/features/event/persentation/pages/all_event_page.dart';
 import 'package:rakhsa/features/event/persentation/pages/create_event_page.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class EventNotifier extends ChangeNotifier {
   final SaveEventUseCase useCase;
@@ -36,8 +40,11 @@ class EventNotifier extends ChangeNotifier {
   ProviderState _deleteEventState = ProviderState.empty;
   ProviderState get deleteEventState => _deleteEventState;
 
-  Map<DateTime, List<EventData>> _events = {};
-  Map<DateTime, List<EventData>> get events => _events;
+  final _kEvents = LinkedHashMap<DateTime, List<EventData>>(
+    equals: isSameDay,
+    hashCode: (key) => key.day * 1000000 + key.month * 10000 + key.year,
+  );
+  LinkedHashMap<DateTime, List<EventData>> get kEvents => _kEvents;
 
   List<EventData> _eventList = [];
   List<EventData> get eventList => _eventList;
@@ -70,7 +77,8 @@ class EventNotifier extends ChangeNotifier {
         newEvents[dateKey]!.add(event);
       }
 
-      _events = newEvents;
+      _kEvents.clear();
+      _kEvents.addAll(newEvents);
       _eventList = r.data;
       _getEventState = ProviderState.loaded;
       notifyListeners();
@@ -226,8 +234,8 @@ class EventNotifier extends ChangeNotifier {
     );
   }
 
-   Widget _transition(Animation<double> a, Widget child) {
-    const begin = Offset(0.0, 1.0);
+   Widget _transition(Animation<double> a, Widget child, {bool moveUp = true}) {
+    var begin = moveUp ? const Offset(0.0, 1.0) : const Offset(1.0, 0.0);
     const end = Offset.zero;
     const curve = Curves.easeInOut;
     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
@@ -245,7 +253,11 @@ class EventNotifier extends ChangeNotifier {
         pageBuilder: (_, __, ___) => const AllEventPage(),
         transitionDuration: const Duration(milliseconds: 600),
         reverseTransitionDuration: const Duration(milliseconds: 400),
-        transitionsBuilder: (context, a1, a2, child) => _transition(a1, child),
+        transitionsBuilder: (context, a1, a2, child) => _transition(
+          a1, 
+          child, 
+          moveUp: false,
+        ),
       ),
     );
   }

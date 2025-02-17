@@ -533,13 +533,13 @@ class _WeatherContent extends StatelessWidget {
           
               // hari ini
               Text(
-                DateFormat('EEEE', 'id').format(today.date ?? DateTime.now()),
+                DateFormat('EEEE, dd MMM yyyy', 'id').format(today.date ?? DateTime.now()),
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
                 style: robotoRegular.copyWith(
-                  fontSize: 16,
+                  fontSize: 12,
                   color: whiteColor,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
           

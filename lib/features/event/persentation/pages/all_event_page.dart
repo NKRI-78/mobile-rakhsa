@@ -9,22 +9,8 @@ import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart'
 import 'package:rakhsa/features/event/persentation/widget/itinerary_button.dart';
 import 'package:rakhsa/features/event/persentation/widget/itinerary_list_tile.dart';
 
-class AllEventPage extends StatefulWidget {
+class AllEventPage extends StatelessWidget {
   const AllEventPage({super.key});
-
-  @override
-  State<AllEventPage> createState() => _AllEventPageState();
-}
-
-class _AllEventPageState extends State<AllEventPage> {
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<EventNotifier>().getEvent();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +37,19 @@ class _AllEventPageState extends State<AllEventPage> {
       body: Consumer<EventNotifier>(
         builder: (context, notifier, child) {
           if (notifier.getEventState == ProviderState.loading) {
-            return const Center(child: CircularProgressIndicator(color: redColor));
+            return SizedBox(
+              width: double.infinity,
+              height: 200,
+              child: Center(
+                child: Text(
+                  'Memuat agenda..',
+                  textAlign: TextAlign.center,
+                  style: robotoRegular.copyWith(
+                    color: redColor,
+                  ),
+                ),
+              ),
+            );
           } else if (notifier.getEventState == ProviderState.error) {
             return Padding(
               padding: const EdgeInsets.all(16),
@@ -59,35 +57,34 @@ class _AllEventPageState extends State<AllEventPage> {
                 child: Text(
                   notifier.errorMessageGetEvent!,
                   textAlign: TextAlign.center,
-                  style: robotoRegular,
+                  style: robotoRegular.copyWith(
+                    color: redColor,
+                  ),
                 ),
               ),
             );
           } else {
-            
             if (notifier.eventList.isEmpty) {
-              return Center(
-               child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Anda belum membuat Agenda',
-                          textAlign: TextAlign.center,
-                          style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Anda belum membuat Agenda',
+                        textAlign: TextAlign.center,
+                        style: robotoRegular.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(height: 16),
-                        ItineraryButton(
-                          label: 'Buat agenda disini', 
-                          action: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                      ItineraryButton(
+                        label: 'Buat agenda disini', 
+                        action: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
                 ),
               );

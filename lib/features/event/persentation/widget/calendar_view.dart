@@ -19,16 +19,6 @@ class CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const border = BorderSide(color: greyColor);
-    final tableBorder = TableBorder(
-      horizontalInside: border,
-      verticalInside: border,
-      bottom: border,
-      left: border,
-      right: border,
-      top: border,
-      borderRadius: BorderRadius.circular(8),
-    );
     const boxDecoration = BoxDecoration(
       color: redColor,
       shape: BoxShape.circle,
@@ -61,7 +51,6 @@ class CalendarView extends StatelessWidget {
         disabledTextStyle: disabledTextStyle,
         defaultTextStyle: enabledTextStyle,
         weekendTextStyle: disabledTextStyle,
-        tableBorder: tableBorder,
         todayDecoration: BoxDecoration(
           color: redColor.withOpacity(0.2),
           border: Border.all(color: redColor),
