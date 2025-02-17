@@ -21,6 +21,8 @@ import 'package:rakhsa/ML/Recognition.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
@@ -270,9 +272,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
                       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
                       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
-
-                      debugPrint("===  USER ID ${StorageHelper.getUserId()} ===");
-                      
                       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
                       File fr = await convertImageToFile(croppedFace, "face-recognition");
@@ -315,8 +314,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:const Color(0xffFE1717),
-                    textStyle: const TextStyle(
-                      color: Color(0xffFFFFFF)
+                    textStyle: robotoRegular.copyWith(
+                      color: ColorResources.white
                     ),
                     minimumSize: const Size(200, 40)
                   ),
@@ -328,8 +327,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                         valueColor: AlwaysStoppedAnimation(Colors.white),
                       )
                     ) 
-                  : const Text("Register",
-                    style: TextStyle(
+                  : Text("Register",
+                    style: robotoRegular.copyWith(
                       color: Colors.white
                     ),
                   )
@@ -343,16 +342,16 @@ class RegisterFrPageState extends State<RegisterFrPage> {
               }, 
                 style: ElevatedButton.styleFrom(
                 backgroundColor:const Color(0xFF1796FE),
-                textStyle: const TextStyle(
-                  color: Color(0xffFFFFFF)
+                textStyle: robotoRegular.copyWith(
+                  color: ColorResources.white
                 ),
                 minimumSize: const Size(200, 40)
               ),
-              child: const Text("Cancel",
-                style: TextStyle(
+              child: Text("Cancel",
+                style: robotoRegular.copyWith(
                   color: Colors.white
                 ),
-              ),
+              ) 
             )
 
           ],
@@ -472,8 +471,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("Photo",
-                style: TextStyle(
+              Text("Photo",
+                style: robotoRegular.copyWith(
                   color: Colors.black,
                   fontSize: 22.0,
                   fontWeight: ui.FontWeight.bold
@@ -580,14 +579,14 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       text1.isEmpty 
                       ? const SizedBox() 
                       : Text(text1,
-                          style: const TextStyle(
+                          style: robotoRegular.copyWith(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.white
                           ),
                         ),
                       Text(text2,
-                        style: const TextStyle(
+                        style: robotoRegular.copyWith(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.white
@@ -612,8 +611,8 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                     
-                        const Text("Photo",
-                          style: TextStyle(
+                        Text("Photo",
+                          style: robotoRegular.copyWith(
                             color: Colors.black,
                             fontSize: 22.0,
                             fontWeight: ui.FontWeight.bold

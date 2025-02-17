@@ -84,18 +84,18 @@ void onStart(ServiceInstance service) async {
       ].where((part) => part != null && part.isNotEmpty).join(", ");
 
       try {
-        // await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-        //   data: {
-        //     "user_id": userId,
-        //     "address": address,
-        //     "device": androidInfo.model,
-        //     "product_name": androidInfo.product,
-        //     "no_serial": androidInfo.serialNumber,
-        //     "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
-        //     "lat": position.latitude,
-        //     "lng": position.longitude,
-        //   },
-        // );
+        await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+          data: {
+            "user_id": userId,
+            "address": address,
+            "device": androidInfo.model,
+            "product_name": androidInfo.product,
+            "no_serial": androidInfo.serialNumber,
+            "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
+            "lat": position.latitude,
+            "lng": position.longitude,
+          },
+        );
       } on DioException catch(e) {
         debugPrint(e.response?.data.toString());
       } catch (e) {

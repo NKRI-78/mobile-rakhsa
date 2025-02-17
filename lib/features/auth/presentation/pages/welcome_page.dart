@@ -18,6 +18,19 @@ class WelcomePage extends StatefulWidget {
 }
 
 class WelcomePageState extends State<WelcomePage> {
+
+  @override 
+  void initState() {
+    super.initState();
+
+
+  }
+
+  @override 
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -68,7 +81,7 @@ class WelcomePageState extends State<WelcomePage> {
                   // login button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.login);
+                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
@@ -96,9 +109,8 @@ class WelcomePageState extends State<WelcomePage> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'Atau',
-                            style: TextStyle(
+                          child: Text('Atau',
+                            style: robotoRegular.copyWith(
                               color: whiteColor.withOpacity(0.5),
                             ),
                           ),
