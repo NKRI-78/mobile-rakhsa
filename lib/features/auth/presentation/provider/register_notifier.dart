@@ -245,7 +245,6 @@ class RegisterNotifier with ChangeNotifier {
           _resetScan();
           FailureDocumentDialog.launch(
             context,
-            title: 'Kesalahan Ekstraksi Data Passpor',
             content:
                 'Kami mengalami kendala saat memproses paspor Anda. [${failure.message}]',
             actionCallback: () async {
@@ -259,7 +258,6 @@ class RegisterNotifier with ChangeNotifier {
             _resetScan();
             FailureDocumentDialog.launch(
               context,
-              title: 'Data Tidak Valid',
               content:
               'Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.',
               actionCallback: () async {
@@ -276,7 +274,6 @@ class RegisterNotifier with ChangeNotifier {
               _resetScan();
               FailureDocumentDialog.launch(
                 context,
-                title: 'Data Tidak Valid',
                 content:
                 'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
                 actionCallback: () async {
@@ -297,7 +294,6 @@ class RegisterNotifier with ChangeNotifier {
                 _resetScan();
                 FailureDocumentDialog.launch(
                   context,
-                  title: 'Paspor Sudah Kadaluarsa',
                   content: 'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.' 
                   ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
                   showScanButton: false,
@@ -326,7 +322,6 @@ class RegisterNotifier with ChangeNotifier {
               _resetScan();
               FailureDocumentDialog.launch(
                 context,
-                title: 'Data Tidak Valid',
                 content:
                   'Kode MRZ tidak lengkap atau tidak jelas. '
                   'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
@@ -422,24 +417,20 @@ class RegisterNotifier with ChangeNotifier {
 
 }
 
-
 class FailureDocumentDialog extends StatelessWidget {
   const FailureDocumentDialog({
     super.key,
     this.actionCallback,
-    required this.title,
     required this.content,
     this.showScanButton = true,
   });
 
   final VoidCallback? actionCallback;
-  final String title;
   final String content;
   final bool showScanButton;
 
   static void launch(
     BuildContext context, {
-    required String title,
     required String content,
     VoidCallback? actionCallback,
     bool showScanButton = true,
@@ -451,7 +442,6 @@ class FailureDocumentDialog extends StatelessWidget {
         return PopScope(
           canPop: false,
           child: FailureDocumentDialog(
-            title: title,
             content: content,
             actionCallback: actionCallback,
             showScanButton: showScanButton,
@@ -486,12 +476,6 @@ class FailureDocumentDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
                 Text(
                   content,
                   textAlign: TextAlign.center,
@@ -536,10 +520,10 @@ class FailureDocumentDialog extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: -50,
+            top: -60,
             child: Image.asset(
-              AssetSource.iconAlert,
-              height: 80,
+              AssetSource.passportError,
+              height: 100,
               fit: BoxFit.cover,
             ),
           ),

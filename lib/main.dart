@@ -12,7 +12,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
@@ -20,6 +19,7 @@ import 'package:awesome_notifications/awesome_notifications.dart' as an;
 import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/features/auth/presentation/pages/on_boarding_page.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
@@ -34,7 +34,6 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/common/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late List<CameraDescription> cameras;
@@ -191,16 +190,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         }
       } else {
         if(mounted) {
-          setState(() => home = const WelcomePage()); 
+          setState(() => home = const OnBoardingPage()); 
         }
       }
     } else {
       if(mounted) {
-        setState(() => home = const WelcomePage()); 
+        setState(() => home = const OnBoardingPage()); 
       }
     }
 
-    await Geolocator.requestPermission();
+    // await Geolocator.requestPermission();
 
     if (!mounted) return;
       await firebaseProvider.setupInteractedMessage(context);
@@ -258,55 +257,55 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  bool isDialogShowing = false; // Prevent multiple dialogs
+  // bool isDialogShowing = false; // Prevent multiple dialogs
 
-  @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state != AppLifecycleState.resumed || isDialogShowing) return; // Prevent re-entry
+  // @override
+  // Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state != AppLifecycleState.resumed || isDialogShowing) return; // Prevent re-entry
 
-    debugPrint("=== APP RESUME ===");
-    isDialogShowing = true; 
+  //   debugPrint("=== APP RESUME ===");
+  //   isDialogShowing = true; 
 
-    if (await requestPermission(Permission.location, "location")) return;
+  //   if (await requestPermission(Permission.location, "location")) return;
 
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS");
-      isDialogShowing = false; 
-      return;
-    }
+  //   if (!await Geolocator.isLocationServiceEnabled()) {
+  //     await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS");
+  //     isDialogShowing = false; 
+  //     return;
+  //   }
 
-    if (await requestPermission(Permission.notification, "notification")) return;
+  //   if (await requestPermission(Permission.notification, "notification")) return;
 
-    if (await requestPermission(Permission.microphone, "microphone")) return;
+  //   if (await requestPermission(Permission.microphone, "microphone")) return;
 
-    if (await requestPermission(Permission.camera, "camera")) return;
+  //   if (await requestPermission(Permission.camera, "camera")) return;
 
-    debugPrint("ALL PERMISSIONS GRANTED");
-    isDialogShowing = false;
-  }
+  //   debugPrint("ALL PERMISSIONS GRANTED");
+  //   isDialogShowing = false;
+  // }
 
-  Future<bool> requestPermission(Permission permission, String type) async {
-    var status = await permission.request();
+  // Future<bool> requestPermission(Permission permission, String type) async {
+  //   var status = await permission.request();
 
-    if (status == PermissionStatus.permanentlyDenied) {
-      await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type);
-      isDialogShowing = false;
-      return true; // Stop further execution
-    }
+  //   if (status == PermissionStatus.permanentlyDenied) {
+  //     await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type);
+  //     isDialogShowing = false;
+  //     return true; // Stop further execution
+  //   }
 
-    if (status != PermissionStatus.granted) {
-      debugPrint("Permission $type denied, stopping process.");
-      isDialogShowing = false;
-      return true; // Stop further execution
-    }
+  //   if (status != PermissionStatus.granted) {
+  //     debugPrint("Permission $type denied, stopping process.");
+  //     isDialogShowing = false;
+  //     return true; // Stop further execution
+  //   }
 
-    return false; // Continue to the next permission
-  }
+  //   return false; // Continue to the next permission
+  // }
 
-  Future<void> showDialog(String message, String type) async {
-    if (!isDialogShowing) return; // Prevent showing multiple dialogs
-    await GeneralModal.dialogRequestPermission(msg: message, type: type);
-  }
+  // Future<void> showDialog(String message, String type) async {
+  //   if (!isDialogShowing) return; // Prevent showing multiple dialogs
+  //   await GeneralModal.dialogRequestPermission(msg: message, type: type);
+  // }
 
   @override
   Widget build(BuildContext context) {

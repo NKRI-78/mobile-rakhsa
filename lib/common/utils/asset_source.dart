@@ -9,6 +9,13 @@ class AssetSource {
 
   static const String bgWeather = 'assets/images/weather/bg.png';
 
+  static const String bgOnBoarding = 'assets/images/bg-on-boarding.png';
+  static const String onBoarding1 = 'assets/images/on-boarding-content-1.png';
+  static const String onBoarding2 = 'assets/images/on-boarding-content-2.png';
+  static const String onBoarding3 = 'assets/images/on-boarding-content-3.png';
+
+  static const String passportError = 'assets/images/passport-error.png';
+
   static const String logoutTitle = "assets/images/logout.png";
   static const String loginOrnament = "assets/images/login-ornament.png";
   static const String signWithGoogle = "assets/images/sign-with-google.png";

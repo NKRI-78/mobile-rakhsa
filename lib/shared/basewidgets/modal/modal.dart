@@ -566,7 +566,8 @@ class GeneralModal {
 
   static Future<void> dialogRequestPermission({
     required String msg,
-    required String type
+    required String type,
+    required String img
   }) {
     return showDialog(
       context: navigatorKey.currentContext!,
@@ -582,8 +583,8 @@ class GeneralModal {
                 children: [
                   
                   SizedBox(
-                    width: 300.0,
-                    height: 330.0,
+                    width: 290.0,
+                    height: 280.0,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -617,18 +618,28 @@ class GeneralModal {
                             ),
                           )
                         ),
+
+                        Positioned(
+                          top: 0.0,
+                          left: 80.0,
+                          right: 80.0,
+                          child: Image.asset("assets/images/icons/$img",
+                            height: 100.0,
+                          )
+                        ),
           
                         Positioned(
-                          bottom: 0.0,
+                          bottom: 40.0,
                           left: 80.0,
                           right: 80.0,
                           child: CustomButton(
                             isBorder: false,
+                            btnColor: blueColor,
                             btnTextColor: Colors.white,
                             fontSize: Dimensions.fontSizeDefault,
-                            sizeBorderRadius: 20.0,
+                            sizeBorderRadius: 8.0,
                             isBorderRadius: true,
-                            height: 40.0,
+                            height: 30.0,
                             onTap: () async {
                               
                               if(type == "notification") {
@@ -650,7 +661,7 @@ class GeneralModal {
                               Navigator.pop(context);
 
                             },
-                            btnTxt: "Ok",
+                            btnTxt: "Izinkan",
                           )
                         ),
                         

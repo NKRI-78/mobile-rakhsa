@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
@@ -9,6 +11,7 @@ import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -18,12 +21,87 @@ class WelcomePage extends StatefulWidget {
 }
 
 class WelcomePageState extends State<WelcomePage> {
+  
+  late RegisterNotifier registerNotifier;
+
+  bool isDialogShowing = false; 
+
+  Future<void> requestAllPermissions() async {
+    if (isDialogShowing) return; // Prevent re-entry
+    isDialogShowing = true;
+
+    debugPrint("=== REQUESTING PERMISSIONS ===");
+
+    if (await requestPermission(Permission.location, "location", "location.png")) return;
+
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS", "location.png");
+      isDialogShowing = false;
+      return;
+    }
+
+    if (await requestPermission(Permission.notification, "notification", "notification.png")) return;
+    if (await requestPermission(Permission.microphone, "microphone", "microphone.png")) return;
+    if (await requestPermission(Permission.camera, "camera", "camera.png")) return;
+
+    debugPrint("ALL PERMISSIONS GRANTED");
+    isDialogShowing = false;
+
+    if(!mounted) return;
+      await registerNotifier.registerWithGoogle(context);
+  }
+
+  Future<bool> requestPermission(Permission permission, String type, String img) async {
+    var status = await permission.request();
+
+    if(type == "notification") {
+      if (status ==  PermissionStatus.denied || status == PermissionStatus.permanentlyDenied) {
+        await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type, img);
+        isDialogShowing = false;
+        return true;
+      }
+    } else {
+      if (status == PermissionStatus.permanentlyDenied) {
+        await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type, img);
+        isDialogShowing = false;
+        return true;
+      }
+
+      if (status != PermissionStatus.granted) {
+        debugPrint("Permission $type denied, stopping process.");
+        isDialogShowing = false;
+        return true; 
+      }
+    }
+ 
+    return false; 
+  }
+
+  Future<void> showDialog(String message, String type, String img) async {
+    if (!isDialogShowing) return;
+    await GeneralModal.dialogRequestPermission(
+      msg: message, 
+      type: type, 
+      img: img
+    );
+  }
+
+  void onUserAction() {
+    requestAllPermissions();
+  }
 
   @override 
   void initState() {
     super.initState();
 
+    registerNotifier = context.read<RegisterNotifier>();
 
+    Future.microtask(()  async {
+      await Geolocator.requestPermission();
+      await Permission.camera.request();
+      await Permission.microphone.request();
+      await Permission.notification.request();
+    });
   }
 
   @override 
@@ -128,12 +206,8 @@ class WelcomePageState extends State<WelcomePage> {
                     builder: (context, provider, child) {
                     return OutlinedButton(
                       onPressed: () async {
-                        if (provider.ssoLoading) {
-                          return;
-                        } else {
-                          await provider.registerWithGoogle(context);
-                        }
-                      },
+                        onUserAction();
+                      }, 
                       style: ElevatedButton.styleFrom(
                         foregroundColor: blackColor,
                         backgroundColor: whiteColor,

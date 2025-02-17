@@ -12,7 +12,9 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/global.dart';
 // import 'package:rakhsa/features/news/persentation/pages/detail.dart';
 
 // import 'package:rakhsa/global.dart';
@@ -79,14 +81,14 @@ class FirebaseProvider with ChangeNotifier {
     }
   }
   Future<void> setupInteractedMessage(BuildContext context) async {
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
+    await FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        handleMessage(context, message);
+        handleMessage(message);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      handleMessage(context, message);
+      handleMessage(message);
     });
   }
 
@@ -101,25 +103,25 @@ class FirebaseProvider with ChangeNotifier {
     });
   }
   
-  void handleMessage(BuildContext context, RemoteMessage message) {
-    processMessage(context, message);
+  void handleMessage(RemoteMessage message) {
+    processMessage(message);
   }
 
-  void processMessage(BuildContext context, RemoteMessage message) {
+  void processMessage(RemoteMessage message) {
     switch (message.data["type"]) {     
       case NotificationType.resolvedSos:
-        handleResolvedSos(context, message.data);
+        handleResolvedSos(navigatorKey.currentContext!, message.data);
       break;
       case NotificationType.closedSos:
-        handleClosedSos(context, message.data);
+        handleClosedSos(navigatorKey.currentContext!, message.data);
       break;
       case NotificationType.confirmSos:
-        handleConfirmSos(context, message.data);
+        handleConfirmSos(navigatorKey.currentContext!, message.data);
       break;
       case NotificationType.news: 
         String newsId = message.data["news_id"] ?? "0";
         
-        Navigator.pushNamed(context, RoutesNavigation.news, 
+        Navigator.pushNamed(navigatorKey.currentContext!, RoutesNavigation.news, 
           arguments: {
             "id": int.parse(newsId),
             "type": "news"
@@ -127,21 +129,26 @@ class FirebaseProvider with ChangeNotifier {
         );
       break;  
       case NotificationType.ews:
-        String newsId = message.data["news_id"] ?? "0";
-        
-        Navigator.pushNamed(context, RoutesNavigation.news, 
-          arguments: {
-            "id": int.parse(newsId),
-            "type": "ews"
-          }
-        );
+        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+
+        Future.delayed(const Duration(seconds: 1), () {
+          var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
+          var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
+          var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+
+          navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
+            lat: lat, 
+            lng: lng, 
+            state: state
+          );
+        });
       break;
       case NotificationType.chat:
         String chatId =  message.data["chat_id"] ?? "-";
         String recipientId = message.data["recipient_id"] ?? "-";
         String sosId = message.data["sos_id"] ?? "-";
 
-        Navigator.pushNamed(context, RoutesNavigation.chat, 
+        Navigator.pushNamed(navigatorKey.currentContext!, RoutesNavigation.chat, 
           arguments: {
             "chat_id": chatId,
             "recipient_id": recipientId,
@@ -157,26 +164,20 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
-    Future.microtask(() {
-      context.read<ProfileNotifier>().getProfile();
-    });
+    context.read<ProfileNotifier>().getProfile();
   }
 
   void handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
-    Future.microtask(() {
-      context.read<ProfileNotifier>().getProfile();
-    });
+    context.read<ProfileNotifier>().getProfile();
   }
 
   void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
-    Future.microtask(() {
-      var messageNotifier = context.read<GetMessagesNotifier>();
-      context.read<ProfileNotifier>().getProfile();
-      context.read<SosNotifier>().stopTimer();
-      
-      messageNotifier.resetTimer();
-      messageNotifier.startTimer();
-    });
+    var messageNotifier = context.read<GetMessagesNotifier>();
+    context.read<ProfileNotifier>().getProfile();
+    context.read<SosNotifier>().stopTimer();
+    
+    messageNotifier.resetTimer();
+    messageNotifier.startTimer();
   }
 
   Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {

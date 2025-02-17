@@ -35,6 +35,7 @@ class ProfileData {
   String noReg;
   String mrzCode;
   String codeCountry;
+  String state;
   String birthplace;
   String birthdate;
   String gender;
@@ -60,6 +61,7 @@ class ProfileData {
     required this.noReg,
     required this.mrzCode,
     required this.codeCountry,
+    required this.state,
     required this.birthplace,
     required this.birthdate,
     required this.gender,
@@ -86,6 +88,7 @@ class ProfileData {
     noReg: json["no_reg"],
     mrzCode: json["mrz_code"],
     codeCountry: json["code_country"],
+    state: json["state"],
     birthdate: json["birth_date"],
     birthplace: json["birth_place"],
     gender: json["gender"],
