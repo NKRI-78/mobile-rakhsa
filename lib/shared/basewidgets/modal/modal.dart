@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
@@ -537,10 +536,10 @@ class GeneralModal {
                               if(type == "notification") {
                                 await AppSettings.openAppSettings(type: AppSettingsType.notification);
                               } 
-                              if(type == "location-app") {
-                                Geolocator.openAppSettings();
+                              if(type == "location") {
+                                openAppSettings();
                               } 
-                              if(type == "location-gps") {
+                              if(type == "GPS") {
                                 await AppSettings.openAppSettings(type: AppSettingsType.location);
                               }
                               if(type == "camera") {

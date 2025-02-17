@@ -246,7 +246,10 @@ class NearMePageState extends State<NearMePage> {
                                 ),
                                 // "Direct to Maps" button
                                 IconButton(
-                                  icon: const Icon(Icons.directions),
+                                  icon: const Icon(Icons.directions,
+                                    color: Colors.blue,
+                                    size: 26.0,
+                                  ),
                                   onPressed: () {
                                     if (nearestPlace != null) {
                                       double lat = double.parse(nearestPlace["lat"]);

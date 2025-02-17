@@ -84,18 +84,18 @@ void onStart(ServiceInstance service) async {
       ].where((part) => part != null && part.isNotEmpty).join(", ");
 
       try {
-        await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-          data: {
-            "user_id": userId,
-            "address": address,
-            "device": androidInfo.model,
-            "product_name": androidInfo.product,
-            "no_serial": androidInfo.serialNumber,
-            "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
-            "lat": position.latitude,
-            "lng": position.longitude,
-          },
-        );
+        // await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+        //   data: {
+        //     "user_id": userId,
+        //     "address": address,
+        //     "device": androidInfo.model,
+        //     "product_name": androidInfo.product,
+        //     "no_serial": androidInfo.serialNumber,
+        //     "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
+        //     "lat": position.latitude,
+        //     "lng": position.longitude,
+        //   },
+        // );
       } on DioException catch(e) {
         debugPrint(e.response?.data.toString());
       } catch (e) {
@@ -179,12 +179,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Widget home = const SizedBox();
 
-  bool isDialogLocationShowing = false;
-  bool isDialogLocationGpsShowing = false;
-  bool isDialogNotificationShowing = false;
-  bool isDialogMicrophoneShowing = false;
-  bool isDialogCameraShowing = false;
-
   bool isResumedProcessing = false;
 
   Future<void> getData() async {
@@ -206,8 +200,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       }
     }
 
-    await Permission.location.request();
-    await Permission.notification.request();
+    await Geolocator.requestPermission();
 
     if (!mounted) return;
       await firebaseProvider.setupInteractedMessage(context);
@@ -216,63 +209,37 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       firebaseProvider.listenNotification(context);
   }
 
-  Future<void> recheckRequestNotification() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // Future<void> recheckRequestNotification() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('User granted [notification] permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      debugPrint('User granted [notification] provisional permission');
-    } else {
-      if (!isDialogNotificationShowing) {
-        setState(() => isDialogNotificationShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses notifikasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "notification"
-        );
-        setState(() => isDialogNotificationShowing = false);
-      }
-      debugPrint('User declined [notification] or has not accepted permission');
-    }
-  }
-
-  Future<void> recheckRequestLocationPermission() async {
-    bool locationPermanentlyDenied = await Permission.location.isPermanentlyDenied || await Permission.location.isDenied;
-
-    if(locationPermanentlyDenied) {
-      if (!isDialogLocationShowing) {
-        setState(() => isDialogLocationShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "location-app"
-        );
-        setState(() => isDialogLocationShowing = false);
-      }
-    } 
-
-    bool isGpsEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if(!isGpsEnabled) {
-      if (!isDialogLocationGpsShowing) {
-        setState(() => isDialogLocationGpsShowing = true);
-        await GeneralModal.dialogRequestPermission(
-          msg: "Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type: "location-gps"
-        );
-        setState(() => isDialogLocationGpsShowing = false);
-      }
-    }
-  }
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     debugPrint('User granted [notification] permission');
+  //   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+  //     debugPrint('User granted [notification] provisional permission');
+  //   } else {
+  //     if(await Permission.notification.isPermanentlyDenied) {
+  //       if (!isDialogNotificationShowing) {
+  //         setState(() => isDialogNotificationShowing = true);
+  //         await GeneralModal.dialogRequestPermission(
+  //           msg: "Perizinan akses notifikasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+  //           type: "notification"
+  //         );
+  //         setState(() => isDialogNotificationShowing = false);
+  //       }
+  //       debugPrint('User declined [notification] or has not accepted permission');
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {
@@ -291,14 +258,54 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  bool isDialogShowing = false; // Prevent multiple dialogs
+
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("=== APP RESUME ===");
+    if (state != AppLifecycleState.resumed || isDialogShowing) return; // Prevent re-entry
 
-      await recheckRequestLocationPermission(); 
-      await recheckRequestNotification();
+    debugPrint("=== APP RESUME ===");
+    isDialogShowing = true; 
+
+    if (await requestPermission(Permission.location, "location")) return;
+
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS");
+      isDialogShowing = false; 
+      return;
     }
+
+    if (await requestPermission(Permission.notification, "notification")) return;
+
+    if (await requestPermission(Permission.microphone, "microphone")) return;
+
+    if (await requestPermission(Permission.camera, "camera")) return;
+
+    debugPrint("ALL PERMISSIONS GRANTED");
+    isDialogShowing = false;
+  }
+
+  Future<bool> requestPermission(Permission permission, String type) async {
+    var status = await permission.request();
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type);
+      isDialogShowing = false;
+      return true; // Stop further execution
+    }
+
+    if (status != PermissionStatus.granted) {
+      debugPrint("Permission $type denied, stopping process.");
+      isDialogShowing = false;
+      return true; // Stop further execution
+    }
+
+    return false; // Continue to the next permission
+  }
+
+  Future<void> showDialog(String message, String type) async {
+    if (!isDialogShowing) return; // Prevent showing multiple dialogs
+    await GeneralModal.dialogRequestPermission(msg: message, type: type);
   }
 
   @override

@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/enum.dart';
 
@@ -92,7 +93,13 @@ class SearchPageState extends State<SearchPage> {
               Consumer<KbriNameNotifier>(
                 builder: (BuildContext context, KbriNameNotifier kbriNameNotifier, Widget? child) {
                   if(kbriNameNotifier.state == ProviderState.loading) {
-                    return const SliverToBoxAdapter(child: SizedBox());
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: SpinKitChasingDots(
+                          color: primaryColor,
+                        ),
+                      )
+                    );
                   }
                   if(kbriNameNotifier.state == ProviderState.error) {
                     return const SliverToBoxAdapter(child: SizedBox());
@@ -184,27 +191,78 @@ class SearchPageState extends State<SearchPage> {
                                   top: 16.0,
                                   bottom: 16.0,
                                 ),
-                                child: GoogleMap(
-                                  mapType: MapType.normal,
-                                  gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                  myLocationEnabled: false,
-                                  initialCameraPosition: CameraPosition(
-                                  target: LatLng(
-                                    double.parse(kbriNameNotifier.entity.data!.lat), 
-                                    double.parse(kbriNameNotifier.entity.data!.lng)
-                                  ),
-                                  zoom: 15.0,
-                                ),
-                                markers: <Marker>{
-                                  Marker(
-                                    markerId: MarkerId(kbriNameNotifier.entity.data?.title.toString() ?? "-"),
-                                    position: LatLng(
-                                      double.parse(kbriNameNotifier.entity.data!.lat), 
-                                      double.parse(kbriNameNotifier.entity.data!.lng)
+                                child: Stack(
+                                  children: [
+                                    GoogleMap(
+                                      mapType: MapType.normal,
+                                        // gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                                        myLocationEnabled: false,
+                                        zoomControlsEnabled: false,
+                                        zoomGesturesEnabled: false,
+                                        initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          double.parse(kbriNameNotifier.entity.data!.lat), 
+                                          double.parse(kbriNameNotifier.entity.data!.lng)
+                                        ),
+                                        zoom: 15.0,
+                                      ),
+                                      markers: <Marker>{
+                                        Marker(
+                                          markerId: MarkerId(kbriNameNotifier.entity.data?.title.toString() ?? "-"),
+                                          position: LatLng(
+                                            double.parse(kbriNameNotifier.entity.data!.lat), 
+                                            double.parse(kbriNameNotifier.entity.data!.lng)
+                                          )
+                                        )
+                                      },
+                                    ),
+
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 8.0,
+                                          bottom: 8.0
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: ColorResources.white,
+                                          borderRadius: BorderRadius.circular(8.0)
+                                        ),
+                                        child: Material(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=${kbriNameNotifier.entity.data!.lat},${kbriNameNotifier.entity.data!.lng}';
+                                              final Uri uri = Uri.parse(googleMapsUrl);
+
+                                              if (await canLaunchUrl(Uri.parse(uri.toString()))) {
+                                                await launchUrl(Uri.parse(uri.toString()));
+                                              } else {
+                                                throw 'Could not open maps';
+                                              }
+                                            },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.directions,
+                                                    color: Colors.blue,
+                                                    size: 26.0,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      )
                                     )
-                                  )
-                                },
-                              )),
+
+                                  ],
+                                ) 
+                              ),
                           
                             ],
                           ),
