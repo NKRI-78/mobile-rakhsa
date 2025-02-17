@@ -11,13 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/ppob/data/models/payment_model.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
+import 'package:rakhsa/features/ppob/presentation/providers/pay_ppob_notifier.dart';
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 
 // import 'package:rakhsa/features/ppob/presentation/pages/detail_paketdata.dart';
@@ -26,6 +26,7 @@ import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_list
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
 class PPOBPage extends StatefulWidget {
   static const route = '/ppob';
@@ -43,10 +44,14 @@ class PPOBPageState extends State<PPOBPage> {
 
   int productPrice = 0;
   int selected = -1;
+  int selectedProduct = -1;
 
   late InquiryPulsaProvider inquiryPulsaProvider;
-  late PaymentChannelProvider paymentChannelProvider;  
+  late PaymentChannelProvider paymentChannelProvider; 
+
+  late PayPpobNotifier payPpobProvider;
   late ProfileNotifier profileProvider;
+  
   late TextEditingController getC;
 
   Timer? debounce;
@@ -58,18 +63,21 @@ class PPOBPageState extends State<PPOBPage> {
     {
       "id": 1,
       "name": "Pulsa",
+      "type": "PULSA",
       "link": "pulsapaketdata",
       "image": "assets/images/ppob/ic-pulsa.png",
     },
     {
       "id": 2,
       "name": "Paket Data",
+      "type": "DATA",
       "image": "assets/images/ppob/ic-paket.png",
       "link": "paketdata"
     },
     {
       "id": 3,
       "name": "Listrik",
+      "type": "PLN",
       "image": "assets/images/ppob/ic-listrik.png",
       "link": "tokenlistrik"
     },
@@ -94,40 +102,17 @@ class PPOBPageState extends State<PPOBPage> {
       selectedIndex = i;
       selectedType = type;
     });
-    // switch (categories[i]["link"]) {
-    //   case "pulsapaketdata":
-    //     Navigator.push(context, 
-    //       MaterialPageRoute(builder: (context) {
-    //         return PPOBDetailPulsaPage(
-    //           title: categories[i]["name"],
-    //           type: "Pulsa / Paket Data",
-    //         );
-    //       })
-    //     );
-    //   break;
-    //   case "Paket Data":
-    //     Navigator.pushNamed(context, 
-    //       PPOBDetailPaketDataPage.route,
-    //       arguments: {
-    //         "title": categories[i]["name"]
-    //       }  
-    //     );
-    //   break;
-    //   case "Token Listrik":
-    //     Navigator.pushNamed(context, 
-    //       PPOBDetailTokenListrikPage.route,
-    //       arguments: {
-    //         "title": categories[i]["name"]
-    //       }
-    //     );
-    //   break;
-    //   default:
-    // }
+    Future.delayed(Duration.zero, () {
+      inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
+    });
   }
 
   Future<void> getData() async {
     if(!mounted) return;
       paymentChannelProvider.reset();
+
+    if(!mounted) return;
+      inquiryPulsaProvider.reset();
 
     if(!mounted) return;
       await paymentChannelProvider.fetch();
@@ -139,6 +124,7 @@ class PPOBPageState extends State<PPOBPage> {
 
     inquiryPulsaProvider = context.read<InquiryPulsaProvider>();
     paymentChannelProvider = context.read<PaymentChannelProvider>();
+    payPpobProvider = context.read<PayPpobNotifier>();
     profileProvider = context.read<ProfileNotifier>();
 
     Future.microtask(() => getData());
@@ -185,7 +171,9 @@ class PPOBPageState extends State<PPOBPage> {
           bottom: 20.0
         ),
         child: CustomButton(
-          onTap: () {
+          onTap: selectedIndex == -1 
+          ? () {} 
+          : () {
             showModalBottomSheet(
               context: context, 
               builder: (BuildContext context) {
@@ -477,20 +465,35 @@ class PPOBPageState extends State<PPOBPage> {
                         Container(
                           margin: const EdgeInsets.all(20.0),
                           child: Selector<PaymentChannelProvider, String>(
-                            selector: (BuildContext context, PaymentChannelProvider  provider) => provider.paymentCode,
+                            selector: (BuildContext context, PaymentChannelProvider provider) => provider.paymentCode,
                             builder: (BuildContext context, String paymentCode, Widget? child) {
                               return CustomButton(
-                                onTap: paymentCode.isEmpty ? () {} : () {},
+                                onTap: paymentCode.isEmpty 
+                                ? () {} 
+                                : () async {
+                                  await payPpobProvider.pay(
+                                    idpel: getC.text,
+                                    productId: productId,
+                                    paymentCode: paymentChannelProvider.paymentCode,
+                                    paymentChannel: paymentChannelProvider.paymentChannel,
+                                    type: selectedType,
+                                  );
+                                  GeneralModal.infoV2(msg: "Terimakasih, Pembayaran anda telah berhasil.");
+                                },
                                 isBorder: false,
                                 isBorderRadius: true,
-                                btnColor: primaryColor,
+                                isLoading: context.watch<PayPpobNotifier>().state == ProviderState.loading 
+                                ? true 
+                                : false,
+                                btnColor: paymentCode.isEmpty 
+                                ? greyDescColor 
+                                : primaryColor,
                                 btnTxt: "Bayar",
                               );
                             },
                           ),
                         )
 
-                  
                       ],
                     )
                   ),
@@ -500,7 +503,9 @@ class PPOBPageState extends State<PPOBPage> {
           },
           isBorder: false,
           isBorderRadius: true,
-          btnColor: primaryColor,
+          btnColor: productId == ""
+          ? greyDescColor
+          : primaryColor,
           btnTxt: "Selanjutnya",
         )
       ),
@@ -534,9 +539,8 @@ class PPOBPageState extends State<PPOBPage> {
                           onPress: () {
                             onChangeCategories(
                               i: i,
-                              type: categories[i]["name"]
+                              type: categories[i]["type"]
                             );
-                            setState(() => selectedIndex = i);
                           },
                           child: Container(
                             width: double.infinity,
@@ -572,113 +576,111 @@ class PPOBPageState extends State<PPOBPage> {
                       }
                     ),
 
-                    selectedIndex == 0 
-                    ? pulsaComponent()
+                    selectedIndex == 0 || selectedIndex == 1
+                    ? pulsaAndDataWidget()
                     : const SizedBox(), 
             
-                  if(notifier.state == ProviderState.loading) 
-                    const Center(
-                      child: SpinKitChasingDots(
-                        color: primaryColor,
-                      )
-                    ),
-            
-                  if(notifier.state == ProviderState.error) 
-                    Center(
-                      child: Text(notifier.message),
-                    ),
-            
-                  if(notifier.state == ProviderState.empty) 
-                    Center(
-                      child: Text(notifier.message),
-                    ),
-            
-                  if(notifier.state == ProviderState.loaded) 
-                    Container(
-                      margin: const EdgeInsets.only( 
-                        bottom: 20.0,
-                        left: 15.0, 
-                        right: 15.0
+                    if(notifier.state == ProviderState.loading) 
+                      const SizedBox(
+                        height: 300.0,
+                        child: SpinKitChasingDots(
+                          color: primaryColor,
+                        )
                       ),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.all(8.0),
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200.0,
-                          childAspectRatio: 3.6 / 2.0,
-                          crossAxisSpacing: 15.0,
-                          mainAxisSpacing: 15.0,
+              
+                    if(notifier.state == ProviderState.error) 
+                      const SizedBox(),
+              
+                    if(notifier.state == ProviderState.empty) 
+                      const SizedBox(),
+            
+                    if(notifier.state == ProviderState.loaded) 
+                      Container(
+                        margin: const EdgeInsets.only( 
+                          bottom: 20.0,
+                          left: 15.0, 
+                          right: 15.0
                         ),
-                        itemCount: notifier.entity.length,
-                        itemBuilder: (BuildContext context, int i) {
-                          return Bouncing(
-                            onPress: () {
-                              setState(() {
-                                if(selected != i) {
-                                  selected = i;
-                                  productId = notifier.entity[i].code;
-                                  productName = notifier.entity[i].name;
-                                  productPrice = notifier.entity[i].price;
-                                } else {
-                                  selected = -1;
-                                  productId = "";
-                                  productPrice = 0;
-                                }
-                              });
-                            },
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                
-                                Align(
-                                  alignment:Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 80.0,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: selected == i
-                                      ? primaryColor
-                                      : const Color(0xFFF4F4F4),
-                                      boxShadow: kElevationToShadow[1],
-                                      borderRadius: BorderRadius.circular(8.0),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(8.0),
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200.0,
+                            childAspectRatio: 3.6 / 2.0,
+                            crossAxisSpacing: 15.0,
+                            mainAxisSpacing: 15.0,
+                          ),
+                          itemCount: notifier.entity.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            return Bouncing(
+                              onPress: () {
+                                setState(() {
+                                  if(selected != i) {
+                                    selected = i;
+                                    productId = notifier.entity[i].code;
+                                    productName = notifier.entity[i].name;
+                                    productPrice = notifier.entity[i].price;
+                                  } else {
+                                    selected = -1;
+                                    productId = "";
+                                    productName = "";
+                                    productPrice = 0;
+                                  }
+                                });
+                              },
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  
+                                  Align(
+                                    alignment:Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 80.0,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: selected == i
+                                        ? primaryColor
+                                        : const Color(0xFFF4F4F4),
+                                        boxShadow: kElevationToShadow[1],
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(notifier.entity[i].name,
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeExtraSmall,
+                                              color: selected == i 
+                                              ? ColorResources.white 
+                                              : ColorResources.black
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5.0),
+                                          Text(formatCurrency(notifier.entity[i].price),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeExtraSmall,
+                                              fontWeight: FontWeight.w600,
+                                              color: selected == i 
+                                              ? ColorResources.white 
+                                              : ColorResources.black
+                                            ),
+                                          ),
+                                        ],
+                                      ) 
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(notifier.entity[i].name,
-                                          maxLines: 1,
-                                          textAlign: TextAlign.center,
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            color: selected == i 
-                                            ? ColorResources.white 
-                                            : ColorResources.black
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        Text(formatCurrency(notifier.entity[i].price),
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeExtraSmall,
-                                            fontWeight: FontWeight.w600,
-                                            color: selected == i 
-                                            ? ColorResources.white 
-                                            : ColorResources.black
-                                          ),
-                                        ),
-                                      ],
-                                    ) 
                                   ),
-                                ),
-                                                    
-                              ],
-                            ),
-                          );
-                        
-                        }
-                      ),
-                    )
+                                                      
+                                ],
+                              ),
+                            );
+                          
+                          }
+                        ),
+                      )
                     
                   ])
                 )
@@ -692,7 +694,7 @@ class PPOBPageState extends State<PPOBPage> {
   }
 
 
-  Widget pulsaComponent() {
+  Widget pulsaAndDataWidget() {
     return Container(
       height: 80.0,
       width: double.infinity,
@@ -744,13 +746,11 @@ class PPOBPageState extends State<PPOBPage> {
                   getC.selection = TextSelection.fromPosition(TextPosition(offset: getC.text.length));
                 } 
             
-                setState(() {
-                    
-                });
+                setState(() {});
             
                 if (debounce?.isActive ?? false) debounce?.cancel();
                 debounce = Timer(const Duration(milliseconds: 500), () {
-                  inquiryPulsaProvider.fetch(prefix: getC.text, type: "pulsa");
+                  inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
                 });
               },
             )
@@ -762,7 +762,8 @@ class PPOBPageState extends State<PPOBPage> {
             onPress: () async {
               final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
               getC.text = contact.phoneNumber!.number!.replaceAll(RegExp("[()+\\s-]+"), "");
-              inquiryPulsaProvider.fetch(prefix: getC.text, type: "pulsa");
+              inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
+
               onPhoneChange();
             },
             child: Container(

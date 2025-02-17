@@ -20,10 +20,12 @@ class PPOBRepositoryImpl implements PPOBRepository {
   @override
   Future<Either<Failure, List<PPOBPulsaInquiryData>>> inquiryPulsa({
     required String prefix,
+    required String type
   }) async {
     try {
       var result = await remoteDatasource.inquiryPulsa(
         prefix: prefix,
+        type: type 
       );
       return Right(result.data);
     } on ServerException catch (e) {

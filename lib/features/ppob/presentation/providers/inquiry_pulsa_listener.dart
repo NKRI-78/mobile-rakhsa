@@ -35,6 +35,7 @@ class InquiryPulsaProvider with ChangeNotifier {
 
     final result = await useCase.execute(
       prefix: prefix,
+      type: type
     );
 
     result.fold((l) {

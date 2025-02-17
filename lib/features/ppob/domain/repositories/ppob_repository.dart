@@ -12,6 +12,7 @@ abstract interface class PPOBRepository {
 
   Future<Either<Failure, List<PPOBPulsaInquiryData>>> inquiryPulsa({
     required String prefix,
+    required String type
   });
 
   Future<Either<Failure, PPOBTokenListrikInquiryDataEntity>> inquiryPrabayarPLN({

@@ -13,9 +13,11 @@ class InquiryPulsaUseCase {
 
   Future<Either<Failure, List<PPOBPulsaInquiryData>>> execute({
     required String prefix,
+    required String type
   }) async {
     return repository.inquiryPulsa(
-      prefix: prefix
+      prefix: prefix,
+      type: type
     );
   }
 }

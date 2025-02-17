@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
@@ -132,6 +133,103 @@ class GeneralModal {
 
                             },
                             btnTxt: "Ok",
+                          )
+                        ),
+                        
+                      ],  
+                    )
+                    
+                  ) 
+                ] 
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<void> infoV2({
+    required String msg,
+  }) {
+    return showDialog(
+      context: navigatorKey.currentContext!,
+      builder: (context) {
+        return PopScope(
+          canPop: true,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                  SizedBox(
+                    width: 290.0,
+                    height: 280.0,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+          
+                        Positioned(
+                          left: 20.0,
+                          right: 20.0,
+                          bottom: 20.0,
+                          child: Container(
+                            height: 200.0,
+                            padding: const EdgeInsets.all(12.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              color: Colors.white
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                            
+                               const SizedBox(height: 25.0),
+
+                                Text(msg, 
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeExtraLarge,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black
+                                  ),
+                                ),
+
+                                const SizedBox(height: 25.0),
+
+                                SizedBox(
+                                  width: 150.0,
+                                  child: CustomButton(
+                                    onTap: () {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context, 
+                                        RoutesNavigation.dashboard, (route) => route.isFirst
+                                      );
+                                    },
+                                    width: 120.0,
+                                    height: 35.0,
+                                    isBorder: false,
+                                    isBorderRadius: true,
+                                    btnColor: primaryColor,
+                                    btnTxt: "Home",
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          )
+                        ),
+
+                        Positioned(
+                          top: 0.0,
+                          left: 80.0,
+                          right: 80.0,
+                          child: Image.asset('assets/images/ic-like-sign.png',
+                            height: 100.0,
                           )
                         ),
                         
