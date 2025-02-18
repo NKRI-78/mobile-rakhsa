@@ -187,4 +187,21 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> checkRegisterStatus({
+    required String passport,
+    required String noReg,
+  }) async {
+    try {
+      var result = await remoteDataSource.checkRegisterStatus(
+        passport: passport, noReg: noReg,
+      );
+      return Right(result);
+    } on ServerException catch(e) {
+      return Left(ServerFailure(e.message.toString()));
+    } catch(e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
 }

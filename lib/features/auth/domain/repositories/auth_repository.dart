@@ -50,4 +50,8 @@ abstract class AuthRepository {
   Future<Either<Failure, PassportDataExtraction>> registerPassport({
     required String imagePath,
   });
+  Future<Either<Failure, void>> checkRegisterStatus({
+    required String passport,
+    required String noReg,
+  });
 }

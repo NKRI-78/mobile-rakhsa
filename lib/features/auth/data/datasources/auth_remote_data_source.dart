@@ -54,6 +54,10 @@ abstract class AuthRemoteDataSource {
   Future<PassportDataExtraction> registerPassport({
     required String imagePath,
   });
+  Future<void> checkRegisterStatus({
+    required String passport,
+    required String noReg,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -283,6 +287,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException(message);
       }
     } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> checkRegisterStatus({
+    required String passport,
+    required String noReg,
+  }) async {
+    try {
+      await client.post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/auth/check-passport",
+        data: {"passport": passport, "no_reg": noReg},
+      );
+    } on DioException catch(e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       throw Exception(e.toString());
     }

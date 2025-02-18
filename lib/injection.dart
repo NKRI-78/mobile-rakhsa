@@ -12,6 +12,7 @@ import 'package:rakhsa/features/administration/data/datasources/administration_r
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:rakhsa/features/auth/domain/usecases/check_register_status.dart';
 import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
 import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
@@ -196,6 +197,7 @@ void init() {
   locator.registerLazySingleton(() => PayPpobUseCase(locator()));
   locator.registerLazySingleton(() => GetInboxUseCase(locator()));
   locator.registerLazySingleton(() => DetailInboxUseCase(locator()));
+  locator.registerLazySingleton(() => CheckRegisterStatusUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER 
@@ -250,6 +252,7 @@ void init() {
     registerPassport: locator(),
     firebaseAuth: locator(),
     googleSignIn: locator(),
+    checkRegisterStatusUseCase: locator(),
   ));
   
   locator.registerFactory(() => EcommerceProvider(

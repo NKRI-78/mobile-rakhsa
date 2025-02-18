@@ -17,6 +17,7 @@ import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:rakhsa/features/auth/domain/usecases/check_register_status.dart';
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
@@ -31,6 +32,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class RegisterNotifier with ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
   final UpdatePassportUseCase updatePassport;
+  final CheckRegisterStatusUseCase checkRegisterStatusUseCase;
+
 
   final RegisterUseCase useCase;
   final FirebaseAuth firebaseAuth;
@@ -108,6 +111,7 @@ class RegisterNotifier with ChangeNotifier {
     required this.googleSignIn,
     required this.firebaseAuth,
     required this.registerPassport,
+    required this.checkRegisterStatusUseCase,
   });
 
   void setStateProviderState(ProviderState param) {
@@ -266,72 +270,91 @@ class RegisterNotifier with ChangeNotifier {
               },
             );
           } else {
+            _setScanningText('Cek Status Registrasi');
 
-            _setScanningText('Memvalidasi Dokumen');
+            final checkRegistrationStatus = await checkRegisterStatusUseCase.execute(
+              passport: passportData.passport?.passportNumber ?? '',
+              noReg: passportData.passport?.registrationNumber ?? '',
+            );
 
-            // validasi apakah ini visa
-            if (passportData.passport?.mrzCode?[0].contains('V') ?? false) {
-              _resetScan();
-              FailureDocumentDialog.launch(
-                context,
-                content:
-                'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
-                actionCallback: () async {
-                  Navigator.of(context).pop(); // close dialog
-                  await startScan(context, userId);
-                },
-              );
-
-              // validasi berhasil menyatakan bahwa ini adalah passport
-            } else if (passportData.passport?.mrzCode?[0].contains('P') ?? false) {
-              final expiryDate = passportData.passport?.dateOfExpiry;
-              bool expiryPassport = getExpiredPassport(expiryDate);
-              _passportExpired = expiryPassport;
-              notifyListeners();
-              
-              // jika passport sudah kadaluarsa
-              if (expiryPassport) {
+            checkRegistrationStatus.fold(
+              (l) {
+                // jika sudah ter registrasi
                 _resetScan();
                 FailureDocumentDialog.launch(
                   context,
-                  content: 'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.' 
-                  ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
+                  content: "Maaf, paspor ini sudah digunakan. Silakan gunakan paspor lain untuk melanjutkan.",
                   showScanButton: false,
                 );
+              }, 
+              (r) async {
+                _setScanningText('Memvalidasi Dokumen');
 
-                // positive case [scan berhasil]
-              } else {
-                final uploadPassportToServer = await mediaUseCase.execute(
-                  file: File(_passportPath),
-                  folderName: 'passport',
-                );
+                // validasi apakah ini visa
+                if (passportData.passport?.mrzCode?[0].contains('V') ?? false) {
+                  _resetScan();
+                  FailureDocumentDialog.launch(
+                    context,
+                    content:
+                    'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
+                    actionCallback: () async {
+                      Navigator.of(context).pop(); // close dialog
+                      await startScan(context, userId);
+                    },
+                  );
 
-                uploadPassportToServer.fold((failure) {
-                  ShowSnackbar.snackbarErr(failure.message);
+                  // validasi berhasil menyatakan bahwa ini adalah passport
+                } else if (passportData.passport?.mrzCode?[0].contains('P') ?? false) {
+                  final expiryDate = passportData.passport?.dateOfExpiry;
+                  bool expiryPassport = getExpiredPassport(expiryDate);
+                  _passportExpired = expiryPassport;
                   notifyListeners();
-                }, (picture) async {
-                  _mediaPassport = picture.path;
-                  notifyListeners();
-                });
+                  
+                  // jika passport sudah kadaluarsa
+                  if (expiryPassport) {
+                    _resetScan();
+                    FailureDocumentDialog.launch(
+                      context,
+                      content: 'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.' 
+                      ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
+                      showScanButton: false,
+                    );
 
-                _setPassport(passportData);
-              }
+                    // positive case [scan berhasil]
+                  } else {
+                    final uploadPassportToServer = await mediaUseCase.execute(
+                      file: File(_passportPath),
+                      folderName: 'passport',
+                    );
 
-              // error saat membaca kode mrz (karakter pertama tidak terbaca)
-            } else {
-              _resetScan();
-              FailureDocumentDialog.launch(
-                context,
-                content:
-                  'Kode MRZ tidak lengkap atau tidak jelas. '
-                  'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
-                  'Pegang perangkat dengan stabil dan coba pindai ulang.',
-                actionCallback: () async {
-                  Navigator.of(context).pop(); // close dialog
-                  await startScan(context, userId);
-                },
-              );
-            }
+                    uploadPassportToServer.fold((failure) {
+                      ShowSnackbar.snackbarErr(failure.message);
+                      notifyListeners();
+                    }, (picture) async {
+                      _mediaPassport = picture.path;
+                      notifyListeners();
+                    });
+
+                    _setPassport(passportData);
+                  }
+
+                  // error saat membaca kode mrz (karakter pertama tidak terbaca)
+                } else {
+                  _resetScan();
+                  FailureDocumentDialog.launch(
+                    context,
+                    content:
+                      'Kode MRZ tidak lengkap atau tidak jelas. '
+                      'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
+                      'Pegang perangkat dengan stabil dan coba pindai ulang.',
+                    actionCallback: () async {
+                      Navigator.of(context).pop(); // close dialog
+                      await startScan(context, userId);
+                    },
+                  );
+                }
+              },
+            );
           }
         });
       }
