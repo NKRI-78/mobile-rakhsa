@@ -181,22 +181,57 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
-    if (notification != null) {     
-        await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          payload: {
-            "type": payload["type"].toString(),
-            "news_id": payload["news_id"].toString(),
-            "chat_id": payload["chat_id"].toString(),
-            "recipient_id": payload["recipient_id"].toString(),
-            "sos_id": payload["sos_id"].toString()
-          },
-          id: Random().nextInt(100),
-          channelKey: 'notification',
-          title: notification.title,
-          body: notification.body,
-        ),
-      );
+    
+    // tidak ada ews
+    if (payload['type'] == 'ews' && notification?.title == '-') {
+      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+
+      Future.delayed(const Duration(seconds: 1), () {
+        var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
+        var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
+        var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+
+        navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
+          lat: lat, 
+          lng: lng, 
+          state: state
+        );
+      });
+
+      // ews masuk
+    } else if (payload['type'] == 'ews') {
+      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+
+      Future.delayed(const Duration(seconds: 1), () {
+        var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
+        var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
+        var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+
+        navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
+          lat: lat, 
+          lng: lng, 
+          state: state
+        );
+      });
+    } else {
+      if (notification != null) {     
+          await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            payload: {
+              "type": payload["type"].toString(),
+              "news_id": payload["news_id"].toString(),
+              "chat_id": payload["chat_id"].toString(),
+              "recipient_id": payload["recipient_id"].toString(),
+              "sos_id": payload["sos_id"].toString()
+            },
+            id: Random().nextInt(100),
+            channelKey: 'notification',
+            title: notification.title,
+            body: notification.body,
+          ),
+        );
+      }
     }
+    
   }
 }
