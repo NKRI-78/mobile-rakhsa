@@ -660,7 +660,7 @@ class PPOBPageState extends State<PPOBPage> {
                                             ),
                                           ),
                                           const SizedBox(height: 5.0),
-                                          Text(formatCurrency(notifier.entity[i].price),
+                                          Text(formatCurrency(notifier.entity[i].price - 2000),
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeExtraSmall,
                                               fontWeight: FontWeight.w600,

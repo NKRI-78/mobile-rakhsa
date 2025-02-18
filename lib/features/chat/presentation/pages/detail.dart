@@ -227,11 +227,12 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                               ],
                             ),
 
-                            const SizedBox(height: 8.0),
+                            const SizedBox(height: 15.0),
 
                             notifier.inbox.field3 == "va" 
                             ? Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.all(8.0),
@@ -242,7 +243,7 @@ class InboxDetailPageState extends State<InboxDetailPage> {
                                     child: Text(notifier.inbox.link.toString(),
                                       style: robotoRegular.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: Dimensions.fontSizeLarge,
+                                        fontSize: Dimensions.fontSizeExtraLarge,
                                         color: ColorResources.white
                                       ),
                                     ),

@@ -4,6 +4,7 @@ import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -30,49 +31,68 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       body: Stack(
         children: [
           // bg
-          SizedBox(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
+          Positioned.fill(
             child: Image.asset(
               AssetSource.bgOnBoarding,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           
           // content
-          const OnBoardingContentView(),
+          const _OnBoardingContentView(),
         ],
       ),
     );
   }
 }
 
-class OnBoardingContentView extends StatefulWidget {
-  const OnBoardingContentView({super.key});
+class _OnBoardingContentView extends StatefulWidget {
+  const _OnBoardingContentView();
 
   @override
-  State<OnBoardingContentView> createState() => _OnBoardingContentViewState();
+  State<_OnBoardingContentView> createState() => __OnBoardingContentViewState();
 }
 
-class _OnBoardingContentViewState extends State<OnBoardingContentView> {
+class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
   late PageController _pageController;
+  late SharedPreferences _prefs;
 
   int _currentPage = 0;
 
   final _contents = [
-    OnBoardingData(
+    _OnBoardingData(
       message: 'Keamanan di ujung jari Anda!. Gunakan fitur SOS di aplikasi kami untuk mendapatkan bantuan cepat saat darurat. Aktifkan sekarang dan tetap terlindungi di setiap momen!', 
       asset: AssetSource.onBoarding1,
     ),
-    OnBoardingData(
+    _OnBoardingData(
       message: 'Respon cepat melalui chat langsung! Kami siap membantu Anda dalam situasi darurat, kapan pun dan di mana pun!', 
       asset: AssetSource.onBoarding2,
     ),
-    OnBoardingData(
+    _OnBoardingData(
       message: 'Rekam dan kirim video kejadian secara real-time! Bukti kuat untuk keamanan Anda—langsung terkirim dan tersimpan sebagai alat bukti resmi. Lindungi diri dengan teknologi cerdas!', 
       asset: AssetSource.onBoarding3,
     ),
   ];
+
+  bool get _lastIndex => (_currentPage == _contents.length - 1);
+
+  void _actionOnTap(BuildContext context) async {
+    _prefs = await SharedPreferences.getInstance();
+    bool availOnBoardingKey = _prefs.containsKey('on-boarding-key');
+
+    if (_lastIndex) {
+      // set data ketika key tidak tersedia di prefs
+      if (!availOnBoardingKey) await _prefs.setBool('on-boarding-key', true);
+      if (context.mounted) {
+        Navigator.pushNamed(context, RoutesNavigation.welcomePage);
+      }
+    } else {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 600), 
+        curve: Curves.ease,
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -97,90 +117,136 @@ class _OnBoardingContentViewState extends State<OnBoardingContentView> {
             _currentPage = page;
           }),
           children: _contents.map((content) {
-            return Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + kToolbarHeight,
-                right: 16,
-                left: 16,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    // asset
-                    Expanded(
-                      child: Image.asset(content.asset),
-                    ),
-                    const SizedBox(height: 16),
-                
-                    // container
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      decoration: BoxDecoration(
-                        color: redColor.withOpacity(0.4),
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                      ),
-                      child: Text(
-                        content.message,
-                        textAlign: TextAlign.center,
-                        style: robotoRegular.copyWith(
-                          color: whiteColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return _ContentView(content);
           }).toList(),
         ),
 
-        // button lanjut
+        // on boarding action button && page indicator
         Positioned(
-          bottom: 50,
+          bottom: 40,
           left: 50,
           right: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              if (_currentPage == 2) {
-                // navigate to welcome page
-                Navigator.pushNamed(context, RoutesNavigation.welcomePage);
-              } else {
-                _pageController.nextPage(
-                  duration: const Duration(milliseconds: 600), 
-                  curve: Curves.ease,
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: whiteColor,
-              foregroundColor: blackColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              (_currentPage == 2) 
-                  ? 'Selesai' 
-                  : 'Lanjutkan',
-              style: robotoRegular.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // page indicator
+              _pageIndicator(),
+              const SizedBox(height: 16),
+
+              // action button
+              _actionButton(),
+            ],
           ),
         ),
       ],
     );
   }
+
+  Widget _pageIndicator() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        _contents.length,
+        (index) {
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 400),
+            margin: EdgeInsets.only(
+              right: (index == 2) ? 0.0 : 8.0,
+            ),
+            height: 8,
+            width: (_currentPage == index) ? 30 : 8,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(100),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _actionButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => _actionOnTap(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: whiteColor,
+          foregroundColor: blackColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Text(
+          _lastIndex
+              ? 'Selesai' 
+              : 'Lanjutkan',
+          style: robotoRegular.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class OnBoardingData {
+class _ContentView extends StatelessWidget {
+  const _ContentView(this.content);
+
+  final _OnBoardingData content;
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData device = MediaQuery.of(context);
+    double paddingTop = device.padding.top + kToolbarHeight;
+    double messageContainerHeight = device.size.height * 0.32;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        top: paddingTop,
+        right: 16,
+        left: 16,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            // asset
+            Expanded(child: Image.asset(content.asset)),
+            const SizedBox(height: 16),
+        
+            // message container
+            Container(
+              padding: const EdgeInsets.all(16),
+              height: messageContainerHeight,
+              decoration: BoxDecoration(
+                color: redColor.withOpacity(0.4),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+              ),
+              child: Text(
+                content.message,
+                textAlign: TextAlign.center,
+                style: robotoRegular.copyWith(
+                  color: whiteColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnBoardingData {
   final String message;
   final String asset;
 
-  OnBoardingData({required this.message, required this.asset});
+  _OnBoardingData({
+    required this.message, 
+    required this.asset,
+  });
 } 
