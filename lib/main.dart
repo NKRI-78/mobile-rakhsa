@@ -175,19 +175,16 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   late FirebaseProvider firebaseProvider;
-  late SharedPreferences _prefs;
 
   Widget home = const SizedBox();
 
   bool isResumedProcessing = false;
 
   Future<Widget> getInitPage() async {
-    _prefs = await SharedPreferences.getInstance();
-
     // tampilkan onboarding ketika key tidak ditemukan
     // key tidak ditemukan karena belum di set
     // akan di set dihalaman on boarding pada action button ('selesai')
-    bool showOnBoarding = !_prefs.containsKey('on-boarding-key');
+    bool showOnBoarding = !StorageHelper.containsOnBoardingKey();
 
     if (showOnBoarding) {
       return const OnBoardingPage();

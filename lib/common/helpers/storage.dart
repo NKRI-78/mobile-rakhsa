@@ -127,5 +127,13 @@ class StorageHelper {
     ? true 
     : false;
   }
+
+  static bool containsOnBoardingKey(){
+    return sharedPreferences.containsKey('on-boarding-key');
+  }
+  
+  static Future<void> setOnBoardingKey() async {
+    await sharedPreferences.setBool('on-boarding-key', true);
+  }
   
 }

@@ -159,7 +159,7 @@ class WelcomePageState extends State<WelcomePage> {
                   // login button
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                      Navigator.pushNamed(context, RoutesNavigation.login);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,

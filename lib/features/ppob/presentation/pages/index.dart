@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/format_currency.dart';
+import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
@@ -174,6 +175,11 @@ class PPOBPageState extends State<PPOBPage> {
           onTap: selectedIndex == -1 
           ? () {} 
           : () {
+            if(getC.text.length < 10) {
+              ShowSnackbar.snackbarErr("Nomor ponsel minimum 10 atau 13 digit");
+              return;
+            }
+
             showModalBottomSheet(
               context: context, 
               builder: (BuildContext context) {
@@ -478,7 +484,7 @@ class PPOBPageState extends State<PPOBPage> {
                                     paymentChannel: paymentChannelProvider.paymentChannel,
                                     type: selectedType,
                                   );
-                                  GeneralModal.infoV2(msg: "Terimakasih, Pembayaran anda telah berhasil.");
+                                  GeneralModal.infoV2(msg: "Terimakasih, Segera lakukan pembayaran Anda, detail info mengenai pembayaran terlampir pada notifikasi.");
                                 },
                                 isBorder: false,
                                 isBorderRadius: true,
@@ -741,13 +747,8 @@ class PPOBPageState extends State<PPOBPage> {
                 contentPadding: const EdgeInsets.all(16.0)
               ),
               onChanged: (val) {
-                if(val.startsWith('0') || val.startsWith('8')) {
-                  getC = TextEditingController(text: "62");
-                  getC.selection = TextSelection.fromPosition(TextPosition(offset: getC.text.length));
-                } 
-            
-                setState(() {});
-            
+                onPhoneChange();
+
                 if (debounce?.isActive ?? false) debounce?.cancel();
                 debounce = Timer(const Duration(milliseconds: 500), () {
                   inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
@@ -762,9 +763,11 @@ class PPOBPageState extends State<PPOBPage> {
             onPress: () async {
               final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
               getC.text = contact.phoneNumber!.number!.replaceAll(RegExp("[()+\\s-]+"), "");
-              inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
 
-              onPhoneChange();
+              if (debounce?.isActive ?? false) debounce?.cancel();
+                debounce = Timer(const Duration(milliseconds: 500), () {
+                  inquiryPulsaProvider.fetch(prefix: getC.text, type: selectedType);
+                });
             },
             child: Container(
               margin: const EdgeInsets.only(right: 10.0),

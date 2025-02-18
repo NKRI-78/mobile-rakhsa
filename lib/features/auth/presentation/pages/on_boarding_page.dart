@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -55,7 +56,6 @@ class _OnBoardingContentView extends StatefulWidget {
 
 class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
   late PageController _pageController;
-  late SharedPreferences _prefs;
 
   int _currentPage = 0;
 
@@ -77,12 +77,11 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
   bool get _lastIndex => (_currentPage == _contents.length - 1);
 
   void _actionOnTap(BuildContext context) async {
-    _prefs = await SharedPreferences.getInstance();
-    bool availOnBoardingKey = _prefs.containsKey('on-boarding-key');
+    bool availOnBoardingKey = StorageHelper.containsOnBoardingKey();
 
     if (_lastIndex) {
       // set data ketika key tidak tersedia di prefs
-      if (!availOnBoardingKey) await _prefs.setBool('on-boarding-key', true);
+      if (!availOnBoardingKey) await StorageHelper.setOnBoardingKey();
       if (context.mounted) {
         Navigator.pushNamed(context, RoutesNavigation.welcomePage);
       }

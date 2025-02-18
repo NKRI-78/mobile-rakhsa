@@ -167,7 +167,7 @@ class GeneralModal {
                   
                   SizedBox(
                     width: 290.0,
-                    height: 280.0,
+                    height: 320.0,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -177,7 +177,7 @@ class GeneralModal {
                           right: 20.0,
                           bottom: 20.0,
                           child: Container(
-                            height: 200.0,
+                            height: 230.0,
                             padding: const EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
@@ -187,13 +187,13 @@ class GeneralModal {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                            
-                               const SizedBox(height: 25.0),
+                              
+                                const SizedBox(height: 25.0),
 
                                 Text(msg, 
                                   textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeExtraLarge,
+                                    fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black
                                   ),
