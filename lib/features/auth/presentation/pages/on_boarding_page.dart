@@ -61,7 +61,7 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
 
   final _contents = [
     _OnBoardingData(
-      message: 'Keamanan di ujung jari Anda!. Gunakan fitur SOS di aplikasi kami untuk mendapatkan bantuan cepat saat darurat. Aktifkan sekarang dan tetap terlindungi di setiap momen!', 
+      message: 'Keamanan di ujung jari Anda!. Gunakan fitur SOS di aplikasi kami untuk mendapatkan bantuan cepat saat darurat. Aktifkan sekarang dan tetap terlindungi di setiap peristiwa!', 
       asset: AssetSource.onBoarding1,
     ),
     _OnBoardingData(

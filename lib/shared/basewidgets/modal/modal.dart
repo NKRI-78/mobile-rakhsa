@@ -207,7 +207,7 @@ class GeneralModal {
                                     onTap: () {
                                       Navigator.pushNamedAndRemoveUntil(
                                         context, 
-                                        RoutesNavigation.dashboard, (route) => route.isFirst
+                                        RoutesNavigation.chats, (route) => route.isFirst
                                       );
                                     },
                                     width: 120.0,
@@ -215,7 +215,7 @@ class GeneralModal {
                                     isBorder: false,
                                     isBorderRadius: true,
                                     btnColor: primaryColor,
-                                    btnTxt: "Home",
+                                    btnTxt: "Notification",
                                   ),
                                 )
 

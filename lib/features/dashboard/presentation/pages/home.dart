@@ -246,137 +246,135 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
-          children: [  
-            SizedBox.expand(
-              child: SafeArea(
-                child: RefreshIndicator.adaptive(
-                onRefresh: () => Future.sync(() => getData()),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  // padding bawah untuk memberikan ruang scrolling bagian bawah
-                  padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HeaderSection(scaffoldKey: widget.globalKey),
-                        const SizedBox(height: 16),
+        children: [  
+          SizedBox.expand(
+            child: SafeArea(
+              child: RefreshIndicator.adaptive(
+              onRefresh: () => Future.sync(() => getData()),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                // padding bawah untuk memberikan ruang scrolling bagian bawah
+                padding: const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HeaderSection(scaffoldKey: widget.globalKey),
+                      const SizedBox(height: 16),
 
-                        Container(
-                          margin: const EdgeInsets.only(top: 24),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
-                                  textAlign: TextAlign.center,
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              )
-                            ],
-                          ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 24),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
+                                textAlign: TextAlign.center,
+                                style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          ],
                         ),
-                
-                        Container(
-                          margin: const EdgeInsets.only(top: 45),
-                          child: SosButton(
-                            location: currentAddress,
-                            country: currentCountry,
-                            lat: currentLat,
-                            lng: currentLng,
-                            loadingGmaps: loadingGmaps,
-                            isConnected: context.watch<SocketIoService>().isConnected ? true : false,
-                          )
-                        ),
-                
-                        Consumer<DashboardNotifier>(
-                          builder: (context, notifier, child) {
-                            
-                            if(notifier.state == ProviderState.loading) {
-                              return const SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 16.0,
-                                    height: 16.0,
-                                    child: CircularProgressIndicator()
-                                  )
-                                ),
-                              );
-                            }
-                
-                            if(notifier.state == ProviderState.error) {
-                              return SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: Text(notifier.message,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.black,
-                                    ),
-                                  )
-                                )
-                              );
-                            }
-
-                            if(notifier.bannerState == BannerProviderState.loading) {
-                              return const SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 16.0,
-                                    height: 16.0,
-                                    child: CircularProgressIndicator()
-                                  )
-                                ),
-                              );
-                            }
-
-                            if(notifier.bannerState == BannerProviderState.error) {
-                              return SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: Text(notifier.message,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.black,
-                                    ),
-                                  )
-                                )
-                              );
-                            }
-                            
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 45.0),
-                              child: (notifier.ews.isNotEmpty) 
-                              ? EwsListWidget(
-                                  getData: getData,
-                                )
-                              : HomeHightlightBanner(
-                                  banners: banners,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
                       ),
-                    )
-                  ),
+              
+                      Container(
+                        margin: const EdgeInsets.only(top: 45),
+                        child: SosButton(
+                          location: currentAddress,
+                          country: currentCountry,
+                          lat: currentLat,
+                          lng: currentLng,
+                          loadingGmaps: loadingGmaps,
+                          isConnected: context.watch<SocketIoService>().isConnected ? true : false,
+                        )
+                      ),
+              
+                      Consumer<DashboardNotifier>(
+                        builder: (context, notifier, child) {
+                          
+                          if(notifier.state == ProviderState.loading) {
+                            return const SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 16.0,
+                                  height: 16.0,
+                                  child: CircularProgressIndicator()
+                                )
+                              ),
+                            );
+                          }
+              
+                          if(notifier.state == ProviderState.error) {
+                            return SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: Text(notifier.message,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black,
+                                  ),
+                                )
+                              )
+                            );
+                          }
+
+                          if(notifier.bannerState == BannerProviderState.loading) {
+                            return const SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 16.0,
+                                  height: 16.0,
+                                  child: CircularProgressIndicator()
+                                )
+                              ),
+                            );
+                          }
+
+                          if(notifier.bannerState == BannerProviderState.error) {
+                            return SizedBox(
+                              height: 200.0,
+                              child: Center(
+                                child: Text(notifier.message,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                    color: ColorResources.black,
+                                  ),
+                                )
+                              )
+                            );
+                          }
+                          
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 45.0),
+                            child: (notifier.ews.isNotEmpty) 
+                            ? EwsListWidget(
+                                getData: getData,
+                              )
+                            : HomeHightlightBanner(
+                                banners: banners,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  )
                 ),
               ),
             ),
-          
-          const _BottomFadeEffect(),
-        ],
-      )
-    ); 
+          ),
+        
+        const _BottomFadeEffect(),
+      ],
+    )); 
   }
 }
 
