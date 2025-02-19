@@ -65,12 +65,12 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
       asset: AssetSource.onBoarding1,
     ),
     _OnBoardingData(
-      message: 'Respon cepat melalui chat langsung! Kami siap membantu Anda dalam situasi darurat, kapan pun dan di mana pun!', 
-      asset: AssetSource.onBoarding2,
-    ),
-    _OnBoardingData(
       message: 'Rekam dan kirim video kejadian secara real-time! Bukti kuat untuk keamanan Anda—langsung terkirim dan tersimpan sebagai alat bukti resmi. Lindungi diri dengan teknologi cerdas!', 
       asset: AssetSource.onBoarding3,
+    ),
+    _OnBoardingData(
+      message: 'Tanggap cepat melalui chat langsung! Kami siap membantu Anda dalam situasi darurat, kapan pun dan di mana pun!', 
+      asset: AssetSource.onBoarding2,
     ),
   ];
 

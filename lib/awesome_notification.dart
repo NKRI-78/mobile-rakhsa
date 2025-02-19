@@ -65,7 +65,7 @@ class AwesomeNotificationService {
   }
 
   static Future<void> onDismissAction(ReceivedNotification receivedNotification) async {
-
+    AwesomeNotifications().decrementGlobalBadgeCounter();
   }
  
 }

@@ -96,7 +96,6 @@ class NearMePageState extends State<NearMePage> {
     });
   }
 
-
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const double R = 6371; 
     double dLat = (lat2 - lat1) * (pi / 180);
@@ -207,7 +206,7 @@ class NearMePageState extends State<NearMePage> {
                             myLocationEnabled: true,
                             initialCameraPosition: CameraPosition(
                               target: LatLng(userLat, userLng),
-                              zoom: 12.0,
+                              zoom: 18.0,
                             ),
                             markers: Set.from(notifier.markers),
                           ),
@@ -231,7 +230,10 @@ class NearMePageState extends State<NearMePage> {
                               child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.location_on, color: Colors.red),
+                                const Icon(
+                                  Icons.location_on, 
+                                  color: Colors.red
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(

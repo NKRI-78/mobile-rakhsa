@@ -150,8 +150,10 @@ Future<void> main() async {
   an.AwesomeNotifications().getInitialNotificationAction().then((receivedAction) {
     if (receivedAction != null) {
       AwesomeNotificationService.onActionReceivedMethod(receivedAction);
+      AwesomeNotificationService.onDismissAction(receivedAction);
     }
   });
+
 
   await StorageHelper.init();
 

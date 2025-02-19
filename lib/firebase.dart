@@ -183,7 +183,7 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
     
     // fetch realtime when notification without title and description
-    if (payload['type'] == 'ews' && notification?.title == '-') {
+    if (payload['type'] == 'ews-delete') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
       Future.delayed(const Duration(seconds: 1), () {
@@ -224,6 +224,8 @@ class FirebaseProvider with ChangeNotifier {
               "recipient_id": payload["recipient_id"].toString(),
               "sos_id": payload["sos_id"].toString()
             },
+            notificationLayout: NotificationLayout.Default,
+            actionType: ActionType.Default,
             id: Random().nextInt(100),
             channelKey: 'notification',
             title: notification.title,
