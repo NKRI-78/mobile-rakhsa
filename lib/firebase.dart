@@ -14,9 +14,9 @@ import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
+
 import 'package:rakhsa/global.dart';
 // import 'package:rakhsa/features/news/persentation/pages/detail.dart';
-
 // import 'package:rakhsa/global.dart';
 
 class NotificationType {
@@ -182,7 +182,7 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
     
-    // tidak ada ews
+    // fetch realtime when notification without title and description
     if (payload['type'] == 'ews' && notification?.title == '-') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
@@ -198,7 +198,7 @@ class FirebaseProvider with ChangeNotifier {
         );
       });
 
-      // ews masuk
+      // fetch realtime when notification with title and description 
     } else if (payload['type'] == 'ews') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 

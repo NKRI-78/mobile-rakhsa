@@ -15,6 +15,7 @@ class PaymentChannelProvider with ChangeNotifier {
   String paymentChannel = "-";
   String paymentCode = "-";
   String paymentName = "-";
+  String paymentImg = "-";
 
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;

@@ -293,6 +293,26 @@ class PPOBPageState extends State<PPOBPage> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           mainAxisSize: MainAxisSize.max,
                                                           children: [
+
+                                                            Image.asset("assets/images/icons/${
+                                                              paymentData.name.toLowerCase() == "mandiri" 
+                                                              ? "ic-mandiri.png" 
+                                                              : paymentData.name.toLowerCase() == "gopay"  
+                                                              ? "ic-gopay.png" 
+                                                              : paymentData.name.toLowerCase() == "ovo"
+                                                              ? "ic-ovo.png" 
+                                                              : paymentData.name.toLowerCase() == "shopeepay" 
+                                                              ? "ic-shopeepay.png" 
+                                                              : paymentData.name.toLowerCase() == "dana" 
+                                                              ? "ic-dana.png" 
+                                                              : paymentData.name.toLowerCase() == "bank rakyat indonesia" 
+                                                              ? "ic-bri.png"  
+                                                              : "assets/images/default_image.png"
+                                                            }",
+                                                              height: 14.0,
+                                                              fit: BoxFit.fitHeight,
+                                                            ),
+
                                                             Text(paymentData.name,
                                                               style: robotoRegular.copyWith(
                                                                 fontWeight: FontWeight.bold,
