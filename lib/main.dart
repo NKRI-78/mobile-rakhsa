@@ -42,11 +42,6 @@ final service = FlutterBackgroundService();
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
-  service.on("stop").listen((event) {
-    service.stopSelf();
-    debugPrint("== BACKGROUND PROCESS IS NOW STOPPED");
-  });
-
   debugPrint("=== ON START ===");
 
   final sharedPreferences = await SharedPreferences.getInstance();

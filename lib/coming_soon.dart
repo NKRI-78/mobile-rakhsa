@@ -80,7 +80,6 @@ class ComingSoonPage extends StatelessWidget {
                 ),
 
               ]
-          
             )
           ),
         ),
