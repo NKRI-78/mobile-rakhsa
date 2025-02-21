@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -86,8 +88,13 @@ class WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  void onUserAction() {
-    requestAllPermissions();
+  Future<void> onUserAction() async {
+    if(Platform.isAndroid) {
+      requestAllPermissions();
+    } else {
+      if(!mounted) return;
+        await registerNotifier.registerWithGoogle(context);
+    }
   }
 
   @override 
@@ -206,7 +213,7 @@ class WelcomePageState extends State<WelcomePage> {
                     builder: (context, provider, child) {
                     return OutlinedButton(
                       onPressed: () async {
-                        onUserAction();
+                        await onUserAction();
                       }, 
                       style: ElevatedButton.styleFrom(
                         foregroundColor: blackColor,
