@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>39799101733-qg9t17nm6o7hnqdibs96i94ugjent3nn.apps.googleusercontent.com</string>
+	<string>39799101733-7gkcnvahiihgcgpl45mgqrurr0ga43e0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.39799101733-qg9t17nm6o7hnqdibs96i94ugjent3nn</string>
+	<string>com.googleusercontent.apps.39799101733-7gkcnvahiihgcgpl45mgqrurr0ga43e0</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>39799101733-3540abkpvr9a451t3itrcvt8us3pgbv6.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.rakhsa.RunnerTests</string>
+	<string>com.inovatiftujuh8.marlinda</string>
 	<key>PROJECT_ID</key>
 	<string>marlinda-c26cd</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:39799101733:ios:0fc89e79d79b1f770b22cc</string>
+	<string>1:39799101733:ios:1837f98a1184f10c0b22cc</string>
 </dict>
 </plist>
