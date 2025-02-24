@@ -40,13 +40,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Raksha needs to access the camera </string>
+	<string>Marlinda needs to access the camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>your description.</string>
+	<string>This app requires location access to retrieve your address for weather updates.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>your description</string>
+	<string>This app requires location access to retrieve your address for weather updates.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>your description.</string>
+	<string>This app requires location access to retrieve your address for weather updates.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Enter photo access will be used in Edit Profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
