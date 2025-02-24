@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 var baseDarkTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     surface: Color(0xff000000),
-    background: Color(0xff000000),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(

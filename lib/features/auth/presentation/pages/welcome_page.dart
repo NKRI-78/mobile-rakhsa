@@ -103,11 +103,16 @@ class WelcomePageState extends State<WelcomePage> {
 
     registerNotifier = context.read<RegisterNotifier>();
 
-    Future.microtask(()  async {
-      await Geolocator.requestPermission();
-      await Permission.camera.request();
-      await Permission.microphone.request();
-      await Permission.notification.request();
+    Future.microtask(() async {
+      if (await Geolocator.checkPermission() == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+
+      await [
+        Permission.camera,
+        Permission.microphone,
+        Permission.notification,
+      ].request();
     });
   }
 
