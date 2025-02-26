@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,8 +7,6 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:rakhsa/ML/Recognizer.dart';
 
-// import 'package:dio/dio.dart';
-
 import 'package:rakhsa/Painter/face_detector.dart';
 
 import 'package:rakhsa/common/helpers/snackbar.dart';
@@ -19,7 +15,6 @@ import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/global.dart';
-import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/Helper/Image.dart';
 
@@ -28,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 import 'package:rakhsa/ML/Recognition.dart';
+import 'package:rakhsa/main.dart';
 
 class LoginFrPage extends StatefulWidget {
   final bool fromHome;
@@ -42,7 +38,7 @@ class LoginFrPage extends StatefulWidget {
 
 class LoginFrPageState extends State<LoginFrPage> {
 
-  late CameraController controller;
+  CameraController? controller;
 
   String text = "Please scan your face to login";
 
@@ -59,24 +55,27 @@ class LoginFrPageState extends State<LoginFrPage> {
   CameraLensDirection camDirec = CameraLensDirection.front;
 
   late Size size;
-  late CameraDescription description = cameras[1];
+  late CameraDescription description;
   late List<Recognition> recognitions = [];
   late FaceDetector faceDetector;
   late Recognizer recognizer;
 
   Future<void> initializeCamera() async {
-    controller = CameraController(
-      description,
-      ResolutionPreset.medium,
-      imageFormatGroup: Platform.isAndroid
-    ? ImageFormatGroup.nv21 
-    : ImageFormatGroup.bgra8888, 
-      enableAudio: false
-    ); 
+    final cameras = await availableCameras();
+    final backCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front);
 
-    await controller.initialize();
+    controller = CameraController(
+      backCamera, ResolutionPreset.medium,
+      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+      enableAudio: false,
+    );
+
+    await controller?.initialize();
+    if (!mounted) return;
+
+    setState(() {});
       
-    controller.startImageStream((image) {
+    controller?.startImageStream((image) {
       if (!isBusy && frameCounter % frameSkip == 0) {
         isBusy = true;
         frame = image;
@@ -87,7 +86,7 @@ class LoginFrPageState extends State<LoginFrPage> {
   }
 
   Future<void> doFaceDetectionOnFrame() async {
-    InputImage? inputImage = ImageHelper.getInputImage(controller, camDirec, cameras, frame!);
+    InputImage? inputImage = ImageHelper.getInputImage(controller!, camDirec, cameras, frame!);
     if (inputImage == null) return;
 
     List<Face> faces = await faceDetector.processImage(inputImage);
@@ -109,9 +108,11 @@ class LoginFrPageState extends State<LoginFrPage> {
     }
 
     if(recognitions.isEmpty) {
-      setState(() {
-        text = "Please scan your face to login";
-      });
+      if(mounted) {
+        setState(() {
+          text = "Please scan your face to login";
+        });
+      }
     }
 
     if (mounted) {
@@ -183,13 +184,13 @@ class LoginFrPageState extends State<LoginFrPage> {
   }
 
   Widget buildResult() {
-    if (!controller.value.isInitialized) {
+    if (controller == null || !controller!.value.isInitialized) {
       return const SizedBox();
     }
 
     final Size imageSize = Size(
-      controller.value.previewSize!.height,
-      controller.value.previewSize!.width,
+      controller!.value.previewSize!.height,
+      controller!.value.previewSize!.width,
     );
     
     CustomPainter painter = FaceDetectorPainter(imageSize, scanResults, camDirec);
@@ -197,22 +198,6 @@ class LoginFrPageState extends State<LoginFrPage> {
     return CustomPaint(painter: painter);
   }
 
-  void toggleCameraDirection() async {
-
-    if (camDirec == CameraLensDirection.back) {
-      camDirec = CameraLensDirection.front;
-      description = cameras[1];
-    } else {
-      camDirec = CameraLensDirection.back;
-      description = cameras[0];
-    }
-    await controller.stopImageStream();
-
-    setState(() => controller);
-
-    initializeCamera();
-  }
-  
   @override
   void initState() {
     super.initState();
@@ -234,7 +219,7 @@ class LoginFrPageState extends State<LoginFrPage> {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
 
     super.dispose();
   }
@@ -246,7 +231,7 @@ class LoginFrPageState extends State<LoginFrPage> {
     
     size = MediaQuery.of(context).size;
 
-    if (!controller.value.isInitialized) {
+    if (controller != null) {
       stackChildren.add(
         Positioned(
           top: 0.0,
@@ -254,10 +239,10 @@ class LoginFrPageState extends State<LoginFrPage> {
           width: size.width,
           height: size.height,
           child: Container(
-          child: (controller.value.isInitialized)
+          child: (controller!.value.isInitialized)
           ? AspectRatio(
               aspectRatio: 16 / 9,
-              child: CameraPreview(controller),
+              child: CameraPreview(controller!),
             )
           : const SizedBox(),
           ),
@@ -301,7 +286,7 @@ class LoginFrPageState extends State<LoginFrPage> {
               left: 0.0,
               width: size.width,
               height: size.height,
-              child: (controller.value.isInitialized)
+              child: (controller!.value.isInitialized)
               ? Align(
                   alignment: Alignment.topCenter,
                   child: ClipOval(
@@ -315,8 +300,8 @@ class LoginFrPageState extends State<LoginFrPage> {
                           child: SizedBox(
                             height: 1,
                             child: AspectRatio(
-                              aspectRatio: 1 / controller.value.aspectRatio,
-                              child: CameraPreview(controller),
+                              aspectRatio: 1 / controller!.value.aspectRatio,
+                              child: CameraPreview(controller!),
                             ),
                           ),
                         ),

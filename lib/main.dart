@@ -149,7 +149,6 @@ Future<void> main() async {
     }
   });
 
-
   await StorageHelper.init();
 
   di.init();
@@ -209,8 +208,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         setState(() => home = initPage); 
       }
     }
-
-    // await Geolocator.requestPermission();
 
     if (!mounted) return;
       await firebaseProvider.setupInteractedMessage(context);
