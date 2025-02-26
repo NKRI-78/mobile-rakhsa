@@ -286,7 +286,7 @@ class LoginFrPageState extends State<LoginFrPage> {
               left: 0.0,
               width: size.width,
               height: size.height,
-              child: (controller!.value.isInitialized)
+              child: (controller != null && controller!.value.isInitialized)
               ? Align(
                   alignment: Alignment.topCenter,
                   child: ClipOval(
