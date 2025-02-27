@@ -106,7 +106,7 @@ class _ScanRegisterPassportPageState extends State<ScanRegisterPassportPage> {
                   onPressed: provider.scanningSuccess
                       ? () => Navigator.pushNamed(
                             context,
-                            RoutesNavigation.registerFr,
+                            RoutesNavigation.registerPassportv2,
                             arguments: {
                               "user_id": userId,
                               "passport_pic":provider.mediaPassport,

@@ -3,6 +3,7 @@ import 'package:rakhsa/features/auth/presentation/pages/login.dart';
 import 'package:rakhsa/features/auth/presentation/pages/login_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/register_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
+import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_v2.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
@@ -35,6 +36,7 @@ class RoutesNavigation {
   static const registerFr = '/register-fr';
   // static const registerPassport = '/register-passport';
   static const registerPassport = '/register-passport';
+  static const registerPassportv2 = '/register-passport/v2';
   static const nearMeTypeList = '/near-me-type-list';
   static const information = '/information';
   static const news = '/news';
@@ -60,6 +62,8 @@ class RoutesNavigation {
       //   return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
       case registerPassport: 
         return MaterialPageRoute(builder: (_) => const ScanRegisterPassportPage());
+      case registerPassportv2: 
+        return MaterialPageRoute(builder: (_) => const RegisterFrV2Page());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
       case weather:

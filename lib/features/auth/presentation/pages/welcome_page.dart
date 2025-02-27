@@ -218,7 +218,8 @@ class WelcomePageState extends State<WelcomePage> {
                     builder: (context, provider, child) {
                     return OutlinedButton(
                       onPressed: () async {
-                        await onUserAction();
+                        // await onUserAction();
+                        Navigator.pushNamed(context, RoutesNavigation.registerPassportv2);
                       }, 
                       style: ElevatedButton.styleFrom(
                         foregroundColor: blackColor,

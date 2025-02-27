@@ -125,7 +125,10 @@ class ImageHelper {
       DeviceOrientation.landscapeRight: 270,
     };
 
-    final camera = camDirec == CameraLensDirection.front ? cameras[1] : cameras[0];
+    final camera = camDirec == CameraLensDirection.front 
+    ? cameras[1] 
+    : cameras[0];
+    
     final sensorOrientation = camera.sensorOrientation;
 
     InputImageRotation? rotation;
