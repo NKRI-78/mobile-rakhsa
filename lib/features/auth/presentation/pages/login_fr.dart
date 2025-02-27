@@ -202,6 +202,8 @@ class LoginFrPageState extends State<LoginFrPage> {
   void initState() {
     super.initState();
 
+    recognizer = Recognizer();
+
     Future.microtask(() => initializeCamera());
 
     var options = FaceDetectorOptions(
@@ -214,7 +216,6 @@ class LoginFrPageState extends State<LoginFrPage> {
     
     faceDetector = FaceDetector(options: options);
     
-    recognizer = Recognizer();
   }
 
   @override
