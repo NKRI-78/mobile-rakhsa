@@ -1,9 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+
+import 'package:image/image.dart' as img;
+
 import 'package:rakhsa/Helper/image.dart';
+import 'package:rakhsa/ML/Recognition.dart';
+import 'package:rakhsa/ML/Recognizer.dart';
 import 'package:rakhsa/main.dart';
 
 class BlinkDetector {
@@ -22,8 +29,11 @@ class BlinkDetector {
   void detectBlink(Face face) {
     if (face.leftEyeOpenProbability != null && face.rightEyeOpenProbability != null) {
       
-      bool isBlinking = (face.leftEyeOpenProbability! < leftEyeThreshold) && (face.rightEyeOpenProbability! < rightEyeThreshold);
+      final leftEyeOpen = face.leftEyeOpenProbability! > leftEyeThreshold;
+      final rightEyeOpen = face.rightEyeOpenProbability! > rightEyeThreshold;
       
+      bool isBlinking = !leftEyeOpen && !rightEyeOpen;
+
       if (isBlinking) {
         blinkCount++;
         debugPrint("Blink detected! Count: $blinkCount");
@@ -59,8 +69,8 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
 
   BlinkDetector blinkDetector = BlinkDetector(
     requiredBlinks: 1,
-    leftEyeThreshold: 14,
-    rightEyeThreshold: 0.14,
+    leftEyeThreshold: 0.5,
+    rightEyeThreshold: 0.5,
   );
 
   CameraLensDirection camDirec = CameraLensDirection.front;
@@ -68,20 +78,16 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
   late CameraController controller;
   late FaceDetector faceDetector;
   late CameraDescription description = cameras[1];
-  
-  @override
-  void initState() {
-    super.initState();
-    faceDetector = FaceDetector(
-      options: FaceDetectorOptions(
-        enableLandmarks: false,
-        enableTracking: true,
-        enableContours: true,
-        enableClassification: true,
-        performanceMode: FaceDetectorMode.accurate,
-      ),
-    );
-    initializeCamera();
+  late Recognizer recognizer;
+
+  double calculateDistance(List<double> embedding1, List<double> embedding2) {
+    if (embedding1.length != embedding2.length) return double.infinity;
+
+    double sum = 0;
+    for (int i = 0; i < embedding1.length; i++) {
+      sum += (embedding1[i] - embedding2[i]) * (embedding1[i] - embedding2[i]);
+    }
+    return sqrt(sum);
   }
 
   Future<void> initializeCamera() async {
@@ -110,20 +116,53 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     if (inputImage == null) return;
 
     List<Face> faces = await faceDetector.processImage(inputImage);
-    checkBlink(faces);
+
+    await performRecognition(faces);
   }
 
-  void checkBlink(List<Face> faces) {
+  Future<void> saveEmbedding(String userId, List<double> embedding) async {
+    try {
+      const directoryDownload = '/storage/emulated/0/Download';
+      final targetDirectory = Directory('$directoryDownload/Embeddings');
+
+      if (!await targetDirectory.exists()) {
+        await targetDirectory.create(recursive: true);
+      }
+
+      final file = File('${targetDirectory.path}/marlinda.json');
+
+      Map<String, dynamic> embeddingsData = {};
+
+      if (await file.exists()) {
+        String jsonString = await file.readAsString();
+        embeddingsData = jsonDecode(jsonString);
+      }
+
+      embeddingsData[userId] = embedding;
+
+      await file.writeAsString(jsonEncode(embeddingsData), mode: FileMode.write);
+      debugPrint("✅ Embedding saved successfully at: ${file.path}");
+    
+    } catch (e) {
+      debugPrint("❌ Error saving JSON: $e");
+    }
+  }
+
+  Future<void> performRecognition(List<Face> faces) async {
     if (faces.isEmpty) {
       isBusy = false;
       return;
     }
 
-    for (Face face in faces) {
+    img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
+
+    for (Face face in faces) {             
       if (!blinkDetector.isSuccess) {
         blinkDetector.detectBlink(face);
       } else {
         showLivenessSuccess();
+        Recognition recognition = await processFaceRecognition(baseImage, face);
+        await saveEmbedding("user_id_2", recognition.embeddings.toList());
       }
     }
 
@@ -133,8 +172,29 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
       });
     }
   }
-  
 
+  Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
+    Rect faceRect = face.boundingBox;
+
+    img.Image croppedFace = img.copyCrop(
+      image,
+      x: faceRect.left.toInt(),
+      y: faceRect.top.toInt(),
+      width: faceRect.width.toInt(),
+      height: faceRect.height.toInt()
+    );
+
+    Recognition recognition = recognizer.recognize(croppedFace, faceRect);
+
+    if (recognition.distance > 0.3) {
+      recognition.name = "Not Registered";
+    } else {
+      debugPrint("already registered");
+    }
+
+    return recognition;
+  }
+  
   void showLivenessSuccess() {
     showDialog(
       context: context,
@@ -152,9 +212,29 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    
+    faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableLandmarks: false,
+        enableTracking: true,
+        enableContours: true,
+        enableClassification: true,
+        performanceMode: FaceDetectorMode.accurate,
+      ),
+    );
+
+    recognizer = Recognizer();
+
+    initializeCamera();
+  }
+
+  @override
   void dispose() {
     controller.dispose();
     faceDetector.close();
+
     super.dispose();
   }
 
@@ -167,8 +247,9 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
         children: [
           Expanded(
             child: controller.value.isInitialized
-                ? CameraPreview(controller)
-                : const Center(child: CircularProgressIndicator()),
+              ? CameraPreview(controller)
+              : const Center(child: CircularProgressIndicator()
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -187,4 +268,5 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
       ),
     );
   }
+  
 }

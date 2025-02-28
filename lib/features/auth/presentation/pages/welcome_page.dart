@@ -41,7 +41,9 @@ class WelcomePageState extends State<WelcomePage> {
       isDialogShowing = false;
       return;
     }
-
+    
+    if (await requestPermission(Permission.storage, "storage", "storage.png")) return;
+    if (await requestPermission(Permission.manageExternalStorage, "storage", "storage.png")) return;
     if (await requestPermission(Permission.notification, "notification", "notification.png")) return;
     if (await requestPermission(Permission.microphone, "microphone", "microphone.png")) return;
     if (await requestPermission(Permission.camera, "camera", "camera.png")) return;
@@ -109,6 +111,7 @@ class WelcomePageState extends State<WelcomePage> {
       }
 
       await [
+        Permission.storage,
         Permission.camera,
         Permission.microphone,
         Permission.notification,
