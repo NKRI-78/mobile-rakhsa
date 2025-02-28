@@ -90,6 +90,38 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     return sqrt(sum);
   }
 
+  String? findMatchingUser(List<double> newEmbedding, Map<String, List<double>> savedEmbeddings) {
+    double threshold = 0.3;
+    String? bestMatch;
+    double minDistance = double.infinity;
+
+    for (var entry in savedEmbeddings.entries) {
+      double distance = calculateDistance(newEmbedding, entry.value);
+      if (distance < threshold && distance < minDistance) {
+        minDistance = distance;
+        bestMatch = entry.key;
+      }
+    }
+
+    return bestMatch;
+  }
+
+  void showLivenessSuccess() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Liveness Check Passed"),
+        content: const Text("You blinked! You are a real person."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> initializeCamera() async {
     controller = CameraController(
       description,
@@ -148,6 +180,26 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     }
   }
 
+  Future<Map<String, List<double>>> loadEmbeddings() async {
+    try {
+      const directoryDownload = '/storage/emulated/0/Download';
+      final file = File('$directoryDownload/Embeddings/marlinda.json');
+
+      if (!await file.exists()) {
+        debugPrint("❌ No saved embeddings found.");
+        return {};
+      }
+
+      String jsonString = await file.readAsString();
+      Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+      return jsonData.map((key, value) => MapEntry(key, List<double>.from(value)));
+    } catch (e) {
+      debugPrint("❌ Error loading embeddings: $e");
+      return {};
+    }
+  }
+
   Future<void> performRecognition(List<Face> faces) async {
     if (faces.isEmpty) {
       isBusy = false;
@@ -155,14 +207,27 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     }
 
     img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
+    Map<String, List<double>> savedEmbeddings = await loadEmbeddings();
 
     for (Face face in faces) {             
       if (!blinkDetector.isSuccess) {
         blinkDetector.detectBlink(face);
       } else {
+        // showLivenessSuccess();
+        // Recognition recognition = await processFaceRecognition(baseImage, face);
+
         showLivenessSuccess();
         Recognition recognition = await processFaceRecognition(baseImage, face);
-        await saveEmbedding("user_id_2", recognition.embeddings.toList());
+        List<double> newEmbedding = recognition.embeddings.toList();
+
+        // Compare with stored embeddings
+        String? matchedUser = findMatchingUser(newEmbedding, savedEmbeddings);
+
+        if (matchedUser != null) {
+          debugPrint("✅ Login Successful: $matchedUser");
+        } else {
+          await saveEmbedding("user_id_2", recognition.embeddings.toList());
+        }
       }
     }
 
@@ -193,22 +258,6 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     }
 
     return recognition;
-  }
-  
-  void showLivenessSuccess() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Liveness Check Passed"),
-        content: const Text("You blinked! You are a real person."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
