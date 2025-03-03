@@ -66,7 +66,9 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     controller = CameraController(
       backCamera, ResolutionPreset.medium,
-      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+      imageFormatGroup: Platform.isAndroid 
+      ? ImageFormatGroup.nv21 
+      : ImageFormatGroup.bgra8888,
       enableAudio: false,
     );
 
@@ -194,17 +196,15 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     recognizer = Recognizer();
 
-    Future.microtask(() => initializeCamera());
-
-    var options = FaceDetectorOptions(
+    faceDetector = FaceDetector(options: FaceDetectorOptions(
       enableLandmarks: false,
       enableContours: true,
       enableTracking: true,
       enableClassification: true,
       performanceMode: FaceDetectorMode.accurate
-    );
-    
-    faceDetector = FaceDetector(options: options);
+    ));
+
+    Future.microtask(() => initializeCamera());
   }
 
   @override

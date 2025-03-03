@@ -395,16 +395,14 @@ class RegisterFrPageState extends State<RegisterFrPage> {
     super.initState();
 
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
-
-    var options = FaceDetectorOptions(
+    
+    faceDetector = FaceDetector(options: FaceDetectorOptions(
       enableLandmarks: false,
       enableContours: true,
       enableTracking: true,
       enableClassification: true,
       performanceMode: FaceDetectorMode.accurate
-    );
-    
-    faceDetector = FaceDetector(options: options);
+    ));
     
     recognizer = Recognizer();
     

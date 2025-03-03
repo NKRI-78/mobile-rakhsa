@@ -14,8 +14,6 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
 	<key>CFBundleName</key>
 	<string>marlinda</string>
 	<key>CFBundlePackageType</key>
@@ -24,8 +22,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>GIDClientID</key>
-	<string>39799101733-7gkcnvahiihgcgpl45mgqrurr0ga43e0.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,10 +35,14 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>GIDClientID</key>
+	<string>39799101733-7gkcnvahiihgcgpl45mgqrurr0ga43e0.apps.googleusercontent.com</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Marlinda needs to access the microphone</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Marlinda needs to access the camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -51,6 +51,8 @@
 	<string>This app requires location access to retrieve your address for weather updates.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app requires location access to retrieve your address for weather updates.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Marlinda needs to access the microphone</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Enter photo access will be used in Edit Profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -67,8 +69,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
