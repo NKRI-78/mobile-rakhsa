@@ -63,13 +63,11 @@ class RegisterFrPageState extends State<RegisterFrPage> {
   late CameraController controller;
 
   String text1 = "Please scan your face to register";
-  String text2 = "";
 
   bool isBusy = false;
   bool btnRegister = false;
   bool register = false;
   bool waitForScanSucceded = true;
-  bool alreadyRegistered = false;
 
   bool saving = false;
 
@@ -146,9 +144,7 @@ class RegisterFrPageState extends State<RegisterFrPage> {
 
     if(recognitions.isNotEmpty) {
       setState(() {
-        text1 = "";
-        text2 = "Take your photo to register account";
-        alreadyRegistered = false;
+        text1 = "Take your photo to register account";
         waitForScanSucceded = false;
       });
     }
@@ -191,8 +187,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
     } else {
       setState(() {
         text1 = "";
-        text2 = "";
-        alreadyRegistered = true;
       });
     }
 
@@ -227,12 +221,12 @@ class RegisterFrPageState extends State<RegisterFrPage> {
             const SizedBox(height: 20.0),
 
             StatefulBuilder(
-              builder: (BuildContext context, Function s) {
+              builder: (BuildContext context, Function setStateBuilder) {
                 return ElevatedButton(
                   onPressed: () async {
 
                     // save to local
-                    s(() => btnRegister = true);
+                    setStateBuilder(() => btnRegister = true);
 
                     recognizer.registerFaceInDB(
                       widget.userId,
@@ -288,14 +282,14 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                         }
                       );
 
-                      s(() => btnRegister = false);
+                      setStateBuilder(() => btnRegister = false);
 
                       Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
                         RoutesNavigation.dashboard, (route) => false
                       );
                     } on DioException catch(e) {
 
-                      s(() => btnRegister = false);
+                      setStateBuilder(() => btnRegister = false);
 
                       if(e.response!.statusCode == 400) {
                         Future.delayed(const Duration(seconds: 1), () {
@@ -585,13 +579,6 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                             color: Colors.white
                           ),
                         ),
-                      Text(text2,
-                        style: robotoRegular.copyWith(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
-                      )
                     ],
                   ) 
                 )
@@ -634,31 +621,23 @@ class RegisterFrPageState extends State<RegisterFrPage> {
                         :  Container(
                           padding: const EdgeInsets.all(1.0),
                           decoration: BoxDecoration(
-                            color: alreadyRegistered 
-                            ? Colors.grey.withOpacity(0.2)
-                            : waitForScanSucceded 
+                            color: waitForScanSucceded 
                             ? Colors.grey.withOpacity(0.2) 
                             : const Color(0xff211F1F).withOpacity(0.2),
                             shape: BoxShape.circle
                           ),
                           child: IconButton(
-                            highlightColor: alreadyRegistered 
-                            ? Colors.grey.withOpacity(0.2) 
-                            : waitForScanSucceded 
+                            highlightColor: waitForScanSucceded 
                             ? Colors.grey.withOpacity(0.2) 
                             :const Color(0xff211F1F),
                             icon: Icon(
                               Icons.circle,
-                              color: alreadyRegistered 
-                            ? Colors.grey.withOpacity(0.2)
-                            : waitForScanSucceded 
+                              color: waitForScanSucceded 
                             ? Colors.grey.withOpacity(0.2)
                             : const Color(0xff211F1F),
                             ),
                             iconSize: 50.0,
-                            onPressed: alreadyRegistered 
-                            ? () {} 
-                            : waitForScanSucceded 
+                            onPressed: waitForScanSucceded 
                             ? () {} 
                             : () {
                               setState(() => register = true);

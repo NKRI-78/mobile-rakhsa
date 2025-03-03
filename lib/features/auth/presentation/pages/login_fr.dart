@@ -140,14 +140,11 @@ class LoginFrPageState extends State<LoginFrPage> {
       recognition.name = "Not Registered";
       setState(() => text = "Not Registered");
     } else {
-
-      String? userId = StorageHelper.getUserId();
-
       try {
         Dio dio = Dio();
-        Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-member-fr", 
+        Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-with-face", 
           data: {
-            "user_id": userId.toString(),
+            "user_id": recognition.embeddings.toString(),
           }
         );
 
@@ -158,8 +155,6 @@ class LoginFrPageState extends State<LoginFrPage> {
         StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
         StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
         
-        debugPrint("===  USER ID ${StorageHelper.getUserId()} ===");
-
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
         Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
@@ -170,10 +165,6 @@ class LoginFrPageState extends State<LoginFrPage> {
         if(e.response!.statusCode == 400) {
           String message = e.response!.data["message"];
           ShowSnackbar.snackbarErr(message);
-
-          Future.delayed(Duration.zero, () {
-            Navigator.pop(context);
-          });
         }
       } catch(e) {
         debugPrint(e.toString());
@@ -215,7 +206,6 @@ class LoginFrPageState extends State<LoginFrPage> {
     );
     
     faceDetector = FaceDetector(options: options);
-    
   }
 
   @override
