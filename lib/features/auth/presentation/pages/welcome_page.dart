@@ -42,8 +42,6 @@ class WelcomePageState extends State<WelcomePage> {
       return;
     }
     
-    if (await requestPermission(Permission.storage, "storage", "storage.png")) return;
-    if (await requestPermission(Permission.manageExternalStorage, "storage", "storage.png")) return;
     if (await requestPermission(Permission.notification, "notification", "notification.png")) return;
     if (await requestPermission(Permission.microphone, "microphone", "microphone.png")) return;
     if (await requestPermission(Permission.camera, "camera", "camera.png")) return;
@@ -111,7 +109,6 @@ class WelcomePageState extends State<WelcomePage> {
       }
 
       await [
-        Permission.storage,
         Permission.camera,
         Permission.microphone,
         Permission.notification,
@@ -221,8 +218,7 @@ class WelcomePageState extends State<WelcomePage> {
                     builder: (context, provider, child) {
                     return OutlinedButton(
                       onPressed: () async {
-                        // await onUserAction();
-                        Navigator.pushNamed(context, RoutesNavigation.registerPassportv2);
+                        await onUserAction();
                       }, 
                       style: ElevatedButton.styleFrom(
                         foregroundColor: blackColor,

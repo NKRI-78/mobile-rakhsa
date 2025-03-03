@@ -157,8 +157,6 @@ class Recognizer {
     return pair;
   }
 
-
-
   void close() {
     interpreter.close();
   }

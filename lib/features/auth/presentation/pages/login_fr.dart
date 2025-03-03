@@ -136,39 +136,38 @@ class LoginFrPageState extends State<LoginFrPage> {
 
     Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.3) {
-      recognition.name = "Not Registered";
-      setState(() => text = "Not Registered");
-    } else {
-      try {
-        Dio dio = Dio();
-        Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-with-face", 
-          data: {
-            "user_id": recognition.embeddings.toString(),
-          }
-        );
-
-        Map<String, dynamic> data = res.data;
-        AuthModel authModel = AuthModel.fromJson(data);
-        
-        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-        StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
-        StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
-        
-        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
-
-        Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
-          RoutesNavigation.dashboard, (route) => false
-        );
-
-      } on DioException catch(e) {
-        if(e.response!.statusCode == 400) {
-          String message = e.response!.data["message"];
-          ShowSnackbar.snackbarErr(message);
+    setState(() => text = "Please wait");
+    
+    try {
+      Dio dio = Dio();
+      Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-with-face", 
+        data: {
+          "embedding": recognition.embeddings.toString(),
         }
-      } catch(e) {
-        debugPrint(e.toString());
+      );
+
+      Map<String, dynamic> data = res.data;
+      AuthModel authModel = AuthModel.fromJson(data);
+      
+      StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+      StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+      StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+      
+      StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+
+      Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
+        RoutesNavigation.dashboard, (route) => false
+      );
+
+    } on DioException catch(e) {
+      if(e.response!.statusCode == 400) {
+        String message = e.response!.data["message"];
+        ShowSnackbar.snackbarErr(message);
+
+        setState(() => text = "");
       }
+    } catch(e) {
+      debugPrint(e.toString());
     }
 
     return recognition;

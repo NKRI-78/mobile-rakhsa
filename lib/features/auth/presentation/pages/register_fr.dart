@@ -147,6 +147,11 @@ class RegisterFrPageState extends State<RegisterFrPage> {
         text1 = "Take your photo to register account";
         waitForScanSucceded = false;
       });
+    } else {
+      setState(() {
+        text1 = "Please scan your face to register";
+        waitForScanSucceded = true;
+      });
     }
 
     if (mounted) {
