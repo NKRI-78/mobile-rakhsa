@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -170,8 +171,18 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // login button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                    onPressed: () async {
+                      if(Platform.isIOS) {
+                        Dio dio = Dio();
+                        Response res = await dio.get("https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature");
+                        if(res.data["data"]["feature_fr_login"] == true) {
+                          Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                        } else {
+                          Navigator.pushNamed(context, RoutesNavigation.login);
+                        }
+                      } else {
+                        Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,

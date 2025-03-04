@@ -15,7 +15,7 @@ class OnBoardingPage extends StatefulWidget {
 }
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
-  
+
   @override
   void initState() {
     super.initState();

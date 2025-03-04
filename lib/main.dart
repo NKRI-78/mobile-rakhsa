@@ -177,13 +177,20 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool isResumedProcessing = false;
 
   Future<Widget> getInitPage() async {
+    Dio dio = Dio();
+    Response res = await dio.get("https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature");
+
     // tampilkan onboarding ketika key tidak ditemukan
     // key tidak ditemukan karena belum di set
     // akan di set dihalaman on boarding pada action button ('selesai')
     bool showOnBoarding = !StorageHelper.containsOnBoardingKey();
 
-    if (showOnBoarding) {
-      return const OnBoardingPage();
+    if(res.data["data"]["feature_onboarding"] == true) {
+      if (showOnBoarding) {
+        return const OnBoardingPage();
+      } else {
+        return const WelcomePage();
+      }
     } else {
       return const WelcomePage();
     }
