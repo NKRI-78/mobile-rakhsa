@@ -154,7 +154,10 @@ class WelcomePageState extends State<WelcomePage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // logo
-                  Image.asset(AssetSource.logoMarlinda),
+                  Image.asset(AssetSource.logoMarlinda,
+                    width: 90.0,
+                    fit: BoxFit.scaleDown,
+                  ),
 
                   // title 'marlinda'
                   Text(
@@ -167,7 +170,7 @@ class WelcomePageState extends State<WelcomePage> {
                     ),
                   ),
 
-                  const SizedBox(height: 100.0),
+                  const SizedBox(height: 40.0),
 
                   // login button
                   ElevatedButton(

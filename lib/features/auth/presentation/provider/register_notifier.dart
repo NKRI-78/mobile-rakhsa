@@ -7,12 +7,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
 
@@ -186,7 +188,7 @@ class RegisterNotifier with ChangeNotifier {
 
     if (hasUser) {
       // navigate to register page
-      Navigator.pushNamed(context, RoutesNavigation.registerPassport);
+      await ScanningInstructionsBottomSheet.launch(context);
     } else {
       final connection = await Connectivity().checkConnectivity();
       if (connection == ConnectivityResult.mobile ||
@@ -212,7 +214,7 @@ class RegisterNotifier with ChangeNotifier {
 
           ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
           // ignore: use_build_context_synchronously
-          Navigator.pushNamed(context, RoutesNavigation.registerPassport);
+          await ScanningInstructionsBottomSheet.launch(context);
         } on fa.FirebaseAuthException catch (_) {
           _ssoLoading = false;
           notifyListeners();
@@ -438,6 +440,77 @@ class RegisterNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+}
+
+class ScanningInstructionsBottomSheet extends StatelessWidget {
+  const ScanningInstructionsBottomSheet._();
+
+  static Future<void> launch(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+      builder: (context) => const ScanningInstructionsBottomSheet._(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // title
+            Text(
+              'Siapkan Paspor Anda',
+              textAlign: TextAlign.center,
+              style: robotoRegular.copyWith(
+                  fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+
+            // message
+            const Text(
+              'Aplikasi akan melakukan pemindaian paspor. Harap siapkan dokumen paspor yang valid untuk proses yang lancar.',
+              textAlign: TextAlign.center,
+              style: robotoRegular,
+            ),
+            const SizedBox(height: 24),
+
+            // confirm button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  RoutesNavigation.registerPassport,
+                ),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: whiteColor,
+                  backgroundColor: primaryColor,
+                  side: const BorderSide(color: whiteColor),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Text('Selanjutnya'),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class FailureDocumentDialog extends StatelessWidget {

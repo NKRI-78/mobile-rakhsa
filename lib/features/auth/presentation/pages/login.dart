@@ -5,13 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
 import 'package:rakhsa/common/helpers/snackbar.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-
+import 'package:rakhsa/common/utils/asset_source.dart';
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
-import 'package:rakhsa/features/auth/presentation/pages/forgot_password.dart';
 
+import 'package:rakhsa/features/auth/presentation/pages/forgot_password.dart';
 import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 
@@ -124,17 +123,15 @@ class LoginPageState extends State<LoginPage> {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: AssetImage('assets/images/login-ornament.png')
+                      image: AssetImage(AssetSource.loginOrnament)
                     )
                   ),
                 ),
 
-                Image.asset("assets/images/logo.png",
+                Image.asset(AssetSource.logoMarlinda,
                   width: 230.0,
                   fit: BoxFit.scaleDown,
                 ),
-
-                const SizedBox(height: 80.0),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -255,51 +252,51 @@ class LoginPageState extends State<LoginPage> {
                         ],
                       ),
 
-                      const SizedBox(height: 20.0),
+                      // const SizedBox(height: 20.0),
 
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
+                      // Row(
+                      //   mainAxisSize: MainAxisSize.max,
+                      //   children: [
 
-                          const Expanded(
-                            flex: 3,
-                            child: Divider()
-                          ),
+                      //     const Expanded(
+                      //       flex: 3,
+                      //       child: Divider()
+                      //     ),
 
-                          Expanded(
-                            child: Center(
-                              child: Text("Atau",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.white
-                                ),
-                              )
-                            )
-                          ),
+                      //     Expanded(
+                      //       child: Center(
+                      //         child: Text("Atau",
+                      //           style: robotoRegular.copyWith(
+                      //             fontSize: Dimensions.fontSizeSmall,
+                      //             color: ColorResources.white
+                      //           ),
+                      //         )
+                      //       )
+                      //     ),
 
-                          const Expanded(
-                            flex: 3,
-                            child: Divider()
-                          ),
+                      //     const Expanded(
+                      //       flex: 3,
+                      //       child: Divider()
+                      //     ),
 
-                        ],
-                      ),
+                      //   ],
+                      // ),
                       
-                      const SizedBox(height: 10.0),
+                      // const SizedBox(height: 10.0),
 
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, RoutesNavigation.registerPassport);
-                          },
-                          child: Text("BUAT AKUN BARU",
-                            style: robotoRegular.copyWith(
-                              color: const Color(0XFFFEE717),
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Center(
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       Navigator.pushNamed(context, RoutesNavigation.registerPassport);
+                      //     },
+                      //     child: Text("BUAT AKUN BARU",
+                      //       style: robotoRegular.copyWith(
+                      //         color: const Color(0XFFFEE717),
+                      //         fontWeight: FontWeight.bold
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                 
                     ],
                   )
