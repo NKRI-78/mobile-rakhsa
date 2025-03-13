@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
@@ -39,6 +40,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 late List<CameraDescription> cameras;
 
 final service = FlutterBackgroundService();
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
@@ -154,6 +163,8 @@ Future<void> main() async {
   di.init();
 
   cameras = await availableCameras();
+
+  HttpOverrides.global = MyHttpOverrides();
 
   runApp(MultiProvider(
     providers: providers, 

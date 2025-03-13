@@ -85,11 +85,27 @@ class DocumentNotifier extends ChangeNotifier {
 
   Future<void> updateDocument(BuildContext context, DocumentType type) async {
     if (type == DocumentType.visa) {
-      final documentPathList = await scanDocument(context);
-      await _updateAndGetVisaFromServer(documentPathList.last);
+      if(Platform.isIOS) {
+        final selectedDocuments = await CunningDocumentScanner.getPictures(
+          noOfPages: 1,
+          isGalleryImportAllowed: true,
+        );
+        await _updateAndGetVisaFromServer(selectedDocuments!.last);
+      } else {
+        final documentPathList = await scanDocument(context);
+        await _updateAndGetVisaFromServer(documentPathList.last);
+      }
     } else {
-      final documentPathList = await scanDocument(context);
-      await _updateAndGetPassportFromServer(documentPathList.last);
+      if(Platform.isIOS) {
+        final selectedDocuments = await CunningDocumentScanner.getPictures(
+          noOfPages: 1,
+          isGalleryImportAllowed: true,
+        );
+        await _updateAndGetPassportFromServer(selectedDocuments!.last);
+      } else {
+        final documentPathList = await scanDocument(context);
+        await _updateAndGetPassportFromServer(documentPathList.last);
+      }
     }
   }
 

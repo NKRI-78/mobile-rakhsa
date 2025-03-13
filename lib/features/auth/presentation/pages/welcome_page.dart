@@ -196,7 +196,7 @@ class WelcomePageState extends State<WelcomePage> {
                       ),
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.0),
                       child: Text('Login'),
                     ),
                   ),
@@ -212,7 +212,7 @@ class WelcomePageState extends State<WelcomePage> {
                       ),
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text('Atau',
                             style: robotoRegular.copyWith(
                               color: whiteColor.withOpacity(0.5),

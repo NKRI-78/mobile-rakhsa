@@ -44,7 +44,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Marlinda needs to access the camera</string>
+	<string>Marlinda needs to access the camera for</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app requires location access to retrieve your address for weather updates.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

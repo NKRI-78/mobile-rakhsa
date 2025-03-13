@@ -6,6 +6,6 @@ flutter_launcher_icons:
   image_path: "assets/images/logo-marlinda.png"
   min_sdk_android: 21
   background_color_ios: "#000000"
-  adaptive_icon_background: "#00000"
+  adaptive_icon_background: "#000000"
   adaptive_icon_monochrome: "assets/images/logo-marlinda.png" 
   adaptive_icon_foreground: "assets/images/logo-marlinda.png"
