@@ -8,7 +8,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:image/image.dart' as img;
 
-import 'package:rakhsa/Helper/image.dart';
+import 'package:rakhsa/helper/image.dart';
 import 'package:rakhsa/ML/Recognition.dart';
 import 'package:rakhsa/ML/Recognizer.dart';
 import 'package:rakhsa/main.dart';

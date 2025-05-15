@@ -36,7 +36,6 @@ class RegisterNotifier with ChangeNotifier {
   final UpdatePassportUseCase updatePassport;
   final CheckRegisterStatusUseCase checkRegisterStatusUseCase;
 
-
   final RegisterUseCase useCase;
   final FirebaseAuth firebaseAuth;
   final GoogleSignIn googleSignIn;

@@ -186,33 +186,29 @@ class FirebaseProvider with ChangeNotifier {
     if (payload['type'] == 'ews-delete') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
-      Future.delayed(const Duration(seconds: 1), () {
-        var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
-        var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
-        var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+      var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
+      var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
+      var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
 
-        navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
-          lat: lat, 
-          lng: lng, 
-          state: state
-        );
-      });
+      navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
+        lat: lat, 
+        lng: lng, 
+        state: state
+      );
 
       // fetch realtime when notification with title and description 
     } else if (payload['type'] == 'ews') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
-      Future.delayed(const Duration(seconds: 1), () {
-        var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
-        var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
-        var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+      var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
+      var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
+      var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
 
-        navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
-          lat: lat, 
-          lng: lng, 
-          state: state
-        );
-      });
+      navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
+        lat: lat, 
+        lng: lng, 
+        state: state
+      );
     } else {
       if (notification != null) {     
           await AwesomeNotifications().createNotification(
