@@ -22,12 +22,12 @@ class GetContinentNotifier with ChangeNotifier {
   void setSelectedContinent(CountryData continent) {
     selectedContinent = continent;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void updateContinent(String continent) {
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   GetContinentNotifier({
@@ -37,7 +37,7 @@ class GetContinentNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _state = param;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> getContinent({required int continentId}) async {

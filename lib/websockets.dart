@@ -37,13 +37,13 @@
 //   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
 //     _connectionIndicator = connectionIndicators;
     
-//     Future.delayed(Duration.zero, () => notifyListeners());
+//     notifyListeners();
 //   }
 
 //   void toggleConnection(bool connection) {
 //     isConnected = connection;
 
-//     Future.delayed(Duration.zero, () => notifyListeners());
+//     notifyListeners();
 //   }
 
 //   void connect() {

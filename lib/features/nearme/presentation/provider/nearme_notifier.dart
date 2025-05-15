@@ -50,7 +50,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
     required double currentLng,
   }) async {
     _state = ProviderState.loading;
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
 
     _markers.clear();
     _entity.clear();
@@ -81,7 +81,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
       (l) {
         _state = ProviderState.error;
         _message = l.message;
-        Future.delayed(Duration.zero, () => notifyListeners());
+        notifyListeners();
       },
       (r) async {
         for (var el in r.results) {
@@ -122,7 +122,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
           );
         }
         _state = ProviderState.loaded;
-        Future.delayed(Duration.zero, () => notifyListeners());
+        notifyListeners();
       },
     );
   }

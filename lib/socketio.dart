@@ -73,13 +73,13 @@ class SocketIoService with ChangeNotifier {
   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
     _connectionIndicator = connectionIndicators;
     
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void toggleConnection(bool connection) {
     isConnected = connection;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> init() async {
@@ -199,7 +199,7 @@ class SocketIoService with ChangeNotifier {
       init();
     }
     isConnected = true;
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void sos({

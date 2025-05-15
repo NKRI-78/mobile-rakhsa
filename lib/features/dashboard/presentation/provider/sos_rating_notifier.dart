@@ -32,13 +32,13 @@ class SosRatingNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void onChangeRating({required double selectedRating}) {
     _rating = selectedRating;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> sosRating({

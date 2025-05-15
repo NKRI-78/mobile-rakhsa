@@ -37,7 +37,7 @@ class SosNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void initializePulse(TickerProvider vsync) {
@@ -50,13 +50,13 @@ class SosNotifier with ChangeNotifier {
       CurvedAnimation(parent: pulseController!, curve: Curves.easeOut),
     );
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void resetAnimation() {
     pulseController!.reset();
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void initializeTimer(TickerProvider vsync) {
@@ -67,7 +67,7 @@ class SosNotifier with ChangeNotifier {
 
     timerController!.addListener(() {
       countdownTime = (60 - timerController!.value * 60).round();
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     });
 
     if (countdownTime > 0) {
@@ -75,39 +75,39 @@ class SosNotifier with ChangeNotifier {
       timerController!.value = elapsedTime;
     }
     
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void resumeTimer() {
     timerController!.forward().whenComplete(() {
       pulseController!.reverse();
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
 
       isPressed = false;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     });
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void startTimer() {
     isPressed = true;
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
 
     pulseController!.reverse();
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
     
     timerController!
     ..reset()
     ..forward().whenComplete(() {
       pulseController!.reverse();
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
 
       isPressed = false;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     });
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void stopTimer() {
@@ -116,7 +116,7 @@ class SosNotifier with ChangeNotifier {
     timerController?.stop();
     timerController?.reset();
     
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   } 
 
   Future<void> expireSos({required String sosId}) async {

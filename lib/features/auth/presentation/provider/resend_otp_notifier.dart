@@ -24,7 +24,7 @@ class ResendOtpNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _providerState = param;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> resendOtp({

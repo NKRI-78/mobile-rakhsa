@@ -22,12 +22,12 @@ class GetStateNotifier with ChangeNotifier {
   void setSelectedState(StateData state) {
     selectedState = state;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void updateState(String state) {
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
 
@@ -38,7 +38,7 @@ class GetStateNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _providerState = param;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> getState({

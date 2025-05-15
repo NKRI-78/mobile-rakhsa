@@ -20,7 +20,7 @@ class TrackUserNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> trackUser({

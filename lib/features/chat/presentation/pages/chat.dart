@@ -54,21 +54,13 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
   List<Map<String, dynamic>> unsentMessages = [];
 
-  late ScrollController sC;
+  ScrollController sC = ScrollController();
 
   late TextEditingController messageC;
 
   late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier; 
   late SocketIoService socketIoService;
-
-  void monitorConnection() {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
-      if (result != ConnectivityResult.none) {
-      
-      }
-    });
-  }
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -204,8 +196,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);
-
-    monitorConnection();
 
     Future.microtask(() => getData());
   }

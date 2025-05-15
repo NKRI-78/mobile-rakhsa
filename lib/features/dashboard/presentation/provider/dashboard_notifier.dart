@@ -49,31 +49,31 @@ class DashboardNotifier with ChangeNotifier {
   void checkIsLocked() {
     _isLocked = StorageHelper.isLocked();
 
-    Future.delayed(Duration.zero, () => notifyListeners()); 
+    notifyListeners(); 
   }
 
   void setStateIsLocked({required bool val}) {
     _isLocked = val;
 
-    Future.delayed(Duration.zero, () => notifyListeners()); 
+    notifyListeners(); 
   }
 
   void setStateBanner(BannerProviderState newState) {
     _bannerState = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void setStateNews(NewsProviderState newState) {
     _newsState = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> getBanner() async {

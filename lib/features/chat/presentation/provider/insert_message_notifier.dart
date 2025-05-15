@@ -20,7 +20,7 @@ class InsertMessageNotifier with ChangeNotifier {
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt}) async {

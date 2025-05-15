@@ -2245,7 +2245,7 @@ class EcommerceProvider extends ChangeNotifier {
                           platform = payment.platform;
                           paymentFee = payment.fee;
 
-                          Future.delayed(Duration.zero, () => notifyListeners());
+                          notifyListeners();
 
                           Navigator.pop(context);
                         },

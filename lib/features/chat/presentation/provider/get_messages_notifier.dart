@@ -55,12 +55,12 @@ class GetMessagesNotifier with ChangeNotifier {
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time > 0) {
-        _time--;
-        Future.delayed(Duration.zero, () => notifyListeners());
+      _time--;
+      notifyListeners();
       } else {
         _timer.cancel();
         _isBtnSessionEnd = true;
-        Future.delayed(Duration.zero, () => notifyListeners());
+        notifyListeners();
       }
     });
   }
@@ -70,26 +70,26 @@ class GetMessagesNotifier with ChangeNotifier {
       _timer.cancel();
       _isBtnSessionEnd = false;
       _isRunning = false;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     }
   }
 
   void resetTimer() {
     cancelTimer();
     _time = 5; 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void clearActiveChatId() {
     _activeChatId = "";
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void setStateNote({required String val}) {
     _note = val;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   bool isTyping(String chatId) {
@@ -106,25 +106,25 @@ class GetMessagesNotifier with ChangeNotifier {
       typingStatus.remove(chatId); 
     }
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void initializeBtnSessionEnd() {
     _isBtnSessionEnd = false;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void showBtnSessionEnd() {
     _isBtnSessionEnd = true;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> getMessages({required String chatId, required String status}) async {
@@ -203,7 +203,7 @@ class GetMessagesNotifier with ChangeNotifier {
       ),
     );
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
 }

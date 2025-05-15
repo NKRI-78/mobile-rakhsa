@@ -27,7 +27,7 @@ class UploadMediaNotifier extends ChangeNotifier {
     required String folderName
   }) async {
     _state = ProviderState.loading;
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
 
     final result = await useCase.execute(
       file: file, 
@@ -40,7 +40,7 @@ class UploadMediaNotifier extends ChangeNotifier {
       _state = ProviderState.loaded;
       _entity = r;
 
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     });
   }
 }

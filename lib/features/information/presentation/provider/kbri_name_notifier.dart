@@ -22,7 +22,7 @@ class KbriNameNotifier extends ChangeNotifier {
 
   Future<void> infoKbri() async {
     _state = ProviderState.loading;
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
 
     String stateName = StorageHelper.getUserNationality() ?? "-";
 
@@ -31,14 +31,14 @@ class KbriNameNotifier extends ChangeNotifier {
     );
     result.fold((l) {
       _state = ProviderState.error;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
       
       _message = l.message;
     }, (r) {
       _entity = r;
 
       _state = ProviderState.loaded;
-      Future.delayed(Duration.zero, () => notifyListeners());
+      notifyListeners();
     });
   }
 }

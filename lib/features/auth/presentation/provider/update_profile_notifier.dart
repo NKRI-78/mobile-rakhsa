@@ -20,7 +20,7 @@ class UpdateProfileNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _state = param;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> updateProfile({required String avatar}) async {

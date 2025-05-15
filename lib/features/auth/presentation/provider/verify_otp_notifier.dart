@@ -33,19 +33,19 @@ class VerifyOtpNotifier with ChangeNotifier {
   void setStateProviderState(ProviderState param) {
     _providerState = param;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void onStartTimerOtp() {
     _onCompletedOtp = false;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   void onCompletedTimerOtp() {
     _onCompletedOtp = true;
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    notifyListeners();
   }
 
   Future<void> verifyOtp({
