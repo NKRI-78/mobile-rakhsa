@@ -60,13 +60,13 @@ class LoginNotifier with ChangeNotifier {
           StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
           Navigator.pushReplacement(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) {
+            MaterialPageRoute(builder: (BuildContext context) {
               return const DashboardScreen();
             }),
           );
         } else {
           Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (context) {
+            MaterialPageRoute(builder: (BuildContext context) {
               return RegisterOtp(email: value,);
             }),
             (route) => false,

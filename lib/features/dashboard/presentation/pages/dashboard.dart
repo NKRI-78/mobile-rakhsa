@@ -153,8 +153,7 @@ class DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObs
         // BOTTOM NAV BAR
         bottomNavigationBar: context.watch<DashboardNotifier>().isLocked 
           ? const SizedBox()
-          : 
-          NotchedBottomNavBar(
+          : NotchedBottomNavBar(
             height: bottomomNavBarHeight,
             leftItem: IconButton(
             onPressed: () => Navigator.pushNamed(context, RoutesNavigation.nearMeTypeList),

@@ -37,6 +37,7 @@ class CameraPage extends StatefulWidget {
 }
 
 class CameraPageState extends State<CameraPage> {
+
   CameraController? controller;
   List<CameraDescription>? cameras;
 
@@ -50,16 +51,6 @@ class CameraPageState extends State<CameraPage> {
 
   int recordTimeLeft = 10; 
 
-  @override
-  void initState() {
-    super.initState();
-
-    socketIoService = context.read<SocketIoService>();
-    uploadMediaNotifier = context.read<UploadMediaNotifier>();
-
-    initializeCamera();
-  }
-
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     
@@ -72,9 +63,9 @@ class CameraPageState extends State<CameraPage> {
     }
   }
 
-  void toggleMode() {
-    setState(() => isVideoMode = !isVideoMode);
-  }
+  // void toggleMode() {
+  //   setState(() => isVideoMode = !isVideoMode);
+  // }
 
   Future<void> takePicture() async {
     if (controller == null || !controller!.value.isInitialized) return;
@@ -146,45 +137,71 @@ class CameraPageState extends State<CameraPage> {
     if (controller == null || !isRecording) return;
 
     try {
+      // Stop recording immediately
       final video = await controller!.stopVideoRecording();
       File file = File(video.path);
 
-      setState(() => loading = true);
-      
-      await uploadMediaNotifier.send(file: file, folderName: "videos").timeout(
-        const Duration(seconds: 10), 
+      // Mark loading early
+      setState(() {
+        loading = true;
+        isRecording = false;
+      });
+
+      // Start upload in a separate future, with timeout
+      uploadMediaNotifier.send(
+        file: file, 
+        folderName: "videos"
+      ).timeout(
+        const Duration(seconds: 10),
         onTimeout: () {
           setState(() => loading = false);
         },
-      );
+      ).then((_) {
+        // Handle after upload success
+        if (uploadMediaNotifier.entity != null) {
+          final media = uploadMediaNotifier.entity!.path;
+          final ext = media.split('/').last.split('.').last;
 
-      setState(() => loading = false);
+          socketIoService.sos(
+            location: widget.location,
+            country: widget.country,
+            media: media,
+            ext: ext,
+            lat: widget.lat,
+            lng: widget.lng,
+          );
 
-      String media = uploadMediaNotifier.entity!.path;
-      String ext = media.split('/').last.split('.').last;
-      
-      socketIoService.sos(
-        location: widget.location,
-        country: widget.country,
-        media: media,
-        ext: ext,
-        lat: widget.lat, 
-        lng: widget.lng, 
-      );
+          if (mounted) {
+            Navigator.pop(context, "start");
+          }
+        }
+      }).catchError((e) {
+        debugPrint('Upload failed: $e');
+      }).whenComplete(() {
+        if (mounted) setState(() => loading = false);
+      });
 
-      if(mounted) {
-        Navigator.pop(context, "start");
-      }
-
-      setState(() => isRecording = false);
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
+      if (mounted) setState(() => loading = false);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    socketIoService = context.read<SocketIoService>();
+    uploadMediaNotifier = context.read<UploadMediaNotifier>();
+
+    initializeCamera();
   }
 
   @override
   void dispose() {
     super.dispose();
+
+    controller?.dispose();
   }
 
   @override
@@ -205,66 +222,70 @@ class CameraPageState extends State<CameraPage> {
             child: CircularProgressIndicator()
           )
         : Stack(
-          clipBehavior: Clip.none,
-          children: [
+            clipBehavior: Clip.none,
+            children: [
       
-            CameraPreview(controller!),
+              CameraPreview(controller!),
       
-            Positioned(
-              bottom: 20,
-              left: 0.0,
-              right: 0.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-      
-                  // isVideoMode 
-                  // ? IconButton(
-                  //     icon: Icon(
-                  //     isRecording 
-                  //     ? Icons.stop 
-                  //     : Icons.fiber_manual_record,
-                  //       color: Colors.red,
-                  //       size: 30,
-                  //     ),
-                  //     onPressed: isVideoMode
-                  //     ? (isRecording ? stopVideoRecording : startVideoRecording)
-                  //     : null,
-                  //   ) 
-                  // : 
+              Positioned(
+                bottom: 20,
+                left: 0.0,
+                right: 0.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+        
+                    // isVideoMode 
+                    // ? IconButton(
+                    //     icon: Icon(
+                    //     isRecording 
+                    //     ? Icons.stop 
+                    //     : Icons.fiber_manual_record,
+                    //       color: Colors.red,
+                    //       size: 30,
+                    //     ),
+                    //     onPressed: isVideoMode
+                    //     ? (isRecording ? stopVideoRecording : startVideoRecording)
+                    //     : null,
+                    //   ) 
+                    // : 
 
-                  // isRecording 
-                  // ? const SizedBox() 
-                  // : IconButton(
-                  //     icon: const Icon(
-                  //       Icons.camera_alt,
-                  //       color: Colors.white,
-                  //       size: 28,
-                  //     ),
-                  //     onPressed: takePicture,
-                  //   ),
+                    // isRecording 
+                    // ? const SizedBox() 
+                    // : IconButton(
+                    //     icon: const Icon(
+                    //       Icons.camera_alt,
+                    //       color: Colors.white,
+                    //       size: 28,
+                    //     ),
+                    //     onPressed: takePicture,
+                    //   ),
 
-                  // const SizedBox(width: 20.0),
+                    // const SizedBox(width: 20.0),
 
-                  IconButton(
-                    icon: const Icon(Icons.videocam,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                    onPressed: (isRecording ? stopVideoRecording : startVideoRecording),
-                  ),
-      
-                  if (isRecording)
-                    Text('$recordTimeLeft s',
-                      style: robotoRegular.copyWith(
-                        color: Colors.white, 
-                        fontSize: Dimensions.fontSizeLarge
+                    IconButton(
+                      icon: const Icon(Icons.videocam,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: (
+                        isRecording 
+                        ? stopVideoRecording 
+                        : startVideoRecording
                       ),
                     ),
+        
+                    if (isRecording)
+                      Text('$recordTimeLeft s',
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.white, 
+                          fontSize: Dimensions.fontSizeLarge
+                        ),
+                      ),
 
-                ],
+                  ],
+                ),
               ),
-            ),
       
             // Positioned(
             //   top: 50,

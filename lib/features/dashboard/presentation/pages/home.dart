@@ -194,7 +194,7 @@ class HomePageState extends State<HomePage> {
     banners.clear();
 
     banners.add(
-      _WeatherContent(
+      WeatherContent(
         subAdministrativeArea,
         LatLng(
           double.tryParse(currentLat) ?? 0.0,
@@ -252,7 +252,7 @@ class HomePageState extends State<HomePage> {
           SizedBox.expand(
             child: SafeArea(
               child: RefreshIndicator.adaptive(
-              onRefresh: () => Future.sync(() => getData()),
+              onRefresh: getData,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 // padding bawah untuk memberikan ruang scrolling bagian bawah
@@ -271,12 +271,12 @@ class HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
-                              child: Text(
-                                "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
-                                textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    fontWeight: FontWeight.bold),
+                              child: Text("Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  fontWeight: FontWeight.bold
+                                ),
                               ),
                             )
                           ],
@@ -291,12 +291,14 @@ class HomePageState extends State<HomePage> {
                           lat: currentLat,
                           lng: currentLng,
                           loadingGmaps: loadingGmaps,
-                          isConnected: context.watch<SocketIoService>().isConnected ? true : false,
+                          isConnected: context.watch<SocketIoService>().isConnected
+                          ? true
+                          : false,
                         )
                       ),
               
                       Consumer<DashboardNotifier>(
-                        builder: (context, notifier, child) {
+                        builder: (BuildContext context, DashboardNotifier notifier, Widget? child) {
                           
                           if(notifier.state == ProviderState.loading) {
                             return const SizedBox(
@@ -403,16 +405,17 @@ class ImgBanner extends StatelessWidget {
   }
 }
 
-class _WeatherContent extends StatelessWidget {
-  const _WeatherContent(
+class WeatherContent extends StatelessWidget {
+  const WeatherContent(
     this.area,
-    this.coordinate,
+    this.coordinate, 
+    {super.key}
   );
 
   final String area;
   final LatLng coordinate;
 
-  void _navigateToWeatherDetail(BuildContext context){
+  void navigateToWeatherDetail(BuildContext context){
      Navigator.pushNamed(
       context,
       RoutesNavigation.weather,
@@ -432,7 +435,7 @@ class _WeatherContent extends StatelessWidget {
       child: Material(
         color: Colors.grey.shade800,
         child: InkWell(
-          onTap: () => _navigateToWeatherDetail(context),
+          onTap: () => navigateToWeatherDetail(context),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Consumer<WeatherNotifier>(

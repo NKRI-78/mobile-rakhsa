@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:uuid/uuid.dart' as uuid;
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:flutter/cupertino.dart';
