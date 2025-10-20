@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+// import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:image/image.dart' as img;
 
@@ -21,34 +21,34 @@ class BlinkDetector {
   bool isSuccess = false;
 
   BlinkDetector({
-    this.leftEyeThreshold = 0.25, 
+    this.leftEyeThreshold = 0.25,
     this.rightEyeThreshold = 0.25,
-    this.requiredBlinks = 2
+    this.requiredBlinks = 2,
   });
 
-  void detectBlink(Face face) {
-    if (face.leftEyeOpenProbability != null && face.rightEyeOpenProbability != null) {
-      
-      final leftEyeOpen = face.leftEyeOpenProbability! > leftEyeThreshold;
-      final rightEyeOpen = face.rightEyeOpenProbability! > rightEyeThreshold;
-      
-      bool isBlinking = !leftEyeOpen && !rightEyeOpen;
+  // void detectBlink(Face face) {
+  //   if (face.leftEyeOpenProbability != null && face.rightEyeOpenProbability != null) {
 
-      if (isBlinking) {
-        blinkCount++;
-        debugPrint("Blink detected! Count: $blinkCount");
-        
-        if (blinkCount >= requiredBlinks) {
-          isSuccess = true;
-          Future.delayed(const Duration(seconds: 2), () {
-            isSuccess = false;
-            blinkCount = 0;
-          });
-          debugPrint("Success! Blink detected twice.");
-        }
-      }
-    }
-  }
+  //     final leftEyeOpen = face.leftEyeOpenProbability! > leftEyeThreshold;
+  //     final rightEyeOpen = face.rightEyeOpenProbability! > rightEyeThreshold;
+
+  //     bool isBlinking = !leftEyeOpen && !rightEyeOpen;
+
+  //     if (isBlinking) {
+  //       blinkCount++;
+  //       debugPrint("Blink detected! Count: $blinkCount");
+
+  //       if (blinkCount >= requiredBlinks) {
+  //         isSuccess = true;
+  //         Future.delayed(const Duration(seconds: 2), () {
+  //           isSuccess = false;
+  //           blinkCount = 0;
+  //         });
+  //         debugPrint("Success! Blink detected twice.");
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 class RegisterFrV2Page extends StatefulWidget {
@@ -76,7 +76,7 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
   CameraLensDirection camDirec = CameraLensDirection.front;
 
   late CameraController controller;
-  late FaceDetector faceDetector;
+  // late FaceDetector faceDetector;
   late CameraDescription description = cameras[1];
   late Recognizer recognizer;
 
@@ -90,7 +90,10 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     return sqrt(sum);
   }
 
-  String? findMatchingUser(List<double> newEmbedding, Map<String, List<double>> savedEmbeddings) {
+  String? findMatchingUser(
+    List<double> newEmbedding,
+    Map<String, List<double>> savedEmbeddings,
+  ) {
     double threshold = 0.3;
     String? bestMatch;
     double minDistance = double.infinity;
@@ -126,7 +129,9 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
     controller = CameraController(
       description,
       ResolutionPreset.medium,
-      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+      imageFormatGroup: Platform.isAndroid
+          ? ImageFormatGroup.nv21
+          : ImageFormatGroup.bgra8888,
       enableAudio: false,
     );
 
@@ -137,20 +142,20 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
       if (!isBusy && frameCounter % frameSkip == 0) {
         isBusy = true;
         frame = image;
-        doFaceDetectionOnFrame();
+        // doFaceDetectionOnFrame();
       }
       frameCounter++;
     });
   }
 
-  Future<void> doFaceDetectionOnFrame() async {
-    InputImage? inputImage = ImageHelper.getInputImage(controller, camDirec, cameras, frame!);
-    if (inputImage == null) return;
+  // Future<void> doFaceDetectionOnFrame() async {
+  //   InputImage? inputImage = ImageHelper.getInputImage(controller, camDirec, cameras, frame!);
+  //   if (inputImage == null) return;
 
-    List<Face> faces = await faceDetector.processImage(inputImage);
+  //   List<Face> faces = await faceDetector.processImage(inputImage);
 
-    await performRecognition(faces);
-  }
+  //   await performRecognition(faces);
+  // }
 
   Future<void> saveEmbedding(String userId, List<double> embedding) async {
     try {
@@ -172,9 +177,11 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
 
       embeddingsData[userId] = embedding;
 
-      await file.writeAsString(jsonEncode(embeddingsData), mode: FileMode.write);
+      await file.writeAsString(
+        jsonEncode(embeddingsData),
+        mode: FileMode.write,
+      );
       debugPrint("✅ Embedding saved successfully at: ${file.path}");
-    
     } catch (e) {
       debugPrint("❌ Error saving JSON: $e");
     }
@@ -193,86 +200,88 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
       String jsonString = await file.readAsString();
       Map<String, dynamic> jsonData = jsonDecode(jsonString);
 
-      return jsonData.map((key, value) => MapEntry(key, List<double>.from(value)));
+      return jsonData.map(
+        (key, value) => MapEntry(key, List<double>.from(value)),
+      );
     } catch (e) {
       debugPrint("❌ Error loading embeddings: $e");
       return {};
     }
   }
 
-  Future<void> performRecognition(List<Face> faces) async {
-    if (faces.isEmpty) {
-      isBusy = false;
-      return;
-    }
+  // Future<void> performRecognition(List<Face> faces) async {
+  //   if (faces.isEmpty) {
+  //     isBusy = false;
+  //     return;
+  //   }
 
-    img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
-    Map<String, List<double>> savedEmbeddings = await loadEmbeddings();
+  //   img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
+  //   Map<String, List<double>> savedEmbeddings = await loadEmbeddings();
 
-    for (Face face in faces) {             
-      if (!blinkDetector.isSuccess) {
-        blinkDetector.detectBlink(face);
-      } else {
-        // showLivenessSuccess();
-        // Recognition recognition = await processFaceRecognition(baseImage, face);
+  //   for (Face face in faces) {
+  //     if (!blinkDetector.isSuccess) {
+  //       blinkDetector.detectBlink(face);
+  //     } else {
+  //       // showLivenessSuccess();
+  //       // Recognition recognition = await processFaceRecognition(baseImage, face);
 
-        showLivenessSuccess();
-        Recognition recognition = await processFaceRecognition(baseImage, face);
-        List<double> newEmbedding = recognition.embeddings.toList();
+  //       showLivenessSuccess();
+  //       Recognition recognition = await processFaceRecognition(baseImage, face);
+  //       List<double> newEmbedding = recognition.embeddings.toList();
 
-        // Compare with stored embeddings
-        String? matchedUser = findMatchingUser(newEmbedding, savedEmbeddings);
+  //       // Compare with stored embeddings
+  //       String? matchedUser = findMatchingUser(newEmbedding, savedEmbeddings);
 
-        if (matchedUser != null) {
-          debugPrint("✅ Login Successful: $matchedUser");
-        } else {
-          await saveEmbedding("user_id_2", recognition.embeddings.toList());
-        }
-      }
-    }
+  //       if (matchedUser != null) {
+  //         debugPrint("✅ Login Successful: $matchedUser");
+  //       } else {
+  //         await saveEmbedding("user_id_2", recognition.embeddings.toList());
+  //       }
+  //     }
+  //   }
 
-    if (mounted) {
-      setState(() {
-        isBusy = false;
-      });
-    }
-  }
+  //   if (mounted) {
+  //     setState(() {
+  //       isBusy = false;
+  //     });
+  //   }
+  // }
 
-  Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
-    Rect faceRect = face.boundingBox;
+  // Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
+  //   Rect faceRect = face.boundingBox;
 
-    img.Image croppedFace = img.copyCrop(
-      image,
-      x: faceRect.left.toInt(),
-      y: faceRect.top.toInt(),
-      width: faceRect.width.toInt(),
-      height: faceRect.height.toInt()
-    );
+  //   img.Image croppedFace = img.copyCrop(
+  //     image,
+  //     x: faceRect.left.toInt(),
+  //     y: faceRect.top.toInt(),
+  //     width: faceRect.width.toInt(),
+  //     height: faceRect.height.toInt()
+  //   );
 
-    Recognition recognition = recognizer.recognize(croppedFace, faceRect);
+  //   Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    if (recognition.distance > 0.3) {
-      recognition.name = "Not Registered";
-    } else {
-      debugPrint("already registered");
-    }
+  //   if (recognition.distance > 0.3) {
+  //     recognition.name = "Not Registered";
+  //   } else {
+  //     debugPrint("already registered");
+  //   }
 
-    return recognition;
-  }
+  //   return recognition;
+  // }
 
   @override
   void initState() {
     super.initState();
-    
-    faceDetector = FaceDetector(
-      options: FaceDetectorOptions(
-        enableLandmarks: false,
-        enableTracking: true,
-        enableContours: true,
-        enableClassification: true,
-        performanceMode: FaceDetectorMode.accurate,
-      ),
-    );
+
+    // faceDetector = FaceDetector(
+    //   options: FaceDetectorOptions(
+    //     enableLandmarks: false,
+    //     enableTracking: true,
+    //     enableContours: true,
+    //     enableClassification: true,
+    //     performanceMode: FaceDetectorMode.accurate,
+    //   ),
+    // );
 
     recognizer = Recognizer();
 
@@ -282,7 +291,7 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
   @override
   void dispose() {
     controller.dispose();
-    faceDetector.close();
+    // faceDetector.close();
 
     super.dispose();
   }
@@ -296,9 +305,8 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
         children: [
           Expanded(
             child: controller.value.isInitialized
-              ? CameraPreview(controller)
-              : const Center(child: CircularProgressIndicator()
-            ),
+                ? CameraPreview(controller)
+                : const Center(child: CircularProgressIndicator()),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -317,5 +325,4 @@ class RegisterFrV2PageState extends State<RegisterFrV2Page> {
       ),
     );
   }
-  
 }

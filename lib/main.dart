@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -41,11 +40,12 @@ late List<CameraDescription> cameras;
 
 final service = FlutterBackgroundService();
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -61,52 +61,54 @@ void onStart(ServiceInstance service) async {
 
     // Check if current time is exactly 4:00 AM or 4:00 PM
     // if ((now.hour == 4 || now.hour == 16) && now.minute == 0) {
-      String? userId = sharedPreferences.getString("user_id");
+    String? userId = sharedPreferences.getString("user_id");
 
-      if (userId == null) {
-        return;
-      }
+    if (userId == null) {
+      return;
+    }
 
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: AndroidSettings(accuracy: LocationAccuracy.best),
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    String address = [
+      placemarks[0].administrativeArea,
+      placemarks[0].subAdministrativeArea,
+      placemarks[0].street,
+      placemarks[0].country,
+    ].where((part) => part != null && part.isNotEmpty).join(", ");
+
+    try {
+      await Dio().post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+        data: {
+          "user_id": userId,
+          "address": address,
+          "device": androidInfo.model,
+          "product_name": androidInfo.product,
+          "no_serial": androidInfo.product,
+          "os_name": androidInfo.version.baseOS.toString() == ""
+              ? "Android"
+              : "IOS",
+          "lat": position.latitude,
+          "lng": position.longitude,
+        },
       );
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      String address = [
-        placemarks[0].administrativeArea,
-        placemarks[0].subAdministrativeArea,
-        placemarks[0].street,
-        placemarks[0].country,
-      ].where((part) => part != null && part.isNotEmpty).join(", ");
-
-      try {
-        await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-          data: {
-            "user_id": userId,
-            "address": address,
-            "device": androidInfo.model,
-            "product_name": androidInfo.product,
-            "no_serial": androidInfo.serialNumber,
-            "os_name": androidInfo.version.baseOS.toString() == "" ? "Android" : "IOS",
-            "lat": position.latitude,
-            "lng": position.longitude,
-          },
-        );
-      } on DioException catch(e) {
-        debugPrint(e.response?.data.toString());
-      } catch (e) {
-        debugPrint("Error posting data: $e");
-      }
+    } on DioException catch (e) {
+      debugPrint(e.response?.data.toString());
+    } catch (e) {
+      debugPrint("Error posting data: $e");
+    }
     // }
   });
-
 }
 
 @pragma('vm:entry-point')
@@ -128,30 +130,28 @@ void stopBackgroundService() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
-  
+
   await initializeDateFormatting('id_ID', null);
 
-  await an.AwesomeNotifications().initialize('resource://drawable/ic_notification',
-    [
-      an.NotificationChannel(
-        channelKey: 'notification',
-        channelName: 'notification',
-        channelDescription: 'Notification',
-        playSound: true,
-        channelShowBadge: true,
-        criticalAlerts: true,
-        importance: an.NotificationImportance.High,
-      )
-    ],
-    debug: false
-  );
+  await an.AwesomeNotifications()
+      .initialize('resource://drawable/ic_notification', [
+        an.NotificationChannel(
+          channelKey: 'notification',
+          channelName: 'notification',
+          channelDescription: 'Notification',
+          playSound: true,
+          channelShowBadge: true,
+          criticalAlerts: true,
+          importance: an.NotificationImportance.High,
+        ),
+      ], debug: false);
 
-  an.AwesomeNotifications().getInitialNotificationAction().then((receivedAction) {
+  an.AwesomeNotifications().getInitialNotificationAction().then((
+    receivedAction,
+  ) {
     if (receivedAction != null) {
       AwesomeNotificationService.onActionReceivedMethod(receivedAction);
       AwesomeNotificationService.onDismissAction(receivedAction);
@@ -166,10 +166,7 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(MultiProvider(
-    providers: providers, 
-    child: const MyApp()
-  ));
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -180,7 +177,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   late FirebaseProvider firebaseProvider;
 
   Widget home = const SizedBox();
@@ -189,14 +185,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<Widget> getInitPage() async {
     Dio dio = Dio();
-    Response res = await dio.get("https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature");
+    Response res = await dio.get(
+      "https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature",
+    );
 
     // tampilkan onboarding ketika key tidak ditemukan
     // key tidak ditemukan karena belum di set
     // akan di set dihalaman on boarding pada action button ('selesai')
     bool showOnBoarding = !StorageHelper.containsOnBoardingKey();
 
-    if(res.data["data"]["feature_onboarding"] == true) {
+    if (res.data["data"]["feature_onboarding"] == true) {
       if (showOnBoarding) {
         return const OnBoardingPage();
       } else {
@@ -210,28 +208,28 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> getData() async {
     bool? isLoggedIn = await StorageHelper.isLoggedIn();
     Widget initPage = await getInitPage();
-    
-    if(isLoggedIn != null) {
-      if(isLoggedIn) {
-        if(mounted) {
-          setState(() => home = const DashboardScreen()); 
+
+    if (isLoggedIn != null) {
+      if (isLoggedIn) {
+        if (mounted) {
+          setState(() => home = const DashboardScreen());
         }
       } else {
-        if(mounted) {
-          setState(() => home = initPage); 
+        if (mounted) {
+          setState(() => home = initPage);
         }
       }
     } else {
-      if(mounted) {
-        setState(() => home = initPage); 
+      if (mounted) {
+        setState(() => home = initPage);
       }
     }
 
     if (!mounted) return;
-      await firebaseProvider.setupInteractedMessage(context);
+    await firebaseProvider.setupInteractedMessage(context);
 
     if (!mounted) return;
-      firebaseProvider.listenNotification(context);
+    firebaseProvider.listenNotification(context);
   }
 
   // Future<void> recheckRequestNotification() async {
@@ -290,13 +288,13 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   //   if (state != AppLifecycleState.resumed || isDialogShowing) return; // Prevent re-entry
 
   //   debugPrint("=== APP RESUME ===");
-  //   isDialogShowing = true; 
+  //   isDialogShowing = true;
 
   //   if (await requestPermission(Permission.location, "location")) return;
 
   //   if (!await Geolocator.isLocationServiceEnabled()) {
   //     await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS");
-  //     isDialogShowing = false; 
+  //     isDialogShowing = false;
   //     return;
   //   }
 
@@ -345,4 +343,3 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 }
-

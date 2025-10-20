@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+// import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
@@ -31,7 +31,6 @@ class VerifyLoginFr extends StatefulWidget {
 }
 
 class VerifyLoginFrState extends State<VerifyLoginFr> {
-
   late CameraController controller;
   late DashboardNotifier dashboardNotifier;
 
@@ -42,7 +41,7 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
   bool isBusy = false;
 
   img.Image? image;
-  
+
   List<Recognition> scanResults = [];
   CameraImage? frame;
 
@@ -54,7 +53,7 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
   late Size size;
   late CameraDescription description = cameras[1];
   late List<Recognition> recognitions = [];
-  late FaceDetector faceDetector;
+  // late FaceDetector faceDetector;
   late Recognizer recognizer;
 
   Future<void> initializeCamera() async {
@@ -62,122 +61,120 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
       description,
       ResolutionPreset.medium,
       imageFormatGroup: Platform.isAndroid
-    ? ImageFormatGroup.nv21 
-    : ImageFormatGroup.bgra8888, 
-      enableAudio: false
-    ); 
+          ? ImageFormatGroup.nv21
+          : ImageFormatGroup.bgra8888,
+      enableAudio: false,
+    );
 
     await controller.initialize();
-      
+
     controller.startImageStream((image) {
       if (!isBusy && frameCounter % frameSkip == 0) {
         isBusy = true;
         frame = image;
-        doFaceDetectionOnFrame();
+        // doFaceDetectionOnFrame();
       }
       frameCounter++;
     });
   }
 
+  // Future<void> doFaceDetectionOnFrame() async {
+  //   InputImage? inputImage = ImageHelper.getInputImage(
+  //     controller,
+  //     camDirec,
+  //     cameras,
+  //     frame!,
+  //   );
+  //   if (inputImage == null) return;
 
+  //   List<Face> faces = await faceDetector.processImage(inputImage);
 
+  //   await performFaceRecognition(faces);
+  // }
 
-  Future<void> doFaceDetectionOnFrame() async {
-    InputImage? inputImage = ImageHelper.getInputImage(controller, camDirec, cameras, frame!);
-    if (inputImage == null) return;
+  // Future<void> performFaceRecognition(List<Face> faces) async {
+  //   if (frame == null) return;
 
-    List<Face> faces = await faceDetector.processImage(inputImage);
-    
-    await performFaceRecognition(faces);
-  }
+  //   img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
 
-  Future<void> performFaceRecognition(List<Face> faces) async {
-    if (frame == null) return;
+  //   recognitions = [];
 
-    img.Image baseImage = ImageHelper.processCameraFrame(frame, camDirec);
+  //   for (Face face in faces) {
+  //     Recognition recognition = await processFaceRecognition(baseImage, face);
 
-    recognitions = [];
+  //     recognitions.add(recognition);
+  //   }
 
-    for (Face face in faces) {
-      Recognition recognition = await processFaceRecognition(baseImage, face);
+  //   if (recognitions.isEmpty) {
+  //     setState(() {
+  //       text = "Please scan your face to login";
+  //     });
+  //   }
 
-      recognitions.add(recognition);
-    }
+  //   if (mounted) {
+  //     setState(() {
+  //       isBusy = false;
+  //       scanResults = recognitions;
+  //     });
+  //   }
+  // }
 
-    if(recognitions.isEmpty) {
-      setState(() {
-        text = "Please scan your face to login";
-      });
-    }
+  // Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
+  //   Rect faceRect = face.boundingBox;
 
-    if (mounted) {
-      setState(() {
-        isBusy = false;
-        scanResults = recognitions;
-      });
-    }
-  }
+  //   img.Image croppedFace = img.copyCrop(
+  //     image,
+  //     x: faceRect.left.toInt(),
+  //     y: faceRect.top.toInt(),
+  //     width: faceRect.width.toInt(),
+  //     height: faceRect.height.toInt(),
+  //   );
 
-  Future<Recognition> processFaceRecognition(img.Image image, Face face) async {
-    Rect faceRect = face.boundingBox;
+  //   Recognition recognition = recognizer.recognize(croppedFace, faceRect);
 
-    img.Image croppedFace = img.copyCrop(
-      image,
-      x: faceRect.left.toInt(),
-      y: faceRect.top.toInt(),
-      width: faceRect.width.toInt(),
-      height: faceRect.height.toInt()
-    );
+  //   if (recognition.distance > 0.3) {
+  //     recognition.name = "Not Registered";
+  //     setState(() => text = "Not Registered");
+  //   } else {
+  //     String? userId = StorageHelper.getUserId();
 
-    Recognition recognition = recognizer.recognize(croppedFace, faceRect);
+  //     try {
+  //       Dio dio = Dio();
+  //       Response res = await dio.post(
+  //         "https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-member-fr",
+  //         data: {"user_id": userId.toString()},
+  //       );
 
-    if (recognition.distance > 0.3) {
-      recognition.name = "Not Registered";
-      setState(() => text = "Not Registered");
-    } else {
+  //       Map<String, dynamic> data = res.data;
+  //       AuthModel authModel = AuthModel.fromJson(data);
 
-      String? userId = StorageHelper.getUserId();
+  //       StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+  //       StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+  //       StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-      try {
-        Dio dio = Dio();
-        Response res = await dio.post("https://api-rakhsa.inovatiftujuh8.com/api/v1/auth/login-member-fr", 
-          data: {
-            "user_id": userId.toString(),
-          }
-        );
+  //       StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        Map<String, dynamic> data = res.data;
-        AuthModel authModel = AuthModel.fromJson(data);
-        
-        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-        StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
-        StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
-        
-        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
+  //       StorageHelper.setIsLocked(val: false);
 
-        StorageHelper.setIsLocked(val: false);
-        
-        dashboardNotifier.setStateIsLocked(val: false);
-         
-      } on DioException catch(e) {
-        if(e.response!.statusCode == 400) {
-          String message = e.response!.data["message"];
-          ShowSnackbar.snackbarErr(message);
+  //       dashboardNotifier.setStateIsLocked(val: false);
+  //     } on DioException catch (e) {
+  //       if (e.response!.statusCode == 400) {
+  //         String message = e.response!.data["message"];
+  //         ShowSnackbar.snackbarErr(message);
 
-          Future.delayed(Duration.zero, () {
-            Navigator.pop(context);
-          });
-        }
-      } catch(e) {
-        debugPrint(e.toString());
-      }
-    }
+  //         Future.delayed(Duration.zero, () {
+  //           Navigator.pop(context);
+  //         });
+  //       }
+  //     } catch (e) {
+  //       debugPrint(e.toString());
+  //     }
+  //   }
 
-    return recognition;
-  }
+  //   return recognition;
+  // }
 
   void toggleCameraDirection() async {
-
     if (camDirec == CameraLensDirection.back) {
       camDirec = CameraLensDirection.front;
       description = cameras[1];
@@ -201,30 +198,34 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
       controller.value.previewSize!.height,
       controller.value.previewSize!.width,
     );
-    
-    CustomPainter painter = FaceDetectorPainter(imageSize, scanResults, camDirec);
-    
+
+    CustomPainter painter = FaceDetectorPainter(
+      imageSize,
+      scanResults,
+      camDirec,
+    );
+
     return CustomPaint(painter: painter);
   }
-  
+
   @override
   void initState() {
     super.initState();
 
     dashboardNotifier = context.read<DashboardNotifier>();
 
-    var options = FaceDetectorOptions(
-      enableLandmarks: false,
-      enableContours: true,
-      enableTracking: true,
-      enableClassification: true,
-      performanceMode: FaceDetectorMode.accurate
-    );
-    
-    faceDetector = FaceDetector(options: options);
-    
+    // var options = FaceDetectorOptions(
+    //   enableLandmarks: false,
+    //   enableContours: true,
+    //   enableTracking: true,
+    //   enableClassification: true,
+    //   performanceMode: FaceDetectorMode.accurate,
+    // );
+
+    // faceDetector = FaceDetector(options: options);
+
     recognizer = Recognizer();
-    
+
     initializeCamera();
   }
 
@@ -235,9 +236,8 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> stackChildren = [];
-    
+
     size = MediaQuery.of(context).size;
 
     if (!controller.value.isInitialized) {
@@ -248,12 +248,12 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
           width: size.width,
           height: size.height,
           child: Container(
-          child: (controller.value.isInitialized)
-          ? AspectRatio(
-              aspectRatio: 16 / 9,
-              child: CameraPreview(controller),
-            )
-          : const SizedBox(),
+            child: (controller.value.isInitialized)
+                ? AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: CameraPreview(controller),
+                  )
+                : const SizedBox(),
           ),
         ),
       );
@@ -264,90 +264,90 @@ class VerifyLoginFrState extends State<VerifyLoginFr> {
           left: 0.0,
           width: size.width,
           height: size.height,
-          child: buildResult()
+          child: buildResult(),
         ),
       );
     }
 
-  return SafeArea(
-    child: Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        forceMaterialTransparency: true,
-        automaticallyImplyLeading: false,
-      ), 
-      body: Container(
-        color: Colors.black,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-
-            Positioned(
-              top: 0.0,
-              left: 0.0,
-              width: size.width,
-              height: size.height,
-              child: (controller.value.isInitialized)
-              ? Align(
-                  alignment: Alignment.topCenter,
-                  child: ClipOval(
-                    child: SizedBox(
-                      width: size.width * 0.8, 
-                      height: size.width * 0.8, 
-                      child: OverflowBox(
-                        alignment: Alignment.center,
-                        child: FittedBox(
-                          fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          forceMaterialTransparency: true,
+          automaticallyImplyLeading: false,
+        ),
+        body: Container(
+          color: Colors.black,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                top: 0.0,
+                left: 0.0,
+                width: size.width,
+                height: size.height,
+                child: (controller.value.isInitialized)
+                    ? Align(
+                        alignment: Alignment.topCenter,
+                        child: ClipOval(
                           child: SizedBox(
-                            height: 1,
-                            child: AspectRatio(
-                              aspectRatio: 1 / controller.value.aspectRatio,
-                              child: CameraPreview(controller),
+                            width: size.width * 0.8,
+                            height: size.width * 0.8,
+                            child: OverflowBox(
+                              alignment: Alignment.center,
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: SizedBox(
+                                  height: 1,
+                                  child: AspectRatio(
+                                    aspectRatio:
+                                        1 / controller.value.aspectRatio,
+                                    child: CameraPreview(controller),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-            ),
-
-            Positioned(
-              top: 0.0,
-              left: 0.0,
-              width: size.width,
-              height: size.height,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  width: size.width * 0.8, 
-                  height: size.width * 0.8, 
-                  child: buildResult()
-                )
+                      )
+                    : const SizedBox(),
               ),
-            ),
 
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.5,
-              left: 0.0,
-              right: 0.0,
-              child: Center(
-                child: Text(text,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white
+              Positioned(
+                top: 0.0,
+                left: 0.0,
+                width: size.width,
+                height: size.height,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    width: size.width * 0.8,
+                    height: size.width * 0.8,
+                    child: buildResult(),
                   ),
                 ),
-              )
-            ), 
+              ),
 
-          ],
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.5,
+                left: 0.0,
+                right: 0.0,
+                child: Center(
+                  child: Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ));
-
+    );
   }
 }

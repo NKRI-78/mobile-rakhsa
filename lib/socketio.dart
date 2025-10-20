@@ -1,7 +1,8 @@
+// ignore_for_file: library_prefixes
+
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,7 @@ class SocketIoService with ChangeNotifier {
   ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
-  StreamSubscription<ConnectivityResult>? connection;
+  StreamSubscription<List<ConnectivityResult>>? connection;
 
   StreamSubscription? channelSubscription;
   Timer? reconnectTimer;
@@ -49,11 +50,11 @@ class SocketIoService with ChangeNotifier {
 
   void startListenConnection() {
     connection = Connectivity().onConnectivityChanged.listen((result) {
+      final hasConnectionResult =
+          (result.contains(ConnectivityResult.mobile)) ||
+          (result.contains(ConnectivityResult.wifi)) ||
+          (result.contains(ConnectivityResult.vpn));
 
-      final hasConnectionResult = (result == ConnectivityResult.mobile) 
-      || (result == ConnectivityResult.vpn) 
-      || (result == ConnectivityResult.wifi);
-      
       isConnected = hasConnectionResult;
       notifyListeners();
 
@@ -72,7 +73,7 @@ class SocketIoService with ChangeNotifier {
 
   void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
     _connectionIndicator = connectionIndicators;
-    
+
     notifyListeners();
   }
 
@@ -85,16 +86,16 @@ class SocketIoService with ChangeNotifier {
   Future<void> init() async {
     String token = await StorageHelper.getToken();
 
-    if(token != "-") {
-      socket = IO.io('https://socketio-rakhsa.langitdigital78.com', 
-        OptionBuilder().setTransports(['websocket'])
-        .setAuth({
-          'token': token
-        })
-        .disableAutoConnect()
-        .enableForceNew()
-        .enableForceNewConnection()
-        .build()
+    if (token != "-") {
+      socket = IO.io(
+        'https://socketio-rakhsa.langitdigital78.com',
+        OptionBuilder()
+            .setTransports(['websocket'])
+            .setAuth({'token': token})
+            .disableAutoConnect()
+            .enableForceNew()
+            .enableForceNewConnection()
+            .build(),
       );
 
       socket?.connect();
@@ -140,7 +141,7 @@ class SocketIoService with ChangeNotifier {
 
       final context = navigatorKey.currentContext;
 
-      if(context == null) {
+      if (context == null) {
         return;
       }
 
@@ -152,13 +153,15 @@ class SocketIoService with ChangeNotifier {
 
       final context = navigatorKey.currentContext;
 
-      if(context == null) {
+      if (context == null) {
         return;
       }
 
       context.read<ProfileNotifier>().getProfile();
 
-      context.read<GetMessagesNotifier>().setStateNote(val: message["note"].toString());
+      context.read<GetMessagesNotifier>().setStateNote(
+        val: message["note"].toString(),
+      );
     });
 
     socket?.on("confirmed-by-agent", (message) {
@@ -166,13 +169,13 @@ class SocketIoService with ChangeNotifier {
 
       final context = navigatorKey.currentContext;
 
-      if(context == null) {
+      if (context == null) {
         return;
       }
 
       context.read<ProfileNotifier>().getProfile();
 
-      if(message["sender"] == StorageHelper.getUserId()) {
+      if (message["sender"] == StorageHelper.getUserId()) {
         context.read<GetMessagesNotifier>().navigateToChat(
           chatId: message["chat_id"].toString(),
           status: "NONE",
@@ -188,7 +191,7 @@ class SocketIoService with ChangeNotifier {
       isConnected = true;
       setStateConnectionIndicator(ConnectionIndicator.red);
     });
-    
+
     socket?.onConnectError((data) {
       debugPrint("=== ERROR CONNECTION SOCKET IO ${data.toString()} ===");
     });
@@ -219,15 +222,15 @@ class SocketIoService with ChangeNotifier {
       "lat": lat,
       "lng": lng,
       "country": country,
-      "platform_type": "raksha"
+      "platform_type": "raksha",
     };
     socket?.emit("sos", payload);
   }
-  
+
   void typing({
     required String recipientId,
     required String chatId,
-    required bool isTyping
+    required bool isTyping,
   }) {
     final userId = StorageHelper.getUserId();
     var payload = {
@@ -235,7 +238,7 @@ class SocketIoService with ChangeNotifier {
       "chat_id": chatId,
       "sender": userId,
       "recipient": recipientId,
-      "is_typing": isTyping
+      "is_typing": isTyping,
     };
     socket?.emit("typing", payload);
   }
@@ -244,7 +247,7 @@ class SocketIoService with ChangeNotifier {
     required String chatId,
     required String recipientId,
     required String message,
-    required String createdAt
+    required String createdAt,
   }) {
     final userId = StorageHelper.getUserId();
     var payload = {
@@ -252,18 +255,13 @@ class SocketIoService with ChangeNotifier {
       "sender": userId,
       "recipient": recipientId,
       "text": message,
-      "created_at": createdAt
+      "created_at": createdAt,
     };
     socket?.emit("message", payload);
   }
 
-  void userResolvedSos({
-    required String sosId,
-  }) {
-    var payload = {
-      "type": "user-resolved-sos",
-      "sos_id": sosId
-    };
+  void userResolvedSos({required String sosId}) {
+    var payload = {"type": "user-resolved-sos", "sos_id": sosId};
     socket?.emit("user-resolved-sos", payload);
   }
 }

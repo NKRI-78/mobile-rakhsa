@@ -24,10 +24,9 @@ class WelcomePage extends StatefulWidget {
 }
 
 class WelcomePageState extends State<WelcomePage> {
-  
   late RegisterNotifier registerNotifier;
 
-  bool isDialogShowing = false; 
+  bool isDialogShowing = false;
 
   Future<void> requestAllPermissions() async {
     if (isDialogShowing) return; // Prevent re-entry
@@ -35,37 +34,70 @@ class WelcomePageState extends State<WelcomePage> {
 
     debugPrint("=== REQUESTING PERMISSIONS ===");
 
-    if (await requestPermission(Permission.location, "location", "location.png")) return;
+    if (await requestPermission(
+      Permission.location,
+      "location",
+      "location.png",
+    ))
+      return;
 
     if (!await Geolocator.isLocationServiceEnabled()) {
-      await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS", "location.png");
+      await showDialog(
+        "Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
+        "GPS",
+        "location.png",
+      );
       isDialogShowing = false;
       return;
     }
-    
-    if (await requestPermission(Permission.notification, "notification", "notification.png")) return;
-    if (await requestPermission(Permission.microphone, "microphone", "microphone.png")) return;
-    if (await requestPermission(Permission.camera, "camera", "camera.png")) return;
+
+    if (await requestPermission(
+      Permission.notification,
+      "notification",
+      "notification.png",
+    ))
+      return;
+    if (await requestPermission(
+      Permission.microphone,
+      "microphone",
+      "microphone.png",
+    ))
+      return;
+    if (await requestPermission(Permission.camera, "camera", "camera.png"))
+      return;
 
     debugPrint("ALL PERMISSIONS GRANTED");
     isDialogShowing = false;
 
-    if(!mounted) return;
-      await registerNotifier.registerWithGoogle(context);
+    if (!mounted) return;
+    // await registerNotifier.registerWithGoogle(context);
   }
 
-  Future<bool> requestPermission(Permission permission, String type, String img) async {
+  Future<bool> requestPermission(
+    Permission permission,
+    String type,
+    String img,
+  ) async {
     var status = await permission.request();
 
-    if(type == "notification") {
-      if (status ==  PermissionStatus.denied || status == PermissionStatus.permanentlyDenied) {
-        await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type, img);
+    if (type == "notification") {
+      if (status == PermissionStatus.denied ||
+          status == PermissionStatus.permanentlyDenied) {
+        await showDialog(
+          "Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type,
+          img,
+        );
         isDialogShowing = false;
         return true;
       }
     } else {
       if (status == PermissionStatus.permanentlyDenied) {
-        await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type, img);
+        await showDialog(
+          "Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu",
+          type,
+          img,
+        );
         isDialogShowing = false;
         return true;
       }
@@ -73,32 +105,32 @@ class WelcomePageState extends State<WelcomePage> {
       if (status != PermissionStatus.granted) {
         debugPrint("Permission $type denied, stopping process.");
         isDialogShowing = false;
-        return true; 
+        return true;
       }
     }
- 
-    return false; 
+
+    return false;
   }
 
   Future<void> showDialog(String message, String type, String img) async {
     if (!isDialogShowing) return;
     await GeneralModal.dialogRequestPermission(
-      msg: message, 
-      type: type, 
-      img: img
+      msg: message,
+      type: type,
+      img: img,
     );
   }
 
   Future<void> onUserAction() async {
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       requestAllPermissions();
     } else {
-      if(!mounted) return;
-        await registerNotifier.registerWithGoogle(context);
+      if (!mounted) return;
+      // await registerNotifier.registerWithGoogle(context);
     }
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
 
@@ -117,7 +149,7 @@ class WelcomePageState extends State<WelcomePage> {
     });
   }
 
-  @override 
+  @override
   void dispose() {
     super.dispose();
   }
@@ -154,7 +186,8 @@ class WelcomePageState extends State<WelcomePage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // logo
-                  Image.asset(AssetSource.logoMarlinda,
+                  Image.asset(
+                    AssetSource.logoMarlinda,
                     width: 90.0,
                     fit: BoxFit.scaleDown,
                   ),
@@ -175,11 +208,16 @@ class WelcomePageState extends State<WelcomePage> {
                   // login button
                   ElevatedButton(
                     onPressed: () async {
-                      if(Platform.isIOS) {
+                      if (Platform.isIOS) {
                         Dio dio = Dio();
-                        Response res = await dio.get("https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature");
-                        if(res.data["data"]["feature_fr_login"] == true) {
-                          Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                        Response res = await dio.get(
+                          "https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature",
+                        );
+                        if (res.data["data"]["feature_fr_login"] == true) {
+                          Navigator.pushNamed(
+                            context,
+                            RoutesNavigation.loginFr,
+                          );
                         } else {
                           Navigator.pushNamed(context, RoutesNavigation.login);
                         }
@@ -213,7 +251,8 @@ class WelcomePageState extends State<WelcomePage> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text('Atau',
+                          child: Text(
+                            'Atau',
                             style: robotoRegular.copyWith(
                               color: whiteColor.withOpacity(0.5),
                             ),
@@ -230,38 +269,40 @@ class WelcomePageState extends State<WelcomePage> {
                   // register button
                   Consumer<RegisterNotifier>(
                     builder: (context, provider, child) {
-                    return OutlinedButton(
-                      onPressed: () async {
-                        await onUserAction();
-                      }, 
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: blackColor,
-                        backgroundColor: whiteColor,
-                        side: const BorderSide(color: whiteColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: (provider.ssoLoading)
-                        ? const Center(
-                            child: SpinKitFadingCircle(
-                              color: blackColor, 
-                              size: 25.0
-                            ),
-                          )
-                        : Text('Registrasi',
-                            style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                      return OutlinedButton(
+                        onPressed: () async {
+                          await onUserAction();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: blackColor,
+                          backgroundColor: whiteColor,
+                          side: const BorderSide(color: whiteColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                      ),
-                    );
-                  }),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: (provider.ssoLoading)
+                              ? const Center(
+                                  child: SpinKitFadingCircle(
+                                    color: blackColor,
+                                    size: 25.0,
+                                  ),
+                                )
+                              : Text(
+                                  'Registrasi',
+                                  style: robotoRegular.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

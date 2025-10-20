@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
+// import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
@@ -56,59 +56,79 @@ import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/views/screens/ecommerce/payment/receipt_emoney.dart';
 import 'package:rakhsa/views/screens/ecommerce/payment/receipt_va.dart';
 
-
 enum CreateStoreStatus { idle, loading, loaded, empty, error }
+
 enum GetStoreStatus { idle, loading, loaded, empty, error }
+
 enum CheckStoreOwnerStatus { idle, loading, loaded, empty, error }
 
 enum BadgeOrderAllStatus { idle, loading, loaded, empty, error }
+
 enum BadgeOrderDetailStatus { idle, loading, loaded, empty, error }
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
+
 enum CreateProductStatus { idle, loading, loaded, empty, error }
+
 enum UpdateProductStatus { idle, loading, loaded, empty, error }
+
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
+
 enum DetailProductStatus { idle, loading, loaded, empty, error }
+
 enum DeleteProductStatus { idle, loading, loaded, empty, error }
+
 enum DeleteProductImageStatus { idle, loading, loaded, empty, error }
 
 enum BalanceStatus { idle, loading, loaded, empty, error }
 
 enum ConfirmOrderStatus { idle, loading, loaded, empty, error }
+
 enum CancelOrderStatus { idle, loading, loaded, empty, error }
 
 enum GetProductCategoryStatus { idle, loading, loaded, empty, error }
 
 enum ListOrderStatus { idle, loading, loaded, empty, error }
+
 enum ListOrderSellerStatus { idle, loading, loaded, empty, error }
+
 enum DetailOrderStatus { idle, loading, loaded, empty, error }
+
 enum DetailOrderSellerStatus { idle, loading, loaded, empty, error }
 
 enum TrackingStatus { idle, loading, loaded, empty, error }
 
 enum AddCartStatus { idle, loading, loaded, empty, error }
+
 enum AddCartLiveStatus { idle, loading, loaded, empty, error }
+
 enum GetCartStatus { idle, loading, loaded, empty, error }
-enum DeleteCartStatus { idle, loading, loaded ,empty, error }
+
+enum DeleteCartStatus { idle, loading, loaded, empty, error }
 
 enum GetCourierStatus { idle, loading, loaded, empty, error }
+
 enum AddCourierStatus { idle, loading, loaded, empty, error }
 
 enum GetPaymentChannelStatus { idle, loading, loaded, empty, error }
 
 enum GetShippingAddressListStatus { idle, loading, loaded, empty, error }
+
 enum GetShippingAddressSingleStatus { idle, loading, loaded, empty, error }
+
 enum GetShippingAddressDefaultStatus { idle, loading, loaded, empty, error }
 
 enum DeleteShippingAddressStatus { idle, loading, loaded, empty, error }
+
 enum CreateShippingAddressStatus { idle, loading, loaded, empty, error }
+
 enum UpdateShippingAddressStatus { idle, loading, loaded, empty, error }
 
 enum SelectPrimaryShippingAddressStatus { idle, loading, loaded, empty, error }
 
 enum HowToPaymentStatus { idle, loading, loaded, empty, error }
 
-enum GetCheckoutStatus { idle, loading, loaded ,empty, error }
+enum GetCheckoutStatus { idle, loading, loaded, empty, error }
 
 enum PayStatus { idle, loading, loaded, empty, error }
 
@@ -116,17 +136,14 @@ class EcommerceProvider extends ChangeNotifier {
   final EcommerceRepo er;
   final MediaRepo mr;
 
-  EcommerceProvider({
-    required this.er,
-    required this.mr
-  });
+  EcommerceProvider({required this.er, required this.mr});
 
   int balance = 0;
 
   String provinceName = "";
   String cityName = "";
   String subdistrictName = "";
-  String tariffCode = ""; 
+  String tariffCode = "";
 
   int selectedTopupId = 0;
   int selectedTopupPrice = 0;
@@ -137,147 +154,111 @@ class EcommerceProvider extends ChangeNotifier {
   List<Asset> images = [];
 
   Future<void> pickImage({
-    required BuildContext context, 
-    required int i
+    required BuildContext context,
+    required int i,
   }) async {
-    ImageSource? imageSource = await showDialog<ImageSource>(context: context, 
+    ImageSource? imageSource = await showDialog<ImageSource>(
+      context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text("Pilih sumber gambar",
-          style: TextStyle(
-            color: ColorResources.purple
-          ),
+        title: const Text(
+          "Pilih sumber gambar",
+          style: TextStyle(color: ColorResources.purple),
         ),
         actions: [
           MaterialButton(
-            child: const Text("Kamera",
-              style: TextStyle(
-                color: ColorResources.purple
-              ),
+            child: const Text(
+              "Kamera",
+              style: TextStyle(color: ColorResources.purple),
             ),
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           MaterialButton(
             onPressed: () => uploadImg(i: i),
-            child: const Text( "Galeri",
-              style: TextStyle(
-                color: ColorResources.purple
-              ),
+            child: const Text(
+              "Galeri",
+              style: TextStyle(color: ColorResources.purple),
             ),
-          )
+          ),
         ],
-      )
+      ),
     );
 
-    if(imageSource != null) {
+    if (imageSource != null) {
       XFile? filePath = await ImagePicker().pickImage(source: imageSource);
-      File tempFile= File(filePath!.path);
+      File tempFile = File(filePath!.path);
 
       _productTransactions[i].befores.add(tempFile);
-      _productTransactions[i].files = productTransactions[i].befores.toSet().toList();
+      _productTransactions[i].files = productTransactions[i].befores
+          .toSet()
+          .toList();
 
       notifyListeners();
     }
-
   }
 
-  void uploadImg({
-    required int i
-  }) async {
+  void uploadImg({required int i}) async {
     List<Asset> resultList = [];
 
-    if(productTransactions[i].files.isEmpty) {
+    if (productTransactions[i].files.isEmpty) {
       resultList = await MultiImagePicker.pickImages(
-        androidOptions: const AndroidOptions(
-          maxImages: 5,
-        ),
+        androidOptions: const AndroidOptions(maxImages: 5),
         iosOptions: const IOSOptions(
-          settings: CupertinoSettings(
-            selection: SelectionSetting(
-              max: 5
-            )
-          )
+          settings: CupertinoSettings(selection: SelectionSetting(max: 5)),
         ),
         selectedAssets: [],
       );
-    } else if(productTransactions[i].files.length == 4) { 
+    } else if (productTransactions[i].files.length == 4) {
       resultList = await MultiImagePicker.pickImages(
-        androidOptions: const AndroidOptions(
-          maxImages: 1,
-        ),
+        androidOptions: const AndroidOptions(maxImages: 1),
         iosOptions: const IOSOptions(
-          settings: CupertinoSettings(
-            selection: SelectionSetting(
-              max: 1
-            )
-          )
+          settings: CupertinoSettings(selection: SelectionSetting(max: 1)),
         ),
         selectedAssets: [],
       );
-    } else if(productTransactions[i].files.length == 3) { 
+    } else if (productTransactions[i].files.length == 3) {
       resultList = await MultiImagePicker.pickImages(
-        androidOptions: const AndroidOptions(
-          maxImages: 2,
-        ),
+        androidOptions: const AndroidOptions(maxImages: 2),
         iosOptions: const IOSOptions(
-          settings: CupertinoSettings(
-            selection: SelectionSetting(
-              max: 2
-            )
-          )
+          settings: CupertinoSettings(selection: SelectionSetting(max: 2)),
         ),
         selectedAssets: [],
       );
-    } else if(productTransactions[i].files.length == 2) { 
-        resultList = await MultiImagePicker.pickImages(
-         androidOptions: const AndroidOptions(
-          maxImages: 3,
-        ),
-        iosOptions: const IOSOptions(
-          settings: CupertinoSettings(
-            selection: SelectionSetting(
-              max: 3
-            )
-          )
-        ),
-        selectedAssets: [],
-      );
-    } else { 
+    } else if (productTransactions[i].files.length == 2) {
       resultList = await MultiImagePicker.pickImages(
-        androidOptions: const AndroidOptions(
-          maxImages: 4,
-        ),
+        androidOptions: const AndroidOptions(maxImages: 3),
         iosOptions: const IOSOptions(
-          settings: CupertinoSettings(
-            selection: SelectionSetting(
-              max: 4
-            )
-          )
+          settings: CupertinoSettings(selection: SelectionSetting(max: 3)),
         ),
         selectedAssets: [],
       );
-    } 
+    } else {
+      resultList = await MultiImagePicker.pickImages(
+        androidOptions: const AndroidOptions(maxImages: 4),
+        iosOptions: const IOSOptions(
+          settings: CupertinoSettings(selection: SelectionSetting(max: 4)),
+        ),
+        selectedAssets: [],
+      );
+    }
 
     Future.delayed(Duration.zero, () {
       Navigator.pop(navigatorKey.currentContext!, true);
     });
 
-    for (Asset imageAsset in resultList) {
-      final filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
-      File tempFile = File(filePath!);
+    // for (Asset imageAsset in resultList) {
+    // final filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
+    // File tempFile = File(filePath!);
 
-      images = resultList;
+    // images = resultList;
 
-      _productTransactions[i].befores.add(tempFile);
-      _productTransactions[i].files = productTransactions[i].befores.toSet().toList();
+    // _productTransactions[i].befores.add(tempFile);
+    // _productTransactions[i].files = productTransactions[i].befores.toSet().toList();
 
-      notifyListeners();
-    }
+    // notifyListeners();
+    // }
   }
 
-  void removeFile({
-    required int i,
-    required int z
-  }) {
+  void removeFile({required int i, required int z}) {
     _productTransactions[i].files.removeAt(z);
     _productTransactions[i].befores.removeAt(z);
 
@@ -301,7 +282,7 @@ class EcommerceProvider extends ChangeNotifier {
   int badgePaid = 0;
   int badgePacking = 0;
   int badgeDelivery = 0;
-  
+
   int page = 1;
 
   int listenQty = -1;
@@ -347,8 +328,10 @@ class EcommerceProvider extends ChangeNotifier {
   DeleteProductStatus _deleteProductStatus = DeleteProductStatus.idle;
   DeleteProductStatus get deleteProductStatus => _deleteProductStatus;
 
-  DeleteProductImageStatus _deleteProductImageStatus = DeleteProductImageStatus.idle;
-  DeleteProductImageStatus get deleteProductImageStatus => _deleteProductImageStatus;
+  DeleteProductImageStatus _deleteProductImageStatus =
+      DeleteProductImageStatus.idle;
+  DeleteProductImageStatus get deleteProductImageStatus =>
+      _deleteProductImageStatus;
 
   UpdateProductStatus _updateProductStatus = UpdateProductStatus.idle;
   UpdateProductStatus get updateProductStatus => _updateProductStatus;
@@ -365,11 +348,15 @@ class EcommerceProvider extends ChangeNotifier {
   ListProductStatus _listProductStatus = ListProductStatus.loading;
   ListProductStatus get listProductStatus => _listProductStatus;
 
-  ListProductTransactionStatus _listProductTransactionStatus = ListProductTransactionStatus.loading;
-  ListProductTransactionStatus get listProductTransactionStatus => _listProductTransactionStatus;
+  ListProductTransactionStatus _listProductTransactionStatus =
+      ListProductTransactionStatus.loading;
+  ListProductTransactionStatus get listProductTransactionStatus =>
+      _listProductTransactionStatus;
 
-  GetProductCategoryStatus _getProductCategoryStatus = GetProductCategoryStatus.loading;
-  GetProductCategoryStatus get getProductCategoryStatus => _getProductCategoryStatus;
+  GetProductCategoryStatus _getProductCategoryStatus =
+      GetProductCategoryStatus.loading;
+  GetProductCategoryStatus get getProductCategoryStatus =>
+      _getProductCategoryStatus;
 
   DetailProductStatus _detailProductStatus = DetailProductStatus.loading;
   DetailProductStatus get detailProductStatus => _detailProductStatus;
@@ -383,13 +370,15 @@ class EcommerceProvider extends ChangeNotifier {
   DetailOrderStatus _detailOrderStatus = DetailOrderStatus.loading;
   DetailOrderStatus get detailOrderStatus => _detailOrderStatus;
 
-  DetailOrderSellerStatus _detailOrderSellerStatus = DetailOrderSellerStatus.loading;
-  DetailOrderSellerStatus get detailOrderSellerStatus => _detailOrderSellerStatus;
+  DetailOrderSellerStatus _detailOrderSellerStatus =
+      DetailOrderSellerStatus.loading;
+  DetailOrderSellerStatus get detailOrderSellerStatus =>
+      _detailOrderSellerStatus;
 
   PayStatus _payStatus = PayStatus.idle;
   PayStatus get payStatus => _payStatus;
 
-  GetCartStatus _getCartStatus = GetCartStatus.loading; 
+  GetCartStatus _getCartStatus = GetCartStatus.loading;
   GetCartStatus get getCartStatus => _getCartStatus;
 
   TrackingStatus _trackingStatus = TrackingStatus.loading;
@@ -410,29 +399,45 @@ class EcommerceProvider extends ChangeNotifier {
   GetCheckoutStatus _getCheckoutStatus = GetCheckoutStatus.loading;
   GetCheckoutStatus get getCheckoutStatus => _getCheckoutStatus;
 
-  GetPaymentChannelStatus _getPaymentChannelStatus = GetPaymentChannelStatus.idle;
-  GetPaymentChannelStatus get getPaymentChannelStatus => _getPaymentChannelStatus;
+  GetPaymentChannelStatus _getPaymentChannelStatus =
+      GetPaymentChannelStatus.idle;
+  GetPaymentChannelStatus get getPaymentChannelStatus =>
+      _getPaymentChannelStatus;
 
-  GetShippingAddressListStatus _getShippingAddressListStatus = GetShippingAddressListStatus.loading;
-  GetShippingAddressListStatus get getShippingAddressListStatus => _getShippingAddressListStatus;
+  GetShippingAddressListStatus _getShippingAddressListStatus =
+      GetShippingAddressListStatus.loading;
+  GetShippingAddressListStatus get getShippingAddressListStatus =>
+      _getShippingAddressListStatus;
 
-  GetShippingAddressSingleStatus _getShippingAddressSingleStatus = GetShippingAddressSingleStatus.loading;
-  GetShippingAddressSingleStatus get getShippingAddressSingleStatus => _getShippingAddressSingleStatus;
+  GetShippingAddressSingleStatus _getShippingAddressSingleStatus =
+      GetShippingAddressSingleStatus.loading;
+  GetShippingAddressSingleStatus get getShippingAddressSingleStatus =>
+      _getShippingAddressSingleStatus;
 
-  GetShippingAddressDefaultStatus _getShippingAddressDefaultStatus = GetShippingAddressDefaultStatus.loading;
-  GetShippingAddressDefaultStatus get getShippingAddressDefaultStatus => _getShippingAddressDefaultStatus;
+  GetShippingAddressDefaultStatus _getShippingAddressDefaultStatus =
+      GetShippingAddressDefaultStatus.loading;
+  GetShippingAddressDefaultStatus get getShippingAddressDefaultStatus =>
+      _getShippingAddressDefaultStatus;
 
-  CreateShippingAddressStatus _createShippingAddressStatus = CreateShippingAddressStatus.idle; 
-  CreateShippingAddressStatus get createShippingAddressStatus => _createShippingAddressStatus;
+  CreateShippingAddressStatus _createShippingAddressStatus =
+      CreateShippingAddressStatus.idle;
+  CreateShippingAddressStatus get createShippingAddressStatus =>
+      _createShippingAddressStatus;
 
-  DeleteShippingAddressStatus _deleteShippingAddressStatus = DeleteShippingAddressStatus.idle;
-  DeleteShippingAddressStatus get deleteShippingAddressStatus => _deleteShippingAddressStatus;
+  DeleteShippingAddressStatus _deleteShippingAddressStatus =
+      DeleteShippingAddressStatus.idle;
+  DeleteShippingAddressStatus get deleteShippingAddressStatus =>
+      _deleteShippingAddressStatus;
 
-  UpdateShippingAddressStatus _updateShippingAddressStatus = UpdateShippingAddressStatus.idle; 
-  UpdateShippingAddressStatus get updateShippingAddressStatus => _updateShippingAddressStatus;
+  UpdateShippingAddressStatus _updateShippingAddressStatus =
+      UpdateShippingAddressStatus.idle;
+  UpdateShippingAddressStatus get updateShippingAddressStatus =>
+      _updateShippingAddressStatus;
 
-  SelectPrimaryShippingAddressStatus _selectPrimaryShippingAddressStatus = SelectPrimaryShippingAddressStatus.idle;
-  SelectPrimaryShippingAddressStatus get  selectPrimaryShippingAddressStatus => _selectPrimaryShippingAddressStatus;
+  SelectPrimaryShippingAddressStatus _selectPrimaryShippingAddressStatus =
+      SelectPrimaryShippingAddressStatus.idle;
+  SelectPrimaryShippingAddressStatus get selectPrimaryShippingAddressStatus =>
+      _selectPrimaryShippingAddressStatus;
 
   CartData _cartData = CartData();
   CartData get cartData => _cartData;
@@ -453,16 +458,18 @@ class EcommerceProvider extends ChangeNotifier {
   List<DataHowToPayment> get atm => [..._atm];
 
   List<DataHowToPayment> _emoney = [];
-  List<DataHowToPayment> get emoney => [..._emoney]; 
+  List<DataHowToPayment> get emoney => [..._emoney];
 
   List<Product> _products = [];
   List<Product> get products => [..._products];
 
   List<Product> _productSellers = [];
   List<Product> get productSellers => [..._productSellers];
-  
+
   List<ProductTransactionData> _productTransactions = [];
-  List<ProductTransactionData> get productTransactions => [..._productTransactions];
+  List<ProductTransactionData> get productTransactions => [
+    ..._productTransactions,
+  ];
 
   List<ProductCategoryData> _productCategories = [];
   List<ProductCategoryData> get productCategories => [..._productCategories];
@@ -494,11 +501,15 @@ class EcommerceProvider extends ChangeNotifier {
   DetailOrderSellerData _detailOrderSellerData = DetailOrderSellerData();
   DetailOrderSellerData get detailOrderSellerData => _detailOrderSellerData;
 
-  ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
-  ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
+  ShippingAddressDetailData _shippingAddressDetailData =
+      ShippingAddressDetailData();
+  ShippingAddressDetailData get shippingAddressDetailData =>
+      _shippingAddressDetailData;
 
-  ShippingAddressDataDefault _shippingAddressDataDefault = ShippingAddressDataDefault();
-  ShippingAddressDataDefault get shippingAddressDataDefault => _shippingAddressDataDefault;
+  ShippingAddressDataDefault _shippingAddressDataDefault =
+      ShippingAddressDataDefault();
+  ShippingAddressDataDefault get shippingAddressDataDefault =>
+      _shippingAddressDataDefault;
 
   ProductDetailData _productDetailData = ProductDetailData();
   ProductDetailData get productDetailData => _productDetailData;
@@ -544,7 +555,7 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateListProductStatus(ListProductStatus param) {
     _listProductStatus = param;
-    
+
     notifyListeners();
   }
 
@@ -598,7 +609,7 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateListOrderSellerStatus(ListOrderSellerStatus param) {
     _listOrderSellerStatus = param;
-    
+
     notifyListeners();
   }
 
@@ -614,7 +625,9 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setStateListProductTransactionStatus(ListProductTransactionStatus param) {
+  void setStateListProductTransactionStatus(
+    ListProductTransactionStatus param,
+  ) {
     _listProductTransactionStatus = param;
 
     notifyListeners();
@@ -638,7 +651,9 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus param) {
+  void setStateSelectPrimaryAddressStatus(
+    SelectPrimaryShippingAddressStatus param,
+  ) {
     _selectPrimaryShippingAddressStatus = param;
 
     notifyListeners();
@@ -686,7 +701,9 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus param) {
+  void setStateGetShippingAddressDefault(
+    GetShippingAddressDefaultStatus param,
+  ) {
     _getShippingAddressDefaultStatus = param;
 
     notifyListeners();
@@ -728,22 +745,17 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectTopup({
-    required int id,
-    required int price   
-  }) {
+  void selectTopup({required int id, required int price}) {
     selectedTopupId = id;
     selectedTopupPrice = price;
     amountC.text = "";
 
     notifyListeners();
-  } 
+  }
 
-  void onManualTopup({
-    required int price
-  }) {
+  void onManualTopup({required int price}) {
     selectedTopupId = 0;
-    selectedTopupPrice = price; 
+    selectedTopupPrice = price;
 
     notifyListeners();
   }
@@ -752,13 +764,13 @@ class EcommerceProvider extends ChangeNotifier {
     page = 1;
     cat = param;
 
-    if(param == "Semua") {
+    if (param == "Semua") {
       cat = "";
     }
 
     Future.delayed(const Duration(seconds: 1), () async {
       await fetchAllProduct(search: "");
-      if(storeId != "") {
+      if (storeId != "") {
         await fetchAllProductSeller(search: "", storeId: storeId);
       }
     });
@@ -775,12 +787,11 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> checkStoreOwner() async {
     setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.loading);
     try {
-
       final checkStoreOwner = await er.checkStoreOwner();
       _ownerModel = checkStoreOwner;
 
       setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.loaded);
-    } catch(e) {
+    } catch (e) {
       setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.error);
     }
   }
@@ -788,24 +799,23 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> getStore() async {
     setStateGetStoreStatus(GetStoreStatus.loading);
     try {
-
       final storeModel = await er.getStore();
       _store = storeModel;
 
       setStateGetStoreStatus(GetStoreStatus.loaded);
-    } catch(e) {
+    } catch (e) {
       _store = null;
 
       setStateGetStoreStatus(GetStoreStatus.error);
     }
-  } 
+  }
 
   Future<void> createStore({
-    required String id, 
-    required File logo, 
+    required String id,
+    required File logo,
     required String name,
     required String caption,
-    required String province, 
+    required String province,
     required String city,
     required String district,
     required String subdistrict,
@@ -815,32 +825,31 @@ class EcommerceProvider extends ChangeNotifier {
     required String lat,
     required String lng,
     required bool isOpen,
-    required String postCode
+    required String postCode,
   }) async {
     setStateCreateStoreStatus(CreateStoreStatus.loading);
     try {
-
       Response? res = await mr.postMedia(logo);
       Map map = res.data;
 
       String logoPath = map['data']['path'];
 
       await er.createStore(
-        id: id, 
-        logo: logoPath, 
-        name: name, 
-        caption: caption, 
-        province: province, 
-        city: city, 
-        district: district, 
-        subdistrict: subdistrict, 
-        address: address, 
-        email: email, 
-        phone: phone, 
-        lat: lat, 
-        lng: lng, 
-        isOpen: isOpen, 
-        postCode: postCode
+        id: id,
+        logo: logoPath,
+        name: name,
+        caption: caption,
+        province: province,
+        city: city,
+        district: district,
+        subdistrict: subdistrict,
+        address: address,
+        email: email,
+        phone: phone,
+        lat: lat,
+        lng: lng,
+        isOpen: isOpen,
+        postCode: postCode,
       );
 
       Navigator.pop(navigatorKey.currentContext!);
@@ -849,7 +858,7 @@ class EcommerceProvider extends ChangeNotifier {
       checkStoreOwner();
 
       setStateCreateStoreStatus(CreateStoreStatus.loaded);
-    } catch(e) {
+    } catch (e) {
       setStateCreateStoreStatus(CreateStoreStatus.error);
     }
   }
@@ -860,7 +869,7 @@ class EcommerceProvider extends ChangeNotifier {
     for (Product productSeller in productSellers) {
       productSeller.selected = val;
     }
-  
+
     notifyListeners();
   }
 
@@ -875,8 +884,7 @@ class EcommerceProvider extends ChangeNotifier {
   void onSelectedAll(bool val) {
     selectedAll = val;
 
-    if(selectedAll) {
-      
+    if (selectedAll) {
       int totalPrice = 0;
 
       for (StoreItem store in cartData.stores!) {
@@ -889,12 +897,10 @@ class EcommerceProvider extends ChangeNotifier {
         }
       }
 
-      _cartData.totalPrice = totalPrice; 
+      _cartData.totalPrice = totalPrice;
 
       er.updateSelectedAll(selected: selectedAll);
-
     } else {
-
       int totalPrice = 0;
 
       for (StoreItem store in cartData.stores!) {
@@ -905,10 +911,9 @@ class EcommerceProvider extends ChangeNotifier {
         }
       }
 
-      _cartData.totalPrice = totalPrice; 
+      _cartData.totalPrice = totalPrice;
 
       er.updateSelectedAll(selected: selectedAll);
-
     }
 
     notifyListeners();
@@ -918,53 +923,60 @@ class EcommerceProvider extends ChangeNotifier {
     _cartData.stores![i].selected = !_cartData.stores![i].selected;
 
     for (StoreData item in cartData.stores![i].items) {
-      if(item.cart.selected) {   
-
+      if (item.cart.selected) {
         item.cart.selected = false;
-   
+
         int totalPrice = 0;
-        
-        for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
-          for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+
+        for (StoreItem cis in cartData.stores!.where(
+          (el) => el.selected == true,
+        )) {
+          for (StoreData cii in cis.items.where(
+            (el) => el.cart.selected == true,
+          )) {
             totalPrice += cii.price * cii.cart.qty;
           }
         }
 
-        _cartData.totalPrice = totalPrice; 
+        _cartData.totalPrice = totalPrice;
 
-        await er.updateSelected( 
-          selected: item.cart.selected, 
-          cartId: item.cart.id
+        await er.updateSelected(
+          selected: item.cart.selected,
+          cartId: item.cart.id,
         );
       } else {
-
-        if(cartData.stores![i].selected == false) {
+        if (cartData.stores![i].selected == false) {
           item.cart.selected = false;
         } else {
           item.cart.selected = true;
         }
-          
+
         int totalPrice = 0;
-        
-        for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
-          for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+
+        for (StoreItem cis in cartData.stores!.where(
+          (el) => el.selected == true,
+        )) {
+          for (StoreData cii in cis.items.where(
+            (el) => el.cart.selected == true,
+          )) {
             totalPrice += cii.price * cii.cart.qty;
           }
         }
 
-        _cartData.totalPrice = totalPrice;   
+        _cartData.totalPrice = totalPrice;
 
-        await er.updateSelected( 
-          selected: item.cart.selected, 
-          cartId: item.cart.id
+        await er.updateSelected(
+          selected: item.cart.selected,
+          cartId: item.cart.id,
         );
       }
-
     }
 
-    bool allStoreActive = cartData.stores!.every((item) => item.selected == true);
+    bool allStoreActive = cartData.stores!.every(
+      (item) => item.selected == true,
+    );
 
-    if(allStoreActive) {
+    if (allStoreActive) {
       selectedAll = true;
     } else {
       selectedAll = false;
@@ -976,20 +988,26 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> storeItemSelected({
     required int i,
     required int z,
-    required String cartIdParam
+    required String cartIdParam,
   }) async {
-    if(cartData.stores![i].items[z].cart.selected)  {
-
+    if (cartData.stores![i].items[z].cart.selected) {
       _cartData.stores![i].items[z].cart.selected = false;
 
-      if(cartData.stores![i].items.where((el) => el.cart.selected == true).toList().isEmpty) {
+      if (cartData.stores![i].items
+          .where((el) => el.cart.selected == true)
+          .toList()
+          .isEmpty) {
         _cartData.stores![i].selected = false;
       }
 
       int totalPrice = 0;
-      
-      for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
-        for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+
+      for (StoreItem cis in cartData.stores!.where(
+        (el) => el.selected == true,
+      )) {
+        for (StoreData cii in cis.items.where(
+          (el) => el.cart.selected == true,
+        )) {
           totalPrice += cii.price * cii.cart.qty;
         }
       }
@@ -997,16 +1015,18 @@ class EcommerceProvider extends ChangeNotifier {
       _cartData.totalPrice = totalPrice;
 
       await er.updateSelected(selected: false, cartId: cartIdParam);
-
-    }  else {
-      
+    } else {
       _cartData.stores![i].selected = true;
       _cartData.stores![i].items[z].cart.selected = true;
 
       int totalPrice = 0;
-      
-      for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
-        for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+
+      for (StoreItem cis in cartData.stores!.where(
+        (el) => el.selected == true,
+      )) {
+        for (StoreData cii in cis.items.where(
+          (el) => el.cart.selected == true,
+        )) {
           totalPrice += cii.price * cii.cart.qty;
         }
       }
@@ -1016,25 +1036,27 @@ class EcommerceProvider extends ChangeNotifier {
       await er.updateSelected(selected: true, cartId: cartIdParam);
     }
 
-    bool allStoreActive = cartData.stores!.every((item) => item.selected == true);
+    bool allStoreActive = cartData.stores!.every(
+      (item) => item.selected == true,
+    );
 
-    if(allStoreActive) {
+    if (allStoreActive) {
       selectedAll = true;
     } else {
       selectedAll = false;
     }
 
     notifyListeners();
-  } 
+  }
 
   Future<void> getBalance() async {
-    try { 
+    try {
       BalanceModel balanceModel = await er.getBalance();
-      
+
       balance = balanceModel.data.balance;
 
       setStateBalanceStatus(BalanceStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateBalanceStatus(BalanceStatus.error);
     }
   }
@@ -1042,18 +1064,18 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> listOrder({required String orderStatus}) async {
     setStateListOrderStatus(ListOrderStatus.loading);
     try {
+      ListOrderModel listOrderModel = await er.getOrderList(
+        orderStatus: orderStatus,
+      );
 
-      ListOrderModel listOrderModel = await er.getOrderList(orderStatus: orderStatus);
-      
       _orders = [];
       _orders.addAll(listOrderModel.data);
       setStateListOrderStatus(ListOrderStatus.loaded);
 
-      if(orders.isEmpty) {
+      if (orders.isEmpty) {
         setStateListOrderStatus(ListOrderStatus.empty);
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateListOrderStatus(ListOrderStatus.error);
     }
   }
@@ -1061,17 +1083,18 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> listOrderSeller({required String orderStatus}) async {
     setStateListOrderSellerStatus(ListOrderSellerStatus.loading);
     try {
+      ListOrderSellerModel listOrderSellerModel = await er.getOrderSellerList(
+        orderStatus: orderStatus,
+      );
 
-      ListOrderSellerModel listOrderSellerModel = await er.getOrderSellerList(orderStatus: orderStatus);
-      
       _orderSellers = [];
       _orderSellers.addAll(listOrderSellerModel.data);
       setStateListOrderSellerStatus(ListOrderSellerStatus.loaded);
 
-      if(orderSellers.isEmpty) {
+      if (orderSellers.isEmpty) {
         setStateListOrderSellerStatus(ListOrderSellerStatus.empty);
       }
-    } catch(_) {
+    } catch (_) {
       setStateListOrderSellerStatus(ListOrderSellerStatus.error);
     }
   }
@@ -1079,47 +1102,44 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> detailOrder({required String transactionId}) async {
     setStateDetailOrderStatus(DetailOrderStatus.loading);
     try {
+      DetailOrderModel detailOrderModel = await er.getOrderDetail(
+        transactionId: transactionId,
+      );
 
-      DetailOrderModel detailOrderModel = await er.getOrderDetail(transactionId: transactionId);
-      
       _detailOrderData = detailOrderModel.data;
 
       setStateDetailOrderStatus(DetailOrderStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateDetailOrderStatus(DetailOrderStatus.error);
     }
   }
 
   Future<void> detailOrderSeller({
     required String storeId,
-    required String transactionId
+    required String transactionId,
   }) async {
     setStateDetailOrderSellerStatus(DetailOrderSellerStatus.loading);
     try {
-
       DetailOrderSellerModel detailOrderSeller = await er.getOrderSellerDetail(
         storeId: storeId,
-        transactionId: transactionId
+        transactionId: transactionId,
       );
 
       _detailOrderSellerData = detailOrderSeller.data;
 
       setStateDetailOrderSellerStatus(DetailOrderSellerStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateDetailOrderSellerStatus(DetailOrderSellerStatus.error);
     }
   }
 
   Future<void> confirmOrder({
     required String storeId,
-    required String transactionId
+    required String transactionId,
   }) async {
     setStateConfirmOrderStatus(ConfirmOrderStatus.loading);
     try {
-      await er.confirmOrder(
-        storeId: storeId, 
-        transactionId: transactionId
-      );
+      await er.confirmOrder(storeId: storeId, transactionId: transactionId);
       Future.delayed(const Duration(seconds: 1), () {
         Navigator.pop(navigatorKey.currentContext!);
         Navigator.pop(navigatorKey.currentContext!);
@@ -1127,9 +1147,9 @@ class EcommerceProvider extends ChangeNotifier {
         listOrder(orderStatus: "PAID");
       });
       setStateConfirmOrderStatus(ConfirmOrderStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateConfirmOrderStatus(ConfirmOrderStatus.error);
-    } 
+    }
   }
 
   Future<void> cancelOrder({required String transactionId}) async {
@@ -1144,11 +1164,11 @@ class EcommerceProvider extends ChangeNotifier {
 
         listOrder(orderStatus: "WAITING_PAYMENT");
       });
-    } catch(_) {
+    } catch (_) {
       setStateCancelOrderStatus(CancelOrderStatus.error);
     }
   }
-  
+
   Future<TrackingModel> trackingOrder({required String waybill}) async {
     return er.getTracking(waybill: waybill);
   }
@@ -1160,32 +1180,30 @@ class EcommerceProvider extends ChangeNotifier {
     reached = false;
 
     try {
-      
       ProductModel productModel = await er.fetchAllProduct(
-        search: search, 
+        search: search,
         page: page,
-        cat: cat
+        cat: cat,
       );
 
       hasMore = productModel.data.pageDetail.hasMore;
 
       _products = [];
       _products.addAll(productModel.data.products);
-      
+
       setStateListProductStatus(ListProductStatus.loaded);
 
-      if(products.isEmpty) {
+      if (products.isEmpty) {
         setStateListProductStatus(ListProductStatus.empty);
       }
-
     } catch (_) {
       setStateListProductStatus(ListProductStatus.error);
-    } 
+    }
   }
 
   Future<void> fetchAllProductSeller({
     required String search,
-    required String storeId
+    required String storeId,
   }) async {
     setStateListProductStatus(ListProductStatus.loading);
 
@@ -1193,9 +1211,8 @@ class EcommerceProvider extends ChangeNotifier {
     reached = false;
 
     try {
-      
       ProductModel productModel = await er.fetchAllProductSeller(
-        search: search, 
+        search: search,
         page: page,
         storeId: storeId,
         cat: cat,
@@ -1205,64 +1222,65 @@ class EcommerceProvider extends ChangeNotifier {
 
       _productSellers = [];
       _productSellers.addAll(productModel.data.products);
-      
+
       setStateListProductStatus(ListProductStatus.loaded);
 
-      if(productSellers.isEmpty) {
+      if (productSellers.isEmpty) {
         setStateListProductStatus(ListProductStatus.empty);
       }
-
     } catch (_) {
       setStateListProductStatus(ListProductStatus.error);
-    } 
+    }
   }
 
-  Future<void> fetchAllProductCategory({required bool isFromCreateProduct}) async {
+  Future<void> fetchAllProductCategory({
+    required bool isFromCreateProduct,
+  }) async {
     try {
-
-      ProductCategoryModel productCategoryModel = await er.fetchProductCategory();
+      ProductCategoryModel productCategoryModel = await er
+          .fetchProductCategory();
 
       _productCategories = [];
 
-      if(!isFromCreateProduct) {
+      if (!isFromCreateProduct) {
         _productCategories.add(
           ProductCategoryData(
             id: "30a58b87-4157-44fd-b840-f5b3d6691820",
-            name: "Semua"
-          )
+            name: "Semua",
+          ),
         );
       }
       _productCategories.addAll(productCategoryModel.data);
       setStateGetProductCategoryStatus(GetProductCategoryStatus.loaded);
 
-      if(productCategories.isEmpty) {
+      if (productCategories.isEmpty) {
         setStateGetProductCategoryStatus(GetProductCategoryStatus.empty);
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateGetProductCategoryStatus(GetProductCategoryStatus.error);
     }
   }
 
   Future<void> fetchAllProductTransaction({
-    required String transactionId
+    required String transactionId,
   }) async {
     setStateListProductTransactionStatus(ListProductTransactionStatus.loading);
     try {
-
-      ProductTransactionModel productTransactionModel = await er.fetchProductTransaction(transactionId: transactionId); 
+      ProductTransactionModel productTransactionModel = await er
+          .fetchProductTransaction(transactionId: transactionId);
 
       _productTransactions = [];
       _productTransactions.addAll(productTransactionModel.data);
       setStateListProductTransactionStatus(ListProductTransactionStatus.loaded);
 
-      if(productTransactions.isEmpty) {
-        setStateListProductTransactionStatus(ListProductTransactionStatus.empty);
+      if (productTransactions.isEmpty) {
+        setStateListProductTransactionStatus(
+          ListProductTransactionStatus.empty,
+        );
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateListProductTransactionStatus(ListProductTransactionStatus.error);
-    } 
+    }
   }
 
   Future<void> loadMoreProduct() async {
@@ -1271,9 +1289,9 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
 
     ProductModel productModel = await er.fetchAllProduct(
-      cat: cat, 
-      page: page, 
-      search: ""
+      cat: cat,
+      page: page,
+      search: "",
     );
 
     hasMore = productModel.data.pageDetail.hasMore;
@@ -1297,41 +1315,39 @@ class EcommerceProvider extends ChangeNotifier {
       fetchAllProductSeller(search: "", storeId: "");
 
       fetchAllProduct(search: "");
-    
+
       setStateDeleteProductStatus(DeleteProductStatus.loaded);
-    } catch(_) {
-      setStateDeleteProductStatus(DeleteProductStatus.error);  
+    } catch (_) {
+      setStateDeleteProductStatus(DeleteProductStatus.error);
     }
   }
 
   Future<void> deleteProductSelect({required String storeId}) async {
-    setStateDeleteProductStatus(DeleteProductStatus.loading);  
+    setStateDeleteProductStatus(DeleteProductStatus.loading);
     try {
-
-      for (Product product in productSellers.where((el) => el.selected == true)) {
+      for (Product product in productSellers.where(
+        (el) => el.selected == true,
+      )) {
         String productId = product.id;
-    
+
         await er.deleteProduct(productId: productId);
       }
 
       fetchAllProductSeller(search: "", storeId: storeId);
 
-      setStateDeleteProductStatus(DeleteProductStatus.loaded);  
-    } catch(_) {
-      setStateDeleteProductStatus(DeleteProductStatus.error);  
+      setStateDeleteProductStatus(DeleteProductStatus.loaded);
+    } catch (_) {
+      setStateDeleteProductStatus(DeleteProductStatus.error);
     }
   }
 
-  Future<void> deleteProductImage({
-    required int id
-  }) async {
+  Future<void> deleteProductImage({required int id}) async {
     setStateDeleteProductImageStatus(DeleteProductImageStatus.loading);
     try {
-
       await er.deleteProductImage(id: id);
 
       setStateDeleteProductImageStatus(DeleteProductImageStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateDeleteProductImageStatus(DeleteProductImageStatus.error);
     }
   }
@@ -1346,22 +1362,21 @@ class EcommerceProvider extends ChangeNotifier {
     required int stock,
     required bool isDraft,
     required String catId,
-    required String storeId
+    required String storeId,
   }) async {
     setStateCreateProductStatus(CreateProductStatus.loading);
-    
-    try {
 
+    try {
       await er.createProduct(
-        id: id, 
-        title: title, 
-        description: description, 
+        id: id,
+        title: title,
+        description: description,
         price: price,
-        weight: weight, 
-        stock: stock, 
-        isDraft: isDraft, 
-        catId: catId, 
-        storeId: storeId
+        weight: weight,
+        stock: stock,
+        isDraft: isDraft,
+        catId: catId,
+        storeId: storeId,
       );
 
       for (File file in files) {
@@ -1369,10 +1384,7 @@ class EcommerceProvider extends ChangeNotifier {
         Map map = res.data;
         String path = map['data']['path'];
 
-        await er.createProductImage(
-          productId: id, 
-          path: path
-        );
+        await er.createProductImage(productId: id, path: path);
       }
 
       Navigator.pop(navigatorKey.currentContext!);
@@ -1382,7 +1394,7 @@ class EcommerceProvider extends ChangeNotifier {
       fetchAllProduct(search: "");
 
       setStateCreateProductStatus(CreateProductStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateCreateProductStatus(CreateProductStatus.error);
     }
   }
@@ -1397,32 +1409,28 @@ class EcommerceProvider extends ChangeNotifier {
     required int stock,
     required bool isDraft,
     required String catId,
-    required String storeId
+    required String storeId,
   }) async {
     setStateUpdateProductStatus(UpdateProductStatus.loading);
 
-    try { 
-
+    try {
       await er.updateProduct(
-        id: id, 
+        id: id,
         title: title,
-        description: description, 
-        price: price, 
-        weight: weight, 
-        stock: stock, 
+        description: description,
+        price: price,
+        weight: weight,
+        stock: stock,
         isDraft: isDraft,
-        catId: catId
+        catId: catId,
       );
-    
+
       for (File file in files) {
         Response? res = await mr.postMedia(file);
         Map map = res.data;
         String path = map['data']['path'];
 
-        await er.createProductImage(
-          productId: id, 
-          path: path
-        );
+        await er.createProductImage(productId: id, path: path);
       }
 
       Navigator.pop(navigatorKey.currentContext!);
@@ -1430,31 +1438,33 @@ class EcommerceProvider extends ChangeNotifier {
       fetchProduct(productId: id);
 
       setStateUpdateProductStatus(UpdateProductStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateUpdateProductStatus(UpdateProductStatus.error);
     }
   }
-  
+
   Future<void> fetchProduct({required String productId}) async {
     setStateDetailProductStatus(DetailProductStatus.loading);
     try {
-      ProductDetailModel productDetailModel = await er.getProduct(productId: productId);
+      ProductDetailModel productDetailModel = await er.getProduct(
+        productId: productId,
+      );
       _productDetailData = productDetailModel.data;
-      
+
       setStateDetailProductStatus(DetailProductStatus.loaded);
-    } catch(_) {  
+    } catch (_) {
       setStateDetailProductStatus(DetailProductStatus.error);
     }
   }
 
   Future<void> productReview({
-    required String productId, 
+    required String productId,
     required String transactionId,
     required String caption,
     required double rating,
-    required List<File> files,   
+    required List<File> files,
   }) async {
-    if(files.isNotEmpty) {
+    if (files.isNotEmpty) {
       for (File file in files) {
         Response? res = await mr.postMedia(file);
         Map map = res.data;
@@ -1468,8 +1478,8 @@ class EcommerceProvider extends ChangeNotifier {
     await er.productReview(
       productId: productId,
       transactionId: transactionId,
-      caption: caption, 
-      rating: rating
+      caption: caption,
+      rating: rating,
     );
 
     Future.delayed(Duration.zero, () {
@@ -1479,19 +1489,18 @@ class EcommerceProvider extends ChangeNotifier {
 
   Future<void> getShippingAddressList() async {
     setStateGetShippingAddressList(GetShippingAddressListStatus.loading);
-    try { 
-      
-      ShippingAddressModel shippingAddressModel = await er.getShippingAddressList();
+    try {
+      ShippingAddressModel shippingAddressModel = await er
+          .getShippingAddressList();
 
       _shippingAddress = [];
       _shippingAddress.addAll(shippingAddressModel.data);
       setStateGetShippingAddressList(GetShippingAddressListStatus.loaded);
 
-      if(shippingAddress.isEmpty) {
+      if (shippingAddress.isEmpty) {
         setStateGetShippingAddressList(GetShippingAddressListStatus.empty);
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateGetShippingAddressList(GetShippingAddressListStatus.error);
     }
   }
@@ -1499,31 +1508,32 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> getShippingAddressSingle({required String id}) async {
     setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.loading);
     try {
-
-      ShippingAddressModelDetail shippingAddressModelDetail = await er.getShippingAddressDetail(id: id);
+      ShippingAddressModelDetail shippingAddressModelDetail = await er
+          .getShippingAddressDetail(id: id);
       _shippingAddressDetailData = shippingAddressModelDetail.data;
 
       setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.error);
     }
   }
 
   Future<void> getShippingAddressDefault() async {
     setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loading);
-    
-    try {
 
-      ShippingAddressModelDefault shippingAddressModelDefault = await er.getShippingAddressDefault();
+    try {
+      ShippingAddressModelDefault shippingAddressModelDefault = await er
+          .getShippingAddressDefault();
       _shippingAddressDataDefault = shippingAddressModelDefault.data[0];
 
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loaded);
 
-      if(shippingAddressDataDefault.name == null) {
-        setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.empty);
+      if (shippingAddressDataDefault.name == null) {
+        setStateGetShippingAddressDefault(
+          GetShippingAddressDefaultStatus.empty,
+        );
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.error);
     }
   }
@@ -1535,11 +1545,10 @@ class EcommerceProvider extends ChangeNotifier {
     required String city,
     required String district,
     required String postalCode,
-    required String subdistrict
+    required String subdistrict,
   }) async {
     setStateCreateShippingAddress(CreateShippingAddressStatus.loading);
     try {
-
       await er.createShippingAddress(
         label: label,
         address: address,
@@ -1547,9 +1556,9 @@ class EcommerceProvider extends ChangeNotifier {
         city: city,
         district: district,
         postalCode: postalCode,
-        subdistrict: subdistrict
+        subdistrict: subdistrict,
       );
-      
+
       Future.delayed(const Duration(seconds: 1), () {
         getShippingAddressList();
         getShippingAddressDefault();
@@ -1560,17 +1569,14 @@ class EcommerceProvider extends ChangeNotifier {
       });
 
       setStateCreateShippingAddress(CreateShippingAddressStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateCreateShippingAddress(CreateShippingAddressStatus.error);
     }
   }
 
-  Future<void> deleteShippingAddress({
-    required String id
-  }) async {
+  Future<void> deleteShippingAddress({required String id}) async {
     setStateDeleteShippingAddress(DeleteShippingAddressStatus.loading);
     try {
-
       await er.deleteShippingAddress(id: id);
 
       Future.delayed(const Duration(seconds: 1), () {
@@ -1579,7 +1585,7 @@ class EcommerceProvider extends ChangeNotifier {
       });
 
       setStateDeleteShippingAddress(DeleteShippingAddressStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateDeleteShippingAddress(DeleteShippingAddressStatus.error);
     }
   }
@@ -1592,11 +1598,10 @@ class EcommerceProvider extends ChangeNotifier {
     required String city,
     required String district,
     required String postalCode,
-    required String subdistrict
+    required String subdistrict,
   }) async {
     setStateUpdateShippingAddress(UpdateShippingAddressStatus.loading);
     try {
-
       await er.updateShippingAddress(
         id: id,
         label: label,
@@ -1605,31 +1610,32 @@ class EcommerceProvider extends ChangeNotifier {
         city: city,
         district: district,
         postalCode: postalCode,
-        subdistrict: subdistrict
+        subdistrict: subdistrict,
       );
 
       Future.delayed(const Duration(seconds: 1), () {
         getShippingAddressList();
         getShippingAddressDefault();
       });
-      
+
       Future.delayed(Duration.zero, () {
         Navigator.pop(navigatorKey.currentContext!);
       });
 
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.error);
     }
   }
 
   Future<void> selectPrimaryShippingAddress({
     required String id,
-    required String from
-  }) async {  
-    setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loading);
+    required String from,
+  }) async {
+    setStateSelectPrimaryAddressStatus(
+      SelectPrimaryShippingAddressStatus.loading,
+    );
     try {
-
       await er.selectPrimaryAddress(id: id);
 
       Future.delayed(const Duration(seconds: 1), () {
@@ -1638,37 +1644,43 @@ class EcommerceProvider extends ChangeNotifier {
         getCheckoutList(from: from);
       });
 
-      setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loaded);
-    } catch(_) {
-      setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.error);
+      setStateSelectPrimaryAddressStatus(
+        SelectPrimaryShippingAddressStatus.loaded,
+      );
+    } catch (_) {
+      setStateSelectPrimaryAddressStatus(
+        SelectPrimaryShippingAddressStatus.error,
+      );
     }
   }
 
   Future<void> getCart() async {
     try {
-
       CartModel cartModel = await er.getCart();
       _cartData = cartModel.data;
       setStateGetCartStatus(GetCartStatus.loaded);
 
-      if(cartData.stores!.isEmpty) {
+      if (cartData.stores!.isEmpty) {
         setStateGetCartStatus(GetCartStatus.empty);
       }
-       
-    } catch(_) {
+    } catch (_) {
       setStateGetCartStatus(GetCartStatus.error);
-    } 
+    }
   }
 
   Future<void> addToCart({
     required String productId,
     required int qty,
-    required String note
+    required String note,
   }) async {
     controller.forward();
     setStateAddCartStatus(AddCartStatus.loading);
     try {
-      String dataCartId = await er.addToCart(note: note, qty: qty, productId: productId);
+      String dataCartId = await er.addToCart(
+        note: note,
+        qty: qty,
+        productId: productId,
+      );
       setStateAddCartStatus(AddCartStatus.loaded);
 
       cartId = dataCartId;
@@ -1678,29 +1690,32 @@ class EcommerceProvider extends ChangeNotifier {
         notifyListeners();
       });
 
-      Future.delayed(Duration.zero,() {
+      Future.delayed(Duration.zero, () {
         getCart();
       });
-    } catch(_) {
+    } catch (_) {
       setStateAddCartStatus(AddCartStatus.error);
     }
   }
 
   Future<void> addToCartLive({
     required String productId,
-    required String note
+    required String note,
   }) async {
     setStateAddCartLiveStatus(AddCartLiveStatus.loading);
     try {
-      String dataCartId = await er.addToCartLive(note: note, productId: productId);
+      String dataCartId = await er.addToCartLive(
+        note: note,
+        productId: productId,
+      );
       setStateAddCartLiveStatus(AddCartLiveStatus.loaded);
 
       cartId = dataCartId;
 
-      Future.delayed(Duration.zero,() {
+      Future.delayed(Duration.zero, () {
         getCart();
       });
-    } catch(_) {
+    } catch (_) {
       setStateAddCartLiveStatus(AddCartLiveStatus.error);
     }
   }
@@ -1708,13 +1723,13 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> deleteCart({required String cartId}) async {
     setStateDeleteCartStatus(DeleteCartStatus.loading);
     try {
-      await er.deleteCart(cartId: cartId);  
+      await er.deleteCart(cartId: cartId);
       setStateDeleteCartStatus(DeleteCartStatus.loaded);
 
-      Future.delayed(const Duration(seconds: 1),() {
+      Future.delayed(const Duration(seconds: 1), () {
         getCart();
       });
-    } catch(_) {
+    } catch (_) {
       setStateDeleteCartStatus(DeleteCartStatus.error);
     }
   }
@@ -1722,31 +1737,30 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> deleteCartLiveAll() async {
     try {
       await er.deleteCartLiveAll();
-    } catch(_) {}
+    } catch (_) {}
   }
 
   Future<void> getCourierList({
     required BuildContext context,
     required String storeId,
-    required String from
+    required String from,
   }) async {
     setStateGetCourierStatus(GetCourierStatus.loading);
     try {
-
       CourierListModel courierList = await er.getCourier(
         storeId: storeId,
-        from: from
+        from: from,
       );
 
       showModalBottomSheet(
-        context: context, 
+        context: context,
         isDismissible: true,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0)
-          )
+            topRight: Radius.circular(10.0),
+          ),
         ),
         builder: (BuildContext context) {
           return Column(
@@ -1757,17 +1771,18 @@ class EcommerceProvider extends ChangeNotifier {
                 children: [
                   Container(
                     margin: const EdgeInsets.all(15.0),
-                    child: Text("Pilih Pengiriman",
+                    child: Text(
+                      "Pilih Pengiriman",
                       style: robotoRegular.copyWith(
                         color: ColorResources.black,
                         fontSize: Dimensions.fontSizeLarge,
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
-                    )
+                    ),
                   ),
                 ],
               ),
-                                        
+
               ListView.separated(
                 separatorBuilder: (BuildContext context, int i) {
                   return const Divider(
@@ -1790,22 +1805,50 @@ class EcommerceProvider extends ChangeNotifier {
 
                       return InkWell(
                         onTap: () async {
-                          String courierCode = courierList.data[i].code.toString();
-                          String courierService = courierList.data[i].costs[z].service.toString();
-                          String courierName = courierList.data[i].name.toString();
-                          String courierDesc = courierList.data[i].costs[z].description.toString();
-                          String costValue = courierList.data[i].costs[z].cost[0].value.toString();
-                          String costNote =  courierList.data[i].costs[z].cost[0].note.toString();
-                          String costEtd = courierList.data[i].costs[z].cost[0].etd.toString();
+                          String courierCode = courierList.data[i].code
+                              .toString();
+                          String courierService = courierList
+                              .data[i]
+                              .costs[z]
+                              .service
+                              .toString();
+                          String courierName = courierList.data[i].name
+                              .toString();
+                          String courierDesc = courierList
+                              .data[i]
+                              .costs[z]
+                              .description
+                              .toString();
+                          String costValue = courierList
+                              .data[i]
+                              .costs[z]
+                              .cost[0]
+                              .value
+                              .toString();
+                          String costNote = courierList
+                              .data[i]
+                              .costs[z]
+                              .cost[0]
+                              .note
+                              .toString();
+                          String costEtd = courierList
+                              .data[i]
+                              .costs[z]
+                              .cost[0]
+                              .etd
+                              .toString();
 
                           courierNameSelect = courierName;
 
                           await er.addCourier(
-                            courierCode: courierCode, 
+                            courierCode: courierCode,
                             courierService: courierService,
-                            courierName: courierName, courierDesc: courierDesc, 
-                            costValue: costValue, costNote: costNote, 
-                            costEtd: costEtd, storeId: storeId
+                            courierName: courierName,
+                            courierDesc: courierDesc,
+                            costValue: costValue,
+                            costNote: costNote,
+                            costEtd: costEtd,
+                            storeId: storeId,
                           );
 
                           Future.delayed(const Duration(seconds: 1), () {
@@ -1820,8 +1863,8 @@ class EcommerceProvider extends ChangeNotifier {
                           padding: const EdgeInsets.all(12.0),
                           child: Container(
                             margin: const EdgeInsets.only(
-                              left: 10.0, 
-                              right: 10.0
+                              left: 10.0,
+                              right: 10.0,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1830,13 +1873,15 @@ class EcommerceProvider extends ChangeNotifier {
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("${courierData.service} (${formatCurrency(courierList.data[i].costs[z].cost[0].value)})",
+                                    Text(
+                                      "${courierData.service} (${formatCurrency(courierList.data[i].costs[z].cost[0].value)})",
                                       style: const TextStyle(
                                         fontSize: Dimensions.fontSizeDefault,
                                         fontWeight: FontWeight.bold,
-                                        color: ColorResources.black
+                                        color: ColorResources.black,
                                       ),
                                     ),
                                     Container(
@@ -1845,35 +1890,37 @@ class EcommerceProvider extends ChangeNotifier {
                                       decoration: const BoxDecoration(
                                         image: DecorationImage(
                                           fit: BoxFit.fitHeight,
-                                          image: AssetImage('assets/images/logo/jne.jpg')
-                                        )
+                                          image: AssetImage(
+                                            'assets/images/logo/jne.jpg',
+                                          ),
+                                        ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                                Text("${courierList.data[i].costs[z].cost[0].etd} hari",
+                                Text(
+                                  "${courierList.data[i].costs[z].cost[0].etd} hari",
                                   style: const TextStyle(
                                     fontSize: Dimensions.fontSizeExtraSmall,
-                                    color: ColorResources.black
+                                    color: ColorResources.black,
                                   ),
                                 ),
                               ],
-                            )
+                            ),
                           ),
                         ),
                       );
                     },
                   );
                 },
-              )
+              ),
             ],
           );
         },
       );
 
       setStateGetCourierStatus(GetCourierStatus.loaded);
-
-    } catch(_) {
+    } catch (_) {
       setStateGetCourierStatus(GetCourierStatus.error);
     }
   }
@@ -1887,24 +1934,26 @@ class EcommerceProvider extends ChangeNotifier {
     paymentFee = 0;
 
     notifyListeners();
-  } 
+  }
 
   Future<void> getCheckoutList({required String from}) async {
     setStateCheckoutStatus(GetCheckoutStatus.loading);
     try {
-
       CheckoutListModel checkoutListModel = await er.getCheckoutList(
-         from: from
+        from: from,
       );
       _checkoutListData = checkoutListModel.data;
       setStateCheckoutStatus(GetCheckoutStatus.loaded);
-
-    } catch(e) {
+    } catch (e) {
       setStateCheckoutStatus(GetCheckoutStatus.error);
     }
   }
- 
-  Future<void> decrementQty({required int i, required int z, required int qty}) async {
+
+  Future<void> decrementQty({
+    required int i,
+    required int z,
+    required int qty,
+  }) async {
     _cartData.stores![i].selected = true;
     _cartData.stores![i].items[z].cart.selected = true;
     _cartData.stores![i].items[z].cart.qty = qty;
@@ -1913,20 +1962,31 @@ class EcommerceProvider extends ChangeNotifier {
 
     listenQty = qty;
 
-    for (StoreItem stores in cartData.stores!.where((el) => el.selected == true)) {
-      for (StoreData cii in stores.items.where((el) => el.cart.selected == true)) {
-        totalPriceQty += cii.price * cii.cart.qty; 
+    for (StoreItem stores in cartData.stores!.where(
+      (el) => el.selected == true,
+    )) {
+      for (StoreData cii in stores.items.where(
+        (el) => el.cart.selected == true,
+      )) {
+        totalPriceQty += cii.price * cii.cart.qty;
       }
     }
 
     _cartData.totalPrice = totalPriceQty;
 
-    await er.updateQty(cartId:  _cartData.stores![i].items[z].cart.id, qty: cartData.stores![i].items[z].cart.qty);
+    await er.updateQty(
+      cartId: _cartData.stores![i].items[z].cart.id,
+      qty: cartData.stores![i].items[z].cart.qty,
+    );
 
     notifyListeners();
   }
 
-  Future<void> incrementQty({required int i, required int z, required int qty}) async {
+  Future<void> incrementQty({
+    required int i,
+    required int z,
+    required int qty,
+  }) async {
     _cartData.stores![i].selected = true;
     _cartData.stores![i].items[z].cart.selected = true;
     _cartData.stores![i].items[z].cart.qty = qty;
@@ -1935,15 +1995,22 @@ class EcommerceProvider extends ChangeNotifier {
 
     listenQty = qty;
 
-    for (StoreItem stores in cartData.stores!.where((el) => el.selected == true)) {
-      for (StoreData cii in stores.items.where((el) => el.cart.selected == true)) {
-        totalPriceQty += cii.price * cii.cart.qty; 
+    for (StoreItem stores in cartData.stores!.where(
+      (el) => el.selected == true,
+    )) {
+      for (StoreData cii in stores.items.where(
+        (el) => el.cart.selected == true,
+      )) {
+        totalPriceQty += cii.price * cii.cart.qty;
       }
     }
 
     _cartData.totalPrice = totalPriceQty;
 
-    await er.updateQty(cartId:  _cartData.stores![i].items[z].cart.id, qty: cartData.stores![i].items[z].cart.qty);
+    await er.updateQty(
+      cartId: _cartData.stores![i].items[z].cart.id,
+      qty: cartData.stores![i].items[z].cart.qty,
+    );
 
     notifyListeners();
   }
@@ -1954,46 +2021,37 @@ class EcommerceProvider extends ChangeNotifier {
     _cartData.stores![i].items[z].cart.qty = qty;
 
     int totalPrice = 0;
-      
-    for (StoreItem cis in cartData.stores!.where((el) => el.selected == true).toList()) {
-      for (StoreData cii in cis.items.where((el) => el.cart.selected == true).toList()) {
+
+    for (StoreItem cis
+        in cartData.stores!.where((el) => el.selected == true).toList()) {
+      for (StoreData cii
+          in cis.items.where((el) => el.cart.selected == true).toList()) {
         totalPrice += cii.price * cii.cart.qty;
       }
     }
 
     _cartData.totalPrice = totalPrice;
-   
+
     notifyListeners();
   }
 
-  Future<void> updateQty({
-    required String cartId, 
-    required int qty
-  }) async {
-    await er.updateQty( 
-      cartId: cartId, 
-      qty: qty
-    );
+  Future<void> updateQty({required String cartId, required int qty}) async {
+    await er.updateQty(cartId: cartId, qty: qty);
   }
 
-  Future<void> updateNote({required String cartId, required String note}) async {
+  Future<void> updateNote({
+    required String cartId,
+    required String note,
+  }) async {
     try {
-
-      await er.updateNote(
-        cartId: cartId, 
-        note: note
-      );
+      await er.updateNote(cartId: cartId, note: note);
 
       notifyListeners();
-
-    } catch(_) {
-
-    }
+    } catch (_) {}
   }
 
   Future<List<ProvinceData>> getProvince({required String search}) async {
     try {
-
       ProvinceModel provinceModel = await er.getProvince(search: search);
       _provinces = [];
       _provinces.addAll(provinceModel.data);
@@ -2001,44 +2059,40 @@ class EcommerceProvider extends ChangeNotifier {
       notifyListeners();
 
       return provinceModel.data;
-
-    } catch(_) {
-      throw [];    
+    } catch (_) {
+      throw [];
     }
   }
 
   Future<List<CityData>> getCity({
     required String provinceName,
-    required String search
+    required String search,
   }) async {
     try {
-
       CityModel cityModel = await er.getCity(
         provinceName: provinceName,
-        search: search
+        search: search,
       );
-      
+
       _city = [];
       _city.addAll(cityModel.data);
 
       notifyListeners();
 
       return cityModel.data;
-
-    } catch(_) {
+    } catch (_) {
       throw [];
     }
   }
 
   Future<List<DistrictData>> getDistrict({
     required String cityName,
-    required String search  
+    required String search,
   }) async {
     try {
-
       DistrictModel districtModel = await er.getDistrict(
         cityName: cityName,
-        search: search
+        search: search,
       );
       _district = [];
       _district.addAll(districtModel.data);
@@ -2046,18 +2100,16 @@ class EcommerceProvider extends ChangeNotifier {
       notifyListeners();
 
       return districtModel.data;
-
-    } catch(_) {  
+    } catch (_) {
       throw [];
-    } 
+    }
   }
 
   Future<List<SubdistrictData>> getSubdistrict({
     required String districtName,
-    required String search
+    required String search,
   }) async {
     try {
-
       SubdistrictModel subdistrictModel = await er.getSubdistrict(
         districtName: districtName,
         search: search,
@@ -2066,10 +2118,9 @@ class EcommerceProvider extends ChangeNotifier {
       _subdistrict.addAll(subdistrictModel.data);
 
       notifyListeners();
-      
-      return subdistrictModel.data;
 
-    } catch(_) {
+      return subdistrictModel.data;
+    } catch (_) {
       throw [];
     }
   }
@@ -2077,47 +2128,43 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> getBadgeOrderAll() async {
     setStateBadgeOrderAll(BadgeOrderAllStatus.loading);
     try {
-
       int badgeData = await er.getBadgeOrderAll();
 
       badge = badgeData;
 
       setStateBadgeOrderAll(BadgeOrderAllStatus.loaded);
 
-      if(badge == 0) {
+      if (badge == 0) {
         setStateBadgeOrderAll(BadgeOrderAllStatus.empty);
       }
-
-    } catch(_) {
+    } catch (_) {
       setStateBadgeOrderAll(BadgeOrderAllStatus.error);
     }
-  } 
+  }
 
   Future<void> getBadgeOrderDetail({required String orderStatus}) async {
     setStateBadgeOrderDetail(BadgeOrderDetailStatus.loading);
     try {
-
       int badgeData = await er.getBadgeOrderStatus(orderStatus: orderStatus);
 
-      if(orderStatus == "WAITING_PAYMENT") {
+      if (orderStatus == "WAITING_PAYMENT") {
         badgeWaitingPayment = badgeData;
       }
 
-      if(orderStatus == "PAID") {
+      if (orderStatus == "PAID") {
         badgePaid = badgeData;
       }
 
-      if(orderStatus == "PACKING") {
+      if (orderStatus == "PACKING") {
         badgePacking = badgeData;
       }
 
-      if(orderStatus == "ON PROCESS") {
+      if (orderStatus == "ON PROCESS") {
         badgeDelivery = badgeData;
       }
 
       setStateBadgeOrderDetail(BadgeOrderDetailStatus.loaded);
-
-    } catch(_) {
+    } catch (_) {
       setStateBadgeOrderDetail(BadgeOrderDetailStatus.error);
     }
   }
@@ -2125,7 +2172,9 @@ class EcommerceProvider extends ChangeNotifier {
   Future<List<PredictionModel>> getAutocomplete(String query) async {
     try {
       Dio dio = Dio();
-      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${RemoteDataSourceConsts.gmaps}");
+      Response res = await dio.get(
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=${RemoteDataSourceConsts.gmaps}",
+      );
       Map<String, dynamic> data = res.data;
       AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
 
@@ -2134,19 +2183,23 @@ class EcommerceProvider extends ChangeNotifier {
       }
 
       return autocompleteModel.predictions;
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
-    } catch(e) {
+    } catch (e) {
       debugPrint(e.toString());
     }
     return [];
   }
 
-  Future<void> addPostalCodeToPrediction(PredictionModel prediction, Dio dio) async {
+  Future<void> addPostalCodeToPrediction(
+    PredictionModel prediction,
+    Dio dio,
+  ) async {
     try {
-      final placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json"
-        "?place_id=${prediction.placeId}"
-        "&key=${RemoteDataSourceConsts.gmaps}";
+      final placeDetailsUrl =
+          "https://maps.googleapis.com/maps/api/place/details/json"
+          "?place_id=${prediction.placeId}"
+          "&key=${RemoteDataSourceConsts.gmaps}";
 
       Response res = await dio.get(placeDetailsUrl);
       Map<String, dynamic> details = res.data;
@@ -2160,7 +2213,7 @@ class EcommerceProvider extends ChangeNotifier {
 
         if (types.isNotEmpty && types.contains('postal_code')) {
           postalCode = component["long_name"].toString();
-          break; 
+          break;
         }
       }
 
@@ -2170,30 +2223,25 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
-
-  Future<void> getPaymentChannel({
-    required BuildContext context
-  }) async {
+  Future<void> getPaymentChannel({required BuildContext context}) async {
     setStateGetPaymentChannelStatus(GetPaymentChannelStatus.loading);
     try {
-
       // BalanceModel balanceModel = await er.getBalance();
 
       PaymentChannelModel paymentChannelModel = await er.getPaymentChannel();
 
       setStateGetPaymentChannelStatus(GetPaymentChannelStatus.loaded);
-      
+
       Future.delayed(Duration.zero, () {
-        
         showModalBottomSheet(
-          context: context, 
+          context: context,
           isDismissible: true,
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0)
-            )
+              topRight: Radius.circular(10.0),
+            ),
           ),
           builder: (BuildContext context) {
             return Container(
@@ -2203,37 +2251,36 @@ class EcommerceProvider extends ChangeNotifier {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-              
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-              
                       Container(
                         margin: const EdgeInsets.all(15.0),
-                        child: Text("Pilih Pembayaran",
+                        child: Text(
+                          "Pilih Pembayaran",
                           style: robotoRegular.copyWith(
                             color: ColorResources.black,
                             fontSize: Dimensions.fontSizeLarge,
-                            fontWeight: FontWeight.bold
+                            fontWeight: FontWeight.bold,
                           ),
-                        )
+                        ),
                       ),
-              
                     ],
                   ),
-                                      
+
                   ListView.separated(
                     separatorBuilder: (BuildContext context, int i) {
-                      return const Divider(
-                        thickness: 2.0,
-                      );
+                      return const Divider(thickness: 2.0);
                     },
                     physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
-                    itemCount: paymentChannelModel.data.data.where((el) => el.paymentType == "VIRTUAL_ACCOUNT").length,
+                    itemCount: paymentChannelModel.data.data
+                        .where((el) => el.paymentType == "VIRTUAL_ACCOUNT")
+                        .length,
                     itemBuilder: (BuildContext context, int i) {
-                      PaymentChannelItem payment = paymentChannelModel.data.data[i];
+                      PaymentChannelItem payment =
+                          paymentChannelModel.data.data[i];
 
                       return Bouncing(
                         onPress: () async {
@@ -2253,8 +2300,8 @@ class EcommerceProvider extends ChangeNotifier {
                           padding: const EdgeInsets.all(12.0),
                           child: Container(
                             margin: const EdgeInsets.only(
-                              left: 10.0, 
-                              right: 10.0
+                              left: 10.0,
+                              right: 10.0,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2262,10 +2309,10 @@ class EcommerceProvider extends ChangeNotifier {
                               children: [
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-
                                     CachedNetworkImage(
                                       imageUrl: payment.logo,
                                       imageBuilder: (context, imageProvider) {
@@ -2275,8 +2322,8 @@ class EcommerceProvider extends ChangeNotifier {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                               fit: BoxFit.fitHeight,
-                                              image: imageProvider
-                                            )
+                                              image: imageProvider,
+                                            ),
                                           ),
                                         );
                                       },
@@ -2284,40 +2331,37 @@ class EcommerceProvider extends ChangeNotifier {
 
                                     const SizedBox(width: 10.0),
 
-                                    Text(payment.name,
+                                    Text(
+                                      payment.name,
                                       style: robotoRegular.copyWith(
                                         fontSize: Dimensions.fontSizeDefault,
-                                        color: ColorResources.black
+                                        color: ColorResources.black,
                                       ),
                                     ),
-
                                   ],
                                 ),
-                                Text("Pilih",
+                                Text(
+                                  "Pilih",
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorResources.black
+                                    color: ColorResources.black,
                                   ),
-                                )
+                                ),
                               ],
-                            )
+                            ),
                           ),
                         ),
                       );
-                      
                     },
-                  )
-              
+                  ),
                 ],
               ),
             );
-          }
+          },
         );
-        
       });
-
-    } catch(_) {
+    } catch (_) {
       setStateGetPaymentChannelStatus(GetPaymentChannelStatus.error);
     }
   }
@@ -2325,53 +2369,61 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> pay({
     required int amount,
     required int cost,
-    required String from
+    required String from,
   }) async {
     setStatePayStatus(PayStatus.loading);
-    
+
     try {
-      
-      if(paymentCode == "gopay" || paymentCode == "shopee" || paymentCode == "ovo" || paymentCode == "dana") {
-
+      if (paymentCode == "gopay" ||
+          paymentCode == "shopee" ||
+          paymentCode == "ovo" ||
+          paymentCode == "dana") {
         ResponseMidtransEmoney responseMidtransEmoney = await er.emoneyPay(
-          amount: amount, 
-          app: "raksha", 
+          amount: amount,
+          app: "raksha",
           from: from,
-          channelId: channelId, 
+          channelId: channelId,
           platform: platform,
-          paymentCode: paymentCode
+          paymentCode: paymentCode,
         );
 
-        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => PaymentReceiptEmoney(
-          amount: amount,
-          cost: cost,
-          type: paymentName,
-          responseMidtransEmoneyData: responseMidtransEmoney.data,
-        )));
-
+        Navigator.pushReplacement(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => PaymentReceiptEmoney(
+              amount: amount,
+              cost: cost,
+              type: paymentName,
+              responseMidtransEmoneyData: responseMidtransEmoney.data,
+            ),
+          ),
+        );
       } else {
-       
         ResponseMidtransVa responseMidtransVa = await er.pay(
-          amount: amount, 
-          app: "raksha", 
+          amount: amount,
+          app: "raksha",
           from: from,
-          channelId: channelId, 
+          channelId: channelId,
           platform: platform,
-          paymentCode: paymentCode
+          paymentCode: paymentCode,
         );
 
-        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => PaymentReceiptVaScreen(
-          responseMidtransVaData: responseMidtransVa.data,
-          amount: amount,
-          cost: cost,
-        )));
-
+        Navigator.pushReplacement(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => PaymentReceiptVaScreen(
+              responseMidtransVaData: responseMidtransVa.data,
+              amount: amount,
+              cost: cost,
+            ),
+          ),
+        );
       }
 
       channelId = -1;
 
       setStatePayStatus(PayStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStatePayStatus(PayStatus.error);
     }
   }
@@ -2379,7 +2431,9 @@ class EcommerceProvider extends ChangeNotifier {
   Future<void> howToPayment({required String channelId}) async {
     setStateHowToPayment(HowToPaymentStatus.loading);
     try {
-      HowToPaymentModel howToPayment = await er.howToPayment(channelId: channelId);
+      HowToPaymentModel howToPayment = await er.howToPayment(
+        channelId: channelId,
+      );
 
       _atm = [];
       _atm.addAll(howToPayment.data.atm);
@@ -2391,57 +2445,64 @@ class EcommerceProvider extends ChangeNotifier {
       _emoney.addAll(howToPayment.data.emoney);
 
       setStateHowToPayment(HowToPaymentStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStateHowToPayment(HowToPaymentStatus.error);
     }
   }
- 
+
   Future<void> payTopup() async {
-     setStatePayStatus(PayStatus.loading);
-    
+    setStatePayStatus(PayStatus.loading);
+
     try {
-
-      if(paymentCode == "gopay" || paymentCode == "shopee" || paymentCode == "ovo" || paymentCode == "dana") {
-
+      if (paymentCode == "gopay" ||
+          paymentCode == "shopee" ||
+          paymentCode == "ovo" ||
+          paymentCode == "dana") {
         ResponseMidtransEmoney responseMidtransEmoney = await er.emoneyPayTopup(
-          amount: selectedTopupPrice, 
-          app: "raksha", 
-          channelId: channelId, 
+          amount: selectedTopupPrice,
+          app: "raksha",
+          channelId: channelId,
           platform: platform,
-          paymentCode: paymentCode
+          paymentCode: paymentCode,
         );
 
-        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) =>  PaymentReceiptEmoney(
-          amount: selectedTopupPrice,
-          cost: 0,
-          responseMidtransEmoneyData: responseMidtransEmoney.data,
-          type: paymentName,
-        )));
-
+        Navigator.pushReplacement(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => PaymentReceiptEmoney(
+              amount: selectedTopupPrice,
+              cost: 0,
+              responseMidtransEmoneyData: responseMidtransEmoney.data,
+              type: paymentName,
+            ),
+          ),
+        );
       } else {
-       
         ResponseMidtransVa responseMidtransVa = await er.payTopup(
-          amount: selectedTopupPrice, 
-          app: "raksha", 
-          channelId: channelId, 
+          amount: selectedTopupPrice,
+          app: "raksha",
+          channelId: channelId,
           platform: platform,
-          paymentCode: paymentCode
+          paymentCode: paymentCode,
         );
 
-        Navigator.pushReplacement(navigatorKey.currentContext!, MaterialPageRoute(builder: (context) => PaymentReceiptVaScreen(
-          amount: selectedTopupPrice,
-          cost: 0,
-          responseMidtransVaData: responseMidtransVa.data,
-        )));
-
+        Navigator.pushReplacement(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => PaymentReceiptVaScreen(
+              amount: selectedTopupPrice,
+              cost: 0,
+              responseMidtransVaData: responseMidtransVa.data,
+            ),
+          ),
+        );
       }
 
       channelId = -1;
 
       setStatePayStatus(PayStatus.loaded);
-    } catch(_) {
+    } catch (_) {
       setStatePayStatus(PayStatus.error);
     }
-  } 
-
+  }
 }

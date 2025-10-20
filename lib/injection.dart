@@ -127,33 +127,74 @@ import 'package:weather/weather.dart';
 final locator = GetIt.instance;
 
 void init() {
+  // REMOTE DATA SOURCE
+  locator.registerLazySingleton<AdministrationRemoteDataSource>(
+    () => AdministrationRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<KbriRemoteDataSource>(
+    () => KbriRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<MediaRemoteDatasource>(
+    () => MediaRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<ChatRemoteDataSource>(
+    () => ChatRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<EventRemoteDataSource>(
+    () => EventRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<NearmeRemoteDataSource>(
+    () => NearmeRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<PPOBRemoteDataSource>(
+    () => PPOBRemoteDataSourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<DocumentRemoteDatasource>(
+    () => DocumentRemoteDatasourceImpl(client: locator()),
+  );
+  locator.registerLazySingleton<PPOBRemoteDataSourceImpl>(
+    () => PPOBRemoteDataSourceImpl(client: locator()),
+  );
 
-  // REMOTE DATA SOURCE 
-  locator.registerLazySingleton<AdministrationRemoteDataSource>(() => AdministrationRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<DashboardRemoteDataSource>(() => DashboardRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<KbriRemoteDataSource>(() => KbriRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<MediaRemoteDatasource>(() => MediaRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<EventRemoteDataSource>(() => EventRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<NearmeRemoteDataSource>(() => NearmeRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<PPOBRemoteDataSource>(() => PPOBRemoteDataSourceImpl(client: locator()));
-  locator.registerLazySingleton<DocumentRemoteDatasource>(() => DocumentRemoteDatasourceImpl(client: locator()));
-  locator.registerLazySingleton<PPOBRemoteDataSourceImpl>(() => PPOBRemoteDataSourceImpl(client: locator()));
-
-  // REPOSITORY 
-  locator.registerLazySingleton<AdministrationRepository>(() => AdministrationRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<KbriRepository>(() => KbriRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<MediaRepository>(() => MediaRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<EventRepository>(() => EventRepositoryImpl(remoteDataSource: locator()));
-  locator.registerLazySingleton<NearmeRepository>(() => NearmeRepositoryImpl(remoteDataSource: locator()));
+  // REPOSITORY
+  locator.registerLazySingleton<AdministrationRepository>(
+    () => AdministrationRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<DashboardRepository>(
+    () => DashboardRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<KbriRepository>(
+    () => KbriRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<MediaRepository>(
+    () => MediaRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<EventRepository>(
+    () => EventRepositoryImpl(remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<NearmeRepository>(
+    () => NearmeRepositoryImpl(remoteDataSource: locator()),
+  );
   locator.registerLazySingleton<EcommerceRepo>(() => EcommerceRepo());
   locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
-  locator.registerLazySingleton<PPOBRepository>(() => PPOBRepositoryImpl(remoteDatasource: locator()));
-  locator.registerLazySingleton<DocumentRepository>(() => DocumentRepositoryImpl(remoteDatasource: locator()));
+  locator.registerLazySingleton<PPOBRepository>(
+    () => PPOBRepositoryImpl(remoteDatasource: locator()),
+  );
+  locator.registerLazySingleton<DocumentRepository>(
+    () => DocumentRepositoryImpl(remoteDatasource: locator()),
+  );
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
@@ -200,12 +241,14 @@ void init() {
   locator.registerLazySingleton(() => CheckRegisterStatusUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
-  // NOTIFIER 
-  locator.registerLazySingleton(() => DashboardNotifier(
-    profileNotifier: locator(),
-    bannerUseCase: locator(),
-    useCase: locator()
-  ));
+  // NOTIFIER
+  locator.registerLazySingleton(
+    () => DashboardNotifier(
+      profileNotifier: locator(),
+      bannerUseCase: locator(),
+      useCase: locator(),
+    ),
+  );
   locator.registerFactory(() => ProfileNotifier(useCase: locator()));
   locator.registerFactory(() => UpdateProfileNotifier(useCase: locator()));
   locator.registerFactory(() => SosNotifier(useCase: locator()));
@@ -234,53 +277,51 @@ void init() {
   locator.registerFactory(() => InquiryPulsaProvider(useCase: locator()));
   locator.registerFactory(() => PaymentChannelProvider(useCase: locator()));
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
-  locator.registerFactory(() => EventNotifier  (
-    useCase: locator(), 
-    listEventUseCase: locator(),
-    deleteEventUseCase: locator(),
-    updateEventUseCase: locator(),
-  ));
+  locator.registerFactory(
+    () => EventNotifier(
+      useCase: locator(),
+      listEventUseCase: locator(),
+      deleteEventUseCase: locator(),
+      updateEventUseCase: locator(),
+    ),
+  );
 
+  locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
+  locator.registerLazySingleton(
+    () => RegisterNotifier(
+      mediaUseCase: locator(),
+      updatePassport: locator(),
+      useCase: locator(),
+      registerPassport: locator(),
+      firebaseAuth: locator(),
+      googleSignIn: locator(),
+      checkRegisterStatusUseCase: locator(),
+    ),
+  );
 
-  locator.registerLazySingleton(() => LoginNotifier(
-    useCase: locator()
-  ));
-  locator.registerLazySingleton(() => RegisterNotifier(
-    mediaUseCase: locator(),
-    updatePassport: locator(),
-    useCase: locator(),
-    registerPassport: locator(),
-    firebaseAuth: locator(),
-    googleSignIn: locator(),
-    checkRegisterStatusUseCase: locator(),
-  ));
-  
-  locator.registerFactory(() => EcommerceProvider(
-    er: locator(), 
-    mr: locator()
-  ));
+  locator.registerFactory(
+    () => EcommerceProvider(er: locator(), mr: locator()),
+  );
 
-  locator.registerFactory(() => WeatherNotifier(
-    weather: locator(),
-  ));
+  locator.registerFactory(() => WeatherNotifier(weather: locator()));
 
-  locator.registerFactory(() => FirebaseProvider(
-    dio: locator()
-  ));
+  locator.registerFactory(() => FirebaseProvider(dio: locator()));
 
   // locator.registerLazySingleton(() => PassportScannerNotifier(
   //   gemini: locator(),
   // ));
 
-  locator.registerFactory(() => DocumentNotifier(
-    mediaUseCase: locator(),
-    updatePassport: locator(),
-    updateVisa: locator(),
-    profileUseCase: locator(),
-    deleteVisa: locator(),
-    deviceInfo: locator()
-  ));
-  
+  locator.registerFactory(
+    () => DocumentNotifier(
+      mediaUseCase: locator(),
+      updatePassport: locator(),
+      updateVisa: locator(),
+      profileUseCase: locator(),
+      deleteVisa: locator(),
+      deviceInfo: locator(),
+    ),
+  );
+
   locator.registerLazySingleton(() => SocketIoService());
 
   DioHelper dio = DioHelper();
@@ -289,10 +330,11 @@ void init() {
   locator.registerLazySingleton(() => getDio);
   locator.registerLazySingleton(() => DeviceInfoPlugin());
   locator.registerLazySingleton(() => FirebaseAuth.instance);
-  locator.registerLazySingleton(() => GoogleSignIn());
-  locator.registerLazySingleton(() => WeatherFactory(
-    '067cd306a519e9153f2ae44e71c8b4f3', 
-    language: Language.INDONESIAN,
-  ));
-
+  locator.registerLazySingleton(() => GoogleSignIn.instance);
+  locator.registerLazySingleton(
+    () => WeatherFactory(
+      '067cd306a519e9153f2ae44e71c8b4f3',
+      language: Language.INDONESIAN,
+    ),
+  );
 }

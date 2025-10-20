@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+// import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/common/constants/theme.dart';
@@ -27,7 +27,7 @@ class PPOBDetailPulsaPage extends StatefulWidget {
   const PPOBDetailPulsaPage({
     required this.title,
     required this.type,
-    super.key
+    super.key,
   });
 
   @override
@@ -35,7 +35,6 @@ class PPOBDetailPulsaPage extends StatefulWidget {
 }
 
 class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
-
   String productId = "";
   String productName = "";
 
@@ -47,22 +46,22 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
   Timer? debounce;
 
   void onPhoneChange() {
-    if(getC.text.startsWith('0') || getC.text.startsWith('8')) {
+    if (getC.text.startsWith('0') || getC.text.startsWith('8')) {
       getC = TextEditingController(text: "62");
-      getC.selection = TextSelection.fromPosition(TextPosition(offset: getC.text.length));
+      getC.selection = TextSelection.fromPosition(
+        TextPosition(offset: getC.text.length),
+      );
     }
 
-    setState(() {
-                    
-    });
+    setState(() {});
   }
 
   Future<void> getData() async {
-    if(!mounted) return;
-      context.read<InquiryPulsaProvider>().reset();
+    if (!mounted) return;
+    context.read<InquiryPulsaProvider>().reset();
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
 
@@ -72,7 +71,7 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
     getC.addListener(onPhoneChange);
   }
 
-  @override 
+  @override
   void dispose() {
     debounce?.cancel();
     getC.removeListener(onPhoneChange);
@@ -85,62 +84,64 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(
-          left: 20.0,
-          right: 20.0,
-          bottom: 20.0
-        ),
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: productId.isEmpty 
-            ?Colors.grey
-            :const Color(0XFFC82927),
+            backgroundColor: productId.isEmpty
+                ? Colors.grey
+                : const Color(0XFFC82927),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0)
-            )
+              borderRadius: BorderRadius.circular(30.0),
+            ),
           ),
           onPressed: () {
-            if(productId.isEmpty) {
+            if (productId.isEmpty) {
               ShowSnackbar.snackbarErr("Anda belum memilih denom");
               return;
             }
-            if(getC.text.isEmpty) {
+            if (getC.text.isEmpty) {
               ShowSnackbar.snackbarErr("Anda belum mengisi nomor ponsel");
               return;
             }
             Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PaymentPage(
-                customerName: "-", 
-                customerNo: getC.text, 
-                productId: productId, 
-                productName: productName,
-                productPrice: productPrice, 
-                topupby: "-", 
-                ref2: "-", 
-                type: widget.type
-              ))
+              context,
+              MaterialPageRoute(
+                builder: (context) => PaymentPage(
+                  customerName: "-",
+                  customerNo: getC.text,
+                  productId: productId,
+                  productName: productName,
+                  productPrice: productPrice,
+                  topupby: "-",
+                  ref2: "-",
+                  type: widget.type,
+                ),
+              ),
             );
-          }, 
-          child: Text("Selanjutnya",
+          },
+          child: Text(
+            "Selanjutnya",
             style: robotoRegular.copyWith(
               color: Colors.white,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
             ),
-          )
-        )
+          ),
+        ),
       ),
       body: Consumer<InquiryPulsaProvider>(
         builder: (BuildContext context, InquiryPulsaProvider notifier, Widget? child) {
           return CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: [
-            
               SliverAppBar(
-                title: Text("Pulsa & Paket Data",
+                title: Text(
+                  "Pulsa & Paket Data",
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
                     fontWeight: FontWeight.bold,
-                    color: ColorResources.black
+                    color: ColorResources.black,
                   ),
                 ),
                 centerTitle: true,
@@ -157,38 +158,37 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                   height: 80.0,
                   width: double.infinity,
                   margin: const EdgeInsets.only(
-                    top: 10.0,  left: 5.0, 
-                    right: 5.0, bottom: 5.0
+                    top: 10.0,
+                    left: 5.0,
+                    right: 5.0,
+                    bottom: 5.0,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      const Expanded(
-                        flex: 1,
-                        child: SizedBox()
-                      ),
+                      const Expanded(flex: 1, child: SizedBox()),
                       Expanded(
                         flex: 25,
                         child: Container(
                           height: 50.0,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(4.0)
+                            borderRadius: BorderRadius.circular(4.0),
                           ),
                           child: TextFormField(
                             controller: getC,
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall
+                              fontSize: Dimensions.fontSizeSmall,
                             ),
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.digitsOnly,
                             ],
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: "Nomor Ponsel",
                               hintStyle: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
+                                fontSize: Dimensions.fontSizeSmall,
                               ),
                               fillColor: Colors.white,
                               border: InputBorder.none,
@@ -196,96 +196,96 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               enabledBorder: const UnderlineInputBorder(),
                               errorBorder: InputBorder.none,
                               disabledBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(16.0)
+                              contentPadding: const EdgeInsets.all(16.0),
                             ),
                             onChanged: (val) {
-                              if(val.startsWith('0') || val.startsWith('8')) {
+                              if (val.startsWith('0') || val.startsWith('8')) {
                                 getC = TextEditingController(text: "62");
-                                getC.selection = TextSelection.fromPosition(TextPosition(offset: getC.text.length));
-                              } 
-                          
-                              setState(() {
-                                  
-                              });
-                          
-                              if (debounce?.isActive ?? false) debounce?.cancel();
-                              debounce = Timer(const Duration(milliseconds: 500), () {
-                                context.read<InquiryPulsaProvider>().fetch(prefix: getC.text, type: "pulsa");
-                              });
+                                getC.selection = TextSelection.fromPosition(
+                                  TextPosition(offset: getC.text.length),
+                                );
+                              }
+
+                              setState(() {});
+
+                              if (debounce?.isActive ?? false)
+                                debounce?.cancel();
+                              debounce = Timer(
+                                const Duration(milliseconds: 500),
+                                () {
+                                  context.read<InquiryPulsaProvider>().fetch(
+                                    prefix: getC.text,
+                                    type: "pulsa",
+                                  );
+                                },
+                              );
                             },
-                          )
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: 5,
                         child: Bouncing(
                           onPress: () async {
-                            final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
-                            getC.text = contact.phoneNumber!.number!.replaceAll(RegExp("[()+\\s-]+"), "");
-                            context.read<InquiryPulsaProvider>().fetch(prefix: getC.text, type: "pulsa");
-                            onPhoneChange();
+                            // final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
+                            // getC.text = contact.phoneNumber!.number!.replaceAll(RegExp("[()+\\s-]+"), "");
+                            // context.read<InquiryPulsaProvider>().fetch(prefix: getC.text, type: "pulsa");
+                            // onPhoneChange();
                           },
                           child: Container(
                             margin: const EdgeInsets.only(right: 10.0),
                             child: const Icon(
                               Icons.contacts,
-                              color: Colors.black
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
-            
-              if(notifier.state == ProviderState.loading) 
+
+              if (notifier.state == ProviderState.loading)
                 const SliverFillRemaining(
-                  child: Center(
-                    child: SpinKitChasingDots(
-                      color: primaryColor,
-                    )
-                  ),
+                  child: Center(child: SpinKitChasingDots(color: primaryColor)),
                 ),
 
-              if(notifier.state == ProviderState.error) 
+              if (notifier.state == ProviderState.error)
                 SliverFillRemaining(
-                  child: Center(
-                    child: Text(notifier.message),
-                  ),
+                  child: Center(child: Text(notifier.message)),
                 ),
 
-              if(notifier.state == ProviderState.empty) 
+              if (notifier.state == ProviderState.empty)
                 SliverFillRemaining(
-                  child: Center(
-                    child: Text(notifier.message),
-                  ),
+                  child: Center(child: Text(notifier.message)),
                 ),
 
-              if(notifier.state == ProviderState.loaded) 
+              if (notifier.state == ProviderState.loaded)
                 SliverToBoxAdapter(
                   child: Container(
-                    margin: const EdgeInsets.only( 
+                    margin: const EdgeInsets.only(
                       bottom: 20.0,
-                      left: 15.0, 
-                      right: 15.0
+                      left: 15.0,
+                      right: 15.0,
                     ),
                     child: GridView.builder(
                       shrinkWrap: true,
                       padding: const EdgeInsets.all(8.0),
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200.0,
-                        childAspectRatio: 3.6 / 3.0,
-                        crossAxisSpacing: 15.0,
-                        mainAxisSpacing: 15.0,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200.0,
+                            childAspectRatio: 3.6 / 3.0,
+                            crossAxisSpacing: 15.0,
+                            mainAxisSpacing: 15.0,
+                          ),
                       itemCount: notifier.entity.length,
                       itemBuilder: (BuildContext context, int i) {
                         return Bouncing(
                           onPress: () {
                             setState(() {
-                              if(selected != i) {
+                              if (selected != i) {
                                 selected = i;
                                 productId = notifier.entity[i].code;
                                 productName = notifier.entity[i].name;
@@ -300,48 +300,53 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                           child: Stack(
                             clipBehavior: Clip.none,
                             children: [
-                              
                               Align(
-                                alignment:Alignment.bottomCenter,
+                                alignment: Alignment.bottomCenter,
                                 child: Container(
                                   height: 80.0,
                                   width: double.infinity,
                                   decoration: BoxDecoration(
                                     color: selected == i
-                                    ? primaryColor
-                                    : const Color(0xFFF4F4F4),
+                                        ? primaryColor
+                                        : const Color(0xFFF4F4F4),
                                     boxShadow: kElevationToShadow[1],
                                     borderRadius: BorderRadius.circular(25.0),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(notifier.entity[i].name,
+                                      Text(
+                                        notifier.entity[i].name,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall,
-                                          color: selected == i 
-                                          ? ColorResources.white 
-                                          : ColorResources.black
+                                          color: selected == i
+                                              ? ColorResources.white
+                                              : ColorResources.black,
                                         ),
                                       ),
                                       const SizedBox(height: 5.0),
-                                      Text(formatCurrency(notifier.entity[i].price),
+                                      Text(
+                                        formatCurrency(
+                                          notifier.entity[i].price,
+                                        ),
                                         style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeExtraSmall,
+                                          fontSize:
+                                              Dimensions.fontSizeExtraSmall,
                                           fontWeight: FontWeight.w600,
-                                          color: selected == i 
-                                          ? ColorResources.white 
-                                          : ColorResources.black
+                                          color: selected == i
+                                              ? ColorResources.white
+                                              : ColorResources.black,
                                         ),
                                       ),
                                     ],
-                                  ) 
+                                  ),
                                 ),
                               ),
-                                                  
+
                               // Positioned(
                               //   top: 0.0,
                               //   left: 0.0,
@@ -351,21 +356,17 @@ class PPOBDetailPulsaPageState extends State<PPOBDetailPulsaPage> {
                               //     height: 50.0,
                               //   )
                               // ),
-                                                  
                             ],
                           ),
                         );
-                      
-                      }
+                      },
                     ),
                   ),
-                )
+                ),
             ],
           );
-
         },
-      ) 
+      ),
     );
   }
-  
 }

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -42,94 +41,95 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<void> chooseFile() async {
     imageSource = await showModalBottomSheet<ImageSource>(
-        context: context,
-        showDragHandle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    'Pilih Sumber',
-                    style: robotoRegular.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Text(
+                  'Pilih Sumber',
+                  style: robotoRegular.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
-                ListTile(
-                  title: const Text('Galeri'),
-                  leading: const Icon(Icons.photo),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey.shade400,
-                  ),
-                  onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('Galeri'),
+                leading: const Icon(Icons.photo),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.grey.shade400,
                 ),
-                ListTile(
-                  title: const Text('Kamera'),
-                  leading: const Icon(Icons.camera),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey.shade400,
-                  ),
-                  onTap: () => Navigator.pop(context, ImageSource.camera),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              ListTile(
+                title: const Text('Kamera'),
+                leading: const Icon(Icons.camera),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.grey.shade400,
                 ),
-              ],
-            ),
-          );
-        });
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+            ],
+          ),
+        );
+      },
+    );
     if (imageSource != null) {
       if (imageSource == ImageSource.gallery) {
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.gallery,
         );
 
-        File? cropped = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-              toolbarTitle: "Crop It",
-              toolbarColor: Colors.blueGrey[900],
-              toolbarWidgetColor: ColorResources.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
-        );
+        // File? cropped = await ImageCropper().cropImage(
+        //   sourcePath: pickedFile!.path,
+        //   androidUiSettings: AndroidUiSettings(
+        //       toolbarTitle: "Crop It",
+        //       toolbarColor: Colors.blueGrey[900],
+        //       toolbarWidgetColor: ColorResources.white,
+        //       initAspectRatio: CropAspectRatioPreset.original,
+        //       lockAspectRatio: false),
+        // );
 
-        if (cropped != null) {
-          setState(() => selectedFile = cropped);
-        } else {
-          setState(() => selectedFile = null);
-        }
+        // if (cropped != null) {
+        //   setState(() => selectedFile = cropped);
+        // } else {
+        //   setState(() => selectedFile = null);
+        // }
       } else {
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.camera,
         );
 
-        File? cropped = await ImageCropper().cropImage(
-            sourcePath: pickedFile!.path,
-            androidUiSettings: AndroidUiSettings(
-                toolbarTitle: "Crop It",
-                toolbarColor: Colors.blueGrey[900],
-                toolbarWidgetColor: ColorResources.white,
-                initAspectRatio: CropAspectRatioPreset.original,
-                lockAspectRatio: false),
-            iosUiSettings: const IOSUiSettings(
-              minimumAspectRatio: 1.0,
-            ));
+        // File? cropped = await ImageCropper().cropImage(
+        //     sourcePath: pickedFile!.path,
+        //     androidUiSettings: AndroidUiSettings(
+        //         toolbarTitle: "Crop It",
+        //         toolbarColor: Colors.blueGrey[900],
+        //         toolbarWidgetColor: ColorResources.white,
+        //         initAspectRatio: CropAspectRatioPreset.original,
+        //         lockAspectRatio: false),
+        //     iosUiSettings: const IOSUiSettings(
+        //       minimumAspectRatio: 1.0,
+        //     ));
 
-        if (cropped != null) {
-          setState(() => selectedFile = cropped);
-        } else {
-          setState(() => selectedFile = null);
-        }
+        // if (cropped != null) {
+        //   setState(() => selectedFile = cropped);
+        // } else {
+        //   setState(() => selectedFile = null);
+        // }
       }
     }
   }
@@ -146,10 +146,13 @@ class ProfilePageState extends State<ProfilePage> {
     }
 
     await uploadMediaNotifier.send(
-        file: selectedFile!, folderName: "avatar-raksha");
+      file: selectedFile!,
+      folderName: "avatar-raksha",
+    );
 
     await updateProfileNotifier.updateProfile(
-        avatar: uploadMediaNotifier.entity!.path);
+      avatar: uploadMediaNotifier.entity!.path,
+    );
 
     if (updateProfileNotifier.message == "") {
       ShowSnackbar.snackbarOk("Update Profile Success");
@@ -228,39 +231,40 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       bottomNavigationBar: selectedFile != null
-      ? Container(
-          margin: const EdgeInsets.only(
-            top: 20.0, 
-            bottom: 20.0, 
-            left: 10.0, 
-            right: 10.0
-          ),
-          child: CustomButton(
-            onTap: submit,
-            isBorder: false,
-            isBorderRadius: true,
-            btnColor: const Color(0xFFFE1717),
-            btnTxt: "Update Profile",
-          ),
-        )
-      : const SizedBox(),
+          ? Container(
+              margin: const EdgeInsets.only(
+                top: 20.0,
+                bottom: 20.0,
+                left: 10.0,
+                right: 10.0,
+              ),
+              child: CustomButton(
+                onTap: submit,
+                isBorder: false,
+                isBorderRadius: true,
+                btnColor: const Color(0xFFFE1717),
+                btnTxt: "Update Profile",
+              ),
+            )
+          : const SizedBox(),
       body: RefreshIndicator(
         onRefresh: () {
           return Future.sync(() => getData());
         },
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()
+            parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
             SliverAppBar(
               backgroundColor: ColorResources.backgroundColor,
               centerTitle: true,
-              title: Text("Profile",
+              title: Text(
+                "Profile",
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
                   fontSize: Dimensions.fontSizeLarge,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               leading: CupertinoNavigationBarBackButton(
@@ -273,113 +277,133 @@ class ProfilePageState extends State<ProfilePage> {
                 hasScrollBody: false,
                 child: Center(
                   child: SizedBox(
-                  width: 16.0,
-                  height: 16.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                    width: 16.0,
+                    height: 16.0,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Color(0xFFFE1717)),
+                    ),
                   ),
-                )
-              )),
+                ),
+              ),
             if (context.watch<ProfileNotifier>().state == ProviderState.error)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
                   child: Text(
-                  context.read<ProfileNotifier>().message,
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black
+                    context.read<ProfileNotifier>().message,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      color: ColorResources.black,
+                    ),
                   ),
-                )
-              )
-            ),
+                ),
+              ),
             if (context.watch<ProfileNotifier>().state == ProviderState.loaded)
-               SliverPadding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0, 
-                    right: 16.0, 
-                    bottom: 20.0
-                  ),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 20.0,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Container(
                         margin: const EdgeInsets.only(
-                          left: 16.0, 
-                          right: 16.0, 
-                          top: 20.0, 
-                          bottom: 22.0
+                          left: 16.0,
+                          right: 16.0,
+                          top: 20.0,
+                          bottom: 22.0,
                         ),
                         child: Center(
                           child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 3,
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 0.2),
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 3,
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 0.2),
+                                    ),
+                                  ],
+                                ),
+                                child: selectedFile != null
+                                    ? CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundColor: ColorResources.white,
+                                        backgroundImage: FileImage(
+                                          selectedFile!,
+                                        ),
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl: profileNotifier
+                                            .entity
+                                            .data!
+                                            .avatar
+                                            .toString(),
+                                        imageBuilder:
+                                            (
+                                              BuildContext context,
+                                              ImageProvider<Object>
+                                              imageProvider,
+                                            ) {
+                                              return CircleAvatar(
+                                                radius: 40.0,
+                                                backgroundColor:
+                                                    ColorResources.white,
+                                                backgroundImage: imageProvider,
+                                              );
+                                            },
+                                        errorWidget:
+                                            (
+                                              BuildContext context,
+                                              String url,
+                                              Object error,
+                                            ) {
+                                              return const CircleAvatar(
+                                                radius: 40.0,
+                                                backgroundColor:
+                                                    ColorResources.white,
+                                                backgroundImage: AssetImage(
+                                                  'assets/images/default.jpeg',
+                                                ),
+                                              );
+                                            },
+                                        placeholder:
+                                            (BuildContext context, String url) {
+                                              return const CircleAvatar(
+                                                radius: 40.0,
+                                                backgroundColor:
+                                                    ColorResources.white,
+                                                backgroundImage: AssetImage(
+                                                  'assets/images/default.jpeg',
+                                                ),
+                                              );
+                                            },
                                       ),
-                                    ],
-                                  ),
-                                  child: selectedFile != null
-                                  ? CircleAvatar(
-                                      radius: 40.0,
-                                      backgroundColor:
-                                          ColorResources.white,
-                                      backgroundImage: FileImage(
-                                        selectedFile!,
-                                      ),
-                                    )
-                                  : CachedNetworkImage(
-                                      imageUrl: profileNotifier.entity.data!.avatar.toString(),
-                                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                        return CircleAvatar(
-                                          radius: 40.0,
-                                          backgroundColor: ColorResources.white,
-                                          backgroundImage: imageProvider,
-                                        );
-                                      },
-                                      errorWidget: (BuildContext context, String url, Object error) {
-                                        return const CircleAvatar(
-                                          radius: 40.0,
-                                          backgroundColor: ColorResources.white,
-                                          backgroundImage: AssetImage(
-                                            'assets/images/default.jpeg'
-                                          ),
-                                        );
-                                      },
-                                      placeholder: (BuildContext context, String url) {
-                                        return const CircleAvatar(
-                                          radius: 40.0,
-                                          backgroundColor:ColorResources.white,
-                                          backgroundImage: AssetImage('assets/images/default.jpeg'),
-                                        );
-                                      },
-                                    )
-                                  ),
-                                // const Positioned(
-                                //   right: 0.0,
-                                //   bottom: 0.0,
-                                //   child: CircleAvatar(
-                                //     backgroundColor: ColorResources.white,
-                                //     maxRadius: 12.0,
-                                //     child: Icon(
-                                //       Icons.camera_alt,
-                                //       size: 14.0,
-                                //       color: ColorResources.black,
-                                //     ),
-                                //   ),
-                                // )
-                              ],
-                            ),
-                        )
+                              ),
+                              // const Positioned(
+                              //   right: 0.0,
+                              //   bottom: 0.0,
+                              //   child: CircleAvatar(
+                              //     backgroundColor: ColorResources.white,
+                              //     maxRadius: 12.0,
+                              //     child: Icon(
+                              //       Icons.camera_alt,
+                              //       size: 14.0,
+                              //       color: ColorResources.black,
+                              //     ),
+                              //   ),
+                              // )
+                            ],
+                          ),
+                        ),
                       ),
                       Center(
                         child: Text(
@@ -418,18 +442,22 @@ class ProfilePageState extends State<ProfilePage> {
                           children: [
                             passportField(
                               label: 'Jenis Kelamin',
-                              content: getGender(profileNotifier
-                                  .entity.data!.gender
-                                  .toString()),
+                              content: getGender(
+                                profileNotifier.entity.data!.gender.toString(),
+                              ),
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tanggal Lahir',
-                              content: profileNotifier.entity.data?.birthdate == "-" 
-                              ? "-"
-                              : DateFormat('dd MMMM yyyy', 'id').format(
-                                DateTime.parse(profileNotifier.entity.data!.birthdate.toString()
-                              )),
+                              content:
+                                  profileNotifier.entity.data?.birthdate == "-"
+                                  ? "-"
+                                  : DateFormat('dd MMMM yyyy', 'id').format(
+                                      DateTime.parse(
+                                        profileNotifier.entity.data!.birthdate
+                                            .toString(),
+                                      ),
+                                    ),
                             ),
                             const SizedBox(height: 18),
                             passportField(
@@ -452,37 +480,56 @@ class ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tanggal Terbit Paspor',
-                              content: profileNotifier
-                              .entity.data?.passportIssued == "-" 
-                              ? "-" 
-                              : DateFormat('dd MMMM yyyy', 'id').format(
-                                  DateTime.parse(profileNotifier
-                                      .entity.data!.passportIssued
-                                      .toString())),
+                              content:
+                                  profileNotifier.entity.data?.passportIssued ==
+                                      "-"
+                                  ? "-"
+                                  : DateFormat('dd MMMM yyyy', 'id').format(
+                                      DateTime.parse(
+                                        profileNotifier
+                                            .entity
+                                            .data!
+                                            .passportIssued
+                                            .toString(),
+                                      ),
+                                    ),
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tanggal Kadaluarsa Paspor',
-                              content: profileNotifier.entity.data?.passportExpired == "-" 
-                              ? "-" 
-                              : DateFormat('dd MMMM yyyy', 'id').format(
-                                  DateTime.parse(profileNotifier
-                                    .entity.data!.passportExpired
-                                    .toString()
-                                  )
-                                ),
+                              content:
+                                  profileNotifier
+                                          .entity
+                                          .data
+                                          ?.passportExpired ==
+                                      "-"
+                                  ? "-"
+                                  : DateFormat('dd MMMM yyyy', 'id').format(
+                                      DateTime.parse(
+                                        profileNotifier
+                                            .entity
+                                            .data!
+                                            .passportExpired
+                                            .toString(),
+                                      ),
+                                    ),
                             ),
                             passportField(
                               label: 'Sisa masa berlaku',
-                              content: getPeriod(profileNotifier
-                                      .entity.data!.passportExpired) ??
+                              content:
+                                  getPeriod(
+                                    profileNotifier
+                                        .entity
+                                        .data!
+                                        .passportExpired,
+                                  ) ??
                                   '-',
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Nomor Registrasi',
-                              content:
-                                  profileNotifier.entity.data!.noReg.toString(),
+                              content: profileNotifier.entity.data!.noReg
+                                  .toString(),
                             ),
                             const SizedBox(height: 18),
                             passportField(
@@ -494,8 +541,8 @@ class ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ],
-                  )
-                )
+                  ),
+                ),
               ),
           ],
         ),

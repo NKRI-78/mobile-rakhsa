@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -47,18 +46,18 @@ class RegisterNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _providerState = ProviderState.idle; 
+  ProviderState _providerState = ProviderState.idle;
   ProviderState get providerState => _providerState;
 
-  // media passport 
+  // media passport
   String _mediaPassport = '';
   String get mediaPassport => _mediaPassport;
 
-  // media avatar 
+  // media avatar
   String _mediaAvatar = '';
   String get mediaAvatar => _mediaAvatar;
 
-   // register google
+  // register google
   bool _ssoLoading = false;
   bool get ssoLoading => _ssoLoading;
 
@@ -71,7 +70,7 @@ class RegisterNotifier with ChangeNotifier {
   Passport? get passport => _passport;
   bool _passportExpired = false;
 
-  void _setPassport(PassportDataExtraction passportData){
+  void _setPassport(PassportDataExtraction passportData) {
     _passport = passportData.passport;
     _panelMinHeight = _panelMinHeightActualy;
     notifyListeners();
@@ -85,7 +84,7 @@ class RegisterNotifier with ChangeNotifier {
   String _scanningText = '';
   String get scanningText => _scanningText;
 
-  void _setScanningText(String message){
+  void _setScanningText(String message) {
     _scanningText = message;
     notifyListeners();
   }
@@ -142,94 +141,101 @@ class RegisterNotifier with ChangeNotifier {
 
     final register = await useCase.execute(
       countryCode: countryCode,
-        passportNumber: passportNumber,
-        fullName: fullName,
-        nasionality: nasionality,
-        placeOfBirth: placeOfBirth,
-        dateOfBirth: dateOfBirth,
-        gender: gender,
-        dateOfIssue: dateOfIssue,
-        dateOfExpiry: dateOfExpiry,
-        registrationNumber: registrationNumber,
-        issuingAuthority: issuingAuthority,
-        mrzCode: mrzCode,
-        email: email,
-        emergencyContact: emergencyContact,
-        password: password
+      passportNumber: passportNumber,
+      fullName: fullName,
+      nasionality: nasionality,
+      placeOfBirth: placeOfBirth,
+      dateOfBirth: dateOfBirth,
+      gender: gender,
+      dateOfIssue: dateOfIssue,
+      dateOfExpiry: dateOfExpiry,
+      registrationNumber: registrationNumber,
+      issuingAuthority: issuingAuthority,
+      mrzCode: mrzCode,
+      email: email,
+      emergencyContact: emergencyContact,
+      password: password,
     );
 
-    register.fold((l) {
-      _message = l.message;
-      setStateProviderState(ProviderState.error);
-    }, (r) {
-      _authModel = r;
+    register.fold(
+      (l) {
+        _message = l.message;
+        setStateProviderState(ProviderState.error);
+      },
+      (r) {
+        _authModel = r;
 
-      StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
-      StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
-      StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
+        StorageHelper.saveUserId(userId: authModel.data?.user.id ?? "-");
+        StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
+        StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-      ShowSnackbar.snackbarOk("Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan");
+        ShowSnackbar.snackbarOk(
+          "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan",
+        );
 
-      Navigator.pushAndRemoveUntil(
-        navigatorKey.currentContext!,
-        MaterialPageRoute(builder: (context) {
-          return RegisterOtp(email: email);
-        }
-      ), (route) => false);
+        Navigator.pushAndRemoveUntil(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) {
+              return RegisterOtp(email: email);
+            },
+          ),
+          (route) => false,
+        );
 
-      setStateProviderState(ProviderState.loaded);
-    });
+        setStateProviderState(ProviderState.loaded);
+      },
+    );
   }
 
+  // Future<void> registerWithGoogle(BuildContext context) async {
+  //   bool hasUser = firebaseAuth.currentUser != null;
 
-  Future<void> registerWithGoogle(BuildContext context) async {
-    bool hasUser = firebaseAuth.currentUser != null;
+  //   if (hasUser) {
+  //     // navigate to register page
+  //     await ScanningInstructionsBottomSheet.launch(context);
+  //   } else {
+  //     final connection = await Connectivity().checkConnectivity();
+  //     if (connection == ConnectivityResult.mobile ||
+  //         connection == ConnectivityResult.wifi ||
+  //         connection == ConnectivityResult.vpn) {
+  //       try {
+  //         _ssoLoading = true;
+  //         notifyListeners();
 
-    if (hasUser) {
-      // navigate to register page
-      await ScanningInstructionsBottomSheet.launch(context);
-    } else {
-      final connection = await Connectivity().checkConnectivity();
-      if (connection == ConnectivityResult.mobile ||
-          connection == ConnectivityResult.wifi ||
-          connection == ConnectivityResult.vpn) {
-        try {
-          _ssoLoading = true;
-          notifyListeners();
+  //         final gUser = await googleSignIn.signIn();
 
-          final gUser = await googleSignIn.signIn();
+  //         final gAuth = await gUser?.authentication;
 
-          final gAuth = await gUser?.authentication;
+  //         final credential = fa.GoogleAuthProvider.credential(
+  //           accessToken: gAuth?.accessToken,
+  //           idToken: gAuth?.idToken,
+  //         );
 
-          final credential = fa.GoogleAuthProvider.credential(
-            accessToken: gAuth?.accessToken,
-            idToken: gAuth?.idToken,
-          );
+  //         final user = await firebaseAuth.signInWithCredential(credential);
 
-          final user = await firebaseAuth.signInWithCredential(credential);
+  //         _userGoogle = user.user;
+  //         notifyListeners();
 
-          _userGoogle = user.user;
-          notifyListeners();
-
-          ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
-          // ignore: use_build_context_synchronously
-          await ScanningInstructionsBottomSheet.launch(context);
-        } on fa.FirebaseAuthException catch (_) {
-          _ssoLoading = false;
-          notifyListeners();
-        } catch (e) {
-          _ssoLoading = false;
-          notifyListeners();
-        } finally {
-          _ssoLoading = false;
-          notifyListeners();
-        }
-      } else {
-        // show snackbar
-        ShowSnackbar.snackbarErr('Tidak ada koneksi internet');
-      }
-    }
-  }
+  //         ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
+  //         // ignore: use_build_context_synchronously
+  //         await ScanningInstructionsBottomSheet.launch(context);
+  //       } on fa.FirebaseAuthException catch (_) {
+  //         _ssoLoading = false;
+  //         notifyListeners();
+  //       } catch (e) {
+  //         _ssoLoading = false;
+  //         notifyListeners();
+  //       } finally {
+  //         _ssoLoading = false;
+  //         notifyListeners();
+  //       }
+  //     } else {
+  //       // show snackbar
+  //       ShowSnackbar.snackbarErr('Tidak ada koneksi internet');
+  //     }
+  //   }
+  // }
 
   Future<void> startScan(BuildContext context, String userId) async {
     try {
@@ -246,118 +252,129 @@ class RegisterNotifier with ChangeNotifier {
 
         final passportData = await registerPassport.execute(scanResult.last);
 
-        passportData.fold((failure) {
-          _resetScan();
-          FailureDocumentDialog.launch(
-            context,
-            content:
-                'Kami mengalami kendala saat memproses paspor Anda. [${failure.message}]',
-            actionCallback: () async {
-              Navigator.of(context).pop(); // close dialog
-              await startScan(context, userId);
-            },
-          );
-        }, (passportData) async {
-          // lakukan cek apakah ada error saat scan passport
-          if (passportData.errorScanning) {
+        passportData.fold(
+          (failure) {
             _resetScan();
             FailureDocumentDialog.launch(
               context,
               content:
-              'Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.',
+                  'Kami mengalami kendala saat memproses paspor Anda. [${failure.message}]',
               actionCallback: () async {
                 Navigator.of(context).pop(); // close dialog
                 await startScan(context, userId);
               },
             );
-          } else {
-            _setScanningText('Cek Status Registrasi');
+          },
+          (passportData) async {
+            // lakukan cek apakah ada error saat scan passport
+            if (passportData.errorScanning) {
+              _resetScan();
+              FailureDocumentDialog.launch(
+                context,
+                content:
+                    'Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.',
+                actionCallback: () async {
+                  Navigator.of(context).pop(); // close dialog
+                  await startScan(context, userId);
+                },
+              );
+            } else {
+              _setScanningText('Cek Status Registrasi');
 
-            final checkRegistrationStatus = await checkRegisterStatusUseCase.execute(
-              passport: passportData.passport?.passportNumber ?? '',
-              noReg: passportData.passport?.registrationNumber ?? '',
-            );
+              final checkRegistrationStatus = await checkRegisterStatusUseCase
+                  .execute(
+                    passport: passportData.passport?.passportNumber ?? '',
+                    noReg: passportData.passport?.registrationNumber ?? '',
+                  );
 
-            checkRegistrationStatus.fold(
-              (l) {
-                // jika sudah ter registrasi
-                _resetScan();
-                FailureDocumentDialog.launch(
-                  context,
-                  content: "Maaf, paspor ini sudah digunakan. Silakan gunakan paspor lain untuk melanjutkan.",
-                  showScanButton: false,
-                );
-              }, 
-              (r) async {
-                _setScanningText('Memvalidasi Dokumen');
-
-                // validasi apakah ini visa
-                if (passportData.passport?.mrzCode?[0].contains('V') ?? false) {
+              checkRegistrationStatus.fold(
+                (l) {
+                  // jika sudah ter registrasi
                   _resetScan();
                   FailureDocumentDialog.launch(
                     context,
                     content:
-                    'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
-                    actionCallback: () async {
-                      Navigator.of(context).pop(); // close dialog
-                      await startScan(context, userId);
-                    },
+                        "Maaf, paspor ini sudah digunakan. Silakan gunakan paspor lain untuk melanjutkan.",
+                    showScanButton: false,
                   );
+                },
+                (r) async {
+                  _setScanningText('Memvalidasi Dokumen');
 
-                  // validasi berhasil menyatakan bahwa ini adalah passport
-                } else if (passportData.passport?.mrzCode?[0].contains('P') ?? false) {
-                  final expiryDate = passportData.passport?.dateOfExpiry;
-                  bool expiryPassport = getExpiredPassport(expiryDate);
-                  _passportExpired = expiryPassport;
-                  notifyListeners();
-                  
-                  // jika passport sudah kadaluarsa
-                  if (expiryPassport) {
+                  // validasi apakah ini visa
+                  if (passportData.passport?.mrzCode?[0].contains('V') ??
+                      false) {
                     _resetScan();
                     FailureDocumentDialog.launch(
                       context,
-                      content: 'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.' 
-                      ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
-                      showScanButton: false,
+                      content:
+                          'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
+                      actionCallback: () async {
+                        Navigator.of(context).pop(); // close dialog
+                        await startScan(context, userId);
+                      },
                     );
 
-                    // positive case [scan berhasil]
+                    // validasi berhasil menyatakan bahwa ini adalah passport
+                  } else if (passportData.passport?.mrzCode?[0].contains('P') ??
+                      false) {
+                    final expiryDate = passportData.passport?.dateOfExpiry;
+                    bool expiryPassport = getExpiredPassport(expiryDate);
+                    _passportExpired = expiryPassport;
+                    notifyListeners();
+
+                    // jika passport sudah kadaluarsa
+                    if (expiryPassport) {
+                      _resetScan();
+                      FailureDocumentDialog.launch(
+                        context,
+                        content:
+                            'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.'
+                            ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
+                        showScanButton: false,
+                      );
+
+                      // positive case [scan berhasil]
+                    } else {
+                      final uploadPassportToServer = await mediaUseCase.execute(
+                        file: File(_passportPath),
+                        folderName: 'passport',
+                      );
+
+                      uploadPassportToServer.fold(
+                        (failure) {
+                          ShowSnackbar.snackbarErr(failure.message);
+                          notifyListeners();
+                        },
+                        (picture) async {
+                          _mediaPassport = picture.path;
+                          notifyListeners();
+                        },
+                      );
+
+                      _setPassport(passportData);
+                    }
+
+                    // error saat membaca kode mrz (karakter pertama tidak terbaca)
                   } else {
-                    final uploadPassportToServer = await mediaUseCase.execute(
-                      file: File(_passportPath),
-                      folderName: 'passport',
+                    _resetScan();
+                    FailureDocumentDialog.launch(
+                      context,
+                      content:
+                          'Kode MRZ tidak lengkap atau tidak jelas. '
+                          'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
+                          'Pegang perangkat dengan stabil dan coba pindai ulang.',
+                      actionCallback: () async {
+                        Navigator.of(context).pop(); // close dialog
+                        await startScan(context, userId);
+                      },
                     );
-
-                    uploadPassportToServer.fold((failure) {
-                      ShowSnackbar.snackbarErr(failure.message);
-                      notifyListeners();
-                    }, (picture) async {
-                      _mediaPassport = picture.path;
-                      notifyListeners();
-                    });
-
-                    _setPassport(passportData);
                   }
-
-                  // error saat membaca kode mrz (karakter pertama tidak terbaca)
-                } else {
-                  _resetScan();
-                  FailureDocumentDialog.launch(
-                    context,
-                    content:
-                      'Kode MRZ tidak lengkap atau tidak jelas. '
-                      'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
-                      'Pegang perangkat dengan stabil dan coba pindai ulang.',
-                    actionCallback: () async {
-                      Navigator.of(context).pop(); // close dialog
-                      await startScan(context, userId);
-                    },
-                  );
-                }
-              },
-            );
-          }
-        });
+                },
+              );
+            }
+          },
+        );
       }
     } catch (e) {
       // kondisi untuk catch error dari _launchPromt
@@ -375,9 +392,9 @@ class RegisterNotifier with ChangeNotifier {
     }
   }
 
-  bool getExpiredPassport(String? expiryDateStr){
+  bool getExpiredPassport(String? expiryDateStr) {
     try {
-      if(expiryDateStr != null) {
+      if (expiryDateStr != null) {
         DateTime now = DateTime.now();
         DateTime expiryDate = DateTime.parse(expiryDateStr);
 
@@ -385,7 +402,6 @@ class RegisterNotifier with ChangeNotifier {
       } else {
         return false;
       }
-      
     } catch (e) {
       return false;
     }
@@ -438,7 +454,6 @@ class RegisterNotifier with ChangeNotifier {
     _passportPath = '';
     notifyListeners();
   }
-
 }
 
 class ScanningInstructionsBottomSheet extends StatelessWidget {
@@ -449,9 +464,7 @@ class ScanningInstructionsBottomSheet extends StatelessWidget {
       context: context,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) => const ScanningInstructionsBottomSheet._(),
     );
@@ -471,7 +484,9 @@ class ScanningInstructionsBottomSheet extends StatelessWidget {
               'Siapkan Paspor Anda',
               textAlign: TextAlign.center,
               style: robotoRegular.copyWith(
-                  fontSize: 20, fontWeight: FontWeight.bold),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
 
@@ -504,7 +519,7 @@ class ScanningInstructionsBottomSheet extends StatelessWidget {
                   child: Text('Selanjutnya'),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -549,9 +564,7 @@ class FailureDocumentDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
@@ -604,7 +617,7 @@ class FailureDocumentDialog extends StatelessWidget {
                             isBoxShadow: false,
                             btnColor: ColorResources.error,
                             btnTextColor: ColorResources.white,
-                            onTap: actionCallback ?? (){},
+                            onTap: actionCallback ?? () {},
                             btnTxt: "Scan Ulang",
                           ),
                         ),

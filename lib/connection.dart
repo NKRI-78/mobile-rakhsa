@@ -8,11 +8,12 @@ class ConnectionHelper {
   // Check if the internet is connected
   static Future<bool> isConnected() async {
     var connectivityResult = await connectivity.checkConnectivity();
-    return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
+    return connectivityResult.contains(ConnectivityResult.mobile) ||
+        connectivityResult.contains(ConnectivityResult.wifi);
   }
 
   // Listen for connectivity changes
-  static StreamSubscription<ConnectivityResult> listenToConnectionChanges(Function(ConnectivityResult) onChange) {
-    return connectivity.onConnectivityChanged.listen(onChange);
-  }
+  static StreamSubscription<List<ConnectivityResult>> listenToConnectionChanges(
+    Function(List<ConnectivityResult>)? onChange,
+  ) => connectivity.onConnectivityChanged.listen(onChange);
 }
