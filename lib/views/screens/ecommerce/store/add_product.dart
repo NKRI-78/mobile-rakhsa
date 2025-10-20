@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
+// import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
@@ -30,10 +30,7 @@ import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 class AddProductScreen extends StatefulWidget {
   final String storeId;
 
-  const AddProductScreen({
-    super.key,
-    required this.storeId
-  });
+  const AddProductScreen({super.key, required this.storeId});
 
   @override
   State<AddProductScreen> createState() => AddProductScreenState();
@@ -61,36 +58,32 @@ class AddProductScreenState extends State<AddProductScreen> {
   late TextEditingController weightC;
 
   Future<void> getData() async {
-    if(!mounted) return;
-      ecommerceProvider.fetchAllProductCategory(
-        isFromCreateProduct: true
-      );
+    if (!mounted) return;
+    ecommerceProvider.fetchAllProductCategory(isFromCreateProduct: true);
   }
 
   void pickImage() async {
-    var imageSource = await showDialog<ImageSource>(context: context, 
+    var imageSource = await showDialog<ImageSource>(
+      context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Pilih sumber gambar",
-          style: robotoRegular,
-        ),
+        title: const Text("Pilih sumber gambar", style: robotoRegular),
         actions: [
           MaterialButton(
-            child: const Text("Kamera",
-              style: robotoRegular,
-            ),
+            child: const Text("Kamera", style: robotoRegular),
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
           MaterialButton(
             onPressed: uploadPic,
-            child: const Text( "Galeri",
-              style: robotoRegular,
-            ),
-          )
+            child: const Text("Galeri", style: robotoRegular),
+          ),
         ],
-      )
+      ),
     );
     if (imageSource != null) {
-      XFile? file = await ImagePicker().pickImage(source: imageSource, maxHeight: 720);
+      XFile? file = await ImagePicker().pickImage(
+        source: imageSource,
+        maxHeight: 720,
+      );
       File f = File(file!.path);
       setState(() {
         before.add(f);
@@ -98,93 +91,93 @@ class AddProductScreenState extends State<AddProductScreen> {
       });
     }
   }
-  
+
   void uploadPic() async {
     List<Asset> resultList = [];
-    if(files.isEmpty) {
+    if (files.isEmpty) {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: [],
         androidOptions: const AndroidOptions(
           maxImages: 5,
-          hasCameraInPickerPage: false
-        )
+          hasCameraInPickerPage: false,
+        ),
       );
-    } else if(files.length == 4) { 
+    } else if (files.length == 4) {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: [],
         androidOptions: const AndroidOptions(
           maxImages: 1,
-          hasCameraInPickerPage: false
-        )
+          hasCameraInPickerPage: false,
+        ),
       );
-    } else if(files.length == 3) { 
+    } else if (files.length == 3) {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: [],
         androidOptions: const AndroidOptions(
           maxImages: 2,
-          hasCameraInPickerPage: false
-        )
+          hasCameraInPickerPage: false,
+        ),
       );
-    } else if(files.length == 2) { 
+    } else if (files.length == 2) {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: [],
         androidOptions: const AndroidOptions(
           maxImages: 3,
-          hasCameraInPickerPage: false
-        )
+          hasCameraInPickerPage: false,
+        ),
       );
-    } else { 
+    } else {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: [],
         androidOptions: const AndroidOptions(
           maxImages: 4,
-          hasCameraInPickerPage: false
-        )
+          hasCameraInPickerPage: false,
+        ),
       );
-    } 
-    Navigator.of(context, rootNavigator: true).pop();
-    for (Asset imageAsset in resultList) {
-      final filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
-      File tempFile = File(filePath!);
-      setState(() {
-        before.add(tempFile);
-        files = before.toSet().toList();
-      });
     }
+    Navigator.of(context, rootNavigator: true).pop();
+    // for (Asset imageAsset in resultList) {
+    //   final filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
+    //   File tempFile = File(filePath!);
+    //   setState(() {
+    //     before.add(tempFile);
+    //     files = before.toSet().toList();
+    //   });
+    // }
   }
 
   Future<void> submit() async {
-    if(categoryC.text.isEmpty) {
+    if (categoryC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Kategori wajib diisi");
       return;
     }
-    
-    if(nameC.text.isEmpty) {
+
+    if (nameC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Nama wajib diisi");
       return;
     }
-    
-    if(priceC.text.isEmpty) {
+
+    if (priceC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Harga wajib diisi");
       return;
     }
-    
-    if(stockC.text.isEmpty) {
+
+    if (stockC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Stok wajib diisi");
       return;
     }
-    
-    if(weightC.text.isEmpty) {
+
+    if (weightC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Berat wajib diisi");
       return;
     }
 
-    if(descC.text.isEmpty) {
+    if (descC.text.isEmpty) {
       ShowSnackbar.snackbarErr("Deskripsi wajib diisi");
       return;
     }
 
-    if(files.isEmpty) {
+    if (files.isEmpty) {
       ShowSnackbar.snackbarErr("Gambar wajib diisi");
       return;
     }
@@ -194,20 +187,20 @@ class AddProductScreenState extends State<AddProductScreen> {
     int price = int.parse(cleanPrice);
 
     await ecommerceProvider.createProduct(
-      id: Uuid().generateV4(), 
-      title: nameC.text, 
-      files: files, 
+      id: Uuid().generateV4(),
+      title: nameC.text,
+      files: files,
       description: descC.text,
-      price: price, 
-      weight: int.parse(weightC.text), 
-      stock: int.parse(stockC.text), 
-      isDraft: false, 
-      catId: categoryId, 
-      storeId: widget.storeId
+      price: price,
+      weight: int.parse(weightC.text),
+      stock: int.parse(stockC.text),
+      isDraft: false,
+      catId: categoryId,
+      storeId: widget.storeId,
     );
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
 
@@ -223,9 +216,8 @@ class AddProductScreenState extends State<AddProductScreen> {
     Future.microtask(() => getData());
   }
 
-  @override 
+  @override
   void dispose() {
-
     nameC.dispose();
     descC.dispose();
     categoryC.dispose();
@@ -241,276 +233,274 @@ class AddProductScreenState extends State<AddProductScreen> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
-      leading: CupertinoNavigationBarBackButton(
-        color: ColorResources.black,
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      centerTitle: true,
-      elevation: 0,
-      title: Text( "Tambah Produk",
-        style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold,
-          color: ColorResources.black
+        leading: CupertinoNavigationBarBackButton(
+          color: ColorResources.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          "Tambah Produk",
+          style: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeLarge,
+            fontWeight: FontWeight.bold,
+            color: ColorResources.black,
+          ),
         ),
       ),
-    ),
-    body: ListView(
-      physics: const BouncingScrollPhysics(),
-      children: [
-
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-            
-              inputFieldCategory(),
-              
-              const SizedBox(height: 15.0),
-
-              inputFieldName(),
-              
-              const SizedBox(height: 15.0),
-              
-              inputFieldPrice(),
-              
-              const SizedBox(
-                height: 15.0,
-              ),
-
-              Row(
+      body: ListView(
+        physics: const BouncingScrollPhysics(),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: 120.0,
-                    child: inputFieldStock()
+                  inputFieldCategory(),
+
+                  const SizedBox(height: 15.0),
+
+                  inputFieldName(),
+
+                  const SizedBox(height: 15.0),
+
+                  inputFieldPrice(),
+
+                  const SizedBox(height: 15.0),
+
+                  Row(
+                    children: [
+                      SizedBox(width: 120.0, child: inputFieldStock()),
+                      const SizedBox(width: 10.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [inputFieldWeight()],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        inputFieldWeight(),
-                      ],
+
+                  const SizedBox(height: 15.0),
+
+                  inputFieldDescription(),
+
+                  const SizedBox(height: 15.0),
+
+                  Text(
+                    "Gambar*",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
                     ),
+                  ),
+
+                  const SizedBox(height: 10.0),
+
+                  Container(
+                    height: 100.0,
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: files.isEmpty
+                        ? Row(
+                            children: [
+                              GestureDetector(
+                                onTap: pickImage,
+                                child: Container(
+                                  height: 80.0,
+                                  width: 80.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: Colors.grey.withOpacity(0.5),
+                                    ),
+                                    color: Colors.grey.withOpacity(0.5),
+                                  ),
+                                  child: Center(
+                                    child: files.isEmpty
+                                        ? Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.grey[600],
+                                            size: 35,
+                                          )
+                                        : ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            child: FadeInImage(
+                                              fit: BoxFit.cover,
+                                              height: double.infinity,
+                                              width: double.infinity,
+                                              image: FileImage(files.first),
+                                              placeholder: const AssetImage(
+                                                "assets/images/default_image.png",
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10.0),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Upload Gambar",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: 12.0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Text(
+                                      "Maksimum 5 gambar, ukuran minimal 300x300px berformat JPG atau PNG",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: 12.0,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: files.length + 1,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index < files.length) {
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      height: 80,
+                                      width: 80,
+                                      margin: const EdgeInsets.only(right: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.grey[400]!,
+                                        ),
+                                        color: Colors.grey[350],
+                                      ),
+                                      child: Center(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: FadeInImage(
+                                            fit: BoxFit.cover,
+                                            height: double.infinity,
+                                            width: double.infinity,
+                                            image: FileImage(files[index]),
+                                            placeholder: const AssetImage(
+                                              "assets/images/default_image.png",
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Positioned(
+                                      right: 0.0,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          int i = files.indexOf(files[index]);
+                                          setState(() {
+                                            before.removeAt(i);
+                                            files.removeAt(i);
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5.0),
+                                          decoration: const BoxDecoration(
+                                            color: ColorResources.white,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(10.0),
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            size: 18.0,
+                                            color: ColorResources.error,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (files.length < 5) {
+                                      pickImage();
+                                    } else if (files.length >= 5) {
+                                      setState(() {
+                                        files.clear();
+                                        before.clear();
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    width: 80,
+                                    margin: const EdgeInsets.only(right: 4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.grey[400]!,
+                                      ),
+                                      color: files.length < 5
+                                          ? Colors.grey[350]
+                                          : Colors.red,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        files.length < 5
+                                            ? Icons.camera_alt
+                                            : Icons.delete,
+                                        color: files.length < 5
+                                            ? Colors.grey[600]
+                                            : ColorResources.white,
+                                        size: 35,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                  ),
+                  const SizedBox(height: 25.0),
+                  CustomButton(
+                    isBorder: false,
+                    isBoxShadow: false,
+                    isBorderRadius: true,
+                    isLoading:
+                        context
+                                .watch<EcommerceProvider>()
+                                .createProductStatus ==
+                            CreateProductStatus.loading
+                        ? true
+                        : false,
+                    btnColor: const Color(0xFFC82927),
+                    btnTextColor: ColorResources.white,
+                    onTap: submit,
+                    btnTxt: "Submit",
                   ),
                 ],
               ),
-
-              const SizedBox(
-                height: 15.0,
-              ),
-              
-              inputFieldDescription(),
-              
-              const SizedBox(
-                height: 15.0,
-              ),
-              
-              Text("Gambar*",
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                )
-              ),
-              
-              const SizedBox(
-                height: 10.0,
-              ),
-            
-              Container(
-                height: 100.0,
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.5)
-                  ),
-                  borderRadius: BorderRadius.circular(10.0)
-                ),
-                  child: files.isEmpty
-                    ? Row(
-                        children: [
-                          GestureDetector(
-                            onTap: pickImage,
-                            child: Container(
-                              height: 80.0,
-                              width: 80.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                                color: Colors.grey.withOpacity(0.5)
-                              ),
-                              child: Center(
-                                child: files.isEmpty
-                                ? Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.grey[600],
-                                    size: 35,
-                                  )
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: FadeInImage(
-                                      fit: BoxFit.cover,
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      image: FileImage(files.first),
-                                      placeholder: const AssetImage("assets/images/default_image.png")
-                                    ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Expanded(
-                            child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Upload Gambar",
-                                style: robotoRegular.copyWith(
-                                  fontSize: 12.0,
-                                )
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Text("Maksimum 5 gambar, ukuran minimal 300x300px berformat JPG atau PNG",
-                                style: robotoRegular.copyWith(
-                                  fontSize: 12.0,
-                                  color: Colors.grey[600]
-                                )
-                              ),
-                            ],
-                          ))
-                        ],
-                      )
-                    : ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: files.length + 1,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index < files.length) {
-                            return Stack(
-                              children: [
-                                
-                                Container(
-                                  height: 80,
-                                  width: 80,
-                                  margin: const EdgeInsets.only(right: 4),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: Colors.grey[400]!
-                                    ),
-                                    color: Colors.grey[350]
-                                  ),
-                                  child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: FadeInImage(
-                                        fit: BoxFit.cover,
-                                        height: double.infinity,
-                                        width: double.infinity,
-                                        image: FileImage(files[index]),
-                                        placeholder: const AssetImage("assets/images/default_image.png")
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                Positioned(
-                                  right: 0.0,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      int i = files.indexOf(files[index]);
-                                      setState(() {
-                                        before.removeAt(i);
-                                        files.removeAt(i);
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(5.0),
-                                      decoration: const BoxDecoration(
-                                        color: ColorResources.white,
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(10.0)
-                                        )
-                                      ),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        size: 18.0,
-                                        color: ColorResources.error,
-                                      ),
-                                    ),
-                                  ),
-                                )
-
-                              ]
-                            ); 
-                          } else {
-                            return GestureDetector(
-                              onTap: () {
-                                if (files.length < 5) {
-                                  pickImage();
-                                } else if (files.length >= 5) {
-                                  setState(() {
-                                    files.clear();
-                                    before.clear();
-                                  });
-                                }
-                              },
-                              child: Container(
-                                height: 80,
-                                width: 80,
-                                margin: const EdgeInsets.only(right: 4),
-                                decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.grey[400]!
-                                ),
-                                color: files.length < 5 ? Colors.grey[350] : Colors.red),
-                                child: Center(
-                                  child: Icon(
-                                    files.length < 5 ? Icons.camera_alt : Icons.delete,
-                                    color: files.length < 5 ? Colors.grey[600] : ColorResources.white,
-                                    size: 35,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 25.0,
-                    ),
-                    CustomButton(
-                      isBorder: false,
-                      isBoxShadow: false,
-                      isBorderRadius: true,
-                      isLoading: context.watch<EcommerceProvider>().createProductStatus == CreateProductStatus.loading 
-                      ? true 
-                      : false,
-                      btnColor: const Color(0xFFC82927),
-                      btnTextColor: ColorResources.white,
-                      onTap: submit, 
-                      btnTxt: "Submit"
-                    )
-                  ],
-                )
-              ),
-            )
-
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 
@@ -519,15 +509,12 @@ class AddProductScreenState extends State<AddProductScreen> {
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Nama",
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeSmall,
-            )
+          child: Text(
+            "Nama",
+            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
           ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -535,11 +522,11 @@ class AddProductScreenState extends State<AddProductScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1.0,
+                blurRadius: 3.0,
+                offset: const Offset(0.0, 1.0),
+              ),
             ],
           ),
           child: TextFormField(
@@ -551,26 +538,20 @@ class AddProductScreenState extends State<AddProductScreen> {
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(
-                vertical: 12.0, 
-                horizontal: 15.0
+                vertical: 12.0,
+                horizontal: 15.0,
               ),
               isDense: true,
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
             ),
           ),
-        )
-      ]
+        ),
+      ],
     );
   }
 
@@ -579,15 +560,12 @@ class AddProductScreenState extends State<AddProductScreen> {
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Deskripsi", 
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            )
+          child: Text(
+            "Deskripsi",
+            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
           ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         InkWell(
           onTap: () {
             showModalBottomSheet(
@@ -599,132 +577,146 @@ class AddProductScreenState extends State<AddProductScreen> {
               context: context,
               builder: (BuildContext context) {
                 return Consumer(
-                  builder: (BuildContext context, EcommerceProvider notifier,  Widget? child) {
-                    return Container(
-                    height: MediaQuery.of(context).size.height * 0.96,
-                    color: Colors.transparent,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: ColorResources.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            topRight: Radius.circular(10.0)
-                          )
-                        ),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  builder:
+                      (
+                        BuildContext context,
+                        EcommerceProvider notifier,
+                        Widget? child,
+                      ) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.96,
+                          color: Colors.transparent,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: ColorResources.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                topRight: Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Stack(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, 
-                                    top: 16.0, bottom: 8.0
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                     Navigator.pop(context);
-                                        },
-                                        child: const Icon(
-                                          Icons.close
-                                        )
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        right: 16.0,
+                                        top: 16.0,
+                                        bottom: 8.0,
                                       ),
-                                      Container(
-                                        margin: const EdgeInsets.only(left: 16),
-                                        child: Text("Masukan Deskripsi",
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeDefault,
-                                            color: ColorResources.black
-                                          )
-                                        )
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Icon(Icons.close),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              left: 16,
+                                            ),
+                                            child: Text(
+                                              "Masukan Deskripsi",
+                                              style: robotoRegular.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeDefault,
+                                                color: ColorResources.black,
+                                              ),
+                                            ),
+                                          ),
+                                          descC.text.isNotEmpty
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.done,
+                                                    color: ColorResources.black,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                        ],
                                       ),
-                                      descC.text.isNotEmpty
-                                      ? InkWell(
-                                          onTap: () {
-                                       Navigator.pop(context);
-                                          },
-                                          child: const Icon(
-                                            Icons.done,
-                                            color: ColorResources.black
-                                          )
-                                        )
-                                      : const SizedBox(),
-                                    ],
-                                  ),
-                                ),
-                                const Divider(
-                                  thickness: 3,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, 
-                                    top: 8.0, bottom: 16.0
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: ColorResources.white,
-                                    borderRadius: BorderRadius.circular(10.0)
-                                  ),
-                                  child: TextFormField(
-                                    autofocus: true,
-                                    maxLines: null,
-                                    textCapitalization: TextCapitalization.sentences,
-                                    decoration: const InputDecoration(
-                                      fillColor: ColorResources.white,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
                                     ),
-                                    controller: descC,
-                                    keyboardType: TextInputType.multiline,
-                                    style: robotoRegular
-                                  ),
-                                )
+                                    const Divider(thickness: 3),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        right: 16.0,
+                                        top: 8.0,
+                                        bottom: 16.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.white,
+                                        borderRadius: BorderRadius.circular(
+                                          10.0,
+                                        ),
+                                      ),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        maxLines: null,
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                        decoration: const InputDecoration(
+                                          fillColor: ColorResources.white,
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                        controller: descC,
+                                        keyboardType: TextInputType.multiline,
+                                        style: robotoRegular,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      )
-                    );
-                  }, 
+                          ),
+                        );
+                      },
                 );
-              }
+              },
             ).then((_) {
-              setState(() { });
+              setState(() {});
             });
           },
           child: Consumer<EcommerceProvider>(
-            builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
-              return Container(
-                height: 120.0,
-                width: double.infinity,
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(6.0),
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 0.5
-                  ),
-                ),
-                child: Text(descC.text == ""
-                  ? "" 
-                  : descC.text,
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault, 
-                    color: ColorResources.black 
-                  )
-                )
-              );
-            },
-          )
+            builder:
+                (
+                  BuildContext context,
+                  EcommerceProvider notifier,
+                  Widget? child,
+                ) {
+                  return Container(
+                    height: 120.0,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(color: Colors.grey, width: 0.5),
+                    ),
+                    child: Text(
+                      descC.text == "" ? "" : descC.text,
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeDefault,
+                        color: ColorResources.black,
+                      ),
+                    ),
+                  );
+                },
+          ),
         ),
       ],
-    );             
+    );
   }
 
   Widget inputFieldStock() {
@@ -732,15 +724,12 @@ class AddProductScreenState extends State<AddProductScreen> {
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Stok *",
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            )
+          child: Text(
+            "Stok *",
+            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
           ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -748,11 +737,11 @@ class AddProductScreenState extends State<AddProductScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1.0,
+                blurRadius: 3.0,
+                offset: const Offset(0.0, 1.0),
+              ),
             ],
           ),
           child: TextFormField(
@@ -765,24 +754,18 @@ class AddProductScreenState extends State<AddProductScreen> {
               hintText: "0",
               isDense: true,
               hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
+                color: Theme.of(context).hintColor,
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
               enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
             ),
           ),
-        )
-      ]
+        ),
+      ],
     );
   }
 
@@ -791,15 +774,12 @@ class AddProductScreenState extends State<AddProductScreen> {
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Harga *",
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            )
+          child: Text(
+            "Harga *",
+            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
           ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -807,11 +787,11 @@ class AddProductScreenState extends State<AddProductScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1.0,
+                blurRadius: 3.0,
+                offset: const Offset(0.0, 1.0),
+              ),
             ],
           ),
           child: TextFormField(
@@ -827,46 +807,37 @@ class AddProductScreenState extends State<AddProductScreen> {
               ),
             ],
             decoration: InputDecoration(
-            fillColor: ColorResources.white,
-            hintText: "0",
-            isDense: true,
-            hintStyle: robotoRegular.copyWith(
-              color: Theme.of(context).hintColor
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 0.5
+              fillColor: ColorResources.white,
+              hintText: "0",
+              isDense: true,
+              hintStyle: robotoRegular.copyWith(
+                color: Theme.of(context).hintColor,
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
             ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 0.5
-              ),
-            ),
-          )),
-        )
-      ]
+          ),
+        ),
+      ],
     );
   }
 
-  
   Widget inputFieldCategory() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Kategori",
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            )
+          child: Text(
+            "Kategori",
+            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
           ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        const SizedBox(height: 10.0),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -874,11 +845,11 @@ class AddProductScreenState extends State<AddProductScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1.0,
+                blurRadius: 3.0,
+                offset: const Offset(0.0, 1.0),
+              ),
             ],
           ),
           child: TextFormField(
@@ -895,15 +866,15 @@ class AddProductScreenState extends State<AddProductScreen> {
                   return Consumer(
                     builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
                       return Container(
-                      height: MediaQuery.of(context).size.height * 0.96,
-                      color: Colors.transparent,
+                        height: MediaQuery.of(context).size.height * 0.96,
+                        color: Colors.transparent,
                         child: Container(
                           decoration: const BoxDecoration(
                             color: ColorResources.white,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10.0),
-                              topRight: Radius.circular(10.0)
-                            )
+                              topRight: Radius.circular(10.0),
+                            ),
                           ),
                           child: Stack(
                             clipBehavior: Clip.none,
@@ -913,89 +884,132 @@ class AddProductScreenState extends State<AddProductScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 8.0),
+                                    padding: const EdgeInsets.only(
+                                      left: 16.0,
+                                      right: 16.0,
+                                      top: 16.0,
+                                      bottom: 8.0,
+                                    ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                       Navigator.pop(context);
+                                            Navigator.pop(context);
                                           },
-                                          child: const Icon(
-                                            Icons.close
-                                          )
+                                          child: const Icon(Icons.close),
                                         ),
                                         Container(
-                                          margin: const EdgeInsets.only(left: 16),
-                                          child: Text("Kategori",
+                                          margin: const EdgeInsets.only(
+                                            left: 16,
+                                          ),
+                                          child: Text(
+                                            "Kategori",
                                             style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeDefault,
-                                              color: ColorResources.black
-                                            )
-                                          )
+                                              fontSize:
+                                                  Dimensions.fontSizeDefault,
+                                              color: ColorResources.black,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const Divider(
-                                    thickness: 3.0,
-                                  ),
+                                  const Divider(thickness: 3.0),
                                   Expanded(
                                     child: Consumer<EcommerceProvider>(
-                                      builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
-                                        return ListView.separated(
-                                          separatorBuilder: (BuildContext context, int i) => const Divider(
-                                            color: ColorResources.dimGrey,
-                                            thickness: 0.1,
-                                          ),
-                                          shrinkWrap: true,
-                                          physics: const BouncingScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: notifier.productCategories.length,
-                                          itemBuilder: (BuildContext context, int i) {
-                                            
-                                            ProductCategoryData category = notifier.productCategories[i];
-
-                                            return Container(
-                                              margin: const EdgeInsets.only(top: 5.0, left: 16.0, right: 16.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(category.name,
-                                                    style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeDefault,
-                                                      fontWeight: FontWeight.bold
-                                                    )
+                                      builder:
+                                          (
+                                            BuildContext context,
+                                            EcommerceProvider notifier,
+                                            Widget? child,
+                                          ) {
+                                            return ListView.separated(
+                                              separatorBuilder:
+                                                  (
+                                                    BuildContext context,
+                                                    int i,
+                                                  ) => const Divider(
+                                                    color:
+                                                        ColorResources.dimGrey,
+                                                    thickness: 0.1,
                                                   ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        categoryId = category.id;
-                                                        categoryC.text = category.name;
-                                                      });
-                                                 Navigator.pop(context);
-                                                    },
-                                                    child: const Text("Pilih",
-                                                      style: robotoRegular,
-                                                    ),
-                                                  )                                              
-                                                ],
-                                              ),
-                                            );                                                                      
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: notifier
+                                                  .productCategories
+                                                  .length,
+                                              itemBuilder:
+                                                  (
+                                                    BuildContext context,
+                                                    int i,
+                                                  ) {
+                                                    ProductCategoryData
+                                                    category = notifier
+                                                        .productCategories[i];
+
+                                                    return Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                            top: 5.0,
+                                                            left: 16.0,
+                                                            right: 16.0,
+                                                          ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            category.name,
+                                                            style: robotoRegular
+                                                                .copyWith(
+                                                                  fontSize:
+                                                                      Dimensions
+                                                                          .fontSizeDefault,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                categoryId =
+                                                                    category.id;
+                                                                categoryC.text =
+                                                                    category
+                                                                        .name;
+                                                              });
+                                                              Navigator.pop(
+                                                                context,
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              "Pilih",
+                                                              style:
+                                                                  robotoRegular,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                            );
                                           },
-                                        ); 
-                                      },
-                                    )
-                                  )                                
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
                           ),
-                        )
+                        ),
                       );
-                    }, 
+                    },
                   );
-                }
+                },
               );
             },
             cursorColor: ColorResources.black,
@@ -1004,26 +1018,21 @@ class AddProductScreenState extends State<AddProductScreen> {
             controller: categoryC,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
             decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 15.0,
+              ),
               isDense: true,
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
             ),
-          )
-      
-        )
-        
-      ]
+          ),
+        ),
+      ],
     );
   }
 
@@ -1031,19 +1040,12 @@ class AddProductScreenState extends State<AddProductScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Berat *",
-            style: robotoRegular.copyWith(
-              fontSize: 13.0,
-            )
-          ),
+          child: Text("Berat *", style: robotoRegular.copyWith(fontSize: 13.0)),
         ),
-        
-        const SizedBox(
-          height: 10.0,
-        ),
+
+        const SizedBox(height: 10.0),
 
         Container(
           width: double.infinity,
@@ -1052,11 +1054,11 @@ class AddProductScreenState extends State<AddProductScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1.0,
+                blurRadius: 3.0,
+                offset: const Offset(0.0, 1.0),
+              ),
             ],
           ),
           child: TextFormField(
@@ -1071,35 +1073,26 @@ class AddProductScreenState extends State<AddProductScreen> {
               suffixIcon: SizedBox(
                 width: 80.0,
                 child: Center(
-                  child: Text("Gram",
+                  child: Text(
+                    "Gram",
                     textAlign: TextAlign.center,
-                    style: robotoRegular.copyWith(
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: robotoRegular.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
+                color: Theme.of(context).hintColor,
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
               enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+                borderSide: BorderSide(color: Colors.grey, width: 0.5),
               ),
             ),
           ),
-        )
-
-        ]
-      );
-    }
-  
+        ),
+      ],
+    );
+  }
 }
