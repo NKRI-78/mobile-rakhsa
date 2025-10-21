@@ -15,106 +15,108 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl({required this.remoteDataSource});
 
-  @override 
+  @override
   Future<Either<Failure, AuthModel>> login({
     required String value,
-    required String password
+    required String password,
   }) async {
     try {
       var result = await remoteDataSource.login(
         value: value,
-        password: password
+        password: password,
       );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
-  @override 
+  @override
   Future<Either<Failure, void>> updateIsLoggedIn({
     required String userId,
-    required String type
+    required String type,
   }) async {
     try {
       var result = await remoteDataSource.updateIsLoggedIn(
         userId: userId,
-        type: type
+        type: type,
       );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
- @override 
+  @override
   Future<Either<Failure, ProfileModel>> getProfile() async {
     try {
       var result = await remoteDataSource.getProfile();
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
-  @override 
+  @override
   Future<Either<Failure, void>> updateProfile({required String avatar}) async {
     try {
       var result = await remoteDataSource.updateProfile(avatar: avatar);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, AuthModel>> register({
-    required String countryCode,
-    required String passportNumber,
     required String fullName,
-    required String nasionality,
-    required String placeOfBirth,
-    required String dateOfBirth,
-    required String gender,
-    required String dateOfIssue,
-    required String dateOfExpiry,
-    required String registrationNumber,
-    required String issuingAuthority,
-    required String mrzCode,
-    required String email,
     required String emergencyContact,
-    required String password
+    required String password,
+
+    // required String email,
+    // required String countryCode,
+    // required String passportNumber,
+    // required String nasionality,
+    // required String placeOfBirth,
+    // required String dateOfBirth,
+    // required String gender,
+    // required String dateOfIssue,
+    // required String dateOfExpiry,
+    // required String registrationNumber,
+    // required String issuingAuthority,
+    // required String mrzCode,
   }) async {
     try {
       var result = await remoteDataSource.register(
-        countryCode: countryCode,
-        passportNumber: passportNumber,
         fullName: fullName,
-        nasionality: nasionality,
-        placeOfBirth: placeOfBirth,
-        dateOfBirth: dateOfBirth,
-        gender: gender,
-        dateOfIssue: dateOfIssue,
-        dateOfExpiry: dateOfExpiry,
-        registrationNumber: registrationNumber,
-        issuingAuthority: issuingAuthority,
-        mrzCode: mrzCode,
-        email: email,
         emergencyContact: emergencyContact,
-        password: password
+        password: password,
+
+        // email: email,
+        // countryCode: countryCode,
+        // passportNumber: passportNumber,
+        // nasionality: nasionality,
+        // placeOfBirth: placeOfBirth,
+        // dateOfBirth: dateOfBirth,
+        // gender: gender,
+        // dateOfIssue: dateOfIssue,
+        // dateOfExpiry: dateOfExpiry,
+        // registrationNumber: registrationNumber,
+        // issuingAuthority: issuingAuthority,
+        // mrzCode: mrzCode,
       );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
@@ -125,50 +127,43 @@ class AuthRepositoryImpl implements AuthRepository {
     required String otp,
   }) async {
     try {
-      var result = await remoteDataSource.verifyOtp(
-        email: email,
-        otp: otp,
-      );
+      var result = await remoteDataSource.verifyOtp(email: email, otp: otp);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> resendOtp({
-    required String email,
-  }) async {
+  Future<Either<Failure, void>> resendOtp({required String email}) async {
     try {
-      var result = await remoteDataSource.resendOtp(
-        email: email,
-      );
+      var result = await remoteDataSource.resendOtp(email: email);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-  
+
   @override
   Future<Either<Failure, void>> forgotPassword({
-    required String email, 
-    required String oldPassword, 
-    required String newPassword
+    required String email,
+    required String oldPassword,
+    required String newPassword,
   }) async {
     try {
       var result = await remoteDataSource.forgotPassword(
         email: email,
         oldPassword: oldPassword,
-        newPassword: newPassword
+        newPassword: newPassword,
       );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
@@ -178,11 +173,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required String imagePath,
   }) async {
     try {
-      var result = await remoteDataSource.registerPassport(imagePath: imagePath);
+      var result = await remoteDataSource.registerPassport(
+        imagePath: imagePath,
+      );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
@@ -194,14 +191,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       var result = await remoteDataSource.checkRegisterStatus(
-        passport: passport, noReg: noReg,
+        passport: passport,
+        noReg: noReg,
       );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-
 }

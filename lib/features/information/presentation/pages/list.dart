@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
@@ -16,26 +15,21 @@ class InformationListPage extends StatelessWidget {
       backgroundColor: const Color(0xffF4F4F7),
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
-        leading: CupertinoNavigationBarBackButton(
-          onPressed: () {
-            return Navigator.pop(context);
-          },
-        ),
+        // leading: CupertinoNavigationBarBackButton(
+        //   onPressed: () {
+        //     return Navigator.pop(context);
+        //   },
+        // ),
+        automaticallyImplyLeading: false,
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(80.0),
           child: Padding(
-            padding: EdgeInsets.only(
-              left: 20.0, 
-              right: 20.0, 
-              bottom: 10.0
+            padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+            child: Text(
+              'Informasi apa, yang ingin anda ketahui ?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
-            child: Text('Informasi apa, yang ingin anda ketahui ?',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
-          )
+          ),
         ),
       ),
       body: ListView(
@@ -43,21 +37,31 @@ class InformationListPage extends StatelessWidget {
         children: [
           ListCardInformation(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SearchPage(info: "informasi-kbri");
-              }));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const SearchPage(info: "informasi-kbri");
+                  },
+                ),
+              );
             },
-            image: AssetSource.iconInfo, 
-            title: "Informasi KBRI"
+            image: AssetSource.iconInfo,
+            title: "Informasi KBRI",
           ),
           ListCardInformation(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const PanduanHukumPage();
-              }));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const PanduanHukumPage();
+                  },
+                ),
+              );
             },
-            image: AssetSource.iconHukum, 
-            title: "Panduan Hukum"
+            image: AssetSource.iconHukum,
+            title: "Panduan Hukum",
           ),
         ],
       ),

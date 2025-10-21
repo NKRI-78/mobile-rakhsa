@@ -2,7 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:rakhsa/common/helpers/dio.dart';
 import 'package:rakhsa/data/repository/ecommerce/ecommerce.dart';
@@ -294,7 +294,7 @@ void init() {
       useCase: locator(),
       registerPassport: locator(),
       firebaseAuth: locator(),
-      googleSignIn: locator(),
+      // googleSignIn: locator(),
       checkRegisterStatusUseCase: locator(),
     ),
   );
@@ -330,7 +330,7 @@ void init() {
   locator.registerLazySingleton(() => getDio);
   locator.registerLazySingleton(() => DeviceInfoPlugin());
   locator.registerLazySingleton(() => FirebaseAuth.instance);
-  locator.registerLazySingleton(() => GoogleSignIn.instance);
+  // locator.registerLazySingleton(() => GoogleSignIn.instance);
   locator.registerLazySingleton(
     () => WeatherFactory(
       '067cd306a519e9153f2ae44e71c8b4f3',

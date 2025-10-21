@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/common/routes/routes_navigation.dart';
 
 import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 
 import 'package:rakhsa/features/nearme/presentation/widgets/type_tile.dart';
+import 'package:rakhsa/helper/extensions.dart';
 
 class NearMeListTypePage extends StatelessWidget {
   const NearMeListTypePage({super.key});
@@ -22,7 +21,7 @@ class NearMeListTypePage extends StatelessWidget {
         action: () => Navigator.pushNamed(
           context,
           RoutesNavigation.nearMe,
-          arguments:  "police"
+          arguments: "police",
         ),
       ),
       NearMeType(
@@ -31,7 +30,7 @@ class NearMeListTypePage extends StatelessWidget {
         action: () => Navigator.pushNamed(
           context,
           RoutesNavigation.nearMe,
-          arguments:  "mosque"
+          arguments: "mosque",
         ),
       ),
       NearMeType(
@@ -40,7 +39,7 @@ class NearMeListTypePage extends StatelessWidget {
         action: () => Navigator.pushNamed(
           context,
           RoutesNavigation.nearMe,
-          arguments:  "lodging"
+          arguments: "lodging",
         ),
       ),
       NearMeType(
@@ -49,7 +48,7 @@ class NearMeListTypePage extends StatelessWidget {
         action: () => Navigator.pushNamed(
           context,
           RoutesNavigation.nearMe,
-          arguments:  "restaurant"
+          arguments: "restaurant",
         ),
       ),
     ];
@@ -59,23 +58,26 @@ class NearMeListTypePage extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           // app bar
-          SliverAppBar(
-            backgroundColor: ColorResources.backgroundColor,
-            leading: CupertinoNavigationBarBackButton(
-              onPressed: () => Navigator.of(context).pop(),
-              color: ColorResources.black,
-            ),
-          ),
+          // SliverAppBar(
+          //   backgroundColor: ColorResources.backgroundColor,
+          //   leading: CupertinoNavigationBarBackButton(
+          //     onPressed: () => Navigator.of(context).pop(),
+          //     color: ColorResources.black,
+          //   ),
+          // ),
 
           // title kategori
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(
-                "Mencari lokasi terdekat dari Anda...",
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeOverLarge,
-                  fontWeight: FontWeight.bold,
+          SliverPadding(
+            padding: EdgeInsetsGeometry.only(top: context.top + kToolbarHeight),
+            sliver: SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Text(
+                  "Mencari lokasi terdekat dari Anda...",
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeOverLarge,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -86,13 +88,14 @@ class NearMeListTypePage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList.separated(
               itemCount: types.length,
-              separatorBuilder: (BuildContext context, int i) => const SizedBox(height: 16),
+              separatorBuilder: (BuildContext context, int i) =>
+                  const SizedBox(height: 16),
               itemBuilder: (BuildContext context, int index) {
                 final category = types[index];
                 return TypeTile(category, onTap: category.action);
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -104,9 +107,5 @@ class NearMeType {
   final String assets;
   final VoidCallback action;
 
-  NearMeType({
-    required this.title,
-    required this.assets,
-    required this.action,
-  });
+  NearMeType({required this.title, required this.assets, required this.action});
 }

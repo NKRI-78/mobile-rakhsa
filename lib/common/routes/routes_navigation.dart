@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/auth/presentation/pages/login_fr.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_fr.dart';
-import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_page.dart';
-import 'package:rakhsa/features/auth/presentation/pages/scan_register_passport_v2.dart';
+import 'package:rakhsa/features/auth/presentation/pages/login_page.dart';
+import 'package:rakhsa/features/auth/presentation/pages/@deprecated/login_fr.dart';
+import 'package:rakhsa/features/auth/presentation/pages/@deprecated/register_fr.dart';
+import 'package:rakhsa/features/auth/presentation/pages/@deprecated/scan_register_passport_page.dart';
+import 'package:rakhsa/features/auth/presentation/pages/@deprecated/scan_register_passport_v2.dart';
+import 'package:rakhsa/features/auth/presentation/pages/register_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
@@ -27,7 +28,7 @@ class RoutesNavigation {
   static const mart = '/mart';
   static const nearMe = '/near-me';
   static const welcomePage = '/welcome';
-  // static const register = '/register';
+  static const register = '/register';
   static const weather = '/weather';
   static const chats = '/chats';
   static const chat = '/chat';
@@ -50,28 +51,30 @@ class RoutesNavigation {
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case dashboard: 
+      case dashboard:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
-      case deviceNotSupport: 
+      case deviceNotSupport:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
-      case mart: 
+      case mart:
         return MaterialPageRoute(builder: (_) => const ProductsScreen());
-      // case register: 
-      //   return MaterialPageRoute(builder: (_) => const RegisterPage());
-      // case registerPassport: 
+      case register:
+        return MaterialPageRoute(builder: (_) => const RegisterPage());
+      // case registerPassport:
       //   return MaterialPageRoute(builder: (_) => const RegisterPassportPage());
-      case registerPassport: 
-        return MaterialPageRoute(builder: (_) => const ScanRegisterPassportPage());
-      case registerPassportv2: 
-        return MaterialPageRoute(builder: (_) => const RegisterFrV2Page());
+      // case registerPassport:
+      //   return MaterialPageRoute(
+      //     builder: (_) => const ScanRegisterPassportPage(),
+      //   );
+      // case registerPassportv2:
+      //   return MaterialPageRoute(builder: (_) => const RegisterFrV2Page());
       case information:
         return MaterialPageRoute(builder: (_) => const InformationListPage());
       case weather:
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => WeatherPage(data));
-      case chats: 
+      case chats:
         return MaterialPageRoute(builder: (_) => const ChatsPage());
-      case chat: 
+      case chat:
         final data = settings.arguments as Map<String, dynamic>;
         bool autoGreetings = data["auto_greetings"];
         String chatId = data["chat_id"];
@@ -79,34 +82,40 @@ class RoutesNavigation {
         String recipientId = data["recipient_id"];
         String status = data["status"];
 
-        return MaterialPageRoute(builder: (_) => ChatPage(
-          autoGreetings: autoGreetings,
-          chatId: chatId,
-          recipientId: recipientId,
-          sosId: sosId,
-          status: status,
-        ));
+        return MaterialPageRoute(
+          builder: (_) => ChatPage(
+            autoGreetings: autoGreetings,
+            chatId: chatId,
+            recipientId: recipientId,
+            sosId: sosId,
+            status: status,
+          ),
+        );
       case ppob:
         return MaterialPageRoute(builder: (_) => const PPOBPage());
       case nearMeTypeList:
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
-      case visaDocument: 
+      case visaDocument:
         return MaterialPageRoute(builder: (_) => const VisaDocumentPage());
-      case welcomePage: 
+      case welcomePage:
         return MaterialPageRoute(builder: (_) => const WelcomePage());
-      case passportDocument: 
+      case passportDocument:
         return MaterialPageRoute(builder: (_) => const PassportDocumentPage());
-      case loginFr: 
-        return MaterialPageRoute(builder: (_) => const LoginFrPage(fromHome: false));
-      case login: 
+      // case loginFr:
+      //   return MaterialPageRoute(
+      //     builder: (_) => const LoginFrPage(fromHome: false),
+      //   );
+      case login:
         return MaterialPageRoute(builder: (_) => const LoginPage());
-      case registerFr: 
+      case registerFr:
         final data = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(builder: (_) => RegisterFrPage(
-          userId: data["user_id"],  
-          passportPic: data["passport_pic"],
-          passport: data["passport"]
-        ));
+      // return MaterialPageRoute(
+      //   builder: (_) => RegisterFrPage(
+      //     userId: data["user_id"],
+      //     passportPic: data["passport_pic"],
+      //     passport: data["passport"],
+      //   ),
+      // );
       case nearMe:
         final type = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));
@@ -114,10 +123,9 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const NewsListPage());
       case newsDetail:
         final data = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(builder: (_) => NewsDetailPage(
-          id: data['id'],
-          type: data['type'],
-        ));
+        return MaterialPageRoute(
+          builder: (_) => NewsDetailPage(id: data['id'], type: data['type']),
+        );
       case itinerary:
         return MaterialPageRoute(builder: (_) => const EventPage());
       default:
@@ -136,10 +144,9 @@ class _InvalidRoute extends StatelessWidget {
       body: Center(
         child: Text(
           'INVALID ROUTE',
-          style: Theme.of(context)
-              .textTheme
-              .headlineMedium
-              ?.copyWith(color: Colors.white),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineMedium?.copyWith(color: Colors.white),
         ),
       ),
     );
