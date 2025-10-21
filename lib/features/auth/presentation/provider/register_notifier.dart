@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 import 'package:rakhsa/common/helpers/enum.dart';
@@ -22,7 +22,6 @@ import 'package:rakhsa/features/auth/domain/usecases/check_register_status.dart'
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_otp.dart';
 import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 
@@ -37,7 +36,7 @@ class RegisterNotifier with ChangeNotifier {
 
   final RegisterUseCase useCase;
   final FirebaseAuth firebaseAuth;
-  final GoogleSignIn googleSignIn;
+  // final GoogleSignIn googleSignIn;
   final RegisterPassportUseCase registerPassport;
 
   AuthModel _authModel = AuthModel();
@@ -108,7 +107,7 @@ class RegisterNotifier with ChangeNotifier {
     required this.mediaUseCase,
     required this.updatePassport,
     required this.useCase,
-    required this.googleSignIn,
+    // required this.googleSignIn,
     required this.firebaseAuth,
     required this.registerPassport,
     required this.checkRegisterStatusUseCase,
@@ -121,40 +120,42 @@ class RegisterNotifier with ChangeNotifier {
   }
 
   Future<void> register({
-    required String countryCode,
-    required String passportNumber,
     required String fullName,
-    required String nasionality,
-    required String placeOfBirth,
-    required String dateOfBirth,
-    required String gender,
-    required String dateOfIssue,
-    required String dateOfExpiry,
-    required String registrationNumber,
-    required String issuingAuthority,
-    required String mrzCode,
-    required String email,
     required String emergencyContact,
     required String password,
+
+    // required String email,
+    // required String countryCode,
+    // required String passportNumber,
+    // required String nasionality,
+    // required String placeOfBirth,
+    // required String dateOfBirth,
+    // required String gender,
+    // required String dateOfIssue,
+    // required String dateOfExpiry,
+    // required String registrationNumber,
+    // required String issuingAuthority,
+    // required String mrzCode,
   }) async {
     setStateProviderState(ProviderState.loading);
 
     final register = await useCase.execute(
-      countryCode: countryCode,
-      passportNumber: passportNumber,
       fullName: fullName,
-      nasionality: nasionality,
-      placeOfBirth: placeOfBirth,
-      dateOfBirth: dateOfBirth,
-      gender: gender,
-      dateOfIssue: dateOfIssue,
-      dateOfExpiry: dateOfExpiry,
-      registrationNumber: registrationNumber,
-      issuingAuthority: issuingAuthority,
-      mrzCode: mrzCode,
-      email: email,
       emergencyContact: emergencyContact,
       password: password,
+
+      // email: email,
+      // countryCode: countryCode,
+      // passportNumber: passportNumber,
+      // nasionality: nasionality,
+      // placeOfBirth: placeOfBirth,
+      // dateOfBirth: dateOfBirth,
+      // gender: gender,
+      // dateOfIssue: dateOfIssue,
+      // dateOfExpiry: dateOfExpiry,
+      // registrationNumber: registrationNumber,
+      // issuingAuthority: issuingAuthority,
+      // mrzCode: mrzCode,
     );
 
     register.fold(
@@ -169,19 +170,27 @@ class RegisterNotifier with ChangeNotifier {
         StorageHelper.saveUserEmail(email: authModel.data?.user.email ?? "-");
         StorageHelper.saveUserPhone(phone: authModel.data?.user.phone ?? "-");
 
-        ShowSnackbar.snackbarOk(
-          "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan",
-        );
+        StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        Navigator.pushAndRemoveUntil(
+        Navigator.pushNamedAndRemoveUntil(
           navigatorKey.currentContext!,
-          MaterialPageRoute(
-            builder: (context) {
-              return RegisterOtp(email: email);
-            },
-          ),
+          RoutesNavigation.dashboard,
           (route) => false,
         );
+
+        // ShowSnackbar.snackbarOk(
+        //   "Silahkan periksa alamat E-mail $email untuk mengisi kode otp yang telah dikirimkan",
+        // );
+
+        // Navigator.pushAndRemoveUntil(
+        //   navigatorKey.currentContext!,
+        //   MaterialPageRoute(
+        //     builder: (context) {
+        //       return RegisterOtp(email: email);
+        //     },
+        //   ),
+        //   (route) => false,
+        // );
 
         setStateProviderState(ProviderState.loaded);
       },

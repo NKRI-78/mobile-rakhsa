@@ -33,13 +33,16 @@ class CustomTextField extends StatefulWidget {
   final bool isEmail;
   final bool isPassword;
   final bool isName;
+  final Color? selectionHandleColor;
   final bool isAlphabetsAndNumbers;
   final bool isBorder;
   final bool isBorderRadius;
   final bool readOnly;
   final bool isEnabled;
   final bool isCapital;
+  final BorderRadius? borderRadius;
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
   final Function()? onEditingComplete;
   final Function(String?)? onSaved;
 
@@ -54,9 +57,12 @@ class CustomTextField extends StatefulWidget {
     this.isSuffixIcon = false,
     this.suffixIcon,
     this.hintText,
+    this.selectionHandleColor,
     this.emptyText,
     this.labelText,
     this.initialValue,
+    this.inputFormatters,
+    this.borderRadius,
     this.floatingLabelBehavior = FloatingLabelBehavior.never,
     this.textInputType,
     this.counterColor = whiteColor,
@@ -98,140 +104,135 @@ class CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(context) {
-    return TextFormField(
-      initialValue: widget.initialValue,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      controller: widget.controller,
-      minLines: widget.maxLines,
-      maxLines: widget.maxLines,
-      focusNode: widget.focusNode,
-      cursorColor: widget.cursorColor,
-      keyboardType: widget.textInputType,
-      maxLength: widget.maxLength,
-      onSaved: widget.onSaved,
-      onEditingComplete: widget.onEditingComplete,
-      readOnly: widget.readOnly,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          widget.focusNode?.requestFocus();
-          return widget.emptyText;
-        }
-        return null;
-      },
-      onChanged: widget.onChanged,
-      enableInteractiveSelection: true,
-      textCapitalization: widget.isCapital ? TextCapitalization.words : TextCapitalization.none,
-      enabled: widget.isEnabled,
-      textInputAction: widget.textInputAction,
-      obscureText: widget.isPassword ? obscureText : false,
-      style: const TextStyle(
-        color: whiteColor,
-        fontSize: fontSizeLarge,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: TextSelectionThemeData(
+          selectionHandleColor: widget.selectionHandleColor ?? Colors.white,
+        ),
       ),
-      onFieldSubmitted: (String v) {
-        setState(() {
-          widget.textInputAction == TextInputAction.done
-          ? FocusScope.of(context).consumeKeyboardToken()
-          : FocusScope.of(context).requestFocus(widget.nextNode);
-        });
-      },
-      inputFormatters: widget.isAlphabetsAndNumbers
-      ? [
-          FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
-        ]
-      : widget.isName
-      ? [
-          FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]'))
-        ]
-      : widget.isEmail
-      ? [
-          FilteringTextInputFormatter.singleLineFormatter,
-        ]
-      : widget.isPhoneNumber 
-      ? [
-          FilteringTextInputFormatter.digitsOnly
-        ]
-      : widget.isAllowedSymbol ? 
-        [
-          FilteringTextInputFormatter.singleLineFormatter,
-          FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]'))
-        ] 
-      : widget.isCapital 
-      ? [
-          UpperCaseTextFormatter()
-        ] 
-      : [
-          FilteringTextInputFormatter.singleLineFormatter,
-        ],
-      decoration: InputDecoration(
-        fillColor: widget.fillColor,
-        filled: true,
-        isDense: true,
-        prefixIcon: widget.isPrefixIcon 
-        ? widget.prefixIcon 
-        : null,
-        suffixIcon: widget.isPassword
-        ? IconButton(
-            onPressed: toggle,
-            icon: Icon(
-              obscureText ? Icons.visibility_off : Icons.visibility,
-              color: whiteColor,
-              size: 18.0,
-            ),
-          )
-        : widget.isSuffixIcon
-          ? widget.suffixIcon
-          : null,
-        counterText: "",
-        errorStyle: const TextStyle(
-          fontSize: fontSizeLarge,
-          color: greyInputColor
-        ),
-        counterStyle: TextStyle(color: widget.counterColor, fontSize: fontSizeLarge),
-        floatingLabelBehavior: widget.floatingLabelBehavior,
-        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        hintText: widget.hintText,
-        hintStyle: const TextStyle(
-          color: greyColor,
-          fontSize: fontSizeLarge,
-          fontWeight: FontWeight.w500,
-        ),
-        labelText: widget.labelText,
-        labelStyle: const TextStyle(
-          fontSize: fontSizeLarge,
-          color: whiteColor
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(
-          color: greyInputColor,
-          width: 1.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(
-          color: greyInputColor,
-          width: 1.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(
-          color: whiteColor,
-          width: 1.0,),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(
-          color: whiteColor,
-          width: 1.0,),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(
-          color: whiteColor,
-          width: 1.0,),
+      child: TextFormField(
+        initialValue: widget.initialValue,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        controller: widget.controller,
+        minLines: widget.maxLines,
+        maxLines: widget.maxLines,
+        focusNode: widget.focusNode,
+        cursorColor: widget.cursorColor,
+        keyboardType: widget.textInputType,
+        maxLength: widget.maxLength,
+        onSaved: widget.onSaved,
+        onEditingComplete: widget.onEditingComplete,
+        readOnly: widget.readOnly,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            widget.focusNode?.requestFocus();
+            return widget.emptyText;
+          }
+          return null;
+        },
+        onChanged: widget.onChanged,
+        enableInteractiveSelection: true,
+        textCapitalization: widget.isCapital
+            ? TextCapitalization.words
+            : TextCapitalization.none,
+        enabled: widget.isEnabled,
+        textInputAction: widget.textInputAction,
+        obscureText: widget.isPassword ? obscureText : false,
+        style: const TextStyle(color: whiteColor, fontSize: fontSizeLarge),
+        onFieldSubmitted: (String v) {
+          setState(() {
+            widget.textInputAction == TextInputAction.done
+                ? FocusScope.of(context).consumeKeyboardToken()
+                : FocusScope.of(context).requestFocus(widget.nextNode);
+          });
+        },
+        inputFormatters:
+            widget.inputFormatters ??
+            (widget.isAlphabetsAndNumbers
+                ? [
+                    FilteringTextInputFormatter.singleLineFormatter,
+                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
+                  ]
+                : widget.isName
+                ? [
+                    FilteringTextInputFormatter.singleLineFormatter,
+                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
+                  ]
+                : widget.isEmail
+                ? [FilteringTextInputFormatter.singleLineFormatter]
+                : widget.isPhoneNumber
+                // ? [FilteringTextInputFormatter.digitsOnly]
+                ? [PhoneNumberFormatter()]
+                : widget.isAllowedSymbol
+                ? [
+                    FilteringTextInputFormatter.singleLineFormatter,
+                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
+                  ]
+                : widget.isCapital
+                ? [UpperCaseTextFormatter()]
+                : [FilteringTextInputFormatter.singleLineFormatter]),
+        decoration: InputDecoration(
+          fillColor: widget.fillColor,
+          filled: true,
+          isDense: true,
+          prefixIcon: widget.isPrefixIcon ? widget.prefixIcon : null,
+          suffixIcon: widget.isPassword
+              ? IconButton(
+                  onPressed: toggle,
+                  icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: whiteColor,
+                    size: 18.0,
+                  ),
+                )
+              : widget.isSuffixIcon
+              ? widget.suffixIcon
+              : null,
+          counterText: "",
+          errorStyle: const TextStyle(
+            fontSize: fontSizeDefault,
+            color: greyInputColor,
+          ),
+          counterStyle: TextStyle(
+            color: widget.counterColor,
+            fontSize: fontSizeLarge,
+          ),
+          floatingLabelBehavior: widget.floatingLabelBehavior,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 12.0,
+          ),
+          hintText: widget.hintText,
+          hintStyle: TextStyle(
+            color: greyColor.withValues(alpha: 0.8),
+            fontSize: fontSizeLarge,
+            fontWeight: FontWeight.w500,
+          ),
+          labelText: widget.labelText,
+          labelStyle: const TextStyle(
+            fontSize: fontSizeLarge,
+            color: whiteColor,
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: greyInputColor, width: 1.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: greyInputColor, width: 1.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: whiteColor, width: 1.0),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: whiteColor, width: 1.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8.0),
+            borderSide: const BorderSide(color: whiteColor, width: 1.0),
+          ),
         ),
       ),
     );
@@ -241,7 +242,9 @@ class CustomTextFieldState extends State<CustomTextField> {
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     return TextEditingValue(
       text: capitalize(newValue.text),
       selection: newValue.selection,
@@ -253,8 +256,47 @@ String capitalize(String value) {
   if (value.trim().isEmpty) return "";
   return value
       .split(' ')
-      .map((word) => word.isNotEmpty
-          ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
-          : "")
+      .map(
+        (word) => word.isNotEmpty
+            ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
+            : "",
+      )
       .join(' ');
+}
+
+class PhoneNumberFormatter extends TextInputFormatter {
+  static String unmask(String text) => text.replaceAll(RegExp(r'[^0-9]'), '');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digitsOnly = unmask(newValue.text);
+
+    if (digitsOnly.length > 13) {
+      digitsOnly = digitsOnly.substring(0, 13);
+    }
+
+    final buffer = StringBuffer();
+
+    for (int i = 0; i < digitsOnly.length; i++) {
+      buffer.write(digitsOnly[i]);
+
+      final isFourth = (i + 1) % 4 == 0;
+      final notLast = i + 1 != digitsOnly.length;
+      if (isFourth && notLast) {
+        buffer.write('-');
+      }
+    }
+
+    final formatted = buffer.toString();
+
+    int selectionIndex = formatted.length;
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: selectionIndex),
+    );
+  }
 }

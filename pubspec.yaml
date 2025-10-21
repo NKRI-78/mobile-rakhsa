@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   # A
-  app_settings: ^6.1.1
+  # app_settings: ^6.1.1
   awesome_notifications: ^0.10.1
 
   # B
@@ -61,8 +61,8 @@ dependencies:
 
   # Google
   googleapis: ^15.0.0
-  google_sign_in: ^7.2.0
-  googleapis_auth: ^2.0.0
+  # google_sign_in: ^7.2.0
+  # googleapis_auth: ^2.0.0
   google_api_headers: ^4.6.2
   google_maps_flutter: ^2.13.1
 
@@ -73,11 +73,12 @@ dependencies:
   gallery_saver_plus: ^3.2.9
 
   # L
-  local_auth: ^3.0.0
+  # local_auth: ^3.0.0
   # lecle_flutter_absolute_path: ^0.0.2+1
 
   # I
   intl: ^0.20.2
+  iconsax_plus: ^1.0.0
   image_picker: ^1.2.0
   image_cropper: ^11.0.0
 
@@ -93,7 +94,7 @@ dependencies:
   socket_io_client: ^3.1.2
   shared_preferences: ^2.5.3
   syncfusion_flutter_barcodes: ^31.2.2
-  syncfusion_flutter_calendar: ^31.2.2
+  # syncfusion_flutter_calendar: ^31.2.2
 
   # P
   provider: ^6.1.5+1
@@ -107,12 +108,13 @@ dependencies:
 
   # U
   uuid: ^4.5.1
+  url_launcher: ^6.3.2
 
   # T
   tuple: ^2.0.2
   # timelines: ^0.1.0
   table_calendar: ^3.2.0
-  tflite_flutter: ^0.11.0
+  # tflite_flutter: ^0.11.0
 
   # W
   weather: ^3.2.1

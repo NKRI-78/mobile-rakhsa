@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 
- class NotchedBottomNavBar extends StatelessWidget {
+class NotchedBottomNavBar extends StatelessWidget {
   final Widget leftItem;
   final Widget rightItem;
   final double height;
@@ -33,19 +33,13 @@ import 'package:rakhsa/common/constants/theme.dart';
         children: [
           // Item kiri
           Expanded(
-            child: Align(
-              alignment: Alignment.center,
-              child: leftItem,
-            ),
+            child: Align(alignment: Alignment.center, child: leftItem),
           ),
           // Ruang FAB
           SizedBox(width: fabSpace),
           // Item kanan
           Expanded(
-            child: Align(
-              alignment: Alignment.center,
-              child: rightItem,
-            ),
+            child: Align(alignment: Alignment.center, child: rightItem),
           ),
         ],
       ),

@@ -11,38 +11,40 @@ class RegisterUseCase {
   RegisterUseCase(this.repository);
 
   Future<Either<Failure, AuthModel>> execute({
-    required String countryCode,
-    required String passportNumber,
     required String fullName,
-    required String nasionality,
-    required String placeOfBirth,
-    required String dateOfBirth,
-    required String gender,
-    required String dateOfIssue,
-    required String dateOfExpiry,
-    required String registrationNumber,
-    required String issuingAuthority,
-    required String mrzCode,
-    required String email,
     required String emergencyContact,
-    required String password
+    required String password,
+
+    // required String email,
+    // required String countryCode,
+    // required String passportNumber,
+    // required String nasionality,
+    // required String placeOfBirth,
+    // required String dateOfBirth,
+    // required String gender,
+    // required String dateOfIssue,
+    // required String dateOfExpiry,
+    // required String registrationNumber,
+    // required String issuingAuthority,
+    // required String mrzCode,
   }) {
     return repository.register(
-      countryCode: countryCode,
-      passportNumber: passportNumber,
       fullName: fullName,
-      nasionality: nasionality,
-      placeOfBirth: placeOfBirth,
-      dateOfBirth: dateOfBirth,
-      gender: gender,
-      dateOfIssue: dateOfIssue,
-      dateOfExpiry: dateOfExpiry,
-      registrationNumber: registrationNumber,
-      issuingAuthority: issuingAuthority,
-      mrzCode: mrzCode,
-      email: email,
       emergencyContact: emergencyContact,
-      password: password
+      password: password,
+
+      // email: email,
+      // countryCode: countryCode,
+      // passportNumber: passportNumber,
+      // nasionality: nasionality,
+      // placeOfBirth: placeOfBirth,
+      // dateOfBirth: dateOfBirth,
+      // gender: gender,
+      // dateOfIssue: dateOfIssue,
+      // dateOfExpiry: dateOfExpiry,
+      // registrationNumber: registrationNumber,
+      // issuingAuthority: issuingAuthority,
+      // mrzCode: mrzCode,
     );
   }
 }

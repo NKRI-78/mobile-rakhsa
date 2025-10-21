@@ -122,12 +122,13 @@ class WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> onUserAction() async {
-    if (Platform.isAndroid) {
-      requestAllPermissions();
-    } else {
-      if (!mounted) return;
-      // await registerNotifier.registerWithGoogle(context);
-    }
+    Navigator.pushNamed(context, RoutesNavigation.register);
+    // if (Platform.isAndroid) {
+    //   requestAllPermissions();
+    // } else {
+    //   if (!mounted) return;
+    //   // await registerNotifier.registerWithGoogle(context);
+    // }
   }
 
   @override
@@ -208,22 +209,23 @@ class WelcomePageState extends State<WelcomePage> {
                   // login button
                   ElevatedButton(
                     onPressed: () async {
-                      if (Platform.isIOS) {
-                        Dio dio = Dio();
-                        Response res = await dio.get(
-                          "https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature",
-                        );
-                        if (res.data["data"]["feature_fr_login"] == true) {
-                          Navigator.pushNamed(
-                            context,
-                            RoutesNavigation.loginFr,
-                          );
-                        } else {
-                          Navigator.pushNamed(context, RoutesNavigation.login);
-                        }
-                      } else {
-                        Navigator.pushNamed(context, RoutesNavigation.loginFr);
-                      }
+                      Navigator.pushNamed(context, RoutesNavigation.login);
+                      // if (Platform.isIOS) {
+                      //   Dio dio = Dio();
+                      //   Response res = await dio.get(
+                      //     "https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature",
+                      //   );
+                      //   if (res.data["data"]["feature_fr_login"] == true) {
+                      //     Navigator.pushNamed(
+                      //       context,
+                      //       RoutesNavigation.loginFr,
+                      //     );
+                      //   } else {
+                      //     Navigator.pushNamed(context, RoutesNavigation.login);
+                      //   }
+                      // } else {
+                      //   Navigator.pushNamed(context, RoutesNavigation.loginFr);
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,

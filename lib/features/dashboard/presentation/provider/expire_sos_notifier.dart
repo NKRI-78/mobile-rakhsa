@@ -14,7 +14,7 @@ class SosNotifier with ChangeNotifier {
   }
 
   late AnimationController? pulseController;
-  late AnimationController? timerController;  
+  late AnimationController? timerController;
 
   late Animation<double> pulseAnimation;
 
@@ -46,9 +46,10 @@ class SosNotifier with ChangeNotifier {
       vsync: vsync,
     );
 
-    pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: pulseController!, curve: Curves.easeOut),
-    );
+    pulseAnimation = Tween<double>(
+      begin: 1.0,
+      end: 2.5,
+    ).animate(CurvedAnimation(parent: pulseController!, curve: Curves.easeOut));
 
     notifyListeners();
   }
@@ -73,9 +74,8 @@ class SosNotifier with ChangeNotifier {
     if (countdownTime > 0) {
       final elapsedTime = (60 - countdownTime) / 60;
       timerController!.value = elapsedTime;
+      notifyListeners();
     }
-    
-    notifyListeners();
   }
 
   void resumeTimer() {
@@ -96,16 +96,16 @@ class SosNotifier with ChangeNotifier {
 
     pulseController!.reverse();
     notifyListeners();
-    
-    timerController!
-    ..reset()
-    ..forward().whenComplete(() {
-      pulseController!.reverse();
-      notifyListeners();
 
-      isPressed = false;
-      notifyListeners();
-    });
+    timerController!
+      ..reset()
+      ..forward().whenComplete(() {
+        pulseController!.reverse();
+        notifyListeners();
+
+        isPressed = false;
+        notifyListeners();
+      });
 
     notifyListeners();
   }
@@ -115,21 +115,23 @@ class SosNotifier with ChangeNotifier {
 
     timerController?.stop();
     timerController?.reset();
-    
+
     notifyListeners();
-  } 
+  }
 
   Future<void> expireSos({required String sosId}) async {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(sosId: sosId);
 
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.error);
-    }, (r) {
-      setStateProvider(ProviderState.loaded);
-    });
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.error);
+      },
+      (r) {
+        setStateProvider(ProviderState.loaded);
+      },
+    );
   }
-  
 }

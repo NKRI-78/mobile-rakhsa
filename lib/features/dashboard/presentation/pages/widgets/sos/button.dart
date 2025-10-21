@@ -7,54 +7,64 @@ import 'package:rakhsa/camera.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/features/auth/data/models/profile.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/pages/login_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
-class SosButton extends StatefulWidget {
+class SosButtonParam {
   final String location;
   final String country;
   final String lat;
   final String lng;
   final bool isConnected;
   final bool loadingGmaps;
+  final ProfileData? profile;
 
-  const SosButton({
+  SosButtonParam({
     required this.location,
     required this.country,
-    required this.lat, 
+    required this.lat,
     required this.lng,
     required this.isConnected,
     required this.loadingGmaps,
-    super.key
+    required this.profile,
   });
+}
+
+class SosButton extends StatefulWidget {
+  final SosButtonParam param;
+
+  const SosButton(this.param, {super.key});
 
   @override
   SosButtonState createState() => SosButtonState();
 }
 
 class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
-
   late SosNotifier sosNotifier;
-  late ProfileNotifier profileNotifier;
 
   Future<void> handleLongPressStart() async {
-    if(profileNotifier.entity.data!.sos.running) {
+    if (widget.param.profile!.sos.running) {
       GeneralModal.infoEndSos(
-        sosId: profileNotifier.entity.data!.sos.id,
-        chatId: profileNotifier.entity.data!.sos.chatId,
-        recipientId: profileNotifier.entity.data!.sos.recipientId,
+        sosId: widget.param.profile!.sos.id,
+        chatId: widget.param.profile!.sos.chatId,
+        recipientId: widget.param.profile!.sos.recipientId,
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
-        isHome: true
+        isHome: true,
       );
     } else {
-      if(StorageHelper.getUserId() == null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const LoginPage();
-        }));
+      if (StorageHelper.getUserId() == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const LoginPage();
+            },
+          ),
+        );
       } else {
         sosNotifier.pulseController?.forward();
         sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
@@ -65,11 +75,16 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     }
   }
 
-   void handleLongPressEnd() {
-    if(StorageHelper.getUserId() == null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const LoginPage();
-      }));
+  void handleLongPressEnd() {
+    if (StorageHelper.getUserId() == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginPage();
+          },
+        ),
+      );
     } else {
       if (sosNotifier.holdTimer?.isActive ?? false) {
         sosNotifier.holdTimer?.cancel();
@@ -81,25 +96,27 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   Future<void> startTimer() async {
-    if(mounted) {
-      Navigator.push(context, 
-        MaterialPageRoute(builder: (context) {
-          return CameraPage(
-            location: widget.location, 
-            country: widget.country, 
-            lat: widget.lat, 
-            lng: widget.lng, 
-          ); 
-        })
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return CameraPage(
+              location: widget.param.location,
+              country: widget.param.country,
+              lat: widget.param.lat,
+              lng: widget.param.lng,
+            );
+          },
+        ),
       ).then((value) {
-        if(value != null) {
+        if (value != null) {
           sosNotifier.startTimer();
         } else {
           sosNotifier.resetAnimation();
         }
       });
     }
-
   }
 
   @override
@@ -107,8 +124,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     super.initState();
 
     sosNotifier = context.read<SosNotifier>();
-    profileNotifier = context.read<ProfileNotifier>();
-    
+
     sosNotifier.initializePulse(this);
     sosNotifier.initializeTimer(this);
 
@@ -132,11 +148,13 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                     return Transform.scale(
                       scale: notifier.pulseAnimation.value * scaleFactor,
                       child: Container(
-                        width: 70, 
+                        width: 70,
                         height: 70,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color:const Color(0xFFFE1717).withOpacity(0.2 / scaleFactor)  ,
+                          color: const Color(
+                            0xFFFE1717,
+                          ).withOpacity(0.2 / scaleFactor),
                         ),
                       ),
                     );
@@ -147,51 +165,55 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                   width: 180,
                   height: 180,
                   child: CircularProgressIndicator(
-                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1FFE17)),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color(0xFF1FFE17),
+                    ),
                     strokeWidth: 6,
                     value: 1 - notifier.timerController!.value,
                     backgroundColor: Colors.transparent,
                   ),
                 ),
               GestureDetector(
-                onLongPressStart: (LongPressStartDetails longPressStartDetails) async => widget.isConnected 
-                ? notifier.isTimerRunning 
-                ? () {} 
-                : widget.loadingGmaps 
-                ? () {} 
-                : await handleLongPressStart() 
-                : () {},
-                onLongPressEnd: (_) => widget.isConnected 
-                ? notifier.isTimerRunning 
-                ? () {} 
-                : widget.loadingGmaps 
-                ? () {} 
-                : handleLongPressEnd() 
-                : () {},
+                onLongPressStart:
+                    (LongPressStartDetails longPressStartDetails) async =>
+                        widget.param.isConnected
+                        ? notifier.isTimerRunning
+                              ? () {}
+                              : widget.param.loadingGmaps
+                              ? () {}
+                              : await handleLongPressStart()
+                        : () {},
+                onLongPressEnd: (_) => widget.param.isConnected
+                    ? notifier.isTimerRunning
+                          ? () {}
+                          : widget.param.loadingGmaps
+                          ? () {}
+                          : handleLongPressEnd()
+                    : () {},
                 child: AnimatedBuilder(
                   animation: notifier.timerController!,
                   builder: (BuildContext context, Widget? child) {
                     return Bouncing(
-                      onPress: () async => widget.isConnected 
-                      ? notifier.isTimerRunning 
-                      ? () {} 
-                      : widget.loadingGmaps 
-                      ? () {} 
-                      : () {} 
-                      : () {},
+                      onPress: () async => widget.param.isConnected
+                          ? notifier.isTimerRunning
+                                ? () {}
+                                : widget.param.loadingGmaps
+                                ? () {}
+                                : () {}
+                          : () {},
                       child: Container(
                         width: 180,
                         height: 180,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: widget.isConnected
-                            ? const Color(0xFFFE1717)
-                            : const Color(0xFF7A7A7A),
+                          color: widget.param.isConnected
+                              ? const Color(0xFFFE1717)
+                              : const Color(0xFF7A7A7A),
                           boxShadow: [
                             BoxShadow(
-                              color: widget.isConnected 
-                              ? const Color(0xFFFE1717).withOpacity(0.5) 
-                              : const Color(0xFF7A7A7A).withOpacity(0.5),
+                              color: widget.param.isConnected
+                                  ? const Color(0xFFFE1717).withOpacity(0.5)
+                                  : const Color(0xFF7A7A7A).withOpacity(0.5),
                               blurRadius: 10,
                               spreadRadius: 5,
                             ),
@@ -199,7 +221,9 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          sosNotifier.isPressed ? "${notifier.countdownTime}" : "SOS",
+                          sosNotifier.isPressed
+                              ? "${notifier.countdownTime}"
+                              : "SOS",
                           style: robotoRegular.copyWith(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
