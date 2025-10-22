@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/helpers/capitalize.dart';
 import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -85,7 +86,21 @@ class HomePage extends StatelessWidget {
 
                         Container(
                           margin: const EdgeInsets.only(top: 45),
-                          child: SosButton(sosButtonParam),
+                          child: Consumer<ProfileNotifier>(
+                            builder: (context, data, child) {
+                              return SosButton(
+                                SosButtonParam(
+                                  location: sosButtonParam.location,
+                                  country: sosButtonParam.country,
+                                  lat: sosButtonParam.lat,
+                                  lng: sosButtonParam.lng,
+                                  isConnected: sosButtonParam.isConnected,
+                                  loadingGmaps: sosButtonParam.loadingGmaps,
+                                  profile: data.entity.data,
+                                ),
+                              );
+                            },
+                          ),
                         ),
 
                         Consumer<DashboardNotifier>(

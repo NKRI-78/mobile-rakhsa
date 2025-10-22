@@ -5,7 +5,7 @@ import 'package:rakhsa/common/helpers/snackbar.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
-import 'package:rakhsa/features/auth/presentation/pages/login_page.dart';
+import 'package:rakhsa/modules/auth/page/login_page.dart';
 
 class ForgotPasswordNotifier with ChangeNotifier {
   final ForgotPasswordUseCase useCase;

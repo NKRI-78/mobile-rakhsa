@@ -306,11 +306,8 @@ class DashboardScreenState extends State<DashboardScreen>
                     country: currentCountry,
                     lat: currentLat,
                     lng: currentLng,
-                    profile: profileNotifier.entity.data,
                     loadingGmaps: loadingGmaps,
-                    isConnected: context.watch<SocketIoService>().isConnected
-                        ? true
-                        : false,
+                    isConnected: context.watch<SocketIoService>().isConnected,
                   ),
                 ),
                 InformationListPage(),

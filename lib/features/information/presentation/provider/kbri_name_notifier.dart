@@ -26,19 +26,20 @@ class KbriNameNotifier extends ChangeNotifier {
 
     String stateName = StorageHelper.getUserNationality() ?? "-";
 
-    final result = await useCase.execute(
-      stateName: stateName
-    );
-    result.fold((l) {
-      _state = ProviderState.error;
-      notifyListeners();
-      
-      _message = l.message;
-    }, (r) {
-      _entity = r;
+    final result = await useCase.execute(stateName: stateName);
+    result.fold(
+      (l) {
+        _state = ProviderState.error;
+        notifyListeners();
 
-      _state = ProviderState.loaded;
-      notifyListeners();
-    });
+        _message = l.message;
+      },
+      (r) {
+        _entity = r;
+
+        _state = ProviderState.loaded;
+        notifyListeners();
+      },
+    );
   }
 }

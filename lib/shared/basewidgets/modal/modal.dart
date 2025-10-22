@@ -1,15 +1,16 @@
 import 'dart:ui';
 
-// import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/Helper/extensions.dart';
 import 'package:rakhsa/common/constants/theme.dart';
 
 import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/common/utils/asset_source.dart';
 
 import 'package:rakhsa/common/utils/color_resources.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
@@ -950,21 +951,30 @@ class GeneralModal {
                                 fontSize: Dimensions.fontSizeSmall,
                                 isBorderRadius: true,
                                 height: 30.0,
-                                onTap: () {
-                                  StorageHelper.removeToken();
+                                onTap: () async {
+                                  final session =
+                                      await StorageHelper.getUserSession();
 
-                                  context.read<SocketIoService>().socket?.emit(
-                                    "leave",
-                                    {"user_id": StorageHelper.getUserId()},
-                                  );
+                                  if (context.mounted) {
+                                    context
+                                        .read<SocketIoService>()
+                                        .socket
+                                        ?.emit("leave", {
+                                          "user_id": session.user.id,
+                                        });
+                                  }
 
-                                  globalKey.currentState?.closeDrawer();
+                                  await StorageHelper.removeUserSession();
 
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    RoutesNavigation.welcomePage,
-                                    (route) => false,
-                                  );
+                                  if (context.mounted) {
+                                    globalKey.currentState?.closeDrawer();
+
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      RoutesNavigation.welcomePage,
+                                      (route) => false,
+                                    );
+                                  }
                                 },
                                 btnTxt: "Ya",
                               ),
@@ -977,6 +987,55 @@ class GeneralModal {
                 ),
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<void> error(
+    BuildContext c,
+    String msg, {
+    VoidCallback? onReload,
+  }) {
+    return showDialog(
+      context: c,
+      builder: (context) {
+        return AlertDialog(
+          icon: Image.asset(AssetSource.iconAlert, width: 56, height: 56),
+          title: Text(
+            "Error",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          content: Text(msg, textAlign: TextAlign.center),
+          actions: [
+            TextButton(
+              onPressed: context.pop,
+              style: FilledButton.styleFrom(
+                foregroundColor: blackColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(12),
+                ),
+              ),
+              child: Text("Periksa"),
+            ),
+            FilledButton(
+              onPressed: () => onReload?.call(),
+              style: FilledButton.styleFrom(
+                backgroundColor: errorColor,
+                foregroundColor: whiteColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(12),
+                ),
+              ),
+              child: Text("Coba Lagi"),
+            ),
+          ],
+          backgroundColor: whiteColor,
+          actionsAlignment: MainAxisAlignment.center,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(16),
           ),
         );
       },

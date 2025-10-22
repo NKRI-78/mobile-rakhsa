@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart' as badges;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/common/constants/theme.dart';
@@ -12,13 +11,11 @@ import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/common/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
+import 'package:rakhsa/shared/basewidgets/avatar.dart';
 import 'package:rakhsa/socketio.dart';
 
 class HeaderSection extends StatelessWidget {
-  const HeaderSection({
-    super.key,
-    required this.scaffoldKey,
-  });
+  const HeaderSection({super.key, required this.scaffoldKey});
 
   final GlobalKey<ScaffoldState> scaffoldKey;
 
@@ -37,18 +34,12 @@ class HeaderSection extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => scaffoldKey.currentState?.openEndDrawer(),
                 child: Consumer<ProfileNotifier>(
-                  builder: (_, provider, __) => CachedNetworkImage(
-                    imageUrl: provider.entity.data?.avatar ?? "",
-                    imageBuilder: (_, imgProvider) => CircleAvatar(
-                      backgroundImage: imgProvider,
-                    ),
-                    placeholder: (_, __) => const CircleAvatar(
-                      backgroundImage: AssetImage(AssetSource.iconNoProfile),
-                    ),
-                    errorWidget: (_, __, ____) => const CircleAvatar(
-                      backgroundImage: AssetImage(AssetSource.iconNoProfile),
-                    ),
-                  ),
+                  builder: (context, provider, child) {
+                    return Avatar(
+                      src: provider.entity.data?.avatar ?? "",
+                      initial: provider.entity.data?.username ?? "",
+                    );
+                  },
                 ),
               ),
             ),
@@ -56,15 +47,13 @@ class HeaderSection extends StatelessWidget {
             // title marlinda
             Flexible(
               fit: FlexFit.tight,
-              child: Image.asset(AssetSource.titleMarlinda,
-                height: 38.0,
-              )
+              child: Image.asset(AssetSource.titleMarlinda, height: 38.0),
             ),
 
             // logo marlinda
             Flexible(
               child: Image.asset(
-                AssetSource.logoMarlindaNoTitle, 
+                AssetSource.logoMarlindaNoTitle,
                 width: 45,
                 height: 45,
               ),
@@ -88,7 +77,7 @@ class HeaderSection extends StatelessWidget {
                     "Selamat Datang",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.hintColor
+                      color: ColorResources.hintColor,
                     ),
                   ),
                   Consumer<ProfileNotifier>(
@@ -108,7 +97,6 @@ class HeaderSection extends StatelessWidget {
                       } else {
                         return const Text('-');
                       }
-                      
                     },
                   ),
                 ],
@@ -126,7 +114,7 @@ class HeaderSection extends StatelessWidget {
                     color: provider.indicatorColor,
                   ),
                 );
-              }
+              },
             ),
             const SizedBox(width: 16),
 
@@ -139,23 +127,20 @@ class HeaderSection extends StatelessWidget {
                   builder: (context, notifier, child) {
                     return badges.Badge(
                       showBadge: notifier.chats.isNotEmpty,
-                      position: badges.BadgePosition.custom(
-                        top: -8,
-                        end: -4,
-                      ),
+                      position: badges.BadgePosition.custom(top: -8, end: -4),
                       badgeContent: Text(
-                        notifier.chats.length.toString(), 
+                        notifier.chats.length.toString(),
                         style: robotoRegular.copyWith(
                           color: whiteColor,
                           fontSize: 9,
                         ),
                       ),
                       child: const Icon(
-                        Icons.notifications_active_outlined, 
+                        Icons.notifications_active_outlined,
                         size: 28,
                       ),
                     );
-                  }
+                  },
                 ),
               ),
             ),

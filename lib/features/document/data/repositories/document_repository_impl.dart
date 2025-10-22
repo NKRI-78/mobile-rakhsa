@@ -12,23 +12,19 @@ class DocumentRepositoryImpl implements DocumentRepository {
   @override
   Future<Either<Failure, void>> updateVisa({required String path}) async {
     try {
-      final userId = StorageHelper.getUserId();
-      if (userId != null) {
-        await remoteDatasource.updateVisa(path: path, userId: userId);
-      }
+      final session = await StorageHelper.getUserSession();
+      await remoteDatasource.updateVisa(path: path, userId: session.user.id);
       return right(null);
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
   }
 
-   @override
+  @override
   Future<Either<Failure, void>> deleteVisa() async {
     try {
-      final userId = StorageHelper.getUserId();
-      if (userId != null) {
-        await remoteDatasource.deleteVisa(userId: userId);
-      }
+      final session = await StorageHelper.getUserSession();
+      await remoteDatasource.deleteVisa(userId: session.user.id);
       return right(null);
     } catch (e) {
       return left(ServerFailure(e.toString()));
@@ -38,18 +34,13 @@ class DocumentRepositoryImpl implements DocumentRepository {
   @override
   Future<Either<Failure, void>> updatePassport({
     required String userId,
-    required String path
+    required String path,
   }) async {
     try {
-      await remoteDatasource.updatePassport(
-        userId: userId,
-        path: path, 
-      );
+      await remoteDatasource.updatePassport(userId: userId, path: path);
       return right(null);
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
   }
-  
- 
 }

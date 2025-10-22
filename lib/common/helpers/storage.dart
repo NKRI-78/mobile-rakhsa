@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:rakhsa/misc/client/error/exceptions.dart';
+import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageHelper {
-
   static late SharedPreferences sharedPreferences;
 
   static Future<void> init() async {
@@ -13,19 +16,37 @@ class StorageHelper {
     sharedPreferences.clear();
   }
 
-  static getAndroidOptions() => const AndroidOptions(encryptedSharedPreferences: true);
+  static getAndroidOptions() =>
+      const AndroidOptions(encryptedSharedPreferences: true);
   static getIOSOptions() => const IOSOptions();
 
   static final FlutterSecureStorage storage = FlutterSecureStorage(
     aOptions: getAndroidOptions(),
-    iOptions: getIOSOptions()
+    iOptions: getIOSOptions(),
   );
 
   static Future<void> saveToken({required String token}) async {
-    await storage.write(
-      key: "token", 
-      value: token
+    await storage.write(key: "token", value: token);
+  }
+
+  static Future<void> saveUserSession(UserSession newSession) {
+    return storage.write(
+      key: "user_session",
+      value: userSessionToJson(newSession),
     );
+  }
+
+  static Future<UserSession> getUserSession() async {
+    final sessionCache = await storage.read(key: "user_session");
+    if (sessionCache != null) {
+      log("user session = $sessionCache");
+      return userSessionFromJson(sessionCache);
+    }
+    throw ClientException.missing("Sesi pengguna tidak ditemukan.");
+  }
+
+  static Future<void> removeUserSession() {
+    return storage.delete(key: "user_session");
   }
 
   static void setIsLocked({required bool val}) {
@@ -36,29 +57,29 @@ class StorageHelper {
     return sharedPreferences.getBool("is_locked") ?? false;
   }
 
-  static Future<String> getToken() async {
-    String token = await storage.read(key: 'token') ?? "-";
+  // static Future<String> getToken() async {
+  //   String token = await storage.read(key: 'token') ?? "-";
 
-    return token;
-  } 
+  //   return token;
+  // }
 
-  static String? getUserId() {
-    String? userId = sharedPreferences.getString("user_id");
+  // static String? getUserId() {
+  //   String? userId = sharedPreferences.getString("user_id");
 
-    return userId;
-  }
+  //   return userId;
+  // }
 
-  static String? getUserEmail() {
-    String? userEmail = sharedPreferences.getString("user_email");
+  // static String? getUserEmail() {
+  //   String? userEmail = sharedPreferences.getString("user_email");
 
-    return userEmail;
-  }
+  //   return userEmail;
+  // }
 
-  static String? getUserPhone() {
-    String? userPhone = sharedPreferences.getString("user_phone");
+  // static String? getUserPhone() {
+  //   String? userPhone = sharedPreferences.getString("user_phone");
 
-    return userPhone;
-  }
+  //   return userPhone;
+  // }
 
   static int? getElapsedTime() {
     int? elapsedTime = sharedPreferences.getInt("elapsedtime") ?? 60;
@@ -69,7 +90,7 @@ class StorageHelper {
   static String? getUserNationality() {
     String? nationality = sharedPreferences.getString("nationality") ?? "-";
 
-    return nationality; 
+    return nationality;
   }
 
   static void setMiddlewareLogin({required bool val}) async {
@@ -116,24 +137,24 @@ class StorageHelper {
     await sharedPreferences.remove("sos_id");
   }
 
-  static Future<void> removeToken() async {
-    await storage.delete(key: "token");
+  // static Future<void> removeToken() async {
+  //   await storage.delete(key: "token");
+  // }
+
+  static Future<bool> isLoggedIn() async {
+    // var token = await storage.read(key: "token");
+    // return token != null ? true : false;
+
+    final containSessionKey = await storage.containsKey(key: "user_session");
+    final sessionCache = await storage.read(key: "user_session");
+    return containSessionKey && (sessionCache != null);
   }
 
-  static Future<bool?> isLoggedIn() async {
-    var token = await storage.read(key: "token");
-
-    return token != null 
-    ? true 
-    : false;
-  }
-
-  static bool containsOnBoardingKey(){
+  static bool containsOnBoardingKey() {
     return sharedPreferences.containsKey('on-boarding-key');
   }
-  
+
   static Future<void> setOnBoardingKey() async {
     await sharedPreferences.setBool('on-boarding-key', true);
   }
-  
 }

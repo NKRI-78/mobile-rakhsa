@@ -46,7 +46,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   // String country = placemarks[0].country ?? "-";
   // String street = placemarks[0].street ?? "-";
   // String administrativeArea = placemarks[0].administrativeArea ?? "-";
-  // String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-"; 
+  // String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-";
 
   // String address = "$administrativeArea $subadministrativeArea\n$street, $country";
 
@@ -70,16 +70,17 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> initFcm() async {
     try {
+      final session = await StorageHelper.getUserSession();
       String? token = await FirebaseMessaging.instance.getToken();
-        await dio.post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm", data: {
-          "user_id": StorageHelper.getUserId(),
-          "token": token,
-        },
+      await dio.post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
+        data: {"user_id": session.user.id, "token": token},
       );
     } catch (e) {
       debugPrint("Error initializing FCM: $e");
     }
   }
+
   Future<void> setupInteractedMessage(BuildContext context) async {
     await FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
@@ -102,62 +103,87 @@ class FirebaseProvider with ChangeNotifier {
       }
     });
   }
-  
+
   void handleMessage(RemoteMessage message) {
     processMessage(message);
   }
 
   void processMessage(RemoteMessage message) {
-    switch (message.data["type"]) {     
+    switch (message.data["type"]) {
       case NotificationType.resolvedSos:
         handleResolvedSos(navigatorKey.currentContext!, message.data);
-      break;
+        break;
       case NotificationType.closedSos:
         handleClosedSos(navigatorKey.currentContext!, message.data);
-      break;
+        break;
       case NotificationType.confirmSos:
         handleConfirmSos(navigatorKey.currentContext!, message.data);
-      break;
-      case NotificationType.news: 
+        break;
+      case NotificationType.news:
         String newsId = message.data["news_id"] ?? "0";
-        
-        Navigator.pushNamed(navigatorKey.currentContext!, RoutesNavigation.news, 
-          arguments: {
-            "id": int.parse(newsId),
-            "type": "news"
-          }
+
+        Navigator.pushNamed(
+          navigatorKey.currentContext!,
+          RoutesNavigation.news,
+          arguments: {"id": int.parse(newsId), "type": "news"},
         );
-      break;  
+        break;
       case NotificationType.ews:
         navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
         Future.delayed(const Duration(seconds: 1), () {
-          var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
-          var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
-          var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+          var lat =
+              double.tryParse(
+                navigatorKey.currentContext!
+                        .read<ProfileNotifier>()
+                        .entity
+                        .data
+                        ?.lat ??
+                    "0",
+              ) ??
+              0;
+          var lng =
+              double.tryParse(
+                navigatorKey.currentContext!
+                        .read<ProfileNotifier>()
+                        .entity
+                        .data
+                        ?.lng ??
+                    "0",
+              ) ??
+              0;
+          var state =
+              navigatorKey.currentContext!
+                  .read<ProfileNotifier>()
+                  .entity
+                  .data
+                  ?.state ??
+              "Indonesia";
 
           navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
-            lat: lat, 
-            lng: lng, 
-            state: state
+            lat: lat,
+            lng: lng,
+            state: state,
           );
         });
-      break;
+        break;
       case NotificationType.chat:
-        String chatId =  message.data["chat_id"] ?? "-";
+        String chatId = message.data["chat_id"] ?? "-";
         String recipientId = message.data["recipient_id"] ?? "-";
         String sosId = message.data["sos_id"] ?? "-";
 
-        Navigator.pushNamed(navigatorKey.currentContext!, RoutesNavigation.chat, 
+        Navigator.pushNamed(
+          navigatorKey.currentContext!,
+          RoutesNavigation.chat,
           arguments: {
             "chat_id": chatId,
             "recipient_id": recipientId,
             "status": "NONE",
             "sos_id": sosId,
-            "auto_greetings": false
-          }
+            "auto_greetings": false,
+          },
         );
-      break;
+        break;
       default:
         debugPrint("Unhandled notification type: ${message.data["type"]}");
     }
@@ -175,50 +201,100 @@ class FirebaseProvider with ChangeNotifier {
     var messageNotifier = context.read<GetMessagesNotifier>();
     context.read<ProfileNotifier>().getProfile();
     context.read<SosNotifier>().stopTimer();
-    
+
     messageNotifier.resetTimer();
     messageNotifier.startTimer();
   }
 
-  Future<void> showNotification(RemoteNotification? notification, Map<String, dynamic> payload) async {
-    
+  Future<void> showNotification(
+    RemoteNotification? notification,
+    Map<String, dynamic> payload,
+  ) async {
     // fetch realtime when notification without title and description
     if (payload['type'] == 'ews-delete') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
-      var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
-      var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
-      var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+      var lat =
+          double.tryParse(
+            navigatorKey.currentContext!
+                    .read<ProfileNotifier>()
+                    .entity
+                    .data
+                    ?.lat ??
+                "0",
+          ) ??
+          0;
+      var lng =
+          double.tryParse(
+            navigatorKey.currentContext!
+                    .read<ProfileNotifier>()
+                    .entity
+                    .data
+                    ?.lng ??
+                "0",
+          ) ??
+          0;
+      var state =
+          navigatorKey.currentContext!
+              .read<ProfileNotifier>()
+              .entity
+              .data
+              ?.state ??
+          "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
-        lat: lat, 
-        lng: lng, 
-        state: state
+        lat: lat,
+        lng: lng,
+        state: state,
       );
 
-      // fetch realtime when notification with title and description 
+      // fetch realtime when notification with title and description
     } else if (payload['type'] == 'ews') {
       navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
 
-      var lat = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lat ?? "0") ?? 0;
-      var lng = double.tryParse(navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.lng ?? "0") ?? 0;
-      var state = navigatorKey.currentContext!.read<ProfileNotifier>().entity.data?.state ?? "Indonesia";
+      var lat =
+          double.tryParse(
+            navigatorKey.currentContext!
+                    .read<ProfileNotifier>()
+                    .entity
+                    .data
+                    ?.lat ??
+                "0",
+          ) ??
+          0;
+      var lng =
+          double.tryParse(
+            navigatorKey.currentContext!
+                    .read<ProfileNotifier>()
+                    .entity
+                    .data
+                    ?.lng ??
+                "0",
+          ) ??
+          0;
+      var state =
+          navigatorKey.currentContext!
+              .read<ProfileNotifier>()
+              .entity
+              .data
+              ?.state ??
+          "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
-        lat: lat, 
-        lng: lng, 
-        state: state
+        lat: lat,
+        lng: lng,
+        state: state,
       );
     } else {
-      if (notification != null) {     
-          await AwesomeNotifications().createNotification(
+      if (notification != null) {
+        await AwesomeNotifications().createNotification(
           content: NotificationContent(
             payload: {
               "type": payload["type"].toString(),
               "news_id": payload["news_id"].toString(),
               "chat_id": payload["chat_id"].toString(),
               "recipient_id": payload["recipient_id"].toString(),
-              "sos_id": payload["sos_id"].toString()
+              "sos_id": payload["sos_id"].toString(),
             },
             notificationLayout: NotificationLayout.Default,
             actionType: ActionType.Default,
@@ -230,6 +306,5 @@ class FirebaseProvider with ChangeNotifier {
         );
       }
     }
-    
   }
 }

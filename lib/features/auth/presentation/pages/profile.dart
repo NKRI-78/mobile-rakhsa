@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/shared/basewidgets/avatar.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
@@ -89,9 +88,9 @@ class ProfilePageState extends State<ProfilePage> {
     );
     if (imageSource != null) {
       if (imageSource == ImageSource.gallery) {
-        XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-        );
+        // XFile? pickedFile = await ImagePicker().pickImage(
+        //   source: ImageSource.gallery,
+        // );
 
         // File? cropped = await ImageCropper().cropImage(
         //   sourcePath: pickedFile!.path,
@@ -109,9 +108,9 @@ class ProfilePageState extends State<ProfilePage> {
         //   setState(() => selectedFile = null);
         // }
       } else {
-        XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.camera,
-        );
+        // XFile? pickedFile = await ImagePicker().pickImage(
+        //   source: ImageSource.camera,
+        // );
 
         // File? cropped = await ImageCropper().cropImage(
         //     sourcePath: pickedFile!.path,
@@ -326,7 +325,7 @@ class ProfilePageState extends State<ProfilePage> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
+                                      color: Colors.grey.withValues(alpha: 0.5),
                                       spreadRadius: 3,
                                       blurRadius: 4,
                                       offset: const Offset(0, 0.2),
@@ -341,66 +340,21 @@ class ProfilePageState extends State<ProfilePage> {
                                           selectedFile!,
                                         ),
                                       )
-                                    : CachedNetworkImage(
-                                        imageUrl: profileNotifier
-                                            .entity
-                                            .data!
-                                            .avatar
-                                            .toString(),
-                                        imageBuilder:
-                                            (
-                                              BuildContext context,
-                                              ImageProvider<Object>
-                                              imageProvider,
-                                            ) {
-                                              return CircleAvatar(
-                                                radius: 40.0,
-                                                backgroundColor:
-                                                    ColorResources.white,
-                                                backgroundImage: imageProvider,
-                                              );
-                                            },
-                                        errorWidget:
-                                            (
-                                              BuildContext context,
-                                              String url,
-                                              Object error,
-                                            ) {
-                                              return const CircleAvatar(
-                                                radius: 40.0,
-                                                backgroundColor:
-                                                    ColorResources.white,
-                                                backgroundImage: AssetImage(
-                                                  'assets/images/default.jpeg',
-                                                ),
-                                              );
-                                            },
-                                        placeholder:
-                                            (BuildContext context, String url) {
-                                              return const CircleAvatar(
-                                                radius: 40.0,
-                                                backgroundColor:
-                                                    ColorResources.white,
-                                                backgroundImage: AssetImage(
-                                                  'assets/images/default.jpeg',
-                                                ),
-                                              );
-                                            },
+                                    : Avatar(
+                                        src:
+                                            profileNotifier
+                                                .entity
+                                                .data
+                                                ?.avatar ??
+                                            "",
+                                        initial:
+                                            profileNotifier
+                                                .entity
+                                                .data
+                                                ?.username ??
+                                            "",
                                       ),
                               ),
-                              // const Positioned(
-                              //   right: 0.0,
-                              //   bottom: 0.0,
-                              //   child: CircleAvatar(
-                              //     backgroundColor: ColorResources.white,
-                              //     maxRadius: 12.0,
-                              //     child: Icon(
-                              //       Icons.camera_alt,
-                              //       size: 14.0,
-                              //       color: ColorResources.black,
-                              //     ),
-                              //   ),
-                              // )
                             ],
                           ),
                         ),

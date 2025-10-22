@@ -14,32 +14,30 @@ class ProfileNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _state = ProviderState.loading; 
+  ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
 
-  ProfileNotifier({
-    required this.useCase
-  });
+  ProfileNotifier({required this.useCase});
 
   void setStateProviderState(ProviderState param) {
     _state = param;
 
     notifyListeners();
-    Future.delayed(Duration.zero,() => notifyListeners());
+    // Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> getProfile() async {
     final profile = await useCase.execute();
-    
+
     profile.fold(
-      (l) { 
+      (l) {
         _message = l.message;
         setStateProviderState(ProviderState.error);
-      }, (r) {
+      },
+      (r) {
         _entity = r;
         setStateProviderState(ProviderState.loaded);
-      }
+      },
     );
   }
-
 }

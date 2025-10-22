@@ -4,12 +4,7 @@ class ProfileModel {
   String? message;
   ProfileData? data;
 
-  ProfileModel({
-    this.status,
-    this.error,
-    this.message,
-    this.data,
-  });
+  ProfileModel({this.status, this.error, this.message, this.data});
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
     status: json["status"],
@@ -106,10 +101,8 @@ class ProfileDoc {
 
   ProfileDoc({required this.visa, required this.passport});
 
-  factory ProfileDoc.fromJson(Map<String, dynamic> json) => ProfileDoc(
-    visa: json['visa'],
-    passport: json['passport'],
-  );
+  factory ProfileDoc.fromJson(Map<String, dynamic> json) =>
+      ProfileDoc(visa: json['visa'], passport: json['passport']);
 }
 
 class ProfileSos {
@@ -129,6 +122,6 @@ class ProfileSos {
     id: json["id"],
     chatId: json["chat_id"],
     running: json["running"],
-    recipientId: json["recipient_id"]
+    recipientId: json["recipient_id"],
   );
 }
