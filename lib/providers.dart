@@ -5,7 +5,6 @@ import 'package:rakhsa/features/administration/presentation/provider/get_contine
 import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/login_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
@@ -41,9 +40,7 @@ import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/socketio.dart';
 
-List<SingleChildWidget> providers = [
-  ...independentServices,
-];
+List<SingleChildWidget> providers = [...independentServices];
 
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<FirebaseProvider>()),
@@ -53,12 +50,11 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosRatingNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<ProfileNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<LoginNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DocumentNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<RegisterNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<ResendOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<VerifyOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetChatsNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<RegisterNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetCountryNotifier>()),
@@ -75,7 +71,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<PassportNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<EcommerceProvider>()),
-  // ChangeNotifierProvider.value(value: di.locator<PassportScannerNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InquiryPulsaProvider>()),
   ChangeNotifierProvider.value(value: di.locator<PaymentChannelProvider>()),
@@ -89,5 +84,5 @@ List<SingleChildWidget> independentServices = [
       socketService.connect();
       return socketService;
     },
-  )
+  ),
 ];

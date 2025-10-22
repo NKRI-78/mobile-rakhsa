@@ -13,29 +13,31 @@ import 'package:rakhsa/features/ppob/data/models/ppob_inquiry_tokenlistrik_model
 abstract class PPOBRemoteDataSource {
   Future<PPOBPulsaInquiryModel> inquiryPulsa({
     required String prefix,
-    required String type
+    required String type,
   });
-  Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({required String idpel});
+  Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({
+    required String idpel,
+  });
   Future<PaymentModel> paymentChannelList();
   Future<int> getBalance();
   Future<void> payPpob({
     required String idpel,
     required String productId,
-    required String paymentCode, 
-    required String paymentChannel, 
-    required String type
+    required String paymentCode,
+    required String paymentChannel,
+    required String type,
   });
   Future<void> payPraPLN({
-    required String idpel, 
+    required String idpel,
     required String ref2,
-    required String nominal
+    required String nominal,
   });
   Future<DenomTopupModel> denomTopup();
   Future<void> inquiryTopup({
-    required String productId, 
+    required String productId,
     required int productPrice,
     required String channel,
-    required String topupby
+    required String topupby,
   });
 }
 
@@ -44,183 +46,199 @@ class PPOBRemoteDataSourceImpl implements PPOBRemoteDataSource {
 
   PPOBRemoteDataSourceImpl({required this.client});
 
-  @override 
+  @override
   Future<PPOBPulsaInquiryModel> inquiryPulsa({
     required String prefix,
-    required String type
+    required String type,
   }) async {
     try {
-      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data?prefix=$prefix&type=$type");
-      Map<String, dynamic> data = res.data;
-      PPOBPulsaInquiryModel ppobPulsaInquiryModel = PPOBPulsaInquiryModel.fromJson(data);
-      return ppobPulsaInquiryModel;
-    } on DioException catch(e) {
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch(e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  @override 
-  Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({required String idpel}) async {
-    try {
-      Response res = await client.post("${RemoteDataSourceConsts.baseUrlPpob}/inquiry/pln-prabayar", 
-        data: {
-          "idpel": idpel
-        }
+      Response res = await client.get(
+        "https://api-ppob.langitdigital78.com/api/v1/ppob/info/price-list-pulsa-data?prefix=$prefix&type=$type",
       );
       Map<String, dynamic> data = res.data;
-      PPOBTokenListrikInquiryModel ppobTokenListrikInquiryModel = PPOBTokenListrikInquiryModel.fromJson(data);
-      return ppobTokenListrikInquiryModel;
-    } on DioException catch(e) {
+      PPOBPulsaInquiryModel ppobPulsaInquiryModel =
+          PPOBPulsaInquiryModel.fromJson(data);
+      return ppobPulsaInquiryModel;
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
-  Future<void> payPraPLN({
-    required String idpel, 
-    required String ref2,
-    required String nominal
+  @override
+  Future<PPOBTokenListrikInquiryModel> inquiryPrabayarPLN({
+    required String idpel,
   }) async {
     try {
-      await client.post("${RemoteDataSourceConsts.baseUrlPpob}/pay/pln-prabayar",
+      Response res = await client.post(
+        "${RemoteDataSourceConsts.baseUrlPpob}/inquiry/pln-prabayar",
+        data: {"idpel": idpel},
+      );
+      Map<String, dynamic> data = res.data;
+      PPOBTokenListrikInquiryModel ppobTokenListrikInquiryModel =
+          PPOBTokenListrikInquiryModel.fromJson(data);
+      return ppobTokenListrikInquiryModel;
+    } on DioException catch (e) {
+      String message = handleDioException(e);
+      throw ServerException(message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> payPraPLN({
+    required String idpel,
+    required String ref2,
+    required String nominal,
+  }) async {
+    try {
+      final session = await StorageHelper.getUserSession();
+      await client.post(
+        "${RemoteDataSourceConsts.baseUrlPpob}/pay/pln-prabayar",
         data: {
           "idpel": idpel,
           "ref2": ref2,
           "nominal": nominal,
-          "user_id": StorageHelper.getUserId()
-        }
+          "user_id": session.user.id,
+        },
       );
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
+  @override
   Future<PaymentModel> paymentChannelList() async {
     try {
-      Response res = await client.get("https://api-ppob.langitdigital78.com/api/v1/payment");
+      Response res = await client.get(
+        "https://api-ppob.langitdigital78.com/api/v1/payment",
+      );
       Map<String, dynamic> data = res.data;
       PaymentModel pm = PaymentModel.fromJson(data);
       return pm;
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
+  @override
   Future<int> getBalance() async {
     try {
-      Response res = await client.post("${RemoteDataSourceConsts.baseUrlPpob}/get/balance",
-        data: {
-          "user_id": StorageHelper.getUserId(),
-          "origin": "raksha"
-        }
+      final session = await StorageHelper.getUserSession();
+      Response res = await client.post(
+        "${RemoteDataSourceConsts.baseUrlPpob}/get/balance",
+        data: {"user_id": session.user.id, "origin": "raksha"},
       );
       Map<String, dynamic> data = res.data;
       return data["body"]["balance"];
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
+  @override
   Future<DenomTopupModel> denomTopup() async {
     try {
-      Response res = await client.get("${RemoteDataSourceConsts.baseUrlPpob}/get/denom");
+      Response res = await client.get(
+        "${RemoteDataSourceConsts.baseUrlPpob}/get/denom",
+      );
       Map<String, dynamic> data = res.data;
       DenomTopupModel inquiryDenomTopupModel = DenomTopupModel.fromJson(data);
       return inquiryDenomTopupModel;
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
+  @override
   Future<void> inquiryTopup({
     required String productId,
     required int productPrice,
     required String channel,
-    required String topupby
+    required String topupby,
   }) async {
     try {
-      if(topupby == "without") {
-        await client.post("${RemoteDataSourceConsts.baseUrlPpob}/inquiry/topup/balance",
+      final session = await StorageHelper.getUserSession();
+      if (topupby == "without") {
+        await client.post(
+          "${RemoteDataSourceConsts.baseUrlPpob}/inquiry/topup/balance",
           data: {
             "product_id": productId,
             "channel": channel,
-            "user_id": StorageHelper.getUserId(),
-            "phone_number": StorageHelper.getUserPhone(),
-            "email_address": StorageHelper.getUserEmail(),
-            "origin": "sman4medan"
-          }
+            "user_id": session.user.id,
+            "phone_number": session.user.phone,
+            "email_address": session.user.email,
+            "origin": "sman4medan",
+          },
         );
       } else {
-        await client.post("${RemoteDataSourceConsts.baseUrlPpob}/inquiry/topup/balance/input",
+        await client.post(
+          "${RemoteDataSourceConsts.baseUrlPpob}/inquiry/topup/balance/input",
           data: {
             "product_price": productPrice,
             "channel": channel,
-            "user_id": StorageHelper.getUserId(),
-            "phone_number": StorageHelper.getUserPhone(),
-            "email_address": StorageHelper.getUserEmail(),
-            "origin": "sman4medan"
-          }
+            "user_id": session.user.id,
+            "phone_number": session.user.phone,
+            "email_address": session.user.email,
+            "origin": "sman4medan",
+          },
         );
       }
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  @override 
+  @override
   Future<InquiryPayPpobModel> payPpob({
     required String idpel,
     required String productId,
-    required String paymentCode, 
-    required String paymentChannel, 
-    required String type
+    required String paymentCode,
+    required String paymentChannel,
+    required String type,
   }) async {
     try {
-      Response res = await client.post("https://api-ppob.langitdigital78.com/api/v1/payment/inquiry", 
+      final session = await StorageHelper.getUserSession();
+      Response res = await client.post(
+        "https://api-ppob.langitdigital78.com/api/v1/payment/inquiry",
         data: {
           "app": "marlinda",
           "idpel": idpel,
-          "user_id": StorageHelper.getUserId(),
+          "user_id": session.user.id,
           "product_id": productId,
-          "payment_code": paymentCode, 
-          "payment_channel": paymentChannel, 
-          "type": type
-        }
+          "payment_code": paymentCode,
+          "payment_channel": paymentChannel,
+          "type": type,
+        },
       );
       Map<String, dynamic> data = res.data;
-      InquiryPayPpobModel inqiuryPayPpobModel = InquiryPayPpobModel.fromJson(data);
+      InquiryPayPpobModel inqiuryPayPpobModel = InquiryPayPpobModel.fromJson(
+        data,
+      );
       return inqiuryPayPpobModel;
-    } on DioException catch(e) {
+    } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch(e) {
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
-
 }

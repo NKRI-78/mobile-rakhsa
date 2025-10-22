@@ -84,14 +84,15 @@ class SocketIoService with ChangeNotifier {
   }
 
   Future<void> init() async {
-    String token = await StorageHelper.getToken();
+    // String token = await StorageHelper.getToken();
+    final session = await StorageHelper.getUserSession();
 
-    if (token != "-") {
+    if (session.token != "-") {
       socket = IO.io(
         'https://socketio-rakhsa.langitdigital78.com',
         OptionBuilder()
             .setTransports(['websocket'])
-            .setAuth({'token': token})
+            .setAuth({'token': session.token})
             .disableAutoConnect()
             .enableForceNew()
             .enableForceNewConnection()
@@ -175,14 +176,18 @@ class SocketIoService with ChangeNotifier {
 
       context.read<ProfileNotifier>().getProfile();
 
-      if (message["sender"] == StorageHelper.getUserId()) {
-        context.read<GetMessagesNotifier>().navigateToChat(
-          chatId: message["chat_id"].toString(),
-          status: "NONE",
-          recipientId: message["recipient_id"].toString(),
-          sosId: message["sos_id"].toString(),
-        );
-      }
+      StorageHelper.getUserSession().then((v) => v.user.id).then((uid) {
+        if (message["sender"] == uid) {
+          if (context.mounted) {
+            context.read<GetMessagesNotifier>().navigateToChat(
+              chatId: message["chat_id"].toString(),
+              status: "NONE",
+              recipientId: message["recipient_id"].toString(),
+              sosId: message["sos_id"].toString(),
+            );
+          }
+        }
+      });
 
       context.read<SosNotifier>().stopTimer();
     });
@@ -212,10 +217,10 @@ class SocketIoService with ChangeNotifier {
     required String ext,
     required String lat,
     required String lng,
-  }) {
-    final userId = StorageHelper.getUserId();
+  }) async {
+    final session = await StorageHelper.getUserSession();
     var payload = {
-      "user_id": userId,
+      "user_id": session.user.id,
       "location": location,
       "media": media,
       "ext": ext,
@@ -231,12 +236,12 @@ class SocketIoService with ChangeNotifier {
     required String recipientId,
     required String chatId,
     required bool isTyping,
-  }) {
-    final userId = StorageHelper.getUserId();
+  }) async {
+    final session = await StorageHelper.getUserSession();
     var payload = {
       "type": "typing",
       "chat_id": chatId,
-      "sender": userId,
+      "sender": session.user.id,
       "recipient": recipientId,
       "is_typing": isTyping,
     };
@@ -248,11 +253,11 @@ class SocketIoService with ChangeNotifier {
     required String recipientId,
     required String message,
     required String createdAt,
-  }) {
-    final userId = StorageHelper.getUserId();
+  }) async {
+    final session = await StorageHelper.getUserSession();
     var payload = {
       "chat_id": chatId,
-      "sender": userId,
+      "sender": session.user.id,
       "recipient": recipientId,
       "text": message,
       "created_at": createdAt,

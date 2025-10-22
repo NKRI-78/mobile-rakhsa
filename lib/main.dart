@@ -32,6 +32,8 @@ import 'package:rakhsa/global.dart';
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/client/dio_client.dart';
 
 import 'package:rakhsa/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -178,91 +180,11 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late FirebaseProvider firebaseProvider;
+  final _client = locator<DioClient>();
 
   Widget home = const SizedBox();
 
   bool isResumedProcessing = false;
-
-  Future<Widget> getInitPage() async {
-    Dio dio = Dio();
-    Response res = await dio.get(
-      "https://api-rakhsa.inovatiftujuh8.com/api/v1/admin/toggle/feature",
-    );
-
-    // tampilkan onboarding ketika key tidak ditemukan
-    // key tidak ditemukan karena belum di set
-    // akan di set dihalaman on boarding pada action button ('selesai')
-    bool showOnBoarding = !StorageHelper.containsOnBoardingKey();
-
-    if (res.data["data"]["feature_onboarding"] == true) {
-      if (showOnBoarding) {
-        return const OnBoardingPage();
-      } else {
-        return const WelcomePage();
-      }
-    } else {
-      return const WelcomePage();
-    }
-  }
-
-  Future<void> getData() async {
-    bool? isLoggedIn = await StorageHelper.isLoggedIn();
-    Widget initPage = await getInitPage();
-
-    if (isLoggedIn != null) {
-      if (isLoggedIn) {
-        if (mounted) {
-          setState(() => home = const DashboardScreen());
-        }
-      } else {
-        if (mounted) {
-          setState(() => home = initPage);
-        }
-      }
-    } else {
-      if (mounted) {
-        setState(() => home = initPage);
-      }
-    }
-
-    if (!mounted) return;
-    await firebaseProvider.setupInteractedMessage(context);
-
-    if (!mounted) return;
-    firebaseProvider.listenNotification(context);
-  }
-
-  // Future<void> recheckRequestNotification() async {
-  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  //   NotificationSettings settings = await messaging.requestPermission(
-  //     alert: true,
-  //     announcement: false,
-  //     badge: true,
-  //     carPlay: false,
-  //     criticalAlert: false,
-  //     provisional: false,
-  //     sound: true,
-  //   );
-
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     debugPrint('User granted [notification] permission');
-  //   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  //     debugPrint('User granted [notification] provisional permission');
-  //   } else {
-  //     if(await Permission.notification.isPermanentlyDenied) {
-  //       if (!isDialogNotificationShowing) {
-  //         setState(() => isDialogNotificationShowing = true);
-  //         await GeneralModal.dialogRequestPermission(
-  //           msg: "Perizinan akses notifikasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-  //           type: "notification"
-  //         );
-  //         setState(() => isDialogNotificationShowing = false);
-  //       }
-  //       debugPrint('User declined [notification] or has not accepted permission');
-  //     }
-  //   }
-  // }
 
   @override
   void initState() {
@@ -281,55 +203,35 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // bool isDialogShowing = false; // Prevent multiple dialogs
+  Future<Widget> getInitPage() async {
+    final res = await _client.get(endpoint: "/admin/toggle/feature");
+    if (res.data["feature_onboarding"] == true) {
+      final showOnBoarding = !StorageHelper.containsOnBoardingKey();
+      if (showOnBoarding) return OnBoardingPage();
+    }
+    return const WelcomePage();
+  }
 
-  // @override
-  // Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state != AppLifecycleState.resumed || isDialogShowing) return; // Prevent re-entry
+  Future<void> getData() async {
+    final isLoggedIn = await StorageHelper.isLoggedIn();
+    Widget initPage = await getInitPage();
 
-  //   debugPrint("=== APP RESUME ===");
-  //   isDialogShowing = true;
+    if (isLoggedIn) {
+      if (mounted) {
+        setState(() => home = DashboardScreen());
+      }
+    } else {
+      if (mounted) {
+        setState(() => home = initPage);
+      }
+    }
 
-  //   if (await requestPermission(Permission.location, "location")) return;
+    if (!mounted) return;
+    await firebaseProvider.setupInteractedMessage(context);
 
-  //   if (!await Geolocator.isLocationServiceEnabled()) {
-  //     await showDialog("Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu", "GPS");
-  //     isDialogShowing = false;
-  //     return;
-  //   }
-
-  //   if (await requestPermission(Permission.notification, "notification")) return;
-
-  //   if (await requestPermission(Permission.microphone, "microphone")) return;
-
-  //   if (await requestPermission(Permission.camera, "camera")) return;
-
-  //   debugPrint("ALL PERMISSIONS GRANTED");
-  //   isDialogShowing = false;
-  // }
-
-  // Future<bool> requestPermission(Permission permission, String type) async {
-  //   var status = await permission.request();
-
-  //   if (status == PermissionStatus.permanentlyDenied) {
-  //     await showDialog("Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu", type);
-  //     isDialogShowing = false;
-  //     return true; // Stop further execution
-  //   }
-
-  //   if (status != PermissionStatus.granted) {
-  //     debugPrint("Permission $type denied, stopping process.");
-  //     isDialogShowing = false;
-  //     return true; // Stop further execution
-  //   }
-
-  //   return false; // Continue to the next permission
-  // }
-
-  // Future<void> showDialog(String message, String type) async {
-  //   if (!isDialogShowing) return; // Prevent showing multiple dialogs
-  //   await GeneralModal.dialogRequestPermission(msg: message, type: type);
-  // }
+    if (!mounted) return;
+    firebaseProvider.listenNotification(context);
+  }
 
   @override
   Widget build(BuildContext context) {

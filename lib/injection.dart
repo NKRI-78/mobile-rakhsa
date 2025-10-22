@@ -1,5 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
@@ -83,12 +84,14 @@ import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 import 'package:rakhsa/features/administration/domain/repository/administration_repository.dart';
 import 'package:rakhsa/features/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:rakhsa/features/event/domain/repository/event_repository.dart';
-import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
+import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart'
+    as old_repo_auth;
 import 'package:rakhsa/features/media/domain/repository/media_repository.dart';
 
 import 'package:rakhsa/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:rakhsa/features/administration/data/repositories/administration_repository_impl.dart';
-import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart'
+    as old_repo_auth;
 import 'package:rakhsa/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:rakhsa/features/media/data/repositories/media_repository_impl.dart';
 
@@ -121,12 +124,32 @@ import 'package:rakhsa/features/ppob/presentation/providers/pay_ppob_notifier.da
 import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
+import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart'
+    as new_auth_provider;
+import 'package:rakhsa/repositories/auth/auth_repository.dart' as new_repo_auth;
 import 'package:rakhsa/socketio.dart';
 import 'package:weather/weather.dart';
 
 final locator = GetIt.instance;
 
 void init() {
+  locator.registerLazySingleton(() => SocketIoService());
+  locator.registerLazySingleton(() => DeviceInfoPlugin());
+  locator.registerLazySingleton(() => FirebaseAuth.instance);
+
+  locator.registerLazySingleton(() => DioHelper().getClient());
+  locator.registerLazySingleton(() => Connectivity());
+  locator.registerLazySingleton(() => DioClient(locator<Connectivity>()));
+  locator.registerLazySingleton(
+    () => new_repo_auth.AuthRepository(client: locator<DioClient>()),
+  );
+  locator.registerLazySingleton(
+    () => new_auth_provider.AuthProvider(
+      repository: locator<new_repo_auth.AuthRepository>(),
+    ),
+  );
+
   // REMOTE DATA SOURCE
   locator.registerLazySingleton<AdministrationRemoteDataSource>(
     () => AdministrationRemoteDataSourceImpl(client: locator()),
@@ -169,8 +192,8 @@ void init() {
   locator.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: locator()),
+  locator.registerLazySingleton<old_repo_auth.AuthRepository>(
+    () => old_repo_auth.AuthRepositoryImpl(remoteDataSource: locator()),
   );
   locator.registerLazySingleton<KbriRepository>(
     () => KbriRepositoryImpl(remoteDataSource: locator()),
@@ -286,7 +309,7 @@ void init() {
     ),
   );
 
-  locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
+  // locator.registerLazySingleton(() => LoginNotifier(useCase: locator()));
   locator.registerLazySingleton(
     () => RegisterNotifier(
       mediaUseCase: locator(),
@@ -322,14 +345,6 @@ void init() {
     ),
   );
 
-  locator.registerLazySingleton(() => SocketIoService());
-
-  DioHelper dio = DioHelper();
-  Dio getDio = dio.getClient();
-
-  locator.registerLazySingleton(() => getDio);
-  locator.registerLazySingleton(() => DeviceInfoPlugin());
-  locator.registerLazySingleton(() => FirebaseAuth.instance);
   // locator.registerLazySingleton(() => GoogleSignIn.instance);
   locator.registerLazySingleton(
     () => WeatherFactory(

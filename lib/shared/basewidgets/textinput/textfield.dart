@@ -265,7 +265,10 @@ String capitalize(String value) {
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {
-  static String unmask(String text) => text.replaceAll(RegExp(r'[^0-9]'), '');
+  static String unmask(String? text) {
+    if (text == null) return '';
+    return text.replaceAll(RegExp(r'[^0-9]'), '');
+  }
 
   @override
   TextEditingValue formatEditUpdate(

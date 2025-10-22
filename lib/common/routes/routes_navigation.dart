@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/features/auth/presentation/pages/login_page.dart';
+import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/@deprecated/login_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/@deprecated/register_fr.dart';
 import 'package:rakhsa/features/auth/presentation/pages/@deprecated/scan_register_passport_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/@deprecated/scan_register_passport_v2.dart';
-import 'package:rakhsa/features/auth/presentation/pages/register_page.dart';
+import 'package:rakhsa/modules/auth/page/register_page.dart';
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/chat/presentation/pages/chats.dart';

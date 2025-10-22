@@ -63,10 +63,7 @@ class DocumentNotifier extends ChangeNotifier {
 
       if (currentDevice == DEVICE_NOT_SUPPORTED_HARDWARE) {
         if (context.mounted) {
-          Navigator.pushNamed(
-            context,
-            RoutesNavigation.deviceNotSupport,
-          );
+          Navigator.pushNamed(context, RoutesNavigation.deviceNotSupport);
         }
 
         return [];
@@ -85,7 +82,7 @@ class DocumentNotifier extends ChangeNotifier {
 
   Future<void> updateDocument(BuildContext context, DocumentType type) async {
     if (type == DocumentType.visa) {
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         final selectedDocuments = await CunningDocumentScanner.getPictures(
           noOfPages: 1,
           isGalleryImportAllowed: true,
@@ -96,7 +93,7 @@ class DocumentNotifier extends ChangeNotifier {
         await _updateAndGetVisaFromServer(documentPathList.last);
       }
     } else {
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         final selectedDocuments = await CunningDocumentScanner.getPictures(
           noOfPages: 1,
           isGalleryImportAllowed: true,
@@ -124,21 +121,25 @@ class DocumentNotifier extends ChangeNotifier {
       );
 
       // [1] upload visa to server (media)
-      uploadVisaToServer.fold((failure) {
-        ShowSnackbar.snackbarErr(failure.message);
-        _visaIsLoading = false;
-        notifyListeners();
-      }, (media) async {
-        final updateVisaUrlToProfile =
-            await updateVisa.execute(path: media.path);
-
-        // [2] update url visa dari server ke profile
-        updateVisaUrlToProfile.fold((failure) {
+      uploadVisaToServer.fold(
+        (failure) {
           ShowSnackbar.snackbarErr(failure.message);
           _visaIsLoading = false;
           notifyListeners();
-        }, (_) async => await getVisaUrlFromProfile());
-      });
+        },
+        (media) async {
+          final updateVisaUrlToProfile = await updateVisa.execute(
+            path: media.path,
+          );
+
+          // [2] update url visa dari server ke profile
+          updateVisaUrlToProfile.fold((failure) {
+            ShowSnackbar.snackbarErr(failure.message);
+            _visaIsLoading = false;
+            notifyListeners();
+          }, (_) async => await getVisaUrlFromProfile());
+        },
+      );
     } catch (e) {
       _errMessage = e.toString();
       _visaIsLoading = false;
@@ -151,21 +152,24 @@ class DocumentNotifier extends ChangeNotifier {
       final getProfile = await profileUseCase.execute();
 
       // [3] get visa url dari profile
-      getProfile.fold((failure) {
-        ShowSnackbar.snackbarErr(failure.toString());
-        _visaIsLoading = false;
-        notifyListeners();
-      }, (profile) async {
-        final visaUrl = profile.data?.document.visa;
+      getProfile.fold(
+        (failure) {
+          ShowSnackbar.snackbarErr(failure.toString());
+          _visaIsLoading = false;
+          notifyListeners();
+        },
+        (profile) async {
+          final visaUrl = profile.data?.document.visa;
 
-        if (visaUrl != "-") {
-          _errMessage = null;
-          _visaPath = visaUrl.toString();
-        } else {
-          _visaPath = '';
-        }
-        notifyListeners();
-      });
+          if (visaUrl != "-") {
+            _errMessage = null;
+            _visaPath = visaUrl.toString();
+          } else {
+            _visaPath = '';
+          }
+          notifyListeners();
+        },
+      );
     } catch (e) {
       _errMessage = e.toString();
       _visaIsLoading = false;
@@ -191,24 +195,28 @@ class DocumentNotifier extends ChangeNotifier {
       );
 
       // [1] upload Passport to server (media)
-      uploadPassportToServer.fold((failure) {
-        ShowSnackbar.snackbarErr(failure.message);
-        _passportIsLoading = false;
-        notifyListeners();
-      }, (media) async {
-       
-        final updatePassportUrlToProfile = await updatePassport.execute(
-          userId: StorageHelper.getUserId().toString(),
-          path: media.path
-        );
-
-        // [2] update url Passport dari server ke profile
-        updatePassportUrlToProfile.fold((failure) {
+      uploadPassportToServer.fold(
+        (failure) {
           ShowSnackbar.snackbarErr(failure.message);
           _passportIsLoading = false;
           notifyListeners();
-        }, (_) async => await getPassportUrlFromProfile());
-      });
+        },
+        (media) async {
+          final session = await StorageHelper.getUserSession();
+
+          final updatePassportUrlToProfile = await updatePassport.execute(
+            userId: session.user.id,
+            path: media.path,
+          );
+
+          // [2] update url Passport dari server ke profile
+          updatePassportUrlToProfile.fold((failure) {
+            ShowSnackbar.snackbarErr(failure.message);
+            _passportIsLoading = false;
+            notifyListeners();
+          }, (_) async => await getPassportUrlFromProfile());
+        },
+      );
     } catch (e) {
       _errMessage = e.toString();
       _passportIsLoading = false;
@@ -221,21 +229,24 @@ class DocumentNotifier extends ChangeNotifier {
       final getProfile = await profileUseCase.execute();
 
       // [3] get passport url dari profile
-      getProfile.fold((failure) {
-        ShowSnackbar.snackbarErr(failure.toString());
-        _passportIsLoading = false;
-        notifyListeners();
-      }, (profile) async {
-        final passportUrl = profile.data?.document.passport;
+      getProfile.fold(
+        (failure) {
+          ShowSnackbar.snackbarErr(failure.toString());
+          _passportIsLoading = false;
+          notifyListeners();
+        },
+        (profile) async {
+          final passportUrl = profile.data?.document.passport;
 
-        if (passportUrl != null) {
-          _errMessage = null;
-          _passportPath = passportUrl;
-        } else {
-          _passportPath = '';
-        }
-        notifyListeners();
-      });
+          if (passportUrl != null) {
+            _errMessage = null;
+            _passportPath = passportUrl;
+          } else {
+            _passportPath = '';
+          }
+          notifyListeners();
+        },
+      );
     } catch (e) {
       _errMessage = e.toString();
       _passportIsLoading = false;
@@ -253,14 +264,11 @@ class DocumentNotifier extends ChangeNotifier {
 
       final deleteVisaEvent = await deleteVisa.execute();
 
-      deleteVisaEvent.fold(
-        (failure) {
-          ShowSnackbar.snackbarErr(failure.toString());
-          _visaIsLoading = false;
-          notifyListeners();
-        },
-        (_) async => await getVisaUrlFromProfile(),
-      );
+      deleteVisaEvent.fold((failure) {
+        ShowSnackbar.snackbarErr(failure.toString());
+        _visaIsLoading = false;
+        notifyListeners();
+      }, (_) async => await getVisaUrlFromProfile());
     } catch (e) {
       _errMessage = e.toString();
       _visaIsLoading = false;

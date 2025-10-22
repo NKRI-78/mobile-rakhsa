@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -92,11 +94,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<ProfileModel> getProfile() async {
     try {
+      final session = await StorageHelper.getUserSession();
       final response = await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile",
-        data: {"user_id": StorageHelper.getUserId()},
+        data: {"user_id": session.user.id},
       );
       Map<String, dynamic> data = response.data;
+      log("remote profile data = $data");
       ProfileModel profileModel = ProfileModel.fromJson(data);
       return profileModel;
     } on DioException catch (e) {
@@ -111,9 +115,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> updateProfile({required String avatar}) async {
     try {
+      final session = await StorageHelper.getUserSession();
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/update",
-        data: {"user_id": StorageHelper.getUserId(), "avatar": avatar},
+        data: {"user_id": session.user.id, "avatar": avatar},
       );
     } on DioException catch (e) {
       String message = handleDioException(e);

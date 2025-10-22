@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'package:rakhsa/common/helpers/storage.dart';
 import 'package:rakhsa/common/utils/custom_themes.dart';
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 
-import 'package:rakhsa/features/auth/presentation/pages/login_page.dart';
+import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -30,7 +31,7 @@ class SosButtonParam {
     required this.lng,
     required this.isConnected,
     required this.loadingGmaps,
-    required this.profile,
+    this.profile,
   });
 }
 
@@ -47,7 +48,8 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   late SosNotifier sosNotifier;
 
   Future<void> handleLongPressStart() async {
-    if (widget.param.profile!.sos.running) {
+    log("local profile data = ${widget.param.profile}");
+    if (widget.param.profile?.sos.running ?? false) {
       GeneralModal.infoEndSos(
         sosId: widget.param.profile!.sos.id,
         chatId: widget.param.profile!.sos.chatId,
@@ -56,15 +58,17 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
         isHome: true,
       );
     } else {
-      if (StorageHelper.getUserId() == null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginPage();
-            },
-          ),
-        );
+      if (!await StorageHelper.isLoggedIn()) {
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const LoginPage();
+              },
+            ),
+          );
+        }
       } else {
         sosNotifier.pulseController?.forward();
         sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
@@ -75,16 +79,18 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
     }
   }
 
-  void handleLongPressEnd() {
-    if (StorageHelper.getUserId() == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const LoginPage();
-          },
-        ),
-      );
+  void handleLongPressEnd() async {
+    if (!await StorageHelper.isLoggedIn()) {
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const LoginPage();
+            },
+          ),
+        );
+      }
     } else {
       if (sosNotifier.holdTimer?.isActive ?? false) {
         sosNotifier.holdTimer?.cancel();
@@ -154,7 +160,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                           shape: BoxShape.circle,
                           color: const Color(
                             0xFFFE1717,
-                          ).withOpacity(0.2 / scaleFactor),
+                          ).withValues(alpha: 0.2 / scaleFactor),
                         ),
                       ),
                     );
@@ -212,8 +218,12 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
                           boxShadow: [
                             BoxShadow(
                               color: widget.param.isConnected
-                                  ? const Color(0xFFFE1717).withOpacity(0.5)
-                                  : const Color(0xFF7A7A7A).withOpacity(0.5),
+                                  ? const Color(
+                                      0xFFFE1717,
+                                    ).withValues(alpha: 0.5)
+                                  : const Color(
+                                      0xFF7A7A7A,
+                                    ).withValues(alpha: 0.5),
                               blurRadius: 10,
                               spreadRadius: 5,
                             ),
