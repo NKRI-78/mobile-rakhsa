@@ -6,6 +6,7 @@ import 'package:rakhsa/features/administration/presentation/provider/get_country
 import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
+import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
@@ -53,6 +54,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<ResendOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<VerifyOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetChatsNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<RegisterNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetCountryNotifier>()),

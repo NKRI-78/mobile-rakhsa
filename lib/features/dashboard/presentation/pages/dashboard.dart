@@ -318,39 +318,45 @@ class DashboardScreenState extends State<DashboardScreen>
         ),
 
         // BOTTOM NAV BAR
-        bottomNavigationBar: ValueListenableBuilder(
-          valueListenable: _pageNotifyController,
-          builder: (context, currentPage, child) {
-            return BottomNavigationBar(
-              currentIndex: currentPage,
-              onTap: _onPageChanged,
-              selectedFontSize: 14,
-              unselectedFontSize: 14,
-              backgroundColor: primaryColor,
-              selectedItemColor: whiteColor,
-              unselectedItemColor: whiteColor.withValues(alpha: 0.7),
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(IconsaxPlusLinear.home_1),
-                  activeIcon: Icon(IconsaxPlusBold.home_1),
-                  label: "Home",
-                  tooltip: "Home",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(IconsaxPlusLinear.document),
-                  activeIcon: Icon(IconsaxPlusBold.document),
-                  label: "Information",
-                  tooltip: "Information",
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(IconsaxPlusLinear.location),
-                  activeIcon: Icon(IconsaxPlusBold.location),
-                  label: "Near Me",
-                  tooltip: "Near Me",
-                ),
-              ],
-            );
-          },
+        bottomNavigationBar: ClipRRect(
+          borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(24)),
+          child: SizedBox(
+            height: kBottomNavigationBarHeight + 12,
+            child: ValueListenableBuilder(
+              valueListenable: _pageNotifyController,
+              builder: (context, currentPage, child) {
+                return BottomNavigationBar(
+                  currentIndex: currentPage,
+                  onTap: _onPageChanged,
+                  selectedFontSize: 14,
+                  unselectedFontSize: 14,
+                  backgroundColor: primaryColor,
+                  selectedItemColor: whiteColor,
+                  unselectedItemColor: whiteColor.withValues(alpha: 0.7),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(IconsaxPlusLinear.home_1),
+                      activeIcon: Icon(IconsaxPlusBold.home_1),
+                      label: "Home",
+                      tooltip: "Home",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(IconsaxPlusLinear.document),
+                      activeIcon: Icon(IconsaxPlusBold.document),
+                      label: "Information",
+                      tooltip: "Information",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(IconsaxPlusLinear.location),
+                      activeIcon: Icon(IconsaxPlusBold.location),
+                      label: "Near Me",
+                      tooltip: "Near Me",
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
