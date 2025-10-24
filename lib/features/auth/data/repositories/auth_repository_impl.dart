@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';

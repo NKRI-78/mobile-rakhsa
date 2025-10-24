@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/helpers/capitalize.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/misc/helpers/capitalize.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -19,12 +19,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
 
@@ -104,81 +104,68 @@ class HomePage extends StatelessWidget {
                         ),
 
                         Consumer<DashboardNotifier>(
-                          builder:
-                              (
-                                BuildContext context,
-                                DashboardNotifier notifier,
-                                Widget? child,
-                              ) {
-                                if (notifier.state == ProviderState.loading) {
-                                  return const SizedBox(
-                                    height: 200.0,
-                                    child: Center(
-                                      child: SizedBox(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                if (notifier.state == ProviderState.error) {
-                                  return SizedBox(
-                                    height: 200.0,
-                                    child: Center(
-                                      child: Text(
-                                        notifier.message,
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.black,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                if (notifier.bannerState ==
+                          builder: (context, notifier, child) {
+                            if (notifier.state == ProviderState.loading ||
+                                notifier.bannerState ==
                                     BannerProviderState.loading) {
-                                  return const SizedBox(
-                                    height: 200.0,
-                                    child: Center(
-                                      child: SizedBox(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        child: CircularProgressIndicator(),
+                              return Container(
+                                margin: EdgeInsets.only(top: 32),
+                                padding: EdgeInsets.all(16),
+                                height: 200.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Column(
+                                  spacing: 12,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.red,
+                                        backgroundColor: Colors.red.shade50,
                                       ),
                                     ),
-                                  );
-                                }
-
-                                if (notifier.bannerState ==
-                                    BannerProviderState.error) {
-                                  return SizedBox(
-                                    height: 200.0,
-                                    child: Center(
+                                    SizedBox(
+                                      width: double.maxFinite,
                                       child: Text(
-                                        notifier.message,
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.black,
-                                        ),
+                                        "Memuat Informasi",
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
-                                  );
-                                }
+                                  ],
+                                ),
+                              );
+                            }
 
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 45.0),
-                                  child: (notifier.ews.isNotEmpty)
-                                      ? EwsListWidget(
-                                          getData: () {
-                                            onRefresh();
-                                          },
-                                        )
-                                      : HomeHightlightBanner(banners: banners),
-                                );
-                              },
+                            if (notifier.state == ProviderState.error) {
+                              return SizedBox(
+                                height: 200.0,
+                                child: Center(
+                                  child: Text(
+                                    notifier.message,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      color: ColorResources.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 45.0),
+                              child: (notifier.ews.isNotEmpty)
+                                  ? EwsListWidget(
+                                      getData: () {
+                                        onRefresh();
+                                      },
+                                    )
+                                  : HomeHightlightBanner(banners: banners),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -236,30 +223,36 @@ class WeatherContent extends StatelessWidget {
     return SizedBox(
       height: 190,
       width: double.infinity,
-      child: Material(
-        color: Colors.grey.shade800,
-        child: InkWell(
-          onTap: () => navigateToWeatherDetail(context),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Consumer<WeatherNotifier>(
-              builder: (context, notifier, child) {
-                return Column(
-                  children: [
-                    // cuaca hari ini
-                    Expanded(child: _todayWeather(notifier, area)),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(AssetSource.bgCardWeather, fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => navigateToWeatherDetail(context),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Consumer<WeatherNotifier>(
+                  builder: (context, notifier, child) {
+                    return Column(
+                      children: [
+                        // cuaca hari ini
+                        Expanded(child: _todayWeather(notifier, area)),
 
-                    // divider
-                    const SizedBox(height: 8),
+                        // divider
+                        const SizedBox(height: 8),
 
-                    // ramalan cuaca 5 hari kedepan
-                    _forecastWeather(notifier),
-                  ],
-                );
-              },
+                        // ramalan cuaca 5 hari kedepan
+                        _forecastWeather(notifier),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -411,15 +404,15 @@ class _BottomFadeEffect extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        height: 80,
+        height: 40,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              Colors.white.withOpacity(0.1),
-              Colors.white.withOpacity(0.5),
+              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withValues(alpha: 0.5),
               Colors.white,
             ],
           ),

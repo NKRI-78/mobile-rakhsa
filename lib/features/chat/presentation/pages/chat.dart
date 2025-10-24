@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -191,6 +191,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     insertMessageNotifier = context.read<InsertMessageNotifier>();
     socketIoService = context.read<SocketIoService>();
 
+    socketIoService.subscribeChat(widget.chatId);
+
     messageNotifier.startTimer();
 
     messageC = TextEditingController();
@@ -202,6 +204,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+
+    socketIoService.unsubscribeChat(widget.chatId);
 
     sC.dispose();
 
@@ -217,10 +221,8 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) {
-        if (didPop) {
-          return;
-        }
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         StorageHelper.saveRecordScreen(isHome: false);
         messageNotifier.clearActiveChatId();
         Navigator.pop(context, "refetch");

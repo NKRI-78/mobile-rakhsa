@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/snackbar.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/resend_otp.dart';
-
 
 class ResendOtpNotifier with ChangeNotifier {
   final ResendOtpUseCase useCase;
@@ -14,12 +13,10 @@ class ResendOtpNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _providerState = ProviderState.idle; 
+  ProviderState _providerState = ProviderState.idle;
   ProviderState get providerState => _providerState;
 
-  ResendOtpNotifier({
-    required this.useCase
-  });
+  ResendOtpNotifier({required this.useCase});
 
   void setStateProviderState(ProviderState param) {
     _providerState = param;
@@ -27,24 +24,22 @@ class ResendOtpNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> resendOtp({
-    required String email,
-  }) async {
+  Future<void> resendOtp({required String email}) async {
     setStateProviderState(ProviderState.loading);
 
-    final resendOtp = await useCase.execute(
-      email: email,
-    );
+    final resendOtp = await useCase.execute(email: email);
 
     resendOtp.fold(
-      (l) { 
+      (l) {
         _message = l.message;
         setStateProviderState(ProviderState.error);
-      }, (r) {
-        ShowSnackbar.snackbarOk("Kode OTP telah dikirim ulang kepada E-mail $email");
+      },
+      (r) {
+        ShowSnackbar.snackbarOk(
+          "Kode OTP telah dikirim ulang kepada E-mail $email",
+        );
         setStateProviderState(ProviderState.loaded);
-      }
+      },
     );
   }
-
 }

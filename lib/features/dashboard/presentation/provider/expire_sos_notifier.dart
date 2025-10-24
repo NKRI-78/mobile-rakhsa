@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
 
@@ -51,7 +51,7 @@ class SosNotifier with ChangeNotifier {
       end: 2.5,
     ).animate(CurvedAnimation(parent: pulseController!, curve: Curves.easeOut));
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void resetAnimation() {

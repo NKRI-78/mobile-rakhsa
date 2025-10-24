@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 
@@ -27,15 +27,13 @@ class CurrentLocationWidget extends StatelessWidget {
     required this.currentAddress,
     required this.currentLat,
     required this.currentLng,
-    super.key
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(
-        top: 30.0
-      ),
+      margin: const EdgeInsets.only(top: 30.0),
       child: Card(
         color: ColorResources.white,
         surfaceTintColor: ColorResources.white,
@@ -48,97 +46,111 @@ class CurrentLocationWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                                      
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-      
-                    context.watch<ProfileNotifier>().state == ProviderState.error 
-                    ? const SizedBox()
-                    : context.watch<ProfileNotifier>().state == ProviderState.loading 
-                    ? const SizedBox() 
-                    : CachedNetworkImage(
-                        imageUrl: avatar.toString(),
-                        imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                        return CircleAvatar(
-                          backgroundImage: imageProvider,
-                        );
-                      },
-                      placeholder: (BuildContext context, String url) {
-                        return const CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/default.jpeg'),
-                        );
-                      },
-                      errorWidget: (BuildContext context, String url, Object error) {
-                        return const CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/default.jpeg'),
-                        );
-                      },
-                    ),
-                                      
+                    context.watch<ProfileNotifier>().state ==
+                            ProviderState.error
+                        ? const SizedBox()
+                        : context.watch<ProfileNotifier>().state ==
+                              ProviderState.loading
+                        ? const SizedBox()
+                        : CachedNetworkImage(
+                            imageUrl: avatar.toString(),
+                            imageBuilder:
+                                (
+                                  BuildContext context,
+                                  ImageProvider<Object> imageProvider,
+                                ) {
+                                  return CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                  );
+                                },
+                            placeholder: (BuildContext context, String url) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage(
+                                  'assets/images/default.jpeg',
+                                ),
+                              );
+                            },
+                            errorWidget:
+                                (
+                                  BuildContext context,
+                                  String url,
+                                  Object error,
+                                ) {
+                                  return const CircleAvatar(
+                                    backgroundImage: AssetImage(
+                                      'assets/images/default.jpeg',
+                                    ),
+                                  );
+                                },
+                          ),
+
                     const SizedBox(width: 15.0),
-                                      
+
                     Flexible(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                                      
-                          Text("Posisi Anda saat ini",
+                          Text(
+                            "Posisi Anda saat ini",
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeDefault,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                                      
+
                           const SizedBox(height: 4.0),
-                      
-                          Text(loadingGmaps 
-                            ? "Mohon tunggu..." 
-                            : currentAddress,
+
+                          Text(
+                            loadingGmaps ? "Mohon tunggu..." : currentAddress,
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeSmall,
-                              color: ColorResources.black
+                              color: ColorResources.black,
                             ),
-                          )
-                      
+                          ),
                         ],
                       ),
-                    )
-                                      
+                    ),
                   ],
                 ),
-            
+
                 Container(
                   width: double.infinity,
                   height: 120.0,
                   margin: const EdgeInsets.only(
                     top: 16.0,
-                    left: 16.0, 
-                    right: 16.0
+                    left: 16.0,
+                    right: 16.0,
                   ),
-                  child: loadingGmaps 
-                  ? const SizedBox() 
-                  : GoogleMap(
-                      mapType: MapType.normal,
-                      gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                      myLocationEnabled: false,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                          double.parse(currentLat), 
-                          double.parse(currentLng)
+                  child: loadingGmaps
+                      ? const SizedBox()
+                      : GoogleMap(
+                          mapType: MapType.normal,
+                          gestureRecognizers: {}
+                            ..add(
+                              Factory<EagerGestureRecognizer>(
+                                () => EagerGestureRecognizer(),
+                              ),
+                            ),
+                          myLocationEnabled: false,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                              double.parse(currentLat),
+                              double.parse(currentLng),
+                            ),
+                            zoom: 12.0,
+                          ),
+                          markers: Set.from(markers),
                         ),
-                        zoom: 12.0,
-                      ),
-                      markers: Set.from(markers),
-                    ),
-                  )
-                                      
+                ),
               ],
             ),
           ),
-        )
+        ),
       ),
     );
   }

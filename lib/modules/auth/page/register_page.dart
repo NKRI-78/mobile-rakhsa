@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
 
-import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
 
-import 'package:rakhsa/helper/extensions.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
@@ -57,6 +57,34 @@ class RegisterScreenState extends State<RegisterScreen> {
     _confirmPassFNode.dispose();
 
     super.dispose();
+  }
+
+  void _onRegisterUser(BuildContext c) async {
+    Future registerUser() async {
+      await c.read<AuthProvider>().register(
+        fullname: _fullNameController.text,
+        phone: PhoneNumberFormatter.unmask(_phoneController.text),
+        password: _passController.text,
+        onSuccess: () {
+          Navigator.of(c).pushNamedAndRemoveUntil(
+            RoutesNavigation.dashboard,
+            (route) => false,
+          );
+        },
+        onError: (code, message) {
+          GeneralModal.error(
+            c,
+            message,
+            onReload: () {
+              c.pop();
+              registerUser();
+            },
+          );
+        },
+      );
+    }
+
+    if (_formKey.currentState!.validate()) registerUser();
   }
 
   @override
@@ -146,6 +174,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 if (val == null || val.isEmpty) {
                                   return "Nomor Telepon tidak boleh kosong.";
                                 }
+                                if (val.length < 10) {
+                                  return "Nomor Telepon minimal 10 digit angka.";
+                                }
                                 return null;
                               },
                             ),
@@ -196,43 +227,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                                   btnTxt: "Register",
                                   loadingColor: primaryColor,
                                   btnTextColor: ColorResources.black,
-                                  onTap: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      void register() async {
-                                        await context
-                                            .read<AuthProvider>()
-                                            .register(
-                                              fullname:
-                                                  _fullNameController.text,
-                                              phone:
-                                                  PhoneNumberFormatter.unmask(
-                                                    _phoneController.text,
-                                                  ),
-                                              password: _passController.text,
-                                              onSuccess: () {
-                                                Navigator.of(
-                                                  context,
-                                                ).pushNamedAndRemoveUntil(
-                                                  RoutesNavigation.dashboard,
-                                                  (route) => false,
-                                                );
-                                              },
-                                              onError: (code, message) {
-                                                GeneralModal.error(
-                                                  context,
-                                                  message,
-                                                  onReload: () {
-                                                    context.pop();
-                                                    register();
-                                                  },
-                                                );
-                                              },
-                                            );
-                                      }
-
-                                      register();
-                                    }
-                                  },
+                                  onTap: () => _onRegisterUser(context),
                                 );
                               },
                             ),

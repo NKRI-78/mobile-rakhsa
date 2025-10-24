@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 import 'package:rakhsa/features/dashboard/data/models/banner.dart';
 
 import 'package:rakhsa/features/dashboard/domain/repository/dashboard_repository.dart';

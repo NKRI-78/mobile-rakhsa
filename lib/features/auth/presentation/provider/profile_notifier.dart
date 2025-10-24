@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';

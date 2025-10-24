@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
 import 'package:rakhsa/features/administration/data/models/continent.dart';
@@ -14,45 +14,44 @@ class AdministrationRepositoryImpl implements AdministrationRepository {
   final AdministrationRemoteDataSource remoteDataSource;
 
   AdministrationRepositoryImpl({required this.remoteDataSource});
-  
+
   @override
   Future<Either<Failure, ContinentModel>> getContinent() async {
     try {
       var result = await remoteDataSource.getContinent();
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, CountryModel>> getCountry({
-    required String search
+    required String search,
   }) async {
     try {
       var result = await remoteDataSource.getCountry(search: search);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, StateModel>> getStates({
-    required int continentId
+    required int continentId,
   }) async {
     try {
       var result = await remoteDataSource.getStates(continentId: continentId);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-
 }

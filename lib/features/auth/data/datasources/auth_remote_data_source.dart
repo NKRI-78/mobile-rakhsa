@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
-import 'package:rakhsa/common/errors/exception.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';

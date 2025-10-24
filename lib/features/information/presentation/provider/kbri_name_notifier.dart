@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/features/information/data/models/kbri.dart';
 import 'package:rakhsa/features/information/domain/usecases/get_kbri_name.dart';

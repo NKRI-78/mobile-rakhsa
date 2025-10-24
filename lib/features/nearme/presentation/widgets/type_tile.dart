@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
 
 class TypeTile extends StatelessWidget {
-  const TypeTile(
-    this.type, {
-    super.key,
-    required this.onTap,
-  });
+  const TypeTile(this.type, {super.key, required this.onTap});
 
   final NearMeType type;
   final VoidCallback onTap;
@@ -64,10 +60,7 @@ class TypeTile extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFCD302E),
-            Color(0xFFF46F6C),
-          ],
+          colors: [Color(0xFFCD302E), Color(0xFFF46F6C)],
         ),
       ),
       child: Image.asset(

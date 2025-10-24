@@ -22,7 +22,7 @@ enum SearchingState { idle, searching }
 
 class PlacePicker extends StatefulWidget {
   const PlacePicker({
-    Key? key,
+    super.key,
     required this.apiKey,
     this.onPlacePicked,
     this.initialPosition = const LatLng(0.0, 0.0),
@@ -63,7 +63,7 @@ class PlacePicker extends StatefulWidget {
     this.automaticallyImplyAppBarLeading = true,
     this.autocompleteOnTrailingWhitespace = false,
     this.hidePlaceDetailsWhenDraggingPin = true,
-  }) : super(key: key);
+  });
 
   final String apiKey;
 
@@ -169,7 +169,7 @@ class PlacePicker extends StatefulWidget {
   final bool hidePlaceDetailsWhenDraggingPin;
 
   @override
-  _PlacePickerState createState() => _PlacePickerState();
+  State<PlacePicker> createState() => _PlacePickerState();
 }
 
 class _PlacePickerState extends State<PlacePicker> {
@@ -253,7 +253,7 @@ class _PlacePickerState extends State<PlacePicker> {
               Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Text('Error: ${snapshot.error}'),
-              )
+              ),
             ]);
           } else {
             children.add(const CircularProgressIndicator());
@@ -282,35 +282,37 @@ class _PlacePickerState extends State<PlacePicker> {
                 icon: Icon(
                   Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
                 ),
-                padding: EdgeInsets.zero)
+                padding: EdgeInsets.zero,
+              )
             : const SizedBox(width: 15.0),
         Expanded(
           child: AutoCompleteSearch(
-              appBarKey: appBarKey,
-              searchBarController: searchBarController,
-              sessionToken: provider!.sessionToken,
-              hintText: widget.hintText,
-              searchingText: widget.searchingText,
-              debounceMilliseconds: widget.autoCompleteDebounceInMilliseconds,
-              onPicked: (prediction) {
-                _pickPrediction(prediction);
-              },
-              onSearchFailed: (status) {
-                if (widget.onAutoCompleteFailed != null) {
-                  widget.onAutoCompleteFailed!(status);
-                }
-              },
-              autocompleteOffset: widget.autocompleteOffset,
-              autocompleteRadius: widget.autocompleteRadius,
-              autocompleteLanguage: widget.autocompleteLanguage,
-              autocompleteComponents: widget.autocompleteComponents,
-              autocompleteTypes: widget.autocompleteTypes,
-              strictbounds: widget.strictbounds,
-              region: widget.region,
-              initialSearchString: widget.initialSearchString,
-              searchForInitialValue: widget.searchForInitialValue,
-              autocompleteOnTrailingWhitespace:
-                  widget.autocompleteOnTrailingWhitespace),
+            appBarKey: appBarKey,
+            searchBarController: searchBarController,
+            sessionToken: provider!.sessionToken,
+            hintText: widget.hintText,
+            searchingText: widget.searchingText,
+            debounceMilliseconds: widget.autoCompleteDebounceInMilliseconds,
+            onPicked: (prediction) {
+              _pickPrediction(prediction);
+            },
+            onSearchFailed: (status) {
+              if (widget.onAutoCompleteFailed != null) {
+                widget.onAutoCompleteFailed!(status);
+              }
+            },
+            autocompleteOffset: widget.autocompleteOffset,
+            autocompleteRadius: widget.autocompleteRadius,
+            autocompleteLanguage: widget.autocompleteLanguage,
+            autocompleteComponents: widget.autocompleteComponents,
+            autocompleteTypes: widget.autocompleteTypes,
+            strictbounds: widget.strictbounds,
+            region: widget.region,
+            initialSearchString: widget.initialSearchString,
+            searchForInitialValue: widget.searchForInitialValue,
+            autocompleteOnTrailingWhitespace:
+                widget.autocompleteOnTrailingWhitespace,
+          ),
         ),
         const SizedBox(width: 5.0),
       ],
@@ -320,12 +322,12 @@ class _PlacePickerState extends State<PlacePicker> {
   _pickPrediction(Prediction prediction) async {
     provider!.placeSearchingState = SearchingState.searching;
 
-    final PlacesDetailsResponse response =
-        await provider!.places.getDetailsByPlaceId(
-      prediction.placeId!,
-      sessionToken: provider!.sessionToken,
-      language: widget.autocompleteLanguage,
-    );
+    final PlacesDetailsResponse response = await provider!.places
+        .getDetailsByPlaceId(
+          prediction.placeId!,
+          sessionToken: provider!.sessionToken,
+          language: widget.autocompleteLanguage,
+        );
 
     if (response.errorMessage?.isNotEmpty == true ||
         response.status == "REQUEST_DENIED") {
@@ -340,8 +342,10 @@ class _PlacePickerState extends State<PlacePicker> {
     // Prevents searching again by camera movement.
     provider!.isAutoCompleteSearching = true;
 
-    await _moveTo(provider!.selectedPlace!.geometry!.location.lat,
-        provider!.selectedPlace!.geometry!.location.lng);
+    await _moveTo(
+      provider!.selectedPlace!.geometry!.location.lat,
+      provider!.selectedPlace!.geometry!.location.lng,
+    );
 
     provider!.placeSearchingState = SearchingState.idle;
   }
@@ -352,38 +356,43 @@ class _PlacePickerState extends State<PlacePicker> {
 
     await controller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: LatLng(latitude, longitude),
-          zoom: 16,
-        ),
+        CameraPosition(target: LatLng(latitude, longitude), zoom: 16),
       ),
     );
   }
 
   _moveToCurrentPosition() async {
     if (provider!.currentPosition != null) {
-      await _moveTo(provider!.currentPosition!.latitude,
-          provider!.currentPosition!.longitude);
+      await _moveTo(
+        provider!.currentPosition!.latitude,
+        provider!.currentPosition!.longitude,
+      );
     }
   }
 
   Widget _buildMapWithLocation() {
     if (widget.useCurrentLocation != null && widget.useCurrentLocation!) {
       return FutureBuilder(
-          future: provider!
-              .updateCurrentLocation(widget.forceAndroidLocationManager),
-          builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+        future: provider!.updateCurrentLocation(
+          widget.forceAndroidLocationManager,
+        ),
+        builder: (context, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (provider!.currentPosition == null) {
+              return _buildMap(widget.initialPosition);
             } else {
-              if (provider!.currentPosition == null) {
-                return _buildMap(widget.initialPosition);
-              } else {
-                return _buildMap(LatLng(provider!.currentPosition!.latitude,
-                    provider!.currentPosition!.longitude));
-              }
+              return _buildMap(
+                LatLng(
+                  provider!.currentPosition!.latitude,
+                  provider!.currentPosition!.longitude,
+                ),
+              );
             }
-          });
+          }
+        },
+      );
     } else {
       return FutureBuilder(
         future: Future.delayed(const Duration(milliseconds: 1)),
@@ -425,8 +434,9 @@ class _PlacePickerState extends State<PlacePicker> {
           Timer(Duration(seconds: widget.myLocationButtonCooldown), () {
             provider!.isOnUpdateLocationCooldown = false;
           });
-          await provider!
-              .updateCurrentLocation(widget.forceAndroidLocationManager);
+          await provider!.updateCurrentLocation(
+            widget.forceAndroidLocationManager,
+          );
           await _moveToCurrentPosition();
         }
       },

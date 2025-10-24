@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
 
 import '../providers/place_provider.dart';
 import '../providers/search_provider.dart';
@@ -13,31 +13,30 @@ import './components/rounded_frame.dart';
 import './controllers/autocomplete_search_controller.dart';
 import './place_picker.dart';
 
-
 class AutoCompleteSearch extends StatefulWidget {
-  const AutoCompleteSearch(
-      {Key? key,
-      required this.sessionToken,
-      required this.onPicked,
-      required this.appBarKey,
-      this.hintText,
-      this.searchingText = "Searching...",
-      this.height = 40,
-      this.contentPadding = EdgeInsets.zero,
-      this.debounceMilliseconds,
-      this.onSearchFailed,
-      required this.searchBarController,
-      this.autocompleteOffset,
-      this.autocompleteRadius,
-      this.autocompleteLanguage,
-      this.autocompleteComponents,
-      this.autocompleteTypes,
-      this.strictbounds,
-      this.region,
-      this.initialSearchString,
-      this.searchForInitialValue,
-      this.autocompleteOnTrailingWhitespace})
-      : super(key: key);
+  const AutoCompleteSearch({
+    super.key,
+    required this.sessionToken,
+    required this.onPicked,
+    required this.appBarKey,
+    this.hintText,
+    this.searchingText = "Searching...",
+    this.height = 40,
+    this.contentPadding = EdgeInsets.zero,
+    this.debounceMilliseconds,
+    this.onSearchFailed,
+    required this.searchBarController,
+    this.autocompleteOffset,
+    this.autocompleteRadius,
+    this.autocompleteLanguage,
+    this.autocompleteComponents,
+    this.autocompleteTypes,
+    this.strictbounds,
+    this.region,
+    this.initialSearchString,
+    this.searchForInitialValue,
+    this.autocompleteOnTrailingWhitespace,
+  });
 
   final String? sessionToken;
   final String? hintText;
@@ -106,7 +105,9 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
       child: RoundedFrame(
         height: widget.height,
         padding: const EdgeInsets.only(right: 10),
-        color: Theme.of(context).brightness == Brightness.dark ? ColorResources.black : ColorResources.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? ColorResources.black
+            : ColorResources.white,
         borderRadius: BorderRadius.circular(20),
         elevation: 0.0,
         child: Row(
@@ -137,25 +138,28 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
 
   Widget _buildTextClearIcon() {
     return Selector<SearchProvider, String>(
-        selector: (_, provider) => provider.searchTerm,
-        builder: (_, data, __) {
-          if (data.isNotEmpty) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: GestureDetector(
-                child: Icon(
-                  Icons.clear,
-                  color: Theme.of(context).brightness == Brightness.dark ? ColorResources.white : ColorResources.black,
-                ),
-                onTap: () {
-                  clearText();
-                },
+      selector: (_, provider) => provider.searchTerm,
+      builder: (_, data, __) {
+        if (data.isNotEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              child: Icon(
+                Icons.clear,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorResources.white
+                    : ColorResources.black,
               ),
-            );
-          } else {
-            return const SizedBox(width: 10);
-          }
-        });
+              onTap: () {
+                clearText();
+              },
+            ),
+          );
+        } else {
+          return const SizedBox(width: 10);
+        }
+      },
+    );
   }
 
   _onSearchInputChange() {
@@ -175,7 +179,8 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
       return;
     }
 
-    if (!widget.autocompleteOnTrailingWhitespace! && controller.text.substring(controller.text.length - 1) == " ") {
+    if (!widget.autocompleteOnTrailingWhitespace! &&
+        controller.text.substring(controller.text.length - 1) == " ") {
       provider.debounceTimer?.cancel();
       return;
     }
@@ -184,9 +189,12 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
       provider.debounceTimer!.cancel();
     }
 
-    provider.debounceTimer = Timer(Duration(milliseconds: widget.debounceMilliseconds!), () {
-      _searchPlace(controller.text.trim());
-    });
+    provider.debounceTimer = Timer(
+      Duration(milliseconds: widget.debounceMilliseconds!),
+      () {
+        _searchPlace(controller.text.trim());
+      },
+    );
   }
 
   _onFocusChanged() {
@@ -218,7 +226,8 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
   _displayOverlay(Widget overlayChild) {
     _clearOverlay();
 
-    final RenderBox? appBarRenderBox = widget.appBarKey.currentContext!.findRenderObject() as RenderBox?;
+    final RenderBox? appBarRenderBox =
+        widget.appBarKey.currentContext!.findRenderObject() as RenderBox?;
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     overlayEntry = OverlayEntry(
@@ -226,10 +235,7 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
         top: appBarRenderBox!.size.height,
         left: screenWidth * 0.025,
         right: screenWidth * 0.025,
-        child: Material(
-          elevation: 4.0,
-          child: overlayChild,
-        ),
+        child: Material(elevation: 4.0, child: overlayChild),
       ),
     );
 
@@ -252,7 +258,7 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
               widget.searchingText ?? "Searching...",
               style: const TextStyle(fontSize: 16),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -278,20 +284,27 @@ class AutoCompleteSearchState extends State<AutoCompleteSearch> {
     PlaceProvider provider = PlaceProvider.of(context, listen: false);
 
     if (searchTerm.isNotEmpty) {
-      final PlacesAutocompleteResponse response = await provider.places.autocomplete(
-        searchTerm,
-        sessionToken: widget.sessionToken,
-        location: provider.currentPosition == null ? null : Location(lat: provider.currentPosition!.latitude, lng: provider.currentPosition!.longitude),
-        offset: widget.autocompleteOffset,
-        radius: widget.autocompleteRadius,
-        language: widget.autocompleteLanguage,
-        types: widget.autocompleteTypes ?? const [],
-        components: widget.autocompleteComponents ?? const [],
-        strictbounds: widget.strictbounds ?? false,
-        region: widget.region,
-      );
+      final PlacesAutocompleteResponse response = await provider.places
+          .autocomplete(
+            searchTerm,
+            sessionToken: widget.sessionToken,
+            location: provider.currentPosition == null
+                ? null
+                : Location(
+                    lat: provider.currentPosition!.latitude,
+                    lng: provider.currentPosition!.longitude,
+                  ),
+            offset: widget.autocompleteOffset,
+            radius: widget.autocompleteRadius,
+            language: widget.autocompleteLanguage,
+            types: widget.autocompleteTypes ?? const [],
+            components: widget.autocompleteComponents ?? const [],
+            strictbounds: widget.strictbounds ?? false,
+            region: widget.region,
+          );
 
-      if (response.errorMessage?.isNotEmpty == true || response.status == "REQUEST_DENIED") {
+      if (response.errorMessage?.isNotEmpty == true ||
+          response.status == "REQUEST_DENIED") {
         if (widget.onSearchFailed != null) {
           widget.onSearchFailed!(response.status);
         }

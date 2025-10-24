@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
 
 class UpdateAddressNotifier with ChangeNotifier {
   final UpdateAddressUseCase useCase;
 
-  UpdateAddressNotifier({
-    required this.useCase
-  });
+  UpdateAddressNotifier({required this.useCase});
 
   late AnimationController? pulseController;
-  late AnimationController? timerController;  
+  late AnimationController? timerController;
 
   late Animation<double> pulseAnimation;
 
@@ -33,10 +31,10 @@ class UpdateAddressNotifier with ChangeNotifier {
   }
 
   Future<void> updateAddress({
-    required String address, 
+    required String address,
     required String state,
     required double lat,
-    required double lng
+    required double lng,
   }) async {
     setStateProvider(ProviderState.loading);
 
@@ -44,15 +42,17 @@ class UpdateAddressNotifier with ChangeNotifier {
       address: address,
       state: state,
       lat: lat,
-      lng: lng
+      lng: lng,
     );
 
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.error);
-    }, (r) {
-      setStateProvider(ProviderState.loaded);
-    });
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.error);
+      },
+      (r) {
+        setStateProvider(ProviderState.loaded);
+      },
+    );
   }
-  
 }

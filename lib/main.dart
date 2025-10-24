@@ -6,7 +6,9 @@ import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
@@ -17,8 +19,8 @@ import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:rakhsa/awesome_notification.dart';
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/features/auth/presentation/pages/on_boarding_page.dart';
 
 import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
@@ -31,7 +33,7 @@ import 'package:rakhsa/global.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
-import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 
@@ -57,7 +59,7 @@ void onStart(ServiceInstance service) async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  Timer.periodic(const Duration(minutes: 2), (timer) async {
+  Timer.periodic(const Duration(hours: 12), (timer) async {
     debugPrint("=== SCHEDULER RUNNING ===");
     // DateTime now = DateTime.now();
 
@@ -115,7 +117,7 @@ void onStart(ServiceInstance service) async {
 
 @pragma('vm:entry-point')
 Future<bool> onIosBackground(ServiceInstance service) async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
 
   return true;
@@ -135,6 +137,18 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
+
+  FlutterError.onError = (errorDetails) {
+    if (kReleaseMode) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    }
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (kReleaseMode) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    }
+    return true;
+  };
 
   await initializeDateFormatting('id_ID', null);
 

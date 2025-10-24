@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
@@ -35,8 +34,9 @@ class WelcomePageState extends State<WelcomePage> {
       Permission.location,
       "location",
       "location.png",
-    ))
+    )) {
       return;
+    }
 
     if (!await Geolocator.isLocationServiceEnabled()) {
       await showDialog(
@@ -52,16 +52,19 @@ class WelcomePageState extends State<WelcomePage> {
       Permission.notification,
       "notification",
       "notification.png",
-    ))
+    )) {
       return;
+    }
     if (await requestPermission(
       Permission.microphone,
       "microphone",
       "microphone.png",
-    ))
+    )) {
       return;
-    if (await requestPermission(Permission.camera, "camera", "camera.png"))
+    }
+    if (await requestPermission(Permission.camera, "camera", "camera.png")) {
       return;
+    }
 
     debugPrint("ALL PERMISSIONS GRANTED");
     isDialogShowing = false;
@@ -245,7 +248,9 @@ class WelcomePageState extends State<WelcomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Divider(color: whiteColor.withOpacity(0.5)),
+                        child: Divider(
+                          color: whiteColor.withValues(alpha: 0.5),
+                        ),
                       ),
                       Flexible(
                         child: Padding(
@@ -253,13 +258,15 @@ class WelcomePageState extends State<WelcomePage> {
                           child: Text(
                             'Atau',
                             style: robotoRegular.copyWith(
-                              color: whiteColor.withOpacity(0.5),
+                              color: whiteColor.withValues(alpha: 0.5),
                             ),
                           ),
                         ),
                       ),
                       Flexible(
-                        child: Divider(color: whiteColor.withOpacity(0.5)),
+                        child: Divider(
+                          color: whiteColor.withValues(alpha: 0.5),
+                        ),
                       ),
                     ],
                   ),
@@ -282,19 +289,12 @@ class WelcomePageState extends State<WelcomePage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: (provider.ssoLoading)
-                              ? const Center(
-                                  child: SpinKitFadingCircle(
-                                    color: blackColor,
-                                    size: 25.0,
-                                  ),
-                                )
-                              : Text(
-                                  'Registrasi',
-                                  style: robotoRegular.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          child: Text(
+                            'Registrasi',
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       );
                     },

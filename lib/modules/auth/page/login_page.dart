@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
 
-import 'package:rakhsa/helper/extensions.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
@@ -53,10 +53,37 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _onLoginUser(BuildContext c) async {
+    Future loginUser() async {
+      await c.read<AuthProvider>().login(
+        phone: PhoneNumberFormatter.unmask(_phoneController.text),
+        password: _passController.text,
+        onSuccess: () {
+          Navigator.of(c).pushNamedAndRemoveUntil(
+            RoutesNavigation.dashboard,
+            (route) => false,
+          );
+        },
+        onError: (code, message) {
+          GeneralModal.error(
+            c,
+            message,
+            onReload: () {
+              c.pop();
+              loginUser();
+            },
+          );
+          _phoneFNode.unfocus();
+          _passFNode.unfocus();
+        },
+      );
+    }
+
+    if (_formKey.currentState!.validate()) await loginUser();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.read<AuthProvider>();
-
     return GestureDetector(
       onTap: () => context.unfocus(),
       child: Scaffold(
@@ -127,6 +154,9 @@ class LoginScreenState extends State<LoginScreen> {
                                 if (val == null || val.isEmpty) {
                                   return "Nomor Telepon tidak boleh kosong.";
                                 }
+                                if (val.length < 10) {
+                                  return "Nomor Telepon minimal 10 digit angka.";
+                                }
                                 return null;
                               },
                             ),
@@ -159,40 +189,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   loadingColor: primaryColor,
                                   btnColor: ColorResources.white,
                                   btnTextColor: ColorResources.black,
-                                  onTap: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      void login() async {
-                                        await authProvider.login(
-                                          phone: PhoneNumberFormatter.unmask(
-                                            _phoneController.text,
-                                          ),
-                                          password: _passController.text,
-                                          onSuccess: () {
-                                            Navigator.of(
-                                              context,
-                                            ).pushNamedAndRemoveUntil(
-                                              RoutesNavigation.dashboard,
-                                              (route) => false,
-                                            );
-                                          },
-                                          onError: (code, message) {
-                                            GeneralModal.error(
-                                              context,
-                                              message,
-                                              onReload: () {
-                                                context.pop();
-                                                login();
-                                              },
-                                            );
-                                            _phoneFNode.unfocus();
-                                            _passFNode.unfocus();
-                                          },
-                                        );
-                                      }
-
-                                      login();
-                                    }
-                                  },
+                                  onTap: () => _onLoginUser(context),
                                 );
                               },
                             ),

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
 
 class Avatar extends StatefulWidget {
   const Avatar({

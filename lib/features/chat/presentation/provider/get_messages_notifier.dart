@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
@@ -12,9 +13,7 @@ import 'package:rakhsa/global.dart';
 class GetMessagesNotifier with ChangeNotifier {
   final GetMessagesUseCase useCase;
 
-  GetMessagesNotifier({
-    required this.useCase
-  });
+  GetMessagesNotifier({required this.useCase});
 
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
@@ -27,7 +26,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
   bool _isRunning = false;
   bool get isRunning => _isRunning;
-  
+
   int _time = 60;
   int get time => _time;
 
@@ -55,8 +54,8 @@ class GetMessagesNotifier with ChangeNotifier {
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time > 0) {
-      _time--;
-      notifyListeners();
+        _time--;
+        notifyListeners();
       } else {
         _timer.cancel();
         _isBtnSessionEnd = true;
@@ -76,7 +75,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void resetTimer() {
     cancelTimer();
-    _time = 5; 
+    _time = 5;
     notifyListeners();
   }
 
@@ -101,9 +100,9 @@ class GetMessagesNotifier with ChangeNotifier {
     bool isTyping = data["is_typing"];
 
     if (isTyping) {
-      typingStatus[chatId] = true; 
+      typingStatus[chatId] = true;
     } else {
-      typingStatus.remove(chatId); 
+      typingStatus.remove(chatId);
     }
 
     notifyListeners();
@@ -127,49 +126,62 @@ class GetMessagesNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getMessages({required String chatId, required String status}) async {
+  Future<void> getMessages({
+    required String chatId,
+    required String status,
+  }) async {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(chatId: chatId, status: status);
- 
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.loaded);
-    }, (r) {
-      _recipient = r.data.recipient;
 
-      _note = r.data.note;
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.loaded);
+      },
+      (r) {
+        _recipient = r.data.recipient;
 
-      _activeChatId = r.data.chatId;
+        _note = r.data.note;
 
-      _messages = [];
-      _messages.addAll(r.data.messages);
+        _activeChatId = r.data.chatId;
 
-      setStateProvider(ProviderState.loaded);
-    });
+        _state = ProviderState.loaded;
 
+        debugPrint('chat masuk = ${r.data.messages}');
+
+        _messages = [];
+        debugPrint('chat dari _messages = $_messages');
+
+        _messages.addAll(r.data.messages);
+        debugPrint('chat dari _messages = $_messages');
+
+        notifyListeners();
+      },
+    );
   }
 
   void navigateToChat({
     required String chatId,
-    required String status, 
+    required String status,
     required String recipientId,
-    required String sosId
+    required String sosId,
   }) {
     Navigator.pushNamedAndRemoveUntil(
-      navigatorKey.currentContext!, 
-      RoutesNavigation.dashboard, (route) => false
+      navigatorKey.currentContext!,
+      RoutesNavigation.dashboard,
+      (route) => false,
     );
     Navigator.pushNamed(
-      navigatorKey.currentContext!, 
+      navigatorKey.currentContext!,
       arguments: {
         "chat_id": chatId,
         "status": status,
         "recipient_id": recipientId,
         "sos_id": sosId,
-        "auto_greetings": true
+        "auto_greetings": true,
       },
-      RoutesNavigation.chat
+      RoutesNavigation.chat,
     );
   }
 
@@ -178,15 +190,32 @@ class GetMessagesNotifier with ChangeNotifier {
     String incomingMessageId = data["id"];
     bool isRead = data["is_read"];
 
+    debugPrint("incomingChatId dari appendMessage = $incomingMessageId");
+    debugPrint("activeChatId dari appendMessage = $activeChatId");
+
+    debugPrint(
+      "cek apakah incomingChatId != activeChatId = ${incomingChatId != activeChatId}",
+    );
     if (incomingChatId != activeChatId) {
-      return;
+      FirebaseCrashlytics.instance.recordError(
+        // "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
+        StateError(
+          "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
+        ),
+        StackTrace.current,
+      );
     }
 
-    if (_messages.any((message) => message.id == incomingMessageId)) {
-      return;
-    }
+    final containIncomingMsgId = _messages.any(
+      (msg) => msg.id == incomingMessageId,
+    );
+    debugPrint(
+      "cek apakah _messages memuat id yang sama dengan incomingMessageId = $containIncomingMsgId",
+    );
+    if (containIncomingMsgId) return;
 
-    _messages.insert(0,
+    _messages.insert(
+      0,
       MessageData(
         id: incomingMessageId,
         chatId: incomingChatId,
@@ -204,6 +233,10 @@ class GetMessagesNotifier with ChangeNotifier {
     );
 
     notifyListeners();
-  }
 
+    final filteredMsg = _messages.map((e) => e.text);
+    debugPrint(
+      "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
+    );
+  }
 }

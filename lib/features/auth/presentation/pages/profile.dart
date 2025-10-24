@@ -10,12 +10,12 @@ import 'package:rakhsa/shared/basewidgets/avatar.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/snackbar.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
@@ -158,7 +158,7 @@ class ProfilePageState extends State<ProfilePage> {
     }
 
     Future.delayed(Duration.zero, () {
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     });
 
     profileNotifier.getProfile();

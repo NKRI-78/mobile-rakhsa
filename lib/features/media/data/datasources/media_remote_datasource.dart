@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
 
 import 'package:rakhsa/features/media/data/models/media.dart';
 
@@ -26,15 +26,13 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
     try {
       final fileName = file.path.split('/').last;
       final formData = FormData.fromMap({
-        "media": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
+        "media": await MultipartFile.fromFile(file.path, filename: fileName),
         "folder": folderName,
-        "subfolder": "broadcast-raksha"
+        "subfolder": "broadcast-raksha",
       });
-      final res = await client.post('https://api-media.inovatiftujuh8.com/api/v1/media/upload',
-        data: formData
+      final res = await client.post(
+        'https://api-media.inovatiftujuh8.com/api/v1/media/upload',
+        data: formData,
       );
       Map<String, dynamic> data = res.data;
       return MediaModel.fromJson(data);

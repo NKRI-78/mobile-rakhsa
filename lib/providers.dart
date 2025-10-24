@@ -23,21 +23,15 @@ import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notif
 import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
-import 'package:rakhsa/features/document/presentation/provider/document_notifier.dart';
-import 'package:rakhsa/features/event/persentation/provider/event_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/inquiry_pulsa_listener.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/pay_ppob_notifier.dart';
-import 'package:rakhsa/features/ppob/presentation/providers/payment_channel_listener.dart';
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
-import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
 import 'package:rakhsa/socketio.dart';
 
 List<SingleChildWidget> providers = [...independentServices];
@@ -50,7 +44,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosRatingNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<ProfileNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<DocumentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<ResendOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<VerifyOtpNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetChatsNotifier>()),
@@ -59,7 +52,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetCountryNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetStateNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<EventNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateAddressNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateProfileNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateIsLoggedinNotifier>()),
@@ -70,11 +62,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<ForgotPasswordNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<PassportNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<EcommerceProvider>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<InquiryPulsaProvider>()),
-  ChangeNotifierProvider.value(value: di.locator<PaymentChannelProvider>()),
-  ChangeNotifierProvider.value(value: di.locator<PayPpobNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailInboxNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetInboxNotifier>()),

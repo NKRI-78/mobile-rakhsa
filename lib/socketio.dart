@@ -3,11 +3,12 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
@@ -84,7 +85,6 @@ class SocketIoService with ChangeNotifier {
   }
 
   Future<void> init() async {
-    // String token = await StorageHelper.getToken();
     final session = await StorageHelper.getUserSession();
 
     if (session.token != "-") {
@@ -118,9 +118,18 @@ class SocketIoService with ChangeNotifier {
 
       final context = navigatorKey.currentContext;
 
-      if (context == null) {
-        return;
-      }
+      debugPrint(
+        "cek context dari socket?.on(message, (message) apakah null? = ${context != null}",
+      );
+      if (context == null) return;
+      FirebaseCrashlytics.instance.recordError(
+        "context di socket.on(message) == null",
+        StackTrace.fromString(
+          "socket?.on(message, (message) lib/socketio.dart line 116",
+        ),
+      );
+
+      debugPrint("messages dari socket?.on(message, (message) = $message");
 
       context.read<GetMessagesNotifier>().appendMessage(data: message);
     });
@@ -176,8 +185,8 @@ class SocketIoService with ChangeNotifier {
 
       context.read<ProfileNotifier>().getProfile();
 
-      StorageHelper.getUserSession().then((v) => v.user.id).then((uid) {
-        if (message["sender"] == uid) {
+      StorageHelper.getUserSession().then((v) {
+        if (message["sender"] == v.user.id) {
           if (context.mounted) {
             context.read<GetMessagesNotifier>().navigateToChat(
               chatId: message["chat_id"].toString(),
@@ -208,6 +217,14 @@ class SocketIoService with ChangeNotifier {
     }
     isConnected = true;
     notifyListeners();
+  }
+
+  void subscribeChat(String chatId) {
+    socket?.emitWithAck('subscribe_chat', {'chat_id': chatId}, ack: (res) {});
+  }
+
+  void unsubscribeChat(String chatId) {
+    socket?.emitWithAck('unsubscribe_chat', {'chat_id': chatId}, ack: (_) {});
   }
 
   void sos({

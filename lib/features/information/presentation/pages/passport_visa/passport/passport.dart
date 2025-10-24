@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/information/presentation/pages/passport_visa/passport/info.dart';
 import 'package:rakhsa/features/information/presentation/pages/widgets/list_card.dart';

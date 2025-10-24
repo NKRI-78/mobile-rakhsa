@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/features/information/presentation/pages/panduan_hukum.dart';
 import 'package:rakhsa/features/information/presentation/pages/search.dart';
 
@@ -61,7 +61,7 @@ class InformationListPage extends StatelessWidget {
               );
             },
             image: AssetSource.iconHukum,
-            title: "Panduan Hukum",
+            title: "Panduan",
           ),
         ],
       ),

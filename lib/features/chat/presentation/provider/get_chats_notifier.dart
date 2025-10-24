@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/chat/data/models/chats.dart';
 
@@ -9,9 +9,7 @@ import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
 class GetChatsNotifier with ChangeNotifier {
   final GetChatsUseCase useCase;
 
-  GetChatsNotifier({
-    required this.useCase
-  });  
+  GetChatsNotifier({required this.useCase});
 
   List<ChatsData> _chats = [];
   List<ChatsData> get chats => [..._chats];
@@ -24,26 +22,27 @@ class GetChatsNotifier with ChangeNotifier {
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
-    
+
     notifyListeners();
   }
 
   Future<void> getChats() async {
     final result = await useCase.execute();
 
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.error);
-    }, (r) {
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.error);
+      },
+      (r) {
+        _chats = [];
+        _chats.addAll(r.data);
+        setStateProvider(ProviderState.loaded);
 
-      _chats = [];
-      _chats.addAll(r.data);
-      setStateProvider(ProviderState.loaded);
-
-      if(chats.isEmpty) {
-        setStateProvider(ProviderState.empty);
-      }
-    });
+        if (chats.isEmpty) {
+          setStateProvider(ProviderState.empty);
+        }
+      },
+    );
   }
-  
 }

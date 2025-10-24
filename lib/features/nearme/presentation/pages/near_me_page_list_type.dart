@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 
-import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/nearme/presentation/widgets/type_tile.dart';
-import 'package:rakhsa/helper/extensions.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
 class NearMeListTypePage extends StatelessWidget {
   const NearMeListTypePage({super.key});

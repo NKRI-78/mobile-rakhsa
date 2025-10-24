@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 
@@ -15,12 +15,10 @@ class UpdateIsLoggedinNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _providerState = ProviderState.idle; 
+  ProviderState _providerState = ProviderState.idle;
   ProviderState get providerState => _providerState;
 
-  UpdateIsLoggedinNotifier({
-    required this.useCase
-  });
+  UpdateIsLoggedinNotifier({required this.useCase});
 
   void setStateProviderState(ProviderState param) {
     _providerState = param;
@@ -30,24 +28,21 @@ class UpdateIsLoggedinNotifier with ChangeNotifier {
 
   Future<void> updateIsLoggedIn({
     required String userId,
-    required String type
+    required String type,
   }) async {
     setStateProviderState(ProviderState.loading);
 
-    final resendOtp = await useCase.execute(
-      userId: userId,
-      type: type, 
-    );
-    
+    final resendOtp = await useCase.execute(userId: userId, type: type);
+
     resendOtp.fold(
-      (l) { 
+      (l) {
         _message = l.message;
         setStateProviderState(ProviderState.error);
-      }, (r) {
+      },
+      (r) {
         _message = "";
         setStateProviderState(ProviderState.loaded);
-      }
+      },
     );
   }
-
 }

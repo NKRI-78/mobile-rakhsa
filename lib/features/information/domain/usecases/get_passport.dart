@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 import 'package:rakhsa/features/information/data/models/passport.dart';
 
 import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
@@ -13,8 +13,6 @@ class GetPassportUseCase {
   Future<Either<Failure, PassportContentModel>> execute({
     required String stateId,
   }) {
-    return repository.infoPassport(
-      stateId: stateId,
-    );  
+    return repository.infoPassport(stateId: stateId);
   }
 }

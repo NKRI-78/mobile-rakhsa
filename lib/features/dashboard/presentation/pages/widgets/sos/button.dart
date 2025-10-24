@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/camera.dart';
 
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/features/auth/data/models/profile.dart';
 
 import 'package:rakhsa/modules/auth/page/login_page.dart';

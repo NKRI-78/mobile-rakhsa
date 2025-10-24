@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/data/models/banner.dart';
@@ -8,7 +8,8 @@ import 'package:rakhsa/features/dashboard/data/models/news.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_banner.dart';
 import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
 
-enum BannerProviderState {idle, loading, empty, loaded, error }
+enum BannerProviderState { idle, loading, empty, loaded, error }
+
 enum NewsProviderState { idle, loading, empty, loaded, error }
 
 class DashboardNotifier with ChangeNotifier {
@@ -19,8 +20,8 @@ class DashboardNotifier with ChangeNotifier {
   DashboardNotifier({
     required this.profileNotifier,
     required this.useCase,
-    required this.bannerUseCase
-  });  
+    required this.bannerUseCase,
+  });
 
   bool _isLocked = false;
   bool get isLocked => _isLocked;
@@ -29,7 +30,7 @@ class DashboardNotifier with ChangeNotifier {
   List<BannerData> get banners => [..._banners];
 
   List<NewsData> _ews = [];
-  List<NewsData> get ews =>[..._ews];
+  List<NewsData> get ews => [..._ews];
 
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
@@ -49,13 +50,13 @@ class DashboardNotifier with ChangeNotifier {
   void checkIsLocked() {
     _isLocked = StorageHelper.isLocked();
 
-    notifyListeners(); 
+    notifyListeners();
   }
 
   void setStateIsLocked({required bool val}) {
     _isLocked = val;
 
-    notifyListeners(); 
+    notifyListeners();
   }
 
   void setStateBanner(BannerProviderState newState) {
@@ -81,44 +82,43 @@ class DashboardNotifier with ChangeNotifier {
 
     final result = await bannerUseCase.execute();
 
-    result.fold((l) {
-      _message = l.message;
-      setStateBanner(BannerProviderState.error);
-    }, (r) {
-      _banners = [];
-      _banners.addAll(r.data);
-      setStateBanner(BannerProviderState.loaded);
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateBanner(BannerProviderState.error);
+      },
+      (r) {
+        _banners = [];
+        _banners.addAll(r.data);
+        setStateBanner(BannerProviderState.loaded);
 
-      if(news.isEmpty) {
-        setStateBanner(BannerProviderState.empty);
-      }
-    });
+        if (news.isEmpty) {
+          setStateBanner(BannerProviderState.empty);
+        }
+      },
+    );
   }
 
-  Future<void> getNews({
-    required double lat,
-    required double lng
-  }) async {
+  Future<void> getNews({required double lat, required double lng}) async {
     setStateNews(NewsProviderState.loading);
 
-    final result = await useCase.execute(
-      lat: lat,
-      lng: lng,
-      state: "-",
+    final result = await useCase.execute(lat: lat, lng: lng, state: "-");
+
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateNews(NewsProviderState.error);
+      },
+      (r) {
+        _news = [];
+        _news.addAll(r.data);
+        setStateNews(NewsProviderState.loaded);
+
+        if (news.isEmpty) {
+          setStateNews(NewsProviderState.empty);
+        }
+      },
     );
-
-    result.fold((l) {
-      _message = l.message;
-      setStateNews(NewsProviderState.error);
-    }, (r) {
-      _news = [];
-      _news.addAll(r.data);
-      setStateNews(NewsProviderState.loaded);
-
-      if(news.isEmpty) {
-        setStateNews(NewsProviderState.empty);
-      }
-    });
   }
 
   Future<void> getEws({
@@ -128,25 +128,22 @@ class DashboardNotifier with ChangeNotifier {
   }) async {
     setStateProvider(ProviderState.loading);
 
-    final result = await useCase.execute(
-      lat: lat,
-      lng: lng,
-      state: state,
+    final result = await useCase.execute(lat: lat, lng: lng, state: state);
+
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.error);
+      },
+      (r) {
+        _ews = [];
+        _ews.addAll(r.data);
+        setStateProvider(ProviderState.loaded);
+
+        if (ews.isEmpty) {
+          setStateProvider(ProviderState.empty);
+        }
+      },
     );
-
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.error);
-    }, (r) {
-      _ews = [];
-      _ews.addAll(r.data);
-      setStateProvider(ProviderState.loaded);
-
-      if(ews.isEmpty) {
-        setStateProvider(ProviderState.empty);
-      }
-    });
   }
-
-  
 }

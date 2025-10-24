@@ -6,30 +6,34 @@ import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 extension ToBitDescription on Widget {
-
   Future<BitmapDescriptor> toBitmapDescriptor({
-    Size? logicalSize, 
-    Size? imageSize, 
+    Size? logicalSize,
+    Size? imageSize,
     Duration waitToRender = const Duration(milliseconds: 300),
-    TextDirection textDirection = TextDirection.ltr
+    TextDirection textDirection = TextDirection.ltr,
   }) async {
     final widget = RepaintBoundary(
-    child: MediaQuery(
-      data: const MediaQueryData(), 
-      child: Directionality(
-        textDirection: TextDirection.ltr, child: this)
+      child: MediaQuery(
+        data: const MediaQueryData(),
+        child: Directionality(textDirection: TextDirection.ltr, child: this),
       ),
     );
-    final pngBytes = await createImageFromWidget(widget,
+    final pngBytes = await createImageFromWidget(
+      widget,
       waitToRender: waitToRender,
       logicalSize: logicalSize,
-      imageSize: imageSize
+      imageSize: imageSize,
     );
-    return BitmapDescriptor.fromBytes(pngBytes);
+    return BitmapDescriptor.bytes(pngBytes);
   }
 }
 
-Future<Uint8List> createImageFromWidget(Widget widget, {Size? logicalSize, required Duration waitToRender, Size? imageSize}) async {
+Future<Uint8List> createImageFromWidget(
+  Widget widget, {
+  Size? logicalSize,
+  required Duration waitToRender,
+  Size? imageSize,
+}) async {
   final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
   final view = ui.PlatformDispatcher.instance.views.first;
 
@@ -40,17 +44,11 @@ Future<Uint8List> createImageFromWidget(Widget widget, {Size? logicalSize, requi
     view: view,
     child: RenderPositionedBox(
       alignment: Alignment.center,
-      child: repaintBoundary
+      child: repaintBoundary,
     ),
     configuration: const ViewConfiguration(
-      physicalConstraints: BoxConstraints(
-        maxHeight: 150.0,
-        maxWidth: 150.0
-      ),
-      logicalConstraints: BoxConstraints(
-        maxHeight: 150.0,
-        maxWidth: 150.0
-      ),
+      physicalConstraints: BoxConstraints(maxHeight: 150.0, maxWidth: 150.0),
+      logicalConstraints: BoxConstraints(maxHeight: 150.0, maxWidth: 150.0),
       devicePixelRatio: 1.0,
     ),
   );
@@ -61,10 +59,11 @@ Future<Uint8List> createImageFromWidget(Widget widget, {Size? logicalSize, requi
   pipelineOwner.rootNode = renderView;
   renderView.prepareInitialFrame();
 
-  final RenderObjectToWidgetElement<RenderBox> rootElement = RenderObjectToWidgetAdapter<RenderBox>(
-    container: repaintBoundary,
-    child: widget,
-  ).attachToRenderTree(buildOwner);
+  final RenderObjectToWidgetElement<RenderBox> rootElement =
+      RenderObjectToWidgetAdapter<RenderBox>(
+        container: repaintBoundary,
+        child: widget,
+      ).attachToRenderTree(buildOwner);
 
   buildOwner.buildScope(rootElement);
 
@@ -77,9 +76,12 @@ Future<Uint8List> createImageFromWidget(Widget widget, {Size? logicalSize, requi
   pipelineOwner.flushCompositingBits();
   pipelineOwner.flushPaint();
 
-  final ui.Image image = await repaintBoundary.toImage(pixelRatio: imageSize.width / logicalSize.width);
-  final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  final ui.Image image = await repaintBoundary.toImage(
+    pixelRatio: imageSize.width / logicalSize.width,
+  );
+  final ByteData? byteData = await image.toByteData(
+    format: ui.ImageByteFormat.png,
+  );
 
   return byteData!.buffer.asUint8List();
-  
 }

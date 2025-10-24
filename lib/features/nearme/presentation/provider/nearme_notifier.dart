@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/features/nearme/presentation/widgets/my_marker.dart';
@@ -19,7 +19,7 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
   final List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
-  ProviderState _state = ProviderState.empty;
+  ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
 
   String _message = '';
@@ -28,17 +28,17 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
   String icon(String type) {
     switch (type) {
       case "mosque":
-        return "mosque.png";  
+        return "mosque.png";
       case "church":
-        return "church.png"; 
+        return "church.png";
       case "hindu_temple":
-        return "buddhist_temple.png";  
+        return "buddhist_temple.png";
       case "lodging":
-        return "lodging.png";  
+        return "lodging.png";
       case "restaurant":
-        return "restaurant.png"; 
+        return "restaurant.png";
       case "police":
-        return "police.png";  
+        return "police.png";
       default:
         return "";
     }
@@ -59,15 +59,15 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
       Marker(
         markerId: const MarkerId("current_location"),
         position: LatLng(currentLat, currentLng),
-        icon: await const TextOnImage(
-          icon: "current-location.png",
-          text: "Current Location",
-        ).toBitmapDescriptor(
-          logicalSize: const Size(150, 150), imageSize: const Size(150, 150)
-        ),
-        infoWindow: const InfoWindow(
-          title: "Lokasi Anda",
-        ),
+        icon:
+            await const TextOnImage(
+              icon: "current-location.png",
+              text: "Current Location",
+            ).toBitmapDescriptor(
+              logicalSize: const Size(150, 150),
+              imageSize: const Size(150, 150),
+            ),
+        infoWindow: const InfoWindow(title: "Lokasi Anda"),
       ),
     );
 
@@ -85,35 +85,38 @@ class GetNearbyPlacenNotifier extends ChangeNotifier {
       },
       (r) async {
         for (var el in r.results) {
+          double distanceInMeters = Geolocator.distanceBetween(
+            currentLat,
+            currentLng,
+            el.geometry.location.lat,
+            el.geometry.location.lng,
+          );
 
-        double distanceInMeters = Geolocator.distanceBetween(
-          currentLat,
-          currentLng,
-          el.geometry.location.lat,
-          el.geometry.location.lng,
-        );
+          double distanceInKm = distanceInMeters / 1000;
 
-        double distanceInKm = distanceInMeters / 1000;
+          _entity.add({
+            "id": el.placeId,
+            "name": el.name,
+            "lat": el.geometry.location.lat.toString(),
+            "lng": el.geometry.location.lng.toString(),
+            "distance": distanceInKm.toStringAsFixed(2),
+          });
 
-        _entity.add({
-          "id": el.placeId,
-          "name": el.name,
-          "lat": el.geometry.location.lat.toString(),
-          "lng": el.geometry.location.lng.toString(),
-          "distance": distanceInKm.toStringAsFixed(2),
-        });
-        
           _markers.add(
             Marker(
               markerId: MarkerId(el.placeId),
-              position: LatLng(el.geometry.location.lat, el.geometry.location.lng),
-              icon: await TextOnImage(
-                icon: icon(type),
-                text: "Current Location",
-              ).toBitmapDescriptor(
-                logicalSize: const Size(80, 80), 
-                imageSize: const Size(80, 80)
+              position: LatLng(
+                el.geometry.location.lat,
+                el.geometry.location.lng,
               ),
+              icon:
+                  await TextOnImage(
+                    icon: icon(type),
+                    text: "Current Location",
+                  ).toBitmapDescriptor(
+                    logicalSize: const Size(80, 80),
+                    imageSize: const Size(80, 80),
+                  ),
               infoWindow: InfoWindow(
                 title: el.name,
                 snippet: "${distanceInKm.toStringAsFixed(2)} km away",

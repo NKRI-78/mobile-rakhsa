@@ -1,11 +1,10 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/snackbar.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/helpers/snackbar.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:gallery_saver_plus/gallery_saver.dart';
 
@@ -15,57 +14,50 @@ class PreviewReviewImageScreen extends StatefulWidget {
   final List<dynamic>? medias;
   final int? id;
 
-  const PreviewReviewImageScreen({
-    this.medias,
-    this.id,
-    super.key, 
-  });
+  const PreviewReviewImageScreen({this.medias, this.id, super.key});
 
   @override
-  PreviewReviewImageScreenState createState() => PreviewReviewImageScreenState();
+  PreviewReviewImageScreenState createState() =>
+      PreviewReviewImageScreenState();
 }
 
 class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
-
   bool loadingBtn = false;
 
   int current = 0;
-  
+
   @override
   void initState() {
     super.initState();
 
     current = widget.id!;
   }
-  
+
   @override
-  void dispose() {  
+  void dispose() {
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:ColorResources.black,
+      backgroundColor: ColorResources.black,
       appBar: AppBar(
-        backgroundColor:ColorResources.transparent,
+        backgroundColor: ColorResources.transparent,
         forceMaterialTransparency: true,
         centerTitle: true,
         toolbarHeight: 70.0,
-        title: Text("PICTURE ( ${current + 1} / ${widget.medias!.length} )",
+        title: Text(
+          "PICTURE ( ${current + 1} / ${widget.medias!.length} )",
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeLarge,
-            color: ColorResources.white
+            color: ColorResources.white,
           ),
         ),
         leading: Container(
-          margin: const EdgeInsets.only(
-            top: 12.0,
-            bottom: 12.0,
-            left: 15.0
-          ),
+          margin: const EdgeInsets.only(top: 12.0, bottom: 12.0, left: 15.0),
           child: CircleAvatar(
-            backgroundColor: Colors.grey.withOpacity(0.5),
+            backgroundColor: Colors.grey.withValues(alpha: 0.5),
             child: InkWell(
               borderRadius: BorderRadius.circular(50.0),
               onTap: () {
@@ -73,61 +65,65 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
               },
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.close, 
-                  color: Colors.white, 
-                ),
+                child: Icon(Icons.close, color: Colors.white),
               ),
             ),
           ),
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(
-              top: 12.0,
-              bottom: 12.0,
-              right: 15.0
-            ),
+            margin: const EdgeInsets.only(top: 12.0, bottom: 12.0, right: 15.0),
             child: CircleAvatar(
-              backgroundColor: Colors.grey.withOpacity(0.5),
+              backgroundColor: Colors.grey.withValues(alpha: 0.5),
               child: InkWell(
                 onTap: () {
                   Dialog(
                     child: Container(
                       height: 50.0,
                       padding: const EdgeInsets.all(10.0),
-                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                      margin: const EdgeInsets.only(
+                        top: 10.0,
+                        bottom: 10.0,
+                        left: 16.0,
+                        right: 16.0,
+                      ),
                       child: StatefulBuilder(
-                        builder: (BuildContext context, Function setStateBuilder) {
-                        return ElevatedButton(
-                          onPressed: () async { 
-                            setStateBuilder(() => loadingBtn = true);
-                            await GallerySaver.saveImage("${widget.medias![current].path}");
-                            setStateBuilder(() => loadingBtn = false);
-                            Navigator.pop(context);
-                            ShowSnackbar.snackbarErr("Gambar telah disimpan pada galeri");
-                          },
-                          child: loadingBtn 
-                          ? Text("Mohon tunggu...", 
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              color: ColorResources.black
-                            ))
-                          : Text("Unduh Gambar", 
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              color: ColorResources.black
-                            ),
-                          )
-                        );
-                      })
-                    )
+                        builder:
+                            (BuildContext context, Function setStateBuilder) {
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  setStateBuilder(() => loadingBtn = true);
+                                  await GallerySaver.saveImage(
+                                    "${widget.medias![current].path}",
+                                  );
+                                  setStateBuilder(() => loadingBtn = false);
+                                  if (context.mounted) Navigator.pop(context);
+                                  ShowSnackbar.snackbarErr(
+                                    "Gambar telah disimpan pada galeri",
+                                  );
+                                },
+                                child: loadingBtn
+                                    ? Text(
+                                        "Mohon tunggu...",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: ColorResources.black,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Unduh Gambar",
+                                        style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: ColorResources.black,
+                                        ),
+                                      ),
+                              );
+                            },
+                      ),
+                    ),
                   );
                 },
-                child: const Icon(
-                  Icons.save, 
-                  color: Colors.white, 
-                ),
+                child: const Icon(Icons.save, color: Colors.white),
               ),
             ),
           ),
@@ -142,19 +138,21 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
             viewportFraction: 1.0,
             onPageChanged: (int i, CarouselPageChangedReason reason) {
               setState(() => current = i);
-            }
+            },
           ),
           items: widget.medias!.map((z) {
             return CachedNetworkImage(
               imageUrl: "${z.path}",
-              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
+              imageBuilder:
+                  (BuildContext context, ImageProvider<Object> imageProvider) =>
+                      Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
               errorWidget: (BuildContext context, String url, dynamic _) {
                 return Container(
                   margin: const EdgeInsets.all(0.0),
@@ -163,8 +161,8 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fitWidth,
-                      image: AssetImage("assets/images/logo/logo.png")
-                    )
+                      image: AssetImage("assets/images/logo/logo.png"),
+                    ),
                   ),
                 );
               },
@@ -176,15 +174,15 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fitWidth,
-                      image: AssetImage("assets/images/logo/logo.png")
-                    )
+                      image: AssetImage("assets/images/logo/logo.png"),
+                    ),
                   ),
                 );
-              } 
+              },
             );
-          }).toList()
-        )
-      )
+          }).toList(),
+        ),
+      ),
     );
   }
 }

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TextOnImage extends StatelessWidget {
-  const TextOnImage({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
+  const TextOnImage({super.key, required this.icon, required this.text});
 
   final String icon;
   final String text;
-  
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -17,8 +13,8 @@ class TextOnImage extends StatelessWidget {
       children: [
         Image(
           image: AssetImage("assets/images/icons/$icon"),
-          height: 150.0,
-          width: 150.0,
+          height: 50.0,
+          width: 50.0,
         ),
       ],
     );

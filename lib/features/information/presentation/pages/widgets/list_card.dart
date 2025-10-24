@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 class ListCardInformation extends StatelessWidget {
   const ListCardInformation({super.key, required this.image, required this.title, required this.onTap});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/verify_otp.dart';
@@ -23,12 +23,10 @@ class VerifyOtpNotifier with ChangeNotifier {
 
   String valueOtp = "";
 
-  ProviderState _providerState = ProviderState.idle; 
+  ProviderState _providerState = ProviderState.idle;
   ProviderState get providerState => _providerState;
 
-  VerifyOtpNotifier({
-    required this.useCase
-  });
+  VerifyOtpNotifier({required this.useCase});
 
   void setStateProviderState(ProviderState param) {
     _providerState = param;
@@ -48,35 +46,31 @@ class VerifyOtpNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
+  Future<void> verifyOtp({required String email, required String otp}) async {
     setStateProviderState(ProviderState.loading);
 
-    final verifyOtp = await useCase.execute(
-      email: email,
-      otp: otp,
-    );
-    
+    final verifyOtp = await useCase.execute(email: email, otp: otp);
+
     verifyOtp.fold(
-      (l) { 
+      (l) {
         _message = l.message;
         setStateProviderState(ProviderState.error);
-      }, (r) {
-
+      },
+      (r) {
         StorageHelper.saveToken(token: authModel.data?.token ?? "-");
 
-        Navigator.pushAndRemoveUntil(navigatorKey.currentContext!,
-          MaterialPageRoute(builder: (context) {
-            return const DashboardScreen();
-          }),
+        Navigator.pushAndRemoveUntil(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) {
+              return const DashboardScreen();
+            },
+          ),
           (route) => false,
         );
 
         setStateProviderState(ProviderState.loaded);
-      }
+      },
     );
   }
-
 }
