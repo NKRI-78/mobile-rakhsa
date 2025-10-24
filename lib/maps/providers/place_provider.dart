@@ -48,7 +48,10 @@ class PlaceProvider extends ChangeNotifier {
       await Permission.location.request();
       if (await Permission.location.request().isGranted) {
         currentPosition = await Geolocator.getCurrentPosition(
-            desiredAccuracy: desiredAccuracy ?? LocationAccuracy.best);
+          locationSettings: AndroidSettings(
+            accuracy: desiredAccuracy ?? LocationAccuracy.best,
+          ),
+        );
       } else {
         currentPosition = null;
       }

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
 import 'package:rakhsa/features/media/domain/entities/media.dart';
@@ -14,15 +14,15 @@ class MediaRepositoryImpl implements MediaRepository {
 
   MediaRepositoryImpl({required this.remoteDataSource});
 
-  @override 
+  @override
   Future<Either<Failure, Media>> uploadMedia({
-    required File file, 
-    required String folderName
+    required File file,
+    required String folderName,
   }) async {
     try {
       var result = await remoteDataSource.uploadMedia(
-        file: file, 
-        folderName: folderName
+        file: file,
+        folderName: folderName,
       );
       return Right(result.data.toEntity());
     } on ServerException catch (e) {
@@ -31,5 +31,4 @@ class MediaRepositoryImpl implements MediaRepository {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-  
 }

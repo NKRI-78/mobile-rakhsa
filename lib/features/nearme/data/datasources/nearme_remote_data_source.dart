@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
 
 import 'package:rakhsa/features/nearme/data/models/nearme.dart';
 
@@ -25,8 +25,10 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
     required double currentLng,
     required String type,
   }) async {
-    try { 
-      final response = await client.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=3000&key=${RemoteDataSourceConsts.gmaps}");
+    try {
+      final response = await client.get(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=3000&key=${RemoteDataSourceConsts.gmaps}",
+      );
       Map<String, dynamic> data = response.data;
       NearbyplaceModel nearby = NearbyplaceModel.fromJson(data);
       return nearby;
@@ -39,6 +41,4 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
       throw Exception(e.toString());
     }
   }
-
-
 }

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
 
 class SosRatingNotifier with ChangeNotifier {
   final SosRatingUseCase useCase;
 
-  SosRatingNotifier({
-    required this.useCase
-  });
+  SosRatingNotifier({required this.useCase});
 
   late AnimationController? pulseController;
-  late AnimationController? timerController;  
+  late AnimationController? timerController;
 
   late Animation<double> pulseAnimation;
 
@@ -41,9 +39,7 @@ class SosRatingNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sosRating({
-    required String sosId,
-  }) async {
+  Future<void> sosRating({required String sosId}) async {
     setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(
@@ -51,12 +47,14 @@ class SosRatingNotifier with ChangeNotifier {
       rating: rating.toString(),
     );
 
-    result.fold((l) {
-      _message = l.message;
-      setStateProvider(ProviderState.error);
-    }, (r) {
-      setStateProvider(ProviderState.loaded);
-    });
+    result.fold(
+      (l) {
+        _message = l.message;
+        setStateProvider(ProviderState.error);
+      },
+      (r) {
+        setStateProvider(ProviderState.loaded);
+      },
+    );
   }
-  
 }

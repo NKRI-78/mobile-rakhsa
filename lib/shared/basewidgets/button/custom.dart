@@ -1,8 +1,8 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
@@ -28,9 +28,9 @@ class CustomButton extends StatelessWidget {
   final bool isPrefixIcon;
 
   const CustomButton({
-    super.key, 
-    required this.onTap, 
-    this.btnTxt, 
+    super.key,
+    required this.onTap,
+    this.btnTxt,
     this.customText = false,
     this.text,
     this.width = double.infinity,
@@ -59,68 +59,61 @@ class CustomButton extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           image: isBackgroundImage
-            ? const DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                  'assets/images/background/bg.png',
+              ? const DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage('assets/images/background/bg.png'),
                 )
-              )
-            : null,
-          boxShadow: isBoxShadow 
-          ? [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 0.0,
-                blurRadius: 10.0,
-                offset: const Offset(5.0, 5.0),
-              )
-            ]
-          : [],
+              : null,
+          boxShadow: isBoxShadow
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    spreadRadius: 0.0,
+                    blurRadius: 10.0,
+                    offset: const Offset(5.0, 5.0),
+                  ),
+                ]
+              : [],
           color: btnColor,
           border: Border.all(
-            color: isBorder 
-            ? btnBorderColor 
-            : Colors.transparent,
+            color: isBorder ? btnBorderColor : Colors.transparent,
           ),
-          borderRadius: isBorderRadius 
-          ? BorderRadius.circular(sizeBorderRadius)
-          : borderRadiusGeometry
+          borderRadius: isBorderRadius
+              ? BorderRadius.circular(sizeBorderRadius)
+              : borderRadiusGeometry,
         ),
-        child: isLoading 
-        ? Center(
-            child: SpinKitFadingCircle(
-              color: loadingColor,
-              size: 25.0
-            ),
-          )
-        : Row(
-            mainAxisAlignment: isPrefixIcon ? MainAxisAlignment.start : MainAxisAlignment.center,
-            children: [
-            isPrefixIcon 
-            ? const SizedBox(width: 15) 
-            : const SizedBox(),
-            isPrefixIcon
-              ? Image.asset('assets/images/logo/logo.png',
-                height: 48.0,
-                width: 48.0,
+        child: isLoading
+            ? Center(
+                child: SpinKitFadingCircle(color: loadingColor, size: 25.0),
               )
-              : const SizedBox(),
-            isPrefixIcon 
-            ? const SizedBox(width: 15) 
-            : const SizedBox(),
-            customText
-              ? text! 
-              : Center(
-                child: Text(btnTxt!,
-                  style: robotoRegular.copyWith(
-                    color: btnTextColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: fontSize
-                  ) 
-                ),
+            : Row(
+                mainAxisAlignment: isPrefixIcon
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                children: [
+                  isPrefixIcon ? const SizedBox(width: 15) : const SizedBox(),
+                  isPrefixIcon
+                      ? Image.asset(
+                          'assets/images/logo/logo.png',
+                          height: 48.0,
+                          width: 48.0,
+                        )
+                      : const SizedBox(),
+                  isPrefixIcon ? const SizedBox(width: 15) : const SizedBox(),
+                  customText
+                      ? text!
+                      : Center(
+                          child: Text(
+                            btnTxt!,
+                            style: robotoRegular.copyWith(
+                              color: btnTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize,
+                            ),
+                          ),
+                        ),
+                ],
               ),
-          ],
-        )
       ),
     );
   }

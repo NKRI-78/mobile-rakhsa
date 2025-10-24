@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {

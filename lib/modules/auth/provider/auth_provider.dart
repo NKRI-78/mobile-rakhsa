@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/misc/client/error/exceptions.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 
@@ -42,15 +42,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       onSuccess?.call();
     } on ClientException catch (e) {
-      final message = e.message == "User not found"
-          ? "Nomor telepon atau kata sandi yang Anda masukkan salah. Jika Anda belum memiliki akun, silakan daftar terlebih dahulu."
-          : e.message == "Credentials invalid"
-          ? "Password Anda salah silahkan coba lagi"
-          : e.message;
       _loginState = RequestState.error;
-      _errorMessage = message;
+      _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.code, message);
+      onError?.call(e.code, e.message);
     }
   }
 
@@ -74,13 +69,10 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       onSuccess?.call();
     } on ClientException catch (e) {
-      final message = e.message == "User already exist"
-          ? "Pengguna sudah terdaftar silahkan pakai nomor telepon lain."
-          : e.message;
       _registerState = RequestState.error;
-      _errorMessage = message;
+      _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.code, message);
+      onError?.call(e.code, e.message);
     }
   }
 }

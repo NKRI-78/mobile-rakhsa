@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
 
 class BottomNavyBar extends StatelessWidget {
   final int selectedIndex;
@@ -15,7 +15,7 @@ class BottomNavyBar extends StatelessWidget {
   final Curve curve;
 
   const BottomNavyBar({
-    super.key, 
+    super.key,
     this.selectedIndex = 0,
     this.showElevation = true,
     this.iconSize = 24.0,
@@ -36,10 +36,7 @@ class BottomNavyBar extends StatelessWidget {
         color: backgroundColor,
         boxShadow: [
           if (showElevation)
-            const BoxShadow(
-              color: Colors.black12,
-              blurRadius: 2,
-            ),
+            const BoxShadow(color: Colors.black12, blurRadius: 2),
         ],
       ),
       child: Container(
@@ -115,8 +112,8 @@ class ItemWidget extends StatelessWidget {
                 data: IconThemeData(
                   size: iconSize,
                   color: isSelected
-                  ? ColorResources.white
-                  : ColorResources.black,
+                      ? ColorResources.white
+                      : ColorResources.black,
                 ),
                 child: item.icon,
               ),

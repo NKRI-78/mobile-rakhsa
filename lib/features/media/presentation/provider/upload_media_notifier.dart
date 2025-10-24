@@ -1,9 +1,8 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
 import 'package:rakhsa/features/media/domain/entities/media.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
@@ -22,25 +21,22 @@ class UploadMediaNotifier extends ChangeNotifier {
   String _message = '';
   String get message => _message;
 
-  Future<void> send({
-    required File file,
-    required String folderName
-  }) async {
+  Future<void> send({required File file, required String folderName}) async {
     _state = ProviderState.loading;
     notifyListeners();
 
-    final result = await useCase.execute(
-      file: file, 
-      folderName: folderName
-    );
-    result.fold((l) {
-      _state = ProviderState.error;
-      _message = l.message;
-    }, (r) {
-      _state = ProviderState.loaded;
-      _entity = r;
+    final result = await useCase.execute(file: file, folderName: folderName);
+    result.fold(
+      (l) {
+        _state = ProviderState.error;
+        _message = l.message;
+      },
+      (r) {
+        _state = ProviderState.loaded;
+        _entity = r;
 
-      notifyListeners();
-    });
+        notifyListeners();
+      },
+    );
   }
 }

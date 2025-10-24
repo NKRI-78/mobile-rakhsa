@@ -5,16 +5,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/Helper/extensions.dart';
-import 'package:rakhsa/common/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
 
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
@@ -119,7 +119,7 @@ class GeneralModal {
                             height: 40.0,
                             onTap: () async {
                               Future.delayed(Duration.zero, () {
-                                Navigator.pop(context);
+                                if (context.mounted) Navigator.pop(context);
                               });
                             },
                             btnTxt: "Ok",

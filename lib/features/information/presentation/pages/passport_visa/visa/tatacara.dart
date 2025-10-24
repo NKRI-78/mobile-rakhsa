@@ -3,38 +3,32 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
 
 class TataCaraPage extends StatefulWidget {
   final String stateId;
 
-  const TataCaraPage({
-    required this.stateId,
-    super.key
-  });
+  const TataCaraPage({required this.stateId, super.key});
 
   @override
   State<TataCaraPage> createState() => TataCaraPageState();
 }
 
 class TataCaraPageState extends State<TataCaraPage> {
-
   late VisaNotifier visaNotifier;
 
   Future<void> getData() async {
-    if(!mounted) return;
-      visaNotifier.infoVisa(
-        stateId: widget.stateId
-      );
+    if (!mounted) return;
+    visaNotifier.infoVisa(stateId: widget.stateId);
   }
-   
-  @override 
+
+  @override
   void initState() {
     super.initState();
 
@@ -43,11 +37,11 @@ class TataCaraPageState extends State<TataCaraPage> {
     Future.microtask(() => getData());
   }
 
-  @override 
+  @override
   void dispose() {
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,39 +59,41 @@ class TataCaraPageState extends State<TataCaraPage> {
           child: Padding(
             padding: EdgeInsets.only(
               top: 16.0,
-              left: 16.0, 
-              right: 32, 
-              bottom: 10
+              left: 16.0,
+              right: 32,
+              bottom: 10,
             ),
-            child: Text('Tatacara Pembuatan Visa',
+            child: Text(
+              'Tatacara Pembuatan Visa',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeOverLarge,
               ),
             ),
-          )
+          ),
         ),
       ),
       body: Consumer<VisaNotifier>(
         builder: (BuildContext context, VisaNotifier notifier, Widget? child) {
-          if(visaNotifier.state == ProviderState.loading) {
+          if (visaNotifier.state == ProviderState.loading) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
                 height: 16.0,
-                child: CircularProgressIndicator()
-              )
+                child: CircularProgressIndicator(),
+              ),
             );
           }
-          if(visaNotifier.state == ProviderState.error) {
+          if (visaNotifier.state == ProviderState.error) {
             return Center(
-              child: Text(visaNotifier.message,
+              child: Text(
+                visaNotifier.message,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black
+                  color: ColorResources.black,
                 ),
-              )
-            ); 
+              ),
+            );
           }
           return ListView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -105,21 +101,20 @@ class TataCaraPageState extends State<TataCaraPage> {
               top: 12.0,
               bottom: 12.0,
               left: 16.0,
-              right: 16.0
+              right: 16.0,
             ),
             children: [
-
-              Text(visaNotifier.entity.data?.content.toString() ?? "-",
+              Text(
+                visaNotifier.entity.data?.content.toString() ?? "-",
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black
+                  color: ColorResources.black,
                 ),
-              )
-
+              ),
             ],
           );
         },
-      )
+      ),
     );
   }
 }

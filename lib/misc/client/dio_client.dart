@@ -2,8 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:rakhsa/misc/client/error/code.dart';
-import 'package:rakhsa/misc/client/error/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/code.dart';
+import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
 
 typedef ReceivedProgressCallback = void Function(int received, int total);

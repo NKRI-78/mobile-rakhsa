@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/chat/data/models/messages.dart';
 
@@ -11,7 +11,10 @@ class GetMessagesUseCase {
 
   GetMessagesUseCase(this.repository);
 
-  Future<Either<Failure, MessageModel>> execute({required String chatId, required String status}) {
+  Future<Either<Failure, MessageModel>> execute({
+    required String chatId,
+    required String status,
+  }) {
     return repository.getMessages(chatId: chatId, status: status);
   }
 }

@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/providers/ecommerce/ecommerce.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/shared/basewidgets/avatar.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/bounce.dart';
 
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/auth/presentation/pages/profile.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
-import 'package:rakhsa/views/screens/ecommerce/store/create_update_store.dart';
-import 'package:rakhsa/views/screens/ecommerce/store/store_info.dart';
 
 class DrawerWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -142,71 +139,6 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         );
                       },
                 ),
-
-                const SizedBox(height: 10.0),
-
-                Consumer<EcommerceProvider>(
-                  builder:
-                      (
-                        BuildContext context,
-                        EcommerceProvider notifier,
-                        Widget? child,
-                      ) {
-                        return notifier.ownerModel.data == null
-                            ? const SizedBox()
-                            : notifier.ownerModel.data!.haveStore
-                            ? CustomButton(
-                                onTap: () async {
-                                  if (notifier.ownerModel.data!.haveStore) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => StoreInfoScreen(
-                                          storeId:
-                                              notifier.ownerModel.data!.storeId,
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CreateStoreOrUpdateScreen(),
-                                      ),
-                                    );
-                                  }
-                                },
-                                isBorder: true,
-                                isBorderRadius: true,
-                                btnColor: ColorResources.transparent,
-                                btnBorderColor: ColorResources.white,
-                                fontSize: Dimensions.fontSizeDefault,
-                                btnTxt: "Toko Saya",
-                              )
-                            : const SizedBox();
-                      },
-                ),
-
-                const SizedBox(height: 10.0),
-
-                // CustomButton(
-                //   onTap: () async {
-                //     StorageHelper.saveRecordScreen(isHome: false);
-
-                //     widget.globalKey.currentState?.closeEndDrawer();
-
-                //     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                //       return const ChatsPage();
-                //     }));
-                //   },
-                //   isBorder: true,
-                //   isBorderRadius: true,
-                //   btnColor: ColorResources.transparent,
-                //   btnBorderColor: ColorResources.white,
-                //   fontSize: Dimensions.fontSizeDefault,
-                //   btnTxt: "Notification",
-                // ),
               ],
             ),
 

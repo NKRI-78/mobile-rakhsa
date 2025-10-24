@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
 
-import 'package:rakhsa/features/administration/data/models/country.dart' ;
+import 'package:rakhsa/features/administration/data/models/country.dart';
 import 'package:rakhsa/features/administration/domain/usecases/get_country.dart';
 
 class GetCountryNotifier with ChangeNotifier {
@@ -14,12 +14,10 @@ class GetCountryNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  ProviderState _state = ProviderState.idle; 
+  ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
 
-  GetCountryNotifier({
-    required this.useCase
-  });
+  GetCountryNotifier({required this.useCase});
 
   void setStateProviderState(ProviderState param) {
     _state = param;
@@ -35,20 +33,18 @@ class GetCountryNotifier with ChangeNotifier {
     setStateProviderState(ProviderState.loading);
 
     final continent = await useCase.execute(search: search);
-    
+
     continent.fold(
-      (l) { 
+      (l) {
         _message = l.message;
         setStateProviderState(ProviderState.error);
-      }, (r) {
-
+      },
+      (r) {
         _entity = [];
         _entity = r.data;
 
         setStateProviderState(ProviderState.loaded);
-      }
+      },
     );
-   
   }
-
 }

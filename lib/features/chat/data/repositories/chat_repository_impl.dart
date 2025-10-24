@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/exception.dart';
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/exception.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
 
@@ -29,26 +29,42 @@ class ChatRepositoryImpl implements ChatRepository {
     }
   }
 
-  @override 
-  Future<Either<Failure, MessageModel>> getMessages({required String chatId, required String status}) async {
+  @override
+  Future<Either<Failure, MessageModel>> getMessages({
+    required String chatId,
+    required String status,
+  }) async {
     try {
-      var result = await remoteDataSource.getMessages(chatId: chatId, status: status);
+      var result = await remoteDataSource.getMessages(
+        chatId: chatId,
+        status: status,
+      );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-  
+
   @override
-  Future<Either<Failure, void>> insertMessage({required String chatId, required String recipient, required String text, required DateTime createdAt}) async {
+  Future<Either<Failure, void>> insertMessage({
+    required String chatId,
+    required String recipient,
+    required String text,
+    required DateTime createdAt,
+  }) async {
     try {
-      var result = await remoteDataSource.insertMessage(chatId: chatId, recipient: recipient, text: text, createdAt: createdAt);
+      var result = await remoteDataSource.insertMessage(
+        chatId: chatId,
+        recipient: recipient,
+        text: text,
+        createdAt: createdAt,
+      );
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
@@ -58,23 +74,24 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       var result = await remoteDataSource.getInbox();
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, InboxDetailModel>> detailInbox({required int id}) async {
+  Future<Either<Failure, InboxDetailModel>> detailInbox({
+    required int id,
+  }) async {
     try {
       var result = await remoteDataSource.detailInbox(id: id);
       return Right(result);
-    } on ServerException catch(e) {
+    } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
-    } catch(e) {
+    } catch (e) {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
-
 }

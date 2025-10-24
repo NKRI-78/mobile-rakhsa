@@ -1,19 +1,12 @@
-import 'dart:io';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
-import 'package:rakhsa/common/utils/asset_source.dart';
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/data/models/passport.dart';
 
@@ -22,16 +15,13 @@ import 'package:rakhsa/features/auth/domain/usecases/check_register_status.dart'
 
 import 'package:rakhsa/features/auth/domain/usecases/register.dart';
 import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
-import 'package:rakhsa/features/document/domain/usecase/update_passport_use_case.dart';
 import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/global.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class RegisterNotifier with ChangeNotifier {
   final UploadMediaUseCase mediaUseCase;
-  final UpdatePassportUseCase updatePassport;
   final CheckRegisterStatusUseCase checkRegisterStatusUseCase;
 
   final RegisterUseCase useCase;
@@ -48,18 +38,6 @@ class RegisterNotifier with ChangeNotifier {
   ProviderState _providerState = ProviderState.idle;
   ProviderState get providerState => _providerState;
 
-  // media passport
-  String _mediaPassport = '';
-  String get mediaPassport => _mediaPassport;
-
-  // media avatar
-  String _mediaAvatar = '';
-  String get mediaAvatar => _mediaAvatar;
-
-  // register google
-  bool _ssoLoading = false;
-  bool get ssoLoading => _ssoLoading;
-
   // user
   fa.User? _userGoogle;
   fa.User? get userGoogle => _userGoogle;
@@ -67,26 +45,6 @@ class RegisterNotifier with ChangeNotifier {
   // register passport
   Passport? _passport;
   Passport? get passport => _passport;
-  bool _passportExpired = false;
-
-  void _setPassport(PassportDataExtraction passportData) {
-    _passport = passportData.passport;
-    _panelMinHeight = _panelMinHeightActualy;
-    notifyListeners();
-
-    // open panel
-    _panelController.open();
-  }
-
-  bool get scanningSuccess => _passport != null && !_passportExpired;
-
-  String _scanningText = '';
-  String get scanningText => _scanningText;
-
-  void _setScanningText(String message) {
-    _scanningText = message;
-    notifyListeners();
-  }
 
   // path
   String _passportPath = '';
@@ -94,18 +52,11 @@ class RegisterNotifier with ChangeNotifier {
   bool get hasPath => _passportPath.isNotEmpty;
 
   // panel controller
-  final _panelMinHeightActualy = kBottomNavigationBarHeight + 24;
   double _panelMinHeight = 0.0;
   double get panelMinHeight => _panelMinHeight;
-  late PanelController _panelController;
-  PanelController get panelController => _panelController;
-  void registerPanelController(PanelController controller) {
-    _panelController = controller;
-  }
 
   RegisterNotifier({
     required this.mediaUseCase,
-    required this.updatePassport,
     required this.useCase,
     // required this.googleSignIn,
     required this.firebaseAuth,
@@ -197,210 +148,54 @@ class RegisterNotifier with ChangeNotifier {
     );
   }
 
-  // Future<void> registerWithGoogle(BuildContext context) async {
-  //   bool hasUser = firebaseAuth.currentUser != null;
+  Future<void> registerWithGoogle(BuildContext context) async {
+    // bool hasUser = firebaseAuth.currentUser != null;
 
-  //   if (hasUser) {
-  //     // navigate to register page
-  //     await ScanningInstructionsBottomSheet.launch(context);
-  //   } else {
-  //     final connection = await Connectivity().checkConnectivity();
-  //     if (connection == ConnectivityResult.mobile ||
-  //         connection == ConnectivityResult.wifi ||
-  //         connection == ConnectivityResult.vpn) {
-  //       try {
-  //         _ssoLoading = true;
-  //         notifyListeners();
+    // if (hasUser) {
+    //   // navigate to register page
+    //   await ScanningInstructionsBottomSheet.launch(context);
+    // } else {
+    //   final connection = await Connectivity().checkConnectivity();
+    //   if (connection == ConnectivityResult.mobile ||
+    //       connection == ConnectivityResult.wifi ||
+    //       connection == ConnectivityResult.vpn) {
+    //     try {
+    //       _ssoLoading = true;
+    //       notifyListeners();
 
-  //         final gUser = await googleSignIn.signIn();
+    //       final gUser = await googleSignIn.signIn();
 
-  //         final gAuth = await gUser?.authentication;
+    //       final gAuth = await gUser?.authentication;
 
-  //         final credential = fa.GoogleAuthProvider.credential(
-  //           accessToken: gAuth?.accessToken,
-  //           idToken: gAuth?.idToken,
-  //         );
+    //       final credential = fa.GoogleAuthProvider.credential(
+    //         accessToken: gAuth?.accessToken,
+    //         idToken: gAuth?.idToken,
+    //       );
 
-  //         final user = await firebaseAuth.signInWithCredential(credential);
+    //       final user = await firebaseAuth.signInWithCredential(credential);
 
-  //         _userGoogle = user.user;
-  //         notifyListeners();
+    //       _userGoogle = user.user;
+    //       notifyListeners();
 
-  //         ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
-  //         // ignore: use_build_context_synchronously
-  //         await ScanningInstructionsBottomSheet.launch(context);
-  //       } on fa.FirebaseAuthException catch (_) {
-  //         _ssoLoading = false;
-  //         notifyListeners();
-  //       } catch (e) {
-  //         _ssoLoading = false;
-  //         notifyListeners();
-  //       } finally {
-  //         _ssoLoading = false;
-  //         notifyListeners();
-  //       }
-  //     } else {
-  //       // show snackbar
-  //       ShowSnackbar.snackbarErr('Tidak ada koneksi internet');
-  //     }
-  //   }
-  // }
-
-  Future<void> startScan(BuildContext context, String userId) async {
-    try {
-      final scanResult = await CunningDocumentScanner.getPictures(
-        isGalleryImportAllowed: true,
-        noOfPages: 1,
-      );
-
-      if (scanResult != null) {
-        _passportPath = scanResult.last;
-        notifyListeners();
-
-        _setScanningText('Pemindaian Paspor sedang berlangsung');
-
-        final passportData = await registerPassport.execute(scanResult.last);
-
-        passportData.fold(
-          (failure) {
-            _resetScan();
-            FailureDocumentDialog.launch(
-              context,
-              content:
-                  'Kami mengalami kendala saat memproses paspor Anda. [${failure.message}]',
-              actionCallback: () async {
-                Navigator.of(context).pop(); // close dialog
-                await startScan(context, userId);
-              },
-            );
-          },
-          (passportData) async {
-            // lakukan cek apakah ada error saat scan passport
-            if (passportData.errorScanning) {
-              _resetScan();
-              FailureDocumentDialog.launch(
-                context,
-                content:
-                    'Dokumen yang dipindai bukan paspor atau tidak dikenali. Pastikan Anda memindai halaman identitas paspor yang valid.',
-                actionCallback: () async {
-                  Navigator.of(context).pop(); // close dialog
-                  await startScan(context, userId);
-                },
-              );
-            } else {
-              _setScanningText('Cek Status Registrasi');
-
-              final checkRegistrationStatus = await checkRegisterStatusUseCase
-                  .execute(
-                    passport: passportData.passport?.passportNumber ?? '',
-                    noReg: passportData.passport?.registrationNumber ?? '',
-                  );
-
-              checkRegistrationStatus.fold(
-                (l) {
-                  // jika sudah ter registrasi
-                  _resetScan();
-                  FailureDocumentDialog.launch(
-                    context,
-                    content:
-                        "Maaf, paspor ini sudah digunakan. Silakan gunakan paspor lain untuk melanjutkan.",
-                    showScanButton: false,
-                  );
-                },
-                (r) async {
-                  _setScanningText('Memvalidasi Dokumen');
-
-                  // validasi apakah ini visa
-                  if (passportData.passport?.mrzCode?[0].contains('V') ??
-                      false) {
-                    _resetScan();
-                    FailureDocumentDialog.launch(
-                      context,
-                      content:
-                          'Dokumen yang dipindai terdeteksi sebagai visa. Pastikan Anda memindai halaman identitas paspor yang valid.',
-                      actionCallback: () async {
-                        Navigator.of(context).pop(); // close dialog
-                        await startScan(context, userId);
-                      },
-                    );
-
-                    // validasi berhasil menyatakan bahwa ini adalah passport
-                  } else if (passportData.passport?.mrzCode?[0].contains('P') ??
-                      false) {
-                    final expiryDate = passportData.passport?.dateOfExpiry;
-                    bool expiryPassport = getExpiredPassport(expiryDate);
-                    _passportExpired = expiryPassport;
-                    notifyListeners();
-
-                    // jika passport sudah kadaluarsa
-                    if (expiryPassport) {
-                      _resetScan();
-                      FailureDocumentDialog.launch(
-                        context,
-                        content:
-                            'Paspor Anda sudah tidak berlaku sejak ${DateFormat('dd MMMM yyyy', 'id').format(DateTime.parse(expiryDate ?? '2025-02-15'))}.'
-                            ' Silakan lakukan perpanjangan di kantor imigrasi terdekat untuk melanjutkan.',
-                        showScanButton: false,
-                      );
-
-                      // positive case [scan berhasil]
-                    } else {
-                      final uploadPassportToServer = await mediaUseCase.execute(
-                        file: File(_passportPath),
-                        folderName: 'passport',
-                      );
-
-                      uploadPassportToServer.fold(
-                        (failure) {
-                          ShowSnackbar.snackbarErr(failure.message);
-                          notifyListeners();
-                        },
-                        (picture) async {
-                          _mediaPassport = picture.path;
-                          notifyListeners();
-                        },
-                      );
-
-                      _setPassport(passportData);
-                    }
-
-                    // error saat membaca kode mrz (karakter pertama tidak terbaca)
-                  } else {
-                    _resetScan();
-                    FailureDocumentDialog.launch(
-                      context,
-                      content:
-                          'Kode MRZ tidak lengkap atau tidak jelas. '
-                          'Pastikan seluruh bagian MRZ di bagian bawah paspor terlihat jelas dalam satu frame, tidak terpotong, dan cahaya cukup. '
-                          'Pegang perangkat dengan stabil dan coba pindai ulang.',
-                      actionCallback: () async {
-                        Navigator.of(context).pop(); // close dialog
-                        await startScan(context, userId);
-                      },
-                    );
-                  }
-                },
-              );
-            }
-          },
-        );
-      }
-    } catch (e) {
-      // kondisi untuk catch error dari _launchPromt
-      // karena error pada launch promt mengembalikan null
-      // progam ini hanya untuk error pada scan document
-      if (_passport == null) {
-        _passportPath = '';
-
-        // back to previous page
-        if (context.mounted) Navigator.of(context).pop();
-        await Future.delayed(const Duration(seconds: 1), () {
-          ShowSnackbar.snackbarDefault('Register Paspor Dibatalkan');
-        });
-      }
-    }
+    //       ShowSnackbar.snackbarOk('Berhasil login sebagai ${user.user?.email}');
+    //       // ignore: use_build_context_synchronously
+    //       await ScanningInstructionsBottomSheet.launch(context);
+    //     } on fa.FirebaseAuthException catch (_) {
+    //       _ssoLoading = false;
+    //       notifyListeners();
+    //     } catch (e) {
+    //       _ssoLoading = false;
+    //       notifyListeners();
+    //     } finally {
+    //       _ssoLoading = false;
+    //       notifyListeners();
+    //     }
+    //   } else {
+    //     // show snackbar
+    //     ShowSnackbar.snackbarErr('Tidak ada koneksi internet');
+    //   }
+    // }
   }
-
   bool getExpiredPassport(String? expiryDateStr) {
     try {
       if (expiryDateStr != null) {
@@ -458,11 +253,6 @@ class RegisterNotifier with ChangeNotifier {
     _passport = null;
     _panelMinHeight = 0.0;
   }
-
-  void _resetScan() {
-    _passportPath = '';
-    notifyListeners();
-  }
 }
 
 class ScanningInstructionsBottomSheet extends StatelessWidget {
@@ -511,10 +301,12 @@ class ScanningInstructionsBottomSheet extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  RoutesNavigation.registerPassport,
-                ),
+                onPressed: () {
+                  // Navigator.pushNamed(
+                  //   context,
+                  //   RoutesNavigation.registerPassport,
+                  // )
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: whiteColor,
                   backgroundColor: primaryColor,

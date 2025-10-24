@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
 

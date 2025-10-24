@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:rakhsa/common/constants/remote_data_source_consts.dart';
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/routes/routes_navigation.dart';
+import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';

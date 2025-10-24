@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/common/constants/theme.dart';
-import 'package:rakhsa/common/helpers/device.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
@@ -26,8 +24,8 @@ import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
-import 'package:rakhsa/common/helpers/storage.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/snackbar.dart';
 import 'package:rakhsa/socketio.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -76,8 +74,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   DateTime? lastTap;
 
-  bool _newAndroidVersion = false;
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused ||
@@ -99,7 +95,7 @@ class DashboardScreenState extends State<DashboardScreen>
     weatherNotifier = context.read<WeatherNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    Future.delayed(Duration(seconds: 2)).then((value) {
+    Future.delayed(Duration(seconds: 1)).then((value) {
       socketIoService.connect();
     });
 
@@ -121,11 +117,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
     if (!mounted) return;
     await firebaseProvider.initFcm();
-
-    final androidVersion = await getAndroidVersion();
-    _newAndroidVersion = androidVersion >= 35;
-    log('Androidversion = $androidVersion');
-    log("_newAndroidVersion? $_newAndroidVersion");
 
     if (!mounted) return;
     await getCurrentLocation();
@@ -318,43 +309,47 @@ class DashboardScreenState extends State<DashboardScreen>
         ),
 
         // BOTTOM NAV BAR
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(24)),
-          child: SizedBox(
-            height: kBottomNavigationBarHeight + 12,
-            child: ValueListenableBuilder(
-              valueListenable: _pageNotifyController,
-              builder: (context, currentPage, child) {
-                return BottomNavigationBar(
-                  currentIndex: currentPage,
-                  onTap: _onPageChanged,
-                  selectedFontSize: 14,
-                  unselectedFontSize: 14,
-                  backgroundColor: primaryColor,
-                  selectedItemColor: whiteColor,
-                  unselectedItemColor: whiteColor.withValues(alpha: 0.7),
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(IconsaxPlusLinear.home_1),
-                      activeIcon: Icon(IconsaxPlusBold.home_1),
-                      label: "Home",
-                      tooltip: "Home",
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(IconsaxPlusLinear.document),
-                      activeIcon: Icon(IconsaxPlusBold.document),
-                      label: "Information",
-                      tooltip: "Information",
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(IconsaxPlusLinear.location),
-                      activeIcon: Icon(IconsaxPlusBold.location),
-                      label: "Near Me",
-                      tooltip: "Near Me",
-                    ),
-                  ],
-                );
-              },
+        bottomNavigationBar: SafeArea(
+          child: ClipRRect(
+            borderRadius: BorderRadiusGeometry.vertical(
+              top: Radius.circular(24),
+            ),
+            child: SizedBox(
+              height: kBottomNavigationBarHeight + 12,
+              child: ValueListenableBuilder(
+                valueListenable: _pageNotifyController,
+                builder: (context, currentPage, child) {
+                  return BottomNavigationBar(
+                    currentIndex: currentPage,
+                    onTap: _onPageChanged,
+                    selectedFontSize: 14,
+                    unselectedFontSize: 14,
+                    backgroundColor: primaryColor,
+                    selectedItemColor: whiteColor,
+                    unselectedItemColor: whiteColor.withValues(alpha: 0.7),
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: Icon(IconsaxPlusLinear.home_1),
+                        activeIcon: Icon(IconsaxPlusBold.home_1),
+                        label: "Home",
+                        tooltip: "Home",
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(IconsaxPlusLinear.document),
+                        activeIcon: Icon(IconsaxPlusBold.document),
+                        label: "Information",
+                        tooltip: "Information",
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(IconsaxPlusLinear.location),
+                        activeIcon: Icon(IconsaxPlusBold.location),
+                        label: "Near Me",
+                        tooltip: "Near Me",
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

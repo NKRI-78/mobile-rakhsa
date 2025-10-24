@@ -11,9 +11,9 @@ import 'package:camera/camera.dart';
 
 import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 
-import 'package:rakhsa/common/utils/color_resources.dart';
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/socketio.dart';

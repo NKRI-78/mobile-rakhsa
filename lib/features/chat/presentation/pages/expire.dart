@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/utils/custom_themes.dart';
-import 'package:rakhsa/common/utils/dimensions.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 
 class ExpiryWidget extends StatefulWidget {
   final dynamic field2;
-  final dynamic field5; 
+  final dynamic field5;
 
   const ExpiryWidget({super.key, required this.field2, required this.field5});
 
@@ -21,8 +21,10 @@ class ExpiryWidgetState extends State<ExpiryWidget> {
   @override
   void initState() {
     super.initState();
-    countdownNotifier = ValueNotifier<String>(calculateCountdown(widget.field5));
-    
+    countdownNotifier = ValueNotifier<String>(
+      calculateCountdown(widget.field5),
+    );
+
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       countdownNotifier.value = calculateCountdown(widget.field5);
     });

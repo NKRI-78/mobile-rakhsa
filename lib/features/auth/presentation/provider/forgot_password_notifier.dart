@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/common/helpers/enum.dart';
-import 'package:rakhsa/common/helpers/snackbar.dart';
+import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/snackbar.dart';
 
 import 'package:rakhsa/features/auth/data/models/auth.dart';
 import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
@@ -51,11 +51,13 @@ class ForgotPasswordNotifier with ChangeNotifier {
       (r) {
         ShowSnackbar.snackbarOk("Kata sandi telah berhasil diubah");
         Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-            (route) => false,
-          );
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+              (route) => false,
+            );
+          }
         });
         setStateProviderState(ProviderState.loaded);
       },

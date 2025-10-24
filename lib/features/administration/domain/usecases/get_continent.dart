@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/common/errors/failure.dart';
+import 'package:rakhsa/misc/client/errors/failure.dart';
 
 import 'package:rakhsa/features/administration/data/models/continent.dart';
 import 'package:rakhsa/features/administration/domain/repository/administration_repository.dart';

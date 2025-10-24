@@ -32,12 +32,15 @@ class MessageParentData {
     required this.messages,
   });
 
-  factory MessageParentData.fromJson(Map<String, dynamic> json) => MessageParentData(
-    chatId: json["chat_id"],
-    recipient: RecipientUser.fromJson(json["recipient"]),
-    note: json["note"],
-    messages: List<MessageData>.from(json["messages"].map((x) => MessageData.fromJson(x))),
-  );
+  factory MessageParentData.fromJson(Map<String, dynamic> json) =>
+      MessageParentData(
+        chatId: json["chat_id"],
+        recipient: RecipientUser.fromJson(json["recipient"]),
+        note: json["note"],
+        messages: List<MessageData>.from(
+          json["messages"].map((x) => MessageData.fromJson(x)),
+        ),
+      );
 }
 
 class MessageData {
@@ -48,7 +51,7 @@ class MessageData {
   String sentTime;
   String text;
   DateTime createdAt;
-  
+
   MessageData({
     required this.id,
     required this.chatId,
@@ -84,7 +87,7 @@ class RecipientUser {
     this.name,
     this.isMe,
     this.isOnline,
-    this.lastActive
+    this.lastActive,
   });
 
   factory RecipientUser.fromJson(Map<String, dynamic> json) => RecipientUser(
@@ -103,12 +106,7 @@ class MessageUser {
   String? name;
   bool? isMe;
 
-  MessageUser({
-    this.id,
-    this.avatar,
-    this.name,
-    this.isMe,
-  });
+  MessageUser({this.id, this.avatar, this.name, this.isMe});
 
   factory MessageUser.fromJson(Map<String, dynamic> json) => MessageUser(
     id: json["id"],
