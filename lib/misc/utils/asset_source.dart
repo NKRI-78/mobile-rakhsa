@@ -25,11 +25,13 @@ class AssetSource {
   static const String iconNoProfile = "assets/images/default.jpeg";
   static const String iconDefaultImg = "assets/images/default_image.png";
   static const String iconAlert = "assets/images/ic-alert.png";
+  static const String iconWelcomeDialog =
+      "assets/images/icons/ic-welcome-dialog.png";
   static const String iconInfo = "assets/images/icon-info.png";
   static const String iconCard = "assets/images/icon-card.png";
   static const String iconHukum = "assets/images/icon-hukum.png";
   static const String iconFamilyCall = "assets/images/icon-familycall.png";
-  static const String iconInfoBottom = "assets/images/icon-info-bottom.png";
+  static const String iconInfoBottom = "assets/images/icon-info-bottom.pngic-";
 
   // dashboard bottom nav bar
   static const String iconNavBarHome =

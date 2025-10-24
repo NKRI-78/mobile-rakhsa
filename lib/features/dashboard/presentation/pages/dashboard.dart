@@ -26,6 +26,7 @@ import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/helpers/snackbar.dart';
+import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/socketio.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -94,6 +95,10 @@ class DashboardScreenState extends State<DashboardScreen>
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
     socketIoService = context.read<SocketIoService>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initAndShowWelcomeDialog();
+    });
 
     Future.delayed(Duration(seconds: 1)).then((value) {
       socketIoService.connect();
@@ -252,6 +257,16 @@ class DashboardScreenState extends State<DashboardScreen>
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+  }
+
+  void _initAndShowWelcomeDialog() async {
+    final showWelcomeDialog = !StorageHelper.containsKey("show_welcome_dialog");
+    if (showWelcomeDialog) {
+      bool? markAsDone = await GeneralModal.showWelcomeDialog(context);
+      if (markAsDone == null || markAsDone) {
+        StorageHelper.write("show_welcome_dialog", "done");
+      }
+    }
   }
 
   @override

@@ -12,6 +12,22 @@ class StorageHelper {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
+  static Future<bool> write(String key, String value) {
+    return sharedPreferences.setString(key, value);
+  }
+
+  static bool containsKey(String key) {
+    return sharedPreferences.containsKey(key);
+  }
+
+  static String? read(String key, String value) {
+    return sharedPreferences.getString(key);
+  }
+
+  static Future<bool> delete(String key) {
+    return sharedPreferences.remove(key);
+  }
+
   static void clear() {
     sharedPreferences.clear();
   }
@@ -56,30 +72,6 @@ class StorageHelper {
   static bool isLocked() {
     return sharedPreferences.getBool("is_locked") ?? false;
   }
-
-  // static Future<String> getToken() async {
-  //   String token = await storage.read(key: 'token') ?? "-";
-
-  //   return token;
-  // }
-
-  // static String? getUserId() {
-  //   String? userId = sharedPreferences.getString("user_id");
-
-  //   return userId;
-  // }
-
-  // static String? getUserEmail() {
-  //   String? userEmail = sharedPreferences.getString("user_email");
-
-  //   return userEmail;
-  // }
-
-  // static String? getUserPhone() {
-  //   String? userPhone = sharedPreferences.getString("user_phone");
-
-  //   return userPhone;
-  // }
 
   static int? getElapsedTime() {
     int? elapsedTime = sharedPreferences.getInt("elapsedtime") ?? 60;
@@ -137,14 +129,7 @@ class StorageHelper {
     await sharedPreferences.remove("sos_id");
   }
 
-  // static Future<void> removeToken() async {
-  //   await storage.delete(key: "token");
-  // }
-
   static Future<bool> isLoggedIn() async {
-    // var token = await storage.read(key: "token");
-    // return token != null ? true : false;
-
     final containSessionKey = await storage.containsKey(key: "user_session");
     final sessionCache = await storage.read(key: "user_session");
     return containSessionKey && (sessionCache != null);
