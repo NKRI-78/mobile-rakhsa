@@ -11,8 +11,8 @@ import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
+import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -71,15 +71,9 @@ class RegisterScreenState extends State<RegisterScreen> {
             (route) => false,
           );
         },
-        onError: (code, message) {
-          GeneralModal.error(
-            c,
-            message,
-            onReload: () {
-              c.pop();
-              registerUser();
-            },
-          );
+        onError: (code, m) async {
+          bool? tryAgain = await AppDialog.error(c: c, message: m);
+          if (tryAgain != null && tryAgain) registerUser();
         },
       );
     }

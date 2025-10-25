@@ -21,13 +21,15 @@ import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifi
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/main.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/utils/asset_source.dart';
 
 import 'package:rakhsa/shared/basewidgets/drawer/drawer.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/helpers/snackbar.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -261,8 +263,30 @@ class DashboardScreenState extends State<DashboardScreen>
 
   void _initAndShowWelcomeDialog() async {
     final showWelcomeDialog = !StorageHelper.containsKey("show_welcome_dialog");
-    if (showWelcomeDialog) {
-      bool? markAsDone = await GeneralModal.showWelcomeDialog(context);
+    await Future.delayed(Duration(seconds: 2));
+    if (mounted && showWelcomeDialog) {
+      bool? markAsDone = await AppDialog.show(
+        c: context,
+        canPop: false,
+        content: DialogContent(
+          assetIcon: AssetSource.iconWelcomeDialog,
+          titleAsync: StorageHelper.getUserSession().then((v) {
+            return "Terimakasih ${v.user.name}";
+          }),
+          message: """
+Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.
+Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!
+""",
+          style: DialogStyle(assetIconSize: 175),
+          actions: [
+            DialogActionButton(
+              label: "Mengerti",
+              primary: true,
+              onTap: () => context.pop(true),
+            ),
+          ],
+        ),
+      );
       if (markAsDone == null || markAsDone) {
         StorageHelper.write("show_welcome_dialog", "done");
       }

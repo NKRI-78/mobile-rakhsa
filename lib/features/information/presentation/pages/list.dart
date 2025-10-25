@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/features/information/presentation/pages/panduan_hukum.dart';
@@ -49,6 +50,9 @@ class InformationListPage extends StatelessWidget {
             image: AssetSource.iconInfo,
             title: "Informasi KBRI",
           ),
+
+          16.spaceY,
+
           ListCardInformation(
             onTap: () {
               Navigator.push(

@@ -12,7 +12,6 @@ import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
 import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/shared/basewidgets/avatar.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/socketio.dart';
 
 class HeaderSection extends StatelessWidget {
@@ -33,10 +32,7 @@ class HeaderSection extends StatelessWidget {
             // profile
             Flexible(
               child: GestureDetector(
-                onTap: () {
-                  // scaffoldKey.currentState?.openEndDrawer();
-                  GeneralModal.showWelcomeDialog(context);
-                },
+                onTap: () => scaffoldKey.currentState?.openEndDrawer(),
                 child: Consumer<ProfileNotifier>(
                   builder: (context, provider, child) {
                     return Avatar(

@@ -13,8 +13,8 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 
 import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
 import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -64,15 +64,9 @@ class LoginScreenState extends State<LoginScreen> {
             (route) => false,
           );
         },
-        onError: (code, message) {
-          GeneralModal.error(
-            c,
-            message,
-            onReload: () {
-              c.pop();
-              loginUser();
-            },
-          );
+        onError: (code, message) async {
+          bool? tryAgain = await AppDialog.error(c: c, message: message);
+          if (tryAgain != null && tryAgain) loginUser();
           _phoneFNode.unfocus();
           _passFNode.unfocus();
         },
