@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:rakhsa/global.dart';
+import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -14,22 +13,26 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,  
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.green,
         content: Text(
-          content.contains('SocketException') ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet." : content,
+          content.contains('SocketException')
+              ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet."
+              : content,
           style: robotoRegular.copyWith(
             color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
+            fontSize: Dimensions.fontSizeSmall,
           ),
         ),
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
-          }
+            ScaffoldMessenger.of(
+              navigatorKey.currentContext!,
+            ).hideCurrentSnackBar();
+          },
         ),
-      )
+      ),
     );
   }
 
@@ -38,22 +41,26 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,  
+        behavior: SnackBarBehavior.floating,
         backgroundColor: const Color(0xFF303030),
         content: Text(
-          content.contains('SocketException') ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet." : content,
+          content.contains('SocketException')
+              ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet."
+              : content,
           style: robotoRegular.copyWith(
             color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
+            fontSize: Dimensions.fontSizeSmall,
           ),
         ),
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
-          }
+            ScaffoldMessenger.of(
+              navigatorKey.currentContext!,
+            ).hideCurrentSnackBar();
+          },
         ),
-      )
+      ),
     );
   }
 
@@ -62,23 +69,26 @@ class ShowSnackbar {
     ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,  
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.red,
         content: Text(
-          content.contains('SocketException') ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet." : content,
+          content.contains('SocketException')
+              ? "Koneksi internet anda tidak stabil. Pastikan anda terhubung ke internet."
+              : content,
           style: robotoRegular.copyWith(
             color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
+            fontSize: Dimensions.fontSizeSmall,
           ),
         ),
         action: SnackBarAction(
           label: "",
           onPressed: () {
-            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
-          }
+            ScaffoldMessenger.of(
+              navigatorKey.currentContext!,
+            ).hideCurrentSnackBar();
+          },
         ),
-      )
+      ),
     );
   }
-
 }

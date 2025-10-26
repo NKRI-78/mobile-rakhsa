@@ -10,14 +10,14 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-
-import 'package:rakhsa/global.dart';
+import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import 'main.dart';
 
 // check socket socket?.connected ?? false
 

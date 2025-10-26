@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import 'package:rakhsa/shared/models/error.dart';
+import 'package:rakhsa/misc/client/errors/error.dart';
 
 class ServerException implements Exception {
   final String message;

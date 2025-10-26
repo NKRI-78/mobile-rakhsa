@@ -9,13 +9,13 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:camera/camera.dart';
 
-import 'package:rakhsa/shared/basewidgets/modal/modal.dart';
+import 'package:rakhsa/widgets/components/modal/modal.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/socketio.dart';
 
 class CameraPage extends StatefulWidget {
@@ -23,13 +23,13 @@ class CameraPage extends StatefulWidget {
   final String country;
   final String lat;
   final String lng;
-  
+
   const CameraPage({
     required this.location,
     required this.country,
     required this.lat,
     required this.lng,
-    super.key
+    super.key,
   });
 
   @override
@@ -37,7 +37,6 @@ class CameraPage extends StatefulWidget {
 }
 
 class CameraPageState extends State<CameraPage> {
-
   CameraController? controller;
   List<CameraDescription>? cameras;
 
@@ -47,13 +46,13 @@ class CameraPageState extends State<CameraPage> {
   bool loading = false;
 
   bool isRecording = false;
-  bool isVideoMode = false;  
+  bool isVideoMode = false;
 
-  int recordTimeLeft = 10; 
+  int recordTimeLeft = 10;
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
-    
+
     if (cameras != null && cameras!.isNotEmpty) {
       controller = CameraController(cameras![0], ResolutionPreset.high);
       await controller!.initialize();
@@ -77,7 +76,7 @@ class CameraPageState extends State<CameraPage> {
 
       await uploadMediaNotifier.send(file: file, folderName: "pictures");
 
-      if(uploadMediaNotifier.message != "") {
+      if (uploadMediaNotifier.message != "") {
         GeneralModal.info(msg: uploadMediaNotifier.message);
         return;
       }
@@ -89,17 +88,16 @@ class CameraPageState extends State<CameraPage> {
 
       socketIoService.sos(
         location: widget.location,
-        country: widget.country, 
+        country: widget.country,
         media: media,
         ext: ext,
-        lat: widget.lat, 
-        lng: widget.lng, 
+        lat: widget.lat,
+        lng: widget.lng,
       );
-      
-      if(mounted) {
+
+      if (mounted) {
         Navigator.pop(context, "start");
       }
-
     } catch (e) {
       debugPrint('Error taking picture: $e');
     }
@@ -121,7 +119,7 @@ class CameraPageState extends State<CameraPage> {
           stopVideoRecording();
           timer.cancel();
         } else {
-          if(mounted) {
+          if (mounted) {
             setState(() {
               recordTimeLeft--;
             });
@@ -148,39 +146,40 @@ class CameraPageState extends State<CameraPage> {
       });
 
       // Start upload in a separate future, with timeout
-      uploadMediaNotifier.send(
-        file: file, 
-        folderName: "videos"
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          setState(() => loading = false);
-        },
-      ).then((_) {
-        // Handle after upload success
-        if (uploadMediaNotifier.entity != null) {
-          final media = uploadMediaNotifier.entity!.path;
-          final ext = media.split('/').last.split('.').last;
+      uploadMediaNotifier
+          .send(file: file, folderName: "videos")
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              setState(() => loading = false);
+            },
+          )
+          .then((_) {
+            // Handle after upload success
+            if (uploadMediaNotifier.entity != null) {
+              final media = uploadMediaNotifier.entity!.path;
+              final ext = media.split('/').last.split('.').last;
 
-          socketIoService.sos(
-            location: widget.location,
-            country: widget.country,
-            media: media,
-            ext: ext,
-            lat: widget.lat,
-            lng: widget.lng,
-          );
+              socketIoService.sos(
+                location: widget.location,
+                country: widget.country,
+                media: media,
+                ext: ext,
+                lat: widget.lat,
+                lng: widget.lng,
+              );
 
-          if (mounted) {
-            Navigator.pop(context, "start");
-          }
-        }
-      }).catchError((e) {
-        debugPrint('Upload failed: $e');
-      }).whenComplete(() {
-        if (mounted) setState(() => loading = false);
-      });
-
+              if (mounted) {
+                Navigator.pop(context, "start");
+              }
+            }
+          })
+          .catchError((e) {
+            debugPrint('Upload failed: $e');
+          })
+          .whenComplete(() {
+            if (mounted) setState(() => loading = false);
+          });
     } catch (e) {
       debugPrint('Error stopping video recording: $e');
       if (mounted) setState(() => loading = false);
@@ -212,109 +211,102 @@ class CameraPageState extends State<CameraPage> {
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: ColorResources.white,
-          borderRadius: BorderRadius.circular(50.0)
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: const CircularProgressIndicator()
+        child: const CircularProgressIndicator(),
       ),
       child: Scaffold(
         body: controller == null || !controller!.value.isInitialized
-        ? const Center(
-            child: CircularProgressIndicator()
-          )
-        : Stack(
-            clipBehavior: Clip.none,
-            children: [
-      
-              CameraPreview(controller!),
-      
-              Positioned(
-                bottom: 20,
-                left: 0.0,
-                right: 0.0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-        
-                    // isVideoMode 
-                    // ? IconButton(
-                    //     icon: Icon(
-                    //     isRecording 
-                    //     ? Icons.stop 
-                    //     : Icons.fiber_manual_record,
-                    //       color: Colors.red,
-                    //       size: 30,
-                    //     ),
-                    //     onPressed: isVideoMode
-                    //     ? (isRecording ? stopVideoRecording : startVideoRecording)
-                    //     : null,
-                    //   ) 
-                    // : 
+            ? const Center(child: CircularProgressIndicator())
+            : Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  CameraPreview(controller!),
 
-                    // isRecording 
-                    // ? const SizedBox() 
-                    // : IconButton(
-                    //     icon: const Icon(
-                    //       Icons.camera_alt,
-                    //       color: Colors.white,
-                    //       size: 28,
-                    //     ),
-                    //     onPressed: takePicture,
-                    //   ),
+                  Positioned(
+                    bottom: 20,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // isVideoMode
+                        // ? IconButton(
+                        //     icon: Icon(
+                        //     isRecording
+                        //     ? Icons.stop
+                        //     : Icons.fiber_manual_record,
+                        //       color: Colors.red,
+                        //       size: 30,
+                        //     ),
+                        //     onPressed: isVideoMode
+                        //     ? (isRecording ? stopVideoRecording : startVideoRecording)
+                        //     : null,
+                        //   )
+                        // :
 
-                    // const SizedBox(width: 20.0),
+                        // isRecording
+                        // ? const SizedBox()
+                        // : IconButton(
+                        //     icon: const Icon(
+                        //       Icons.camera_alt,
+                        //       color: Colors.white,
+                        //       size: 28,
+                        //     ),
+                        //     onPressed: takePicture,
+                        //   ),
 
-                    IconButton(
-                      icon: const Icon(Icons.videocam,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                      onPressed: (
-                        isRecording 
-                        ? stopVideoRecording 
-                        : startVideoRecording
-                      ),
-                    ),
-        
-                    if (isRecording)
-                      Text('$recordTimeLeft s',
-                        style: robotoRegular.copyWith(
-                          color: ColorResources.white, 
-                          fontSize: Dimensions.fontSizeLarge
+                        // const SizedBox(width: 20.0),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.videocam,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          onPressed: (isRecording
+                              ? stopVideoRecording
+                              : startVideoRecording),
                         ),
-                      ),
 
-                  ],
-                ),
+                        if (isRecording)
+                          Text(
+                            '$recordTimeLeft s',
+                            style: robotoRegular.copyWith(
+                              color: ColorResources.white,
+                              fontSize: Dimensions.fontSizeLarge,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  // Positioned(
+                  //   top: 50,
+                  //   right: 20,
+                  //   child: IconButton(
+                  //     icon: Icon(
+                  //       isVideoMode ? Icons.camera : Icons.videocam,
+                  //       color: Colors.white,
+                  //       size: 30,
+                  //     ),
+                  //     onPressed: toggleMode,
+                  //   ),
+                  // ),
+
+                  // Positioned(
+                  //   top: 50,
+                  //   left: 20,
+                  //   child: Text(
+                  //     isVideoMode ? "Video Mode" : "Photo Mode",
+                  //     style: robotoRegular.copyWith(
+                  //       color: Colors.white,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
-      
-            // Positioned(
-            //   top: 50,
-            //   right: 20,
-            //   child: IconButton(
-            //     icon: Icon(
-            //       isVideoMode ? Icons.camera : Icons.videocam,
-            //       color: Colors.white,
-            //       size: 30,
-            //     ),
-            //     onPressed: toggleMode,
-            //   ),
-            // ),
-      
-            // Positioned(
-            //   top: 50,
-            //   left: 20,
-            //   child: Text(
-            //     isVideoMode ? "Video Mode" : "Photo Mode",
-            //     style: robotoRegular.copyWith(
-            //       color: Colors.white,
-            //       fontSize: 18,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
-      
-          ],
-        ),
       ),
     );
   }

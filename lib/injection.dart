@@ -2,102 +2,88 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-import 'package:rakhsa/features/nearme/data/datasources/nearme_remote_data_source.dart';
+import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
 import 'package:rakhsa/misc/helpers/dio.dart';
-import 'package:rakhsa/data/repository/media/media.dart';
+import 'package:rakhsa/repositories/media/media_repository.dart';
 
-import 'package:rakhsa/features/administration/data/datasources/administration_remote_data_source.dart';
-import 'package:rakhsa/features/administration/presentation/provider/get_country_notifier.dart';
-import 'package:rakhsa/features/administration/presentation/provider/get_state_notifier.dart';
+import 'package:rakhsa/modules/administration/data/datasources/administration_remote_data_source.dart';
+import 'package:rakhsa/modules/administration/presentation/provider/get_country_notifier.dart';
+import 'package:rakhsa/modules/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:rakhsa/features/auth/domain/usecases/check_register_status.dart';
-import 'package:rakhsa/features/auth/domain/usecases/forgot_password.dart';
-import 'package:rakhsa/features/auth/domain/usecases/register_passport.dart';
-import 'package:rakhsa/features/auth/domain/usecases/update_is_loggedin.dart';
-import 'package:rakhsa/features/auth/domain/usecases/update_profile.dart';
-import 'package:rakhsa/features/auth/presentation/provider/forgot_password_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/update_is_loggedin_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/update_profile_notifier.dart';
-import 'package:rakhsa/features/chat/data/datasources/chat_remote_data_source.dart';
-import 'package:rakhsa/features/chat/domain/usecases/detail_inbox.dart';
-import 'package:rakhsa/features/chat/domain/usecases/get_inbox.dart';
-import 'package:rakhsa/features/chat/domain/usecases/insert_message.dart';
-import 'package:rakhsa/features/chat/presentation/provider/detail_inbox_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_inbox_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/provider/insert_message_notifier.dart';
-import 'package:rakhsa/features/dashboard/data/datasources/dashboard_remote_data_source.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/detail_news.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/get_banner.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/sos_rating.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/track_user.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/update_address.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/detail_news_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/sos_rating_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/track_user_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/weather_notifier.dart';
-import 'package:rakhsa/features/administration/domain/usecases/get_country.dart';
-import 'package:rakhsa/features/administration/domain/usecases/get_state.dart';
-import 'package:rakhsa/features/information/data/datasources/kbri_remote_datasource.dart';
-import 'package:rakhsa/features/information/data/repositories/information_remote_datasource_impl.dart';
-import 'package:rakhsa/features/information/domain/repository/kbri_repository.dart';
-import 'package:rakhsa/features/information/domain/usecases/get_kbri_id.dart';
-import 'package:rakhsa/features/information/domain/usecases/get_kbri_name.dart';
-import 'package:rakhsa/features/information/domain/usecases/get_passport.dart';
-import 'package:rakhsa/features/information/domain/usecases/get_visa.dart';
-import 'package:rakhsa/features/information/presentation/provider/kbri_id_notifier.dart';
-import 'package:rakhsa/features/information/presentation/provider/kbri_name_notifier.dart';
-import 'package:rakhsa/features/information/presentation/provider/passport_notifier.dart';
-import 'package:rakhsa/features/information/presentation/provider/visa_notifier.dart';
-import 'package:rakhsa/features/media/data/datasources/media_remote_datasource.dart';
+import 'package:rakhsa/modules/chat/data/datasources/chat_remote_data_source.dart';
+import 'package:rakhsa/modules/chat/domain/usecases/detail_inbox.dart';
+import 'package:rakhsa/modules/chat/domain/usecases/get_inbox.dart';
+import 'package:rakhsa/modules/chat/domain/usecases/insert_message.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/detail_inbox_notifier.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_inbox_notifier.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/insert_message_notifier.dart';
+import 'package:rakhsa/modules/dashboard/data/datasources/dashboard_remote_data_source.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/detail_news.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/get_banner.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/sos_rating.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/track_user.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/update_address.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
+import 'package:rakhsa/modules/administration/domain/usecases/get_country.dart';
+import 'package:rakhsa/modules/administration/domain/usecases/get_state.dart';
+import 'package:rakhsa/modules/information/data/datasources/kbri_remote_datasource.dart';
+import 'package:rakhsa/modules/information/data/repositories/information_remote_datasource_impl.dart';
+import 'package:rakhsa/modules/information/domain/repository/kbri_repository.dart';
+import 'package:rakhsa/modules/information/domain/usecases/get_kbri_id.dart';
+import 'package:rakhsa/modules/information/domain/usecases/get_kbri_name.dart';
+import 'package:rakhsa/modules/information/domain/usecases/get_passport.dart';
+import 'package:rakhsa/modules/information/domain/usecases/get_visa.dart';
+import 'package:rakhsa/modules/information/presentation/provider/kbri_id_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/kbri_name_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/passport_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/visa_notifier.dart';
+import 'package:rakhsa/modules/media/data/datasources/media_remote_datasource.dart';
 
-import 'package:rakhsa/features/administration/domain/usecases/get_continent.dart';
-import 'package:rakhsa/features/auth/domain/usecases/register.dart';
-import 'package:rakhsa/features/auth/domain/usecases/resend_otp.dart';
-import 'package:rakhsa/features/auth/domain/usecases/verify_otp.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/expire_sos.dart';
-import 'package:rakhsa/features/dashboard/domain/usecases/get_news.dart';
-import 'package:rakhsa/features/auth/domain/usecases/login.dart';
+import 'package:rakhsa/modules/administration/domain/usecases/get_continent.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/expire_sos.dart';
+import 'package:rakhsa/modules/dashboard/domain/usecases/get_news.dart';
 import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
-import 'package:rakhsa/features/chat/domain/usecases/get_chats.dart';
-import 'package:rakhsa/features/chat/domain/usecases/get_messages.dart';
-import 'package:rakhsa/features/media/domain/usecases/upload_media.dart';
+import 'package:rakhsa/modules/chat/domain/usecases/get_chats.dart';
+import 'package:rakhsa/modules/chat/domain/usecases/get_messages.dart';
+import 'package:rakhsa/modules/media/domain/usecases/upload_media.dart';
 
-import 'package:rakhsa/features/administration/domain/repository/administration_repository.dart';
-import 'package:rakhsa/features/dashboard/domain/repository/dashboard_repository.dart';
+import 'package:rakhsa/modules/administration/domain/repository/administration_repository.dart';
+import 'package:rakhsa/modules/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart'
     as old_repo_auth;
-import 'package:rakhsa/features/media/domain/repository/media_repository.dart';
+import 'package:rakhsa/modules/media/domain/repository/media_repository.dart';
 
-import 'package:rakhsa/features/dashboard/data/repositories/dashboard_repository_impl.dart';
-import 'package:rakhsa/features/administration/data/repositories/administration_repository_impl.dart';
+import 'package:rakhsa/modules/dashboard/data/repositories/dashboard_repository_impl.dart';
+import 'package:rakhsa/modules/administration/data/repositories/administration_repository_impl.dart';
 import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart'
     as old_repo_auth;
-import 'package:rakhsa/features/chat/data/repositories/chat_repository_impl.dart';
-import 'package:rakhsa/features/media/data/repositories/media_repository_impl.dart';
+import 'package:rakhsa/modules/chat/data/repositories/chat_repository_impl.dart';
+import 'package:rakhsa/modules/media/data/repositories/media_repository_impl.dart';
 
-import 'package:rakhsa/features/administration/presentation/provider/get_continent_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/features/dashboard/presentation/provider/expire_sos_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/register_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/resend_otp_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/verify_otp_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/features/auth/presentation/provider/profile_notifier.dart';
-import 'package:rakhsa/features/media/presentation/provider/upload_media_notifier.dart';
-import 'package:rakhsa/features/chat/presentation/provider/get_chats_notifier.dart';
+import 'package:rakhsa/modules/administration/presentation/provider/get_continent_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 
-import 'package:rakhsa/features/chat/domain/repository/chat_repository.dart';
-import 'package:rakhsa/features/nearme/data/repositories/nearme_repository_impl.dart';
-import 'package:rakhsa/features/nearme/domain/repository/nearme_repository.dart';
-import 'package:rakhsa/features/nearme/domain/usecases/get_place_nearby.dart';
-import 'package:rakhsa/features/nearme/presentation/provider/nearme_notifier.dart';
+import 'package:rakhsa/modules/chat/domain/repository/chat_repository.dart';
+import 'package:rakhsa/modules/nearme/data/repositories/nearme_repository_impl.dart';
+import 'package:rakhsa/modules/nearme/domain/repository/nearme_repository.dart';
+import 'package:rakhsa/modules/nearme/domain/usecases/get_place_nearby.dart';
+import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart'
     as new_auth_provider;
 import 'package:rakhsa/repositories/auth/auth_repository.dart' as new_repo_auth;
+import 'package:rakhsa/repositories/user/user_repository.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:weather/weather.dart';
 
@@ -118,6 +104,9 @@ void init() {
     () => new_auth_provider.AuthProvider(
       repository: locator<new_repo_auth.AuthRepository>(),
     ),
+  );
+  locator.registerLazySingleton(
+    () => UserRepository(client: locator<DioClient>()),
   );
 
   // REMOTE DATA SOURCE
@@ -174,15 +163,9 @@ void init() {
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
   locator.registerLazySingleton(() => GetBannerUseCase(locator()));
-  locator.registerLazySingleton(() => LoginUseCase(locator()));
   locator.registerLazySingleton(() => DetailNewsUseCase(locator()));
-  locator.registerLazySingleton(() => RegisterUseCase(locator()));
-  locator.registerLazySingleton(() => ResendOtpUseCase(locator()));
-  locator.registerLazySingleton(() => VerifyOtpUseCase(locator()));
-  locator.registerLazySingleton(() => UpdateProfileUseCase(locator()));
   locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
   locator.registerLazySingleton(() => UpdateAddressUseCase(locator()));
-  locator.registerLazySingleton(() => UpdateIsLoggedinUseCase(locator()));
   locator.registerLazySingleton(() => GetCountryUseCase(locator()));
   locator.registerLazySingleton(() => GetVisaUseCase(locator()));
   locator.registerLazySingleton(() => GetKbriIdUseCase(locator()));
@@ -194,11 +177,8 @@ void init() {
   locator.registerLazySingleton(() => GetContinentUseCase(locator()));
   locator.registerLazySingleton(() => GetStateUseCase(locator()));
   locator.registerLazySingleton(() => InsertMessageUseCase(locator()));
-  locator.registerLazySingleton(() => ForgotPasswordUseCase(locator()));
-  locator.registerLazySingleton(() => RegisterPassportUseCase(locator()));
   locator.registerLazySingleton(() => GetInboxUseCase(locator()));
   locator.registerLazySingleton(() => DetailInboxUseCase(locator()));
-  locator.registerLazySingleton(() => CheckRegisterStatusUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER
@@ -210,41 +190,25 @@ void init() {
     ),
   );
   locator.registerFactory(() => ProfileNotifier(useCase: locator()));
-  locator.registerFactory(() => UpdateProfileNotifier(useCase: locator()));
   locator.registerFactory(() => SosNotifier(useCase: locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
   locator.registerFactory(() => VisaNotifier(useCase: locator()));
   locator.registerFactory(() => PassportNotifier(useCase: locator()));
   locator.registerFactory(() => KbriIdNotifier(useCase: locator()));
   locator.registerFactory(() => KbriNameNotifier(useCase: locator()));
-  locator.registerFactory(() => VerifyOtpNotifier(useCase: locator()));
-  locator.registerFactory(() => ResendOtpNotifier(useCase: locator()));
   locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
   locator.registerFactory(() => UpdateAddressNotifier(useCase: locator()));
-  locator.registerFactory(() => UpdateIsLoggedinNotifier(useCase: locator()));
   locator.registerFactory(() => GetCountryNotifier(useCase: locator()));
   locator.registerFactory(() => GetStateNotifier(useCase: locator()));
   locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
   locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
   locator.registerFactory(() => GetContinentNotifier(useCase: locator()));
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
-  locator.registerFactory(() => ForgotPasswordNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
   locator.registerFactory(() => DetailInboxNotifier(useCase: locator()));
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
-
-  locator.registerLazySingleton(
-    () => RegisterNotifier(
-      mediaUseCase: locator(),
-      useCase: locator(),
-      registerPassport: locator(),
-      firebaseAuth: locator(),
-      // googleSignIn: locator(),
-      checkRegisterStatusUseCase: locator(),
-    ),
-  );
 
   locator.registerFactory(() => WeatherNotifier(weather: locator()));
 

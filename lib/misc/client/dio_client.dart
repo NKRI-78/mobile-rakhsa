@@ -5,6 +5,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:rakhsa/misc/client/errors/code.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 
 typedef ReceivedProgressCallback = void Function(int received, int total);
 typedef SendProgressCallback = void Function(int count, int total);
@@ -36,6 +37,28 @@ class DioClient {
         compact: true,
         maxWidth: 90,
         enabled: kDebugMode,
+      ),
+    );
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final publicEndpoints = [
+            "/auth/login",
+            "/auth/register-member",
+            "/media",
+          ];
+          final public = publicEndpoints.contains(options.path);
+          if (!public) {
+            final token = await StorageHelper.getUserSession().then((v) {
+              return v.token;
+            });
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+        onError: (error, handler) {
+          return handler.next(error);
+        },
       ),
     );
   }

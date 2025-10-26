@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import 'package:rakhsa/misc/client/errors/failure.dart';
 
-import 'package:rakhsa/features/auth/data/models/profile.dart';
+import 'package:rakhsa/repositories/user/model/profile.dart';
 
 import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart';
 

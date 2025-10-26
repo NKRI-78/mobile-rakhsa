@@ -20,25 +20,21 @@ import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
-import 'package:rakhsa/features/auth/presentation/pages/on_boarding_page.dart';
-
-import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
 
-import 'package:rakhsa/global.dart';
-
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/injection.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
 
 import 'package:rakhsa/providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import './modules/app/app.dart' as app;
+
+final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+final navigatorKey = GlobalKey<NavigatorState>();
 
 late List<CameraDescription> cameras;
 
@@ -182,80 +178,5 @@ Future<void> main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(MultiProvider(providers: providers, child: const MyApp()));
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => MyAppState();
-}
-
-class MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  late FirebaseProvider firebaseProvider;
-  final _client = locator<DioClient>();
-
-  Widget home = const SizedBox();
-
-  bool isResumedProcessing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
-    firebaseProvider = context.read<FirebaseProvider>();
-
-    Future.microtask(() => getData());
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    super.dispose();
-  }
-
-  Future<Widget> getInitPage() async {
-    final res = await _client.get(endpoint: "/admin/toggle/feature");
-    if (res.data["feature_onboarding"] == true) {
-      final showOnBoarding = !StorageHelper.containsOnBoardingKey();
-      if (showOnBoarding) return OnBoardingPage();
-    }
-    return const WelcomePage();
-  }
-
-  Future<void> getData() async {
-    final isLoggedIn = await StorageHelper.isLoggedIn();
-    Widget initPage = await getInitPage();
-
-    if (isLoggedIn) {
-      if (mounted) {
-        setState(() => home = DashboardScreen());
-      }
-    } else {
-      if (mounted) {
-        setState(() => home = initPage);
-      }
-    }
-
-    if (!mounted) return;
-    await firebaseProvider.setupInteractedMessage(context);
-
-    if (!mounted) return;
-    firebaseProvider.listenNotification(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      scaffoldMessengerKey: scaffoldKey,
-      navigatorKey: navigatorKey,
-      theme: ThemeData(useMaterial3: true),
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      home: home,
-    );
-  }
+  runApp(MultiProvider(providers: providers, child: app.App()));
 }

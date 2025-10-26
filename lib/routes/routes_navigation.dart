@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/auth/page/register_page.dart';
-import 'package:rakhsa/features/auth/presentation/pages/welcome_page.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chat.dart';
-import 'package:rakhsa/features/chat/presentation/pages/chats.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/features/dashboard/presentation/pages/weather_page.dart';
-import 'package:rakhsa/features/information/presentation/pages/list.dart';
-import 'package:rakhsa/features/nearme/presentation/pages/near_me_page.dart';
-import 'package:rakhsa/features/nearme/presentation/pages/near_me_page_list_type.dart';
-import 'package:rakhsa/features/news/persentation/pages/detail.dart';
-import 'package:rakhsa/features/news/persentation/pages/list.dart';
+import 'package:rakhsa/modules/auth/page/welcome_page.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chats.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/weather_page.dart';
+import 'package:rakhsa/modules/information/presentation/pages/list.dart';
+import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page.dart';
+import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
+import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/modules/news/persentation/pages/list.dart';
 
 class RoutesNavigation {
   RoutesNavigation._();

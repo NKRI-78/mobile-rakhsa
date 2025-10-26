@@ -10,8 +10,8 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
-import 'package:rakhsa/shared/basewidgets/button/custom.dart';
-import 'package:rakhsa/shared/basewidgets/textinput/textfield.dart';
+import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/components/textinput/textfield.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class RegisterPage extends StatelessWidget {
