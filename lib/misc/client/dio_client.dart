@@ -46,13 +46,16 @@ class DioClient {
             "/auth/login",
             "/auth/register-member",
             "/media",
+            "/admin/toggle/feature",
           ];
           final public = publicEndpoints.contains(options.path);
           if (!public) {
             final token = await StorageHelper.getUserSession().then((v) {
-              return v.token;
+              return v?.token;
             });
-            options.headers['Authorization'] = 'Bearer $token';
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
           }
           return handler.next(options);
         },
@@ -251,17 +254,17 @@ class DioClient {
         case DioExceptionType.connectionTimeout:
           throw ClientException(
             code: ErrorCode.connectionTimeout.code,
-            message: ErrorCode.connectionTimeout.message,
+            message: ErrorCode.connectionTimeout.message(),
           );
         case DioExceptionType.receiveTimeout:
           throw ClientException(
             code: ErrorCode.receiveTimeout.code,
-            message: ErrorCode.receiveTimeout.message,
+            message: ErrorCode.receiveTimeout.message(),
           );
         case DioExceptionType.sendTimeout:
           throw ClientException(
             code: ErrorCode.sendTimeout.code,
-            message: ErrorCode.sendTimeout.message,
+            message: ErrorCode.sendTimeout.message(),
           );
         case DioExceptionType.badResponse:
           throw ClientException(
@@ -271,22 +274,23 @@ class DioClient {
         case DioExceptionType.cancel:
           throw ClientException(
             code: ErrorCode.cancel.code,
-            message: ErrorCode.cancel.message,
+            message: ErrorCode.cancel.message(),
           );
         case DioExceptionType.connectionError:
           throw ClientException(
             code: ErrorCode.connectionError.code,
-            message: ErrorCode.connectionError.message,
+            message: ErrorCode.connectionError.message(),
           );
         default:
           throw ClientException(
             code: ErrorCode.unexpectedClientError.code,
-            message: ErrorCode.unexpectedClientError.message,
+            message: ErrorCode.unexpectedClientError.message(),
           );
       }
     } else if (error is ConnectivityException) {
       throw ClientException(
         code: ErrorCode.noInternetConnection.code,
+        errorCode: error.errorCode,
         message: error.message,
       );
     } else {

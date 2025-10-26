@@ -15,7 +15,7 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
 class NearMePage extends StatefulWidget {
@@ -28,14 +28,14 @@ class NearMePage extends StatefulWidget {
 }
 
 class NearMePageState extends State<NearMePage> {
-  late ProfileNotifier profileNotifier;
+  late ProfileProvider profileNotifier;
   late GetNearbyPlacenNotifier getNearbyPlaceReligionNotifier;
   Set<Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    profileNotifier = context.read<ProfileNotifier>();
+    profileNotifier = context.read<ProfileProvider>();
     getNearbyPlaceReligionNotifier = context.read<GetNearbyPlacenNotifier>();
 
     Future.microtask(() async {
@@ -58,21 +58,21 @@ class NearMePageState extends State<NearMePage> {
 
   Future<void> getData() async {
     if (!mounted) return;
-    await profileNotifier.getProfile();
+    await profileNotifier.getUser();
 
     if (!mounted) return;
     await getNearbyPlaceReligionNotifier.getNearme(
       type: widget.type,
-      currentLat: double.parse(profileNotifier.entity.data!.lat),
-      currentLng: double.parse(profileNotifier.entity.data!.lng),
+      currentLat: double.parse(profileNotifier.user?.lat ?? "0"),
+      currentLng: double.parse(profileNotifier.user?.lng ?? "0"),
     );
   }
 
   void addUserRangePolyline() {
     if (!mounted) return;
 
-    final userLat = double.parse(profileNotifier.entity.data!.lat);
-    final userLng = double.parse(profileNotifier.entity.data!.lng);
+    final userLat = double.parse(profileNotifier.user?.lat ?? "0");
+    final userLng = double.parse(profileNotifier.user?.lng ?? "0");
 
     Set<Polyline> newPolylines = {};
 
@@ -181,8 +181,8 @@ class NearMePageState extends State<NearMePage> {
               );
             }
 
-            double userLat = double.parse(profileNotifier.entity.data!.lat);
-            double userLng = double.parse(profileNotifier.entity.data!.lng);
+            double userLat = double.parse(profileNotifier.user?.lat ?? "0");
+            double userLng = double.parse(profileNotifier.user?.lng ?? "0");
 
             // Find nearest place based on user location
             Map<String, dynamic>? nearestPlace;

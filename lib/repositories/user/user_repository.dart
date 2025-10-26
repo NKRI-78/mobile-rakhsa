@@ -1,0 +1,38 @@
+import 'dart:convert';
+
+import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
+import './model/user.dart';
+
+class UserRepository {
+  UserRepository({required DioClient client}) : _client = client;
+
+  final DioClient _client;
+
+  static String cacheKey = "user_data";
+
+  Future<User> getRemoteUser(String uid) async {
+    try {
+      final res = await _client.post(
+        endpoint: "/profile",
+        data: {"user_id": uid},
+      );
+      final stringUser = jsonEncode(res.data);
+      await StorageHelper.write(cacheKey, stringUser);
+      return User.fromJson(res.data);
+    } on DataParsingException catch (e) {
+      throw ClientException(
+        code: e.code,
+        message: e.message,
+        errorCode: e.errorCode,
+      );
+    }
+  }
+
+  User? getLocalUser() {
+    final userCache = StorageHelper.read(cacheKey);
+    if (userCache == null) return null;
+    return userFromJson(userCache);
+  }
+}

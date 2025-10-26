@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +17,7 @@ class StorageHelper {
     return sharedPreferences.containsKey(key);
   }
 
-  static String? read(String key, String value) {
+  static String? read(String key) {
     return sharedPreferences.getString(key);
   }
 
@@ -52,13 +49,10 @@ class StorageHelper {
     );
   }
 
-  static Future<UserSession> getUserSession() async {
+  static Future<UserSession?> getUserSession() async {
     final sessionCache = await storage.read(key: "user_session");
-    if (sessionCache != null) {
-      log("user session = $sessionCache");
-      return userSessionFromJson(sessionCache);
-    }
-    throw ClientException.missing("Sesi pengguna tidak ditemukan.");
+    if (sessionCache == null) return null;
+    return userSessionFromJson(sessionCache);
   }
 
   static Future<void> removeUserSession() {

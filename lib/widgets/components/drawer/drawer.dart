@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
@@ -14,11 +18,10 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
-import 'package:rakhsa/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -44,103 +47,90 @@ class DrawerWidgetState extends State<DrawerWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Consumer<ProfileNotifier>(
-                  builder:
-                      (
-                        BuildContext context,
-                        ProfileNotifier profileNotifier,
-                        Widget? child,
-                      ) {
-                        if (profileNotifier.state == ProviderState.error) {
-                          return const SizedBox();
-                        }
-                        return Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            color: ColorResources.white,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                Consumer<ProfileProvider>(
+                  builder: (context, p, child) {
+                    if (p.getUserState == RequestState.error) {
+                      return const SizedBox();
+                    }
+                    return Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        color: ColorResources.white,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
+                              Avatar(
+                                src: p.user?.avatar ?? "",
+                                initial: p.user?.username ?? "",
+                              ),
+
+                              const SizedBox(width: 15.0),
+
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Avatar(
-                                    src:
-                                        profileNotifier.entity.data?.avatar ??
-                                        "",
-                                    initial:
-                                        profileNotifier.entity.data?.username ??
-                                        "",
+                                  Text(
+                                    "Nama",
+                                    style: robotoRegular.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: Dimensions.fontSizeSmall,
+                                      color: ColorResources.grey,
+                                    ),
                                   ),
 
-                                  const SizedBox(width: 15.0),
+                                  const SizedBox(height: 2.0),
 
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Nama",
-                                        style: robotoRegular.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: Dimensions.fontSizeSmall,
-                                          color: ColorResources.grey,
-                                        ),
+                                  SizedBox(
+                                    width: 150.0,
+                                    child: Text(
+                                      p.user?.username ?? "-",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorResources.black,
                                       ),
-
-                                      const SizedBox(height: 2.0),
-
-                                      SizedBox(
-                                        width: 150.0,
-                                        child: Text(
-                                          profileNotifier.entity.data!.username
-                                              .toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeLarge,
-                                            fontWeight: FontWeight.bold,
-                                            color: ColorResources.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
-
-                              const SizedBox(height: 15.0),
-
-                              CustomButton(
-                                onTap: () {
-                                  StorageHelper.saveRecordScreen(isHome: false);
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                        return const ProfilePage();
-                                      },
-                                    ),
-                                  );
-                                },
-                                isBorder: true,
-                                isBorderRadius: true,
-                                height: 40.0,
-                                sizeBorderRadius: 8.0,
-                                btnBorderColor: ColorResources.greyDarkPrimary,
-                                btnColor: ColorResources.white,
-                                btnTxt: "Profile",
-                                btnTextColor: const Color(0xFFC82927),
-                              ),
                             ],
                           ),
-                        );
-                      },
+
+                          const SizedBox(height: 15.0),
+
+                          CustomButton(
+                            onTap: () {
+                              StorageHelper.saveRecordScreen(isHome: false);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return const ProfilePage();
+                                  },
+                                ),
+                              );
+                            },
+                            isBorder: true,
+                            isBorderRadius: true,
+                            height: 40.0,
+                            sizeBorderRadius: 8.0,
+                            btnBorderColor: ColorResources.greyDarkPrimary,
+                            btnColor: ColorResources.white,
+                            btnTxt: "Profile",
+                            btnTextColor: const Color(0xFFC82927),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -168,20 +158,17 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 );
                 if (logout != null && logout) {
-                  final session = await StorageHelper.getUserSession();
+                  log("mounted? before logout ${context.mounted}");
                   // ignore: use_build_context_synchronously
-                  context.read<SocketIoService>().socket?.emit("leave", {
-                    "user_id": session.user.id,
-                  });
-                  await StorageHelper.removeUserSession();
-                  if (context.mounted) {
-                    widget.globalKey.currentState?.closeDrawer();
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RoutesNavigation.welcomePage,
-                      (route) => false,
-                    );
-                  }
+                  await locator<AuthProvider>().logout();
+                  widget.globalKey.currentState?.closeDrawer();
+                  log("mounted? after logout ${context.mounted}");
+                  Navigator.pushNamedAndRemoveUntil(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    RoutesNavigation.welcomePage,
+                    (route) => false,
+                  );
                 } else {
                   Future.delayed(Duration(milliseconds: 300)).then((value) {
                     // ignore: use_build_context_synchronously

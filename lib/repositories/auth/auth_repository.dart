@@ -1,6 +1,10 @@
+import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
+import 'package:rakhsa/repositories/user/user_repository.dart';
+import 'package:rakhsa/socketio.dart';
 
 class AuthRepository {
   AuthRepository({required DioClient client}) : _client = client;
@@ -20,7 +24,13 @@ class AuthRepository {
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;
-      throw ClientException(message: message);
+      throw ClientException(code: e.code, message: message);
+    } on DataParsingException catch (e) {
+      throw ClientException(
+        code: e.code,
+        message: e.message,
+        errorCode: e.errorCode,
+      );
     }
   }
 
@@ -46,7 +56,24 @@ class AuthRepository {
       final message = e.message == "User already exist"
           ? "Pengguna sudah terdaftar silahkan pakai nomor telepon lain."
           : e.message;
-      throw ClientException(message: message);
+      throw ClientException(code: e.code, message: message);
+    } on DataParsingException catch (e) {
+      throw ClientException(
+        code: e.code,
+        message: e.message,
+        errorCode: e.errorCode,
+      );
     }
+  }
+
+  Future<void> logout() async {
+    final session = await StorageHelper.getUserSession();
+    if (session != null) {
+      locator<SocketIoService>().socket?.emit("leave", {
+        "user_id": session.user.id,
+      });
+    }
+    await StorageHelper.removeUserSession();
+    await StorageHelper.delete(UserRepository.cacheKey);
   }
 }

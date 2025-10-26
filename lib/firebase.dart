@@ -10,7 +10,7 @@ import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -72,7 +72,7 @@ class FirebaseProvider with ChangeNotifier {
       String? token = await FirebaseMessaging.instance.getToken();
       await dio.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
-        data: {"user_id": session.user.id, "token": token},
+        data: {"user_id": session?.user.id, "token": token},
       );
     } catch (e) {
       debugPrint("Error initializing FCM: $e");
@@ -127,15 +127,14 @@ class FirebaseProvider with ChangeNotifier {
         );
         break;
       case NotificationType.ews:
-        navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+        navigatorKey.currentContext!.read<ProfileProvider>().getUser();
 
         Future.delayed(const Duration(seconds: 1), () {
           var lat =
               double.tryParse(
                 navigatorKey.currentContext!
-                        .read<ProfileNotifier>()
-                        .entity
-                        .data
+                        .read<ProfileProvider>()
+                        .user
                         ?.lat ??
                     "0",
               ) ??
@@ -143,18 +142,16 @@ class FirebaseProvider with ChangeNotifier {
           var lng =
               double.tryParse(
                 navigatorKey.currentContext!
-                        .read<ProfileNotifier>()
-                        .entity
-                        .data
+                        .read<ProfileProvider>()
+                        .user
                         ?.lng ??
                     "0",
               ) ??
               0;
           var state =
               navigatorKey.currentContext!
-                  .read<ProfileNotifier>()
-                  .entity
-                  .data
+                  .read<ProfileProvider>()
+                  .user
                   ?.state ??
               "Indonesia";
 
@@ -188,16 +185,16 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
-    context.read<ProfileNotifier>().getProfile();
+    context.read<ProfileProvider>().getUser();
   }
 
   void handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
-    context.read<ProfileNotifier>().getProfile();
+    context.read<ProfileProvider>().getUser();
   }
 
   void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
     var messageNotifier = context.read<GetMessagesNotifier>();
-    context.read<ProfileNotifier>().getProfile();
+    context.read<ProfileProvider>().getUser();
     context.read<SosNotifier>().stopTimer();
 
     messageNotifier.resetTimer();
@@ -210,34 +207,22 @@ class FirebaseProvider with ChangeNotifier {
   ) async {
     // fetch realtime when notification without title and description
     if (payload['type'] == 'ews-delete') {
-      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      navigatorKey.currentContext!.read<ProfileProvider>().getUser();
 
       var lat =
           double.tryParse(
-            navigatorKey.currentContext!
-                    .read<ProfileNotifier>()
-                    .entity
-                    .data
-                    ?.lat ??
+            navigatorKey.currentContext!.read<ProfileProvider>().user?.lat ??
                 "0",
           ) ??
           0;
       var lng =
           double.tryParse(
-            navigatorKey.currentContext!
-                    .read<ProfileNotifier>()
-                    .entity
-                    .data
-                    ?.lng ??
+            navigatorKey.currentContext!.read<ProfileProvider>().user?.lng ??
                 "0",
           ) ??
           0;
       var state =
-          navigatorKey.currentContext!
-              .read<ProfileNotifier>()
-              .entity
-              .data
-              ?.state ??
+          navigatorKey.currentContext!.read<ProfileProvider>().user?.state ??
           "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
@@ -248,34 +233,22 @@ class FirebaseProvider with ChangeNotifier {
 
       // fetch realtime when notification with title and description
     } else if (payload['type'] == 'ews') {
-      navigatorKey.currentContext!.read<ProfileNotifier>().getProfile();
+      navigatorKey.currentContext!.read<ProfileProvider>().getUser();
 
       var lat =
           double.tryParse(
-            navigatorKey.currentContext!
-                    .read<ProfileNotifier>()
-                    .entity
-                    .data
-                    ?.lat ??
+            navigatorKey.currentContext!.read<ProfileProvider>().user?.lat ??
                 "0",
           ) ??
           0;
       var lng =
           double.tryParse(
-            navigatorKey.currentContext!
-                    .read<ProfileNotifier>()
-                    .entity
-                    .data
-                    ?.lng ??
+            navigatorKey.currentContext!.read<ProfileProvider>().user?.lng ??
                 "0",
           ) ??
           0;
       var state =
-          navigatorKey.currentContext!
-              .read<ProfileNotifier>()
-              .entity
-              .data
-              ?.state ??
+          navigatorKey.currentContext!.read<ProfileProvider>().user?.state ??
           "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(

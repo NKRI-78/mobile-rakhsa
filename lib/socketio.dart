@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -87,7 +87,7 @@ class SocketIoService with ChangeNotifier {
   Future<void> init() async {
     final session = await StorageHelper.getUserSession();
 
-    if (session.token != "-") {
+    if (session != null) {
       socket = IO.io(
         'https://socketio-rakhsa.langitdigital78.com',
         OptionBuilder()
@@ -155,7 +155,7 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileNotifier>().getProfile();
+      context.read<ProfileProvider>().getUser();
     });
 
     socket?.on("closed-by-agent", (message) {
@@ -167,7 +167,7 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileNotifier>().getProfile();
+      context.read<ProfileProvider>().getUser();
 
       context.read<GetMessagesNotifier>().setStateNote(
         val: message["note"].toString(),
@@ -183,9 +183,10 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileNotifier>().getProfile();
+      context.read<ProfileProvider>().getUser();
 
       StorageHelper.getUserSession().then((v) {
+        if (v == null) return;
         if (message["sender"] == v.user.id) {
           if (context.mounted) {
             context.read<GetMessagesNotifier>().navigateToChat(
@@ -236,17 +237,19 @@ class SocketIoService with ChangeNotifier {
     required String lng,
   }) async {
     final session = await StorageHelper.getUserSession();
-    var payload = {
-      "user_id": session.user.id,
-      "location": location,
-      "media": media,
-      "ext": ext,
-      "lat": lat,
-      "lng": lng,
-      "country": country,
-      "platform_type": "raksha",
-    };
-    socket?.emit("sos", payload);
+    if (session != null) {
+      var payload = {
+        "user_id": session.user.id,
+        "location": location,
+        "media": media,
+        "ext": ext,
+        "lat": lat,
+        "lng": lng,
+        "country": country,
+        "platform_type": "raksha",
+      };
+      socket?.emit("sos", payload);
+    }
   }
 
   void typing({
@@ -255,14 +258,16 @@ class SocketIoService with ChangeNotifier {
     required bool isTyping,
   }) async {
     final session = await StorageHelper.getUserSession();
-    var payload = {
-      "type": "typing",
-      "chat_id": chatId,
-      "sender": session.user.id,
-      "recipient": recipientId,
-      "is_typing": isTyping,
-    };
-    socket?.emit("typing", payload);
+    if (session != null) {
+      var payload = {
+        "type": "typing",
+        "chat_id": chatId,
+        "sender": session.user.id,
+        "recipient": recipientId,
+        "is_typing": isTyping,
+      };
+      socket?.emit("typing", payload);
+    }
   }
 
   void sendMessage({
@@ -272,14 +277,16 @@ class SocketIoService with ChangeNotifier {
     required String createdAt,
   }) async {
     final session = await StorageHelper.getUserSession();
-    var payload = {
-      "chat_id": chatId,
-      "sender": session.user.id,
-      "recipient": recipientId,
-      "text": message,
-      "created_at": createdAt,
-    };
-    socket?.emit("message", payload);
+    if (session != null) {
+      var payload = {
+        "chat_id": chatId,
+        "sender": session.user.id,
+        "recipient": recipientId,
+        "text": message,
+        "created_at": createdAt,
+      };
+      socket?.emit("message", payload);
+    }
   }
 
   void userResolvedSos({required String sosId}) {

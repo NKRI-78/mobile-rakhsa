@@ -4,13 +4,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 
 class CurrentLocationWidget extends StatelessWidget {
   final String avatar;
@@ -50,11 +49,11 @@ class CurrentLocationWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    context.watch<ProfileNotifier>().state ==
-                            ProviderState.error
+                    context.watch<ProfileProvider>().getUserState ==
+                            RequestState.error
                         ? const SizedBox()
-                        : context.watch<ProfileNotifier>().state ==
-                              ProviderState.loading
+                        : context.watch<ProfileProvider>().getUserState ==
+                              RequestState.loading
                         ? const SizedBox()
                         : CachedNetworkImage(
                             imageUrl: avatar.toString(),

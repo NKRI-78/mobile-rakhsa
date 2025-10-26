@@ -75,4 +75,7 @@ class AuthProvider extends ChangeNotifier {
       onError?.call(e.code, e.message);
     }
   }
+
+  // logout
+  Future<void> logout() => _repository.logout();
 }

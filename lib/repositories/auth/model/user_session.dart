@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:rakhsa/misc/client/errors/code.dart';
+import 'package:rakhsa/misc/client/errors/exceptions.dart';
+
 UserSession userSessionFromJson(String str) =>
     UserSession.fromJson(json.decode(str));
 
@@ -20,17 +23,29 @@ class UserSession {
     String? token,
     String? refreshToken,
     UserDataSession? user,
-  }) => UserSession(
-    token: token ?? this.token,
-    refreshToken: refreshToken ?? this.refreshToken,
-    user: user ?? this.user,
-  );
+  }) {
+    return UserSession(
+      token: token ?? this.token,
+      refreshToken: refreshToken ?? this.refreshToken,
+      user: user ?? this.user,
+    );
+  }
 
-  factory UserSession.fromJson(Map<String, dynamic> json) => UserSession(
-    token: json["token"],
-    refreshToken: json["refresh_token"],
-    user: UserDataSession.fromJson(json["user"]),
-  );
+  factory UserSession.fromJson(Map<String, dynamic> json) {
+    try {
+      return UserSession(
+        token: json["token"],
+        refreshToken: json["refresh_token"],
+        user: UserDataSession.fromJson(json["user"]),
+      );
+    } catch (e, st) {
+      throw DataParsingException(
+        ErrorCode.errorDataParsing.message("UserSession"),
+        e,
+        st,
+      );
+    }
+  }
 
   Map<String, dynamic> toJson() => {
     "token": token,
@@ -76,8 +91,9 @@ class UserDataSession {
     enabled: enabled ?? this.enabled,
   );
 
-  factory UserDataSession.fromJson(Map<String, dynamic> json) =>
-      UserDataSession(
+  factory UserDataSession.fromJson(Map<String, dynamic> json) {
+    try {
+      return UserDataSession(
         id: json["id"],
         name: json["name"],
         email: json["email"],
@@ -86,6 +102,14 @@ class UserDataSession {
         access: json["access"] ?? "-",
         enabled: json["enabled"],
       );
+    } catch (e, st) {
+      throw DataParsingException(
+        ErrorCode.errorDataParsing.message("UserDataSession"),
+        e,
+        st,
+      );
+    }
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,

@@ -6,18 +6,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/snackbar.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -30,7 +30,7 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   bool btnUpdateProfileLoading = false;
 
-  late ProfileNotifier profileNotifier;
+  late ProfileProvider profileNotifier;
   // late UpdateProfileNotifier updateProfileNotifier;
   late UploadMediaNotifier uploadMediaNotifier;
 
@@ -134,7 +134,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<void> getData() async {
     if (!mounted) return;
-    profileNotifier.getProfile();
+    profileNotifier.getUser();
   }
 
   Future<void> submit() async {
@@ -160,14 +160,14 @@ class ProfilePageState extends State<ProfilePage> {
       if (mounted) Navigator.pop(context);
     });
 
-    profileNotifier.getProfile();
+    profileNotifier.getUser();
   }
 
   @override
   void initState() {
     super.initState();
 
-    profileNotifier = context.read<ProfileNotifier>();
+    profileNotifier = context.read<ProfileProvider>();
     // updateProfileNotifier = context.read<UpdateProfileNotifier>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
@@ -270,7 +270,8 @@ class ProfilePageState extends State<ProfilePage> {
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-            if (context.watch<ProfileNotifier>().state == ProviderState.loading)
+            if (context.watch<ProfileProvider>().getUserState ==
+                RequestState.loading)
               const SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
@@ -283,12 +284,13 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-            if (context.watch<ProfileNotifier>().state == ProviderState.error)
+            if (context.watch<ProfileProvider>().getUserState ==
+                RequestState.error)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
                   child: Text(
-                    context.read<ProfileNotifier>().message,
+                    context.read<ProfileProvider>().errMessage ?? "-",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black,
@@ -296,7 +298,8 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-            if (context.watch<ProfileNotifier>().state == ProviderState.loaded)
+            if (context.watch<ProfileProvider>().getUserState ==
+                RequestState.success)
               SliverPadding(
                 padding: const EdgeInsets.only(
                   left: 16.0,
@@ -340,17 +343,9 @@ class ProfilePageState extends State<ProfilePage> {
                                         ),
                                       )
                                     : Avatar(
-                                        src:
-                                            profileNotifier
-                                                .entity
-                                                .data
-                                                ?.avatar ??
-                                            "",
+                                        src: profileNotifier.user?.avatar ?? "",
                                         initial:
-                                            profileNotifier
-                                                .entity
-                                                .data
-                                                ?.username ??
+                                            profileNotifier.user?.username ??
                                             "",
                                       ),
                               ),
@@ -360,7 +355,7 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                       Center(
                         child: Text(
-                          profileNotifier.entity.data!.username.toString(),
+                          profileNotifier.user?.username ?? "-",
                           textAlign: TextAlign.center,
                           style: robotoRegular.copyWith(
                             fontSize: 22,
@@ -372,7 +367,7 @@ class ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 6),
                       Center(
                         child: Text(
-                          profileNotifier.entity.data!.email.toString(),
+                          profileNotifier.user?.email ?? "-",
                           textAlign: TextAlign.center,
                           style: robotoRegular.copyWith(
                             fontSize: 16,
@@ -396,54 +391,45 @@ class ProfilePageState extends State<ProfilePage> {
                             passportField(
                               label: 'Jenis Kelamin',
                               content: getGender(
-                                profileNotifier.entity.data!.gender.toString(),
+                                profileNotifier.user?.gender ?? "-",
                               ),
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tanggal Lahir',
-                              content:
-                                  profileNotifier.entity.data?.birthdate == "-"
+                              content: profileNotifier.user?.birthDate == "-"
                                   ? "-"
                                   : DateFormat('dd MMMM yyyy', 'id').format(
                                       DateTime.parse(
-                                        profileNotifier.entity.data!.birthdate
-                                            .toString(),
+                                        profileNotifier.user?.birthDate ?? "-",
                                       ),
                                     ),
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tempat Lahir',
-                              content: profileNotifier.entity.data!.birthplace
-                                  .toString(),
+                              content: profileNotifier.user?.birthDate ?? "-",
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Kewarganegaraan',
-                              content: profileNotifier.entity.data!.citizen
-                                  .toString(),
+                              content: profileNotifier.user?.citizen ?? "-",
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Kode Paspor',
-                              content: profileNotifier.entity.data!.passport
-                                  .toString(),
+                              content: profileNotifier.user?.passport ?? "-",
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Tanggal Terbit Paspor',
                               content:
-                                  profileNotifier.entity.data?.passportIssued ==
-                                      "-"
+                                  profileNotifier.user?.passportIssued == "-"
                                   ? "-"
                                   : DateFormat('dd MMMM yyyy', 'id').format(
                                       DateTime.parse(
-                                        profileNotifier
-                                            .entity
-                                            .data!
-                                            .passportIssued
-                                            .toString(),
+                                        profileNotifier.user?.passportIssued ??
+                                            "-",
                                       ),
                                     ),
                             ),
@@ -451,19 +437,12 @@ class ProfilePageState extends State<ProfilePage> {
                             passportField(
                               label: 'Tanggal Kadaluarsa Paspor',
                               content:
-                                  profileNotifier
-                                          .entity
-                                          .data
-                                          ?.passportExpired ==
-                                      "-"
+                                  profileNotifier.user?.passportExpired == "-"
                                   ? "-"
                                   : DateFormat('dd MMMM yyyy', 'id').format(
                                       DateTime.parse(
-                                        profileNotifier
-                                            .entity
-                                            .data!
-                                            .passportExpired
-                                            .toString(),
+                                        profileNotifier.user?.passportExpired ??
+                                            "-",
                                       ),
                                     ),
                             ),
@@ -471,24 +450,20 @@ class ProfilePageState extends State<ProfilePage> {
                               label: 'Sisa masa berlaku',
                               content:
                                   getPeriod(
-                                    profileNotifier
-                                        .entity
-                                        .data!
-                                        .passportExpired,
+                                    profileNotifier.user?.passportExpired ??
+                                        "-",
                                   ) ??
                                   '-',
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Nomor Registrasi',
-                              content: profileNotifier.entity.data!.noReg
-                                  .toString(),
+                              content: profileNotifier.user?.noReg ?? "-",
                             ),
                             const SizedBox(height: 18),
                             passportField(
                               label: 'Kode MRZ',
-                              content: profileNotifier.entity.data!.mrzCode
-                                  .toString(),
+                              content: profileNotifier.user?.mrzCode ?? "-",
                             ),
                           ],
                         ),

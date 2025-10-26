@@ -1,6 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:get_it/get_it.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
@@ -10,7 +10,6 @@ import 'package:rakhsa/repositories/media/media_repository.dart';
 import 'package:rakhsa/modules/administration/data/datasources/administration_remote_data_source.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_state_notifier.dart';
-import 'package:rakhsa/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rakhsa/modules/chat/data/datasources/chat_remote_data_source.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/detail_inbox.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_inbox.dart';
@@ -47,21 +46,16 @@ import 'package:rakhsa/modules/media/data/datasources/media_remote_datasource.da
 import 'package:rakhsa/modules/administration/domain/usecases/get_continent.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/expire_sos.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_news.dart';
-import 'package:rakhsa/features/auth/domain/usecases/profile.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_chats.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_messages.dart';
 import 'package:rakhsa/modules/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/modules/administration/domain/repository/administration_repository.dart';
 import 'package:rakhsa/modules/dashboard/domain/repository/dashboard_repository.dart';
-import 'package:rakhsa/features/auth/domain/repositories/auth_repository.dart'
-    as old_repo_auth;
 import 'package:rakhsa/modules/media/domain/repository/media_repository.dart';
 
 import 'package:rakhsa/modules/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:rakhsa/modules/administration/data/repositories/administration_repository_impl.dart';
-import 'package:rakhsa/features/auth/data/repositories/auth_repository_impl.dart'
-    as old_repo_auth;
 import 'package:rakhsa/modules/chat/data/repositories/chat_repository_impl.dart';
 import 'package:rakhsa/modules/media/data/repositories/media_repository_impl.dart';
 
@@ -69,7 +63,7 @@ import 'package:rakhsa/modules/administration/presentation/provider/get_continen
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 
@@ -80,9 +74,8 @@ import 'package:rakhsa/modules/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/modules/auth/provider/auth_provider.dart'
-    as new_auth_provider;
-import 'package:rakhsa/repositories/auth/auth_repository.dart' as new_repo_auth;
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:weather/weather.dart';
@@ -98,12 +91,10 @@ void init() {
   locator.registerLazySingleton(() => Connectivity());
   locator.registerLazySingleton(() => DioClient(locator<Connectivity>()));
   locator.registerLazySingleton(
-    () => new_repo_auth.AuthRepository(client: locator<DioClient>()),
+    () => AuthRepository(client: locator<DioClient>()),
   );
   locator.registerLazySingleton(
-    () => new_auth_provider.AuthProvider(
-      repository: locator<new_repo_auth.AuthRepository>(),
-    ),
+    () => AuthProvider(repository: locator<AuthRepository>()),
   );
   locator.registerLazySingleton(
     () => UserRepository(client: locator<DioClient>()),
@@ -118,9 +109,6 @@ void init() {
   );
   locator.registerLazySingleton<DashboardRemoteDataSource>(
     () => DashboardRemoteDataSourceImpl(client: locator()),
-  );
-  locator.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(client: locator()),
   );
   locator.registerLazySingleton<KbriRemoteDataSource>(
     () => KbriRemoteDataSourceImpl(client: locator()),
@@ -139,9 +127,6 @@ void init() {
   locator.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<old_repo_auth.AuthRepository>(
-    () => old_repo_auth.AuthRepositoryImpl(remoteDataSource: locator()),
-  );
   locator.registerLazySingleton<KbriRepository>(
     () => KbriRepositoryImpl(remoteDataSource: locator()),
   );
@@ -159,7 +144,6 @@ void init() {
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
   locator.registerLazySingleton(() => GetPlaceNearbyUseCase(locator()));
-  locator.registerLazySingleton(() => ProfileUseCase(locator()));
   locator.registerLazySingleton(() => ExpireSosUseCase(locator()));
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
   locator.registerLazySingleton(() => GetBannerUseCase(locator()));
@@ -189,7 +173,9 @@ void init() {
       useCase: locator(),
     ),
   );
-  locator.registerFactory(() => ProfileNotifier(useCase: locator()));
+  locator.registerFactory(
+    () => ProfileProvider(repository: locator<UserRepository>()),
+  );
   locator.registerFactory(() => SosNotifier(useCase: locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
   locator.registerFactory(() => VisaNotifier(useCase: locator()));

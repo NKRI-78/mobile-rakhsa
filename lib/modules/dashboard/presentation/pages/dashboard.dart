@@ -18,7 +18,7 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/main.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -48,7 +48,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late SocketIoService socketIoService;
-  late ProfileNotifier profileNotifier;
+  late ProfileProvider profileNotifier;
   late WeatherNotifier weatherNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
 
@@ -92,7 +92,7 @@ class DashboardScreenState extends State<DashboardScreen>
     WidgetsBinding.instance.addObserver(this);
 
     firebaseProvider = context.read<FirebaseProvider>();
-    profileNotifier = context.read<ProfileNotifier>();
+    profileNotifier = context.read<ProfileProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
@@ -120,7 +120,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Future<void> getData() async {
     if (!mounted) return;
-    await profileNotifier.getProfile();
+    await profileNotifier.getUser();
 
     if (!mounted) return;
     await firebaseProvider.initFcm();
@@ -271,7 +271,7 @@ class DashboardScreenState extends State<DashboardScreen>
         content: DialogContent(
           assetIcon: AssetSource.iconWelcomeDialog,
           titleAsync: StorageHelper.getUserSession().then((v) {
-            return "Terimakasih ${v.user.name}";
+            return "Terimakasih ${v?.user.name ?? "-"}";
           }),
           message: """
 Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.

@@ -111,7 +111,7 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       "id": const uuid.Uuid().v4(),
       "chat_id": widget.chatId,
       "user": {
-        "id": session.user.id,
+        "id": session?.user.id,
         "is_me": true,
         "avatar": "-",
         "name": "-",

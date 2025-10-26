@@ -8,10 +8,10 @@ import 'package:rakhsa/camera.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/repositories/user/model/profile.dart';
 
 import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/widgets/components/button/bounce.dart';
 import 'package:rakhsa/widgets/components/modal/modal.dart';
 
@@ -22,7 +22,7 @@ class SosButtonParam {
   final String lng;
   final bool isConnected;
   final bool loadingGmaps;
-  final ProfileData? profile;
+  final User? profile;
 
   SosButtonParam({
     required this.location,
@@ -49,11 +49,11 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
   Future<void> handleLongPressStart() async {
     log("local profile data = ${widget.param.profile}");
-    if (widget.param.profile?.sos.running ?? false) {
+    if (widget.param.profile?.sos?.running ?? false) {
       GeneralModal.infoEndSos(
-        sosId: widget.param.profile!.sos.id,
-        chatId: widget.param.profile!.sos.chatId,
-        recipientId: widget.param.profile!.sos.recipientId,
+        sosId: widget.param.profile?.sos?.id ?? "-",
+        chatId: widget.param.profile?.sos?.chatId ?? "-",
+        recipientId: widget.param.profile?.sos?.recipientId ?? "-",
         msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
         isHome: true,
       );

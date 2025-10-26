@@ -3,13 +3,13 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/modules/profile/provider/profile_notifier.dart';
+import 'package:rakhsa/modules/app/provider/profile_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/socketio.dart';
@@ -33,11 +33,11 @@ class HeaderSection extends StatelessWidget {
             Flexible(
               child: GestureDetector(
                 onTap: () => scaffoldKey.currentState?.openEndDrawer(),
-                child: Consumer<ProfileNotifier>(
+                child: Consumer<ProfileProvider>(
                   builder: (context, provider, child) {
                     return Avatar(
-                      src: provider.entity.data?.avatar ?? "",
-                      initial: provider.entity.data?.username ?? "",
+                      src: provider.user?.avatar ?? "",
+                      initial: provider.user?.username ?? "",
                     );
                   },
                 ),
@@ -80,13 +80,13 @@ class HeaderSection extends StatelessWidget {
                       color: ColorResources.hintColor,
                     ),
                   ),
-                  Consumer<ProfileNotifier>(
+                  Consumer<ProfileProvider>(
                     builder: (context, provider, child) {
-                      if (provider.state == ProviderState.loaded) {
+                      if (provider.getUserState == RequestState.success) {
                         return SizedBox(
                           width: 150.0,
                           child: Text(
-                            provider.entity.data?.username ?? "-",
+                            provider.user?.username ?? "-",
                             overflow: TextOverflow.ellipsis,
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
