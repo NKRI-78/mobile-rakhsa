@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:rakhsa/main.dart';
 
@@ -192,25 +191,23 @@ class GetMessagesNotifier with ChangeNotifier {
 
     debugPrint("incomingChatId dari appendMessage = $incomingMessageId");
     debugPrint("activeChatId dari appendMessage = $activeChatId");
-
     debugPrint(
-      "cek apakah incomingChatId != activeChatId = ${incomingChatId != activeChatId}",
+      "apakah incomingChatId != activeChatId? ${incomingChatId != activeChatId}",
     );
-    if (incomingChatId != activeChatId) {
-      FirebaseCrashlytics.instance.recordError(
-        // "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
-        StateError(
-          "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
-        ),
-        StackTrace.current,
-      );
-    }
+    // if (incomingChatId != activeChatId) {
+    //   FirebaseCrashlytics.instance.recordError(
+    //     StateError(
+    //       "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
+    //     ),
+    //     StackTrace.current,
+    //   );
+    // }
 
     final containIncomingMsgId = _messages.any(
       (msg) => msg.id == incomingMessageId,
     );
     debugPrint(
-      "cek apakah _messages memuat id yang sama dengan incomingMessageId = $containIncomingMsgId",
+      "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
     );
     if (containIncomingMsgId) return;
 

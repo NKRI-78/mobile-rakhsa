@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/widgets/avatar.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:intl/intl.dart';
@@ -9,8 +12,6 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
@@ -18,12 +19,13 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/components/modal/modal.dart';
+
+import 'chat_bubble.dart';
 
 class ChatPage extends StatefulWidget {
   final String sosId;
@@ -45,45 +47,95 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => ChatPageState();
 }
 
-class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
+class ChatPageState extends State<ChatPage> {
   Timer? debounce;
 
   bool showAutoGreetings = false;
 
-  List<Map<String, dynamic>> unsentMessages = [];
-
-  ScrollController sC = ScrollController();
+  final sC = ScrollController();
 
   late TextEditingController messageC;
 
-  late InsertMessageNotifier insertMessageNotifier;
   late GetMessagesNotifier messageNotifier;
   late SocketIoService socketIoService;
+
+  StreamSubscription<List<ConnectivityResult>>? _connSubscription;
+  bool _wasOffline = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    showAutoGreetings = widget.autoGreetings;
+
+    messageNotifier = context.read<GetMessagesNotifier>();
+    socketIoService = context.read<SocketIoService>();
+
+    socketIoService.subscribeChat(widget.chatId);
+
+    messageNotifier.startTimer();
+
+    messageC = TextEditingController();
+    messageC.addListener(handleTyping);
+
+    Future.microtask(() => getData());
+
+    _connSubscription = locator<Connectivity>().onConnectivityChanged.listen((
+      results,
+    ) async {
+      final hasConnection = results.any((r) => r != ConnectivityResult.none);
+
+      if (hasConnection && _wasOffline) {
+        debugPrint("Internet reconnected! Fetching missed messages...");
+        await getData();
+        _wasOffline = false;
+      } else if (!hasConnection) {
+        _wasOffline = true;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    socketIoService.unsubscribeChat(widget.chatId);
+
+    sC.dispose();
+
+    messageC.removeListener(handleTyping);
+    messageC.dispose();
+
+    debounce?.cancel();
+
+    _connSubscription?.cancel();
+    _connSubscription = null;
+
+    super.dispose();
+  }
 
   Future<void> getData() async {
     if (!mounted) return;
     messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
 
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       if (sC.hasClients) {
         sC.animateTo(
           sC.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.easeOut,
         );
-        setState(() {});
+        // setState(() {});
       }
     });
 
     socketIoService.socket?.on("message", (message) {
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 400), () {
         if (sC.hasClients) {
           sC.animateTo(
             sC.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 400),
             curve: Curves.easeOut,
           );
-          setState(() {});
+          // setState(() {});
         }
       });
     });
@@ -141,20 +193,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     });
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        // Future.microtask(() => getData());
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      case AppLifecycleState.hidden:
-        break;
-    }
-  }
-
   void handleTyping() {
     if (messageC.text.isNotEmpty) {
       socketIoService.typing(
@@ -178,46 +216,6 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
-
-    sC = ScrollController();
-
-    showAutoGreetings = widget.autoGreetings;
-
-    messageNotifier = context.read<GetMessagesNotifier>();
-    insertMessageNotifier = context.read<InsertMessageNotifier>();
-    socketIoService = context.read<SocketIoService>();
-
-    socketIoService.subscribeChat(widget.chatId);
-
-    messageNotifier.startTimer();
-
-    messageC = TextEditingController();
-    messageC.addListener(handleTyping);
-
-    Future.microtask(() => getData());
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    socketIoService.unsubscribeChat(widget.chatId);
-
-    sC.dispose();
-
-    messageC.removeListener(handleTyping);
-    messageC.dispose();
-
-    debounce?.cancel();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
@@ -228,453 +226,201 @@ class ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
         Navigator.pop(context, "refetch");
       },
       child: Scaffold(
-        extendBody: true,
-        resizeToAvoidBottomInset: true,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(
-            top: 20.0,
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: AppBar(
+            backgroundColor: primaryColor,
+            leading: CupertinoNavigationBarBackButton(
+              color: whiteColor,
+              onPressed: () {
+                messageNotifier.clearActiveChatId();
+                Navigator.pop(context, "refetch");
+              },
+            ),
+            title: Consumer<GetMessagesNotifier>(
+              builder: (context, notifier, child) {
+                final username = notifier.recipient.name ?? "User";
+                final agentIsTyping = notifier.isTyping(widget.chatId);
+                return Row(
+                  spacing: 10,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Avatar(src: notifier.recipient.avatar, initial: username),
+                    Column(
+                      spacing: 3,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          username,
+                          style: robotoRegular.copyWith(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (agentIsTyping)
+                          Text(
+                            "Sedang mengetik...",
+                            style: robotoRegular.copyWith(
+                              fontSize: 10.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-          child:
-              widget.status == "CLOSED" ||
-                  context.watch<GetMessagesNotifier>().note.isNotEmpty
-              ? Consumer<GetMessagesNotifier>(
-                  builder:
-                      (
-                        BuildContext context,
-                        GetMessagesNotifier notifier,
-                        Widget? child,
-                      ) {
-                        if (notifier.state == ProviderState.loading) {
-                          return Container(
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFEAEAEA),
-                            ),
-                            padding: const EdgeInsets.all(15.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "...",
-                                  textAlign: TextAlign.center,
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFEAEAEA),
-                          ),
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                notifier.note,
-                                textAlign: TextAlign.center,
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.black,
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+        ),
+        body: Consumer<GetMessagesNotifier>(
+          builder: (context, notifier, child) {
+            final closedSession =
+                widget.status == "CLOSED" || notifier.note.isNotEmpty;
+            return SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      reverse: true,
+                      itemCount: notifier.messages.length,
+                      padding: EdgeInsets.all(16),
+                      itemBuilder: (context, index) {
+                        final item = notifier.messages[index];
+
+                        return ChatBubble(
+                          text: item.text,
+                          time: item.sentTime,
+                          isMe: item.user.isMe!,
+                          isRead: item.isRead,
                         );
                       },
-                )
-              : Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEAEAEA),
-                    boxShadow: kElevationToShadow[2],
-                  ),
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      context.watch<GetMessagesNotifier>().isBtnSessionEnd
-                          ? CustomButton(
-                              onTap: () async {
-                                GeneralModal.infoEndSos(
-                                  sosId: widget.sosId,
-                                  chatId: "-",
-                                  recipientId: "-",
-                                  msg:
-                                      "Apakah kasus Anda sebelumnya telah ditangani ?",
-                                  isHome: false,
-                                );
-                              },
-                              btnColor: const Color(0xFFC82927),
-                              isLoading:
-                                  context.watch<SosNotifier>().state ==
-                                      ProviderState.loading
-                                  ? true
-                                  : false,
-                              isBorder: false,
-                              isBoxShadow: false,
-                              isBorderRadius: true,
-                              btnTxt: "Apa keluhan sudah ditangani ?",
-                            )
-                          : const SizedBox(),
-
-                      context.watch<GetMessagesNotifier>().isBtnSessionEnd
-                          ? const SizedBox(height: 10.0)
-                          : const SizedBox(),
-
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: TextField(
-                              maxLines: null,
-                              controller: messageC,
-                              style: robotoRegular.copyWith(fontSize: 12.0),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                filled: true,
-                                fillColor: ColorResources.white,
-                                hintText: "ketik pesan singkat dan jelas",
-                                hintStyle: robotoRegular.copyWith(
-                                  fontSize: 12.0,
-                                  color: Colors.grey,
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(width: 15.0),
-
-                          Flexible(
-                            child: IconButton(
-                              onPressed: sendMessage,
-                              icon: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: const BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(50.0),
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.send,
-                                  size: 20.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-        ),
-        body: SafeArea(
-          child: Consumer<GetMessagesNotifier>(
-            builder:
-                (
-                  BuildContext context,
-                  GetMessagesNotifier notifier,
-                  Widget? child,
-                ) {
-                  return CustomScrollView(
-                    controller: sC,
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
                     ),
-                    slivers: [
-                      SliverAppBar(
-                        pinned: true,
-                        backgroundColor: const Color(0xFFC82927),
-                        automaticallyImplyLeading: false,
-                        forceElevated: true,
-                        elevation: 1.0,
-                        title: Container(
-                          margin: const EdgeInsets.only(
-                            top: 20.0,
-                            bottom: 20.0,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+
+                  // send message
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (closedSession) ...[
+                          if (notifier.state == ProviderState.loading) ...[
+                            Text(
+                              "...",
+                              textAlign: TextAlign.center,
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.black,
+                                fontSize: Dimensions.fontSizeDefault,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ] else ...[
+                            Text(
+                              notifier.note,
+                              textAlign: TextAlign.center,
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.black,
+                                fontSize: Dimensions.fontSizeDefault,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ] else ...[
+                          if (notifier.isBtnSessionEnd)
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10),
+                              child: CustomButton(
+                                onTap: () async {
+                                  GeneralModal.infoEndSos(
+                                    sosId: widget.sosId,
+                                    chatId: "-",
+                                    recipientId: "-",
+                                    msg:
+                                        "Apakah kasus Anda sebelumnya telah ditangani ?",
+                                    isHome: false,
+                                  );
+                                },
+                                btnColor: const Color(0xFFC82927),
+                                isLoading:
+                                    context.watch<SosNotifier>().state ==
+                                        ProviderState.loading
+                                    ? true
+                                    : false,
+                                isBorder: false,
+                                isBoxShadow: false,
+                                isBorderRadius: true,
+                                btnTxt: "Apa keluhan sudah ditangani ?",
+                              ),
+                            ),
+                          Row(
+                            spacing: 14,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  CupertinoButton(
-                                    color: Colors.transparent,
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      messageNotifier.clearActiveChatId();
-                                      Navigator.pop(context, "refetch");
-                                    },
+                              Expanded(
+                                flex: 5,
+                                child: TextField(
+                                  maxLines: null,
+                                  controller: messageC,
+                                  style: robotoRegular.copyWith(fontSize: 12.0),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    filled: true,
+                                    fillColor: ColorResources.white,
+                                    hintText: "ketik pesan singkat dan jelas",
+                                    hintStyle: robotoRegular.copyWith(
+                                      fontSize: 12.0,
+                                      color: Colors.grey,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: IconButton(
+                                  onPressed: sendMessage,
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: const BoxDecoration(
+                                      color: primaryColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(50.0),
+                                      ),
+                                    ),
                                     child: const Icon(
-                                      Icons.chevron_left,
+                                      Icons.send,
+                                      size: 20.0,
                                       color: Colors.white,
                                     ),
                                   ),
-
-                                  CachedNetworkImage(
-                                    imageUrl:
-                                        notifier.recipient.avatar?.toString() ??
-                                        '-',
-                                    imageBuilder:
-                                        (
-                                          BuildContext context,
-                                          ImageProvider<Object> imageProvider,
-                                        ) {
-                                          return CircleAvatar(
-                                            backgroundImage: imageProvider,
-                                            radius: 16.0,
-                                          );
-                                        },
-                                    placeholder:
-                                        (BuildContext context, String url) {
-                                          return const CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              'assets/images/default.jpeg',
-                                            ),
-                                            radius: 16.0,
-                                          );
-                                        },
-                                    errorWidget:
-                                        (
-                                          BuildContext context,
-                                          String url,
-                                          Object error,
-                                        ) {
-                                          return const CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              'assets/images/default.jpeg',
-                                            ),
-                                            radius: 16.0,
-                                          );
-                                        },
-                                  ),
-
-                                  const SizedBox(width: 12.0),
-
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        notifier.recipient.name?.toString() ??
-                                            'User',
-                                        style: robotoRegular.copyWith(
-                                          fontSize: 16.0,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 4.0),
-
-                                      notifier.isTyping(widget.chatId)
-                                          ? Text(
-                                              "Sedang mengetik...",
-                                              style: robotoRegular.copyWith(
-                                                fontSize: 10.0,
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-
-                      SliverToBoxAdapter(
-                        child: showAutoGreetings
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 30.0,
-                                      horizontal: 12.0,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12.0),
-                                        topRight: Radius.circular(12.0),
-                                        bottomLeft: Radius.circular(12.0),
-                                        bottomRight: Radius.circular(12.0),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.white,
-                                        ),
-                                        children: [
-                                          const TextSpan(
-                                            text:
-                                                "Terima kasih telah menghubungi kami di ",
-                                          ),
-                                          TextSpan(
-                                            text: "Marlinda",
-                                            style: robotoRegular.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: ColorResources.white,
-                                            ),
-                                          ),
-                                          const TextSpan(
-                                            text:
-                                                ". Apakah yang bisa kami bantu atas keluhan anda?",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : const SizedBox(),
-                      ),
-
-                      if (notifier.state == ProviderState.loading)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(child: SizedBox()),
-                        ),
-
-                      if (notifier.state == ProviderState.loaded)
-                        SliverToBoxAdapter(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.only(
-                              top: 20.0,
-                              left: 16.0,
-                              right: 16.0,
-                              bottom: 20.0,
-                            ),
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            reverse: true,
-                            itemBuilder: (BuildContext context, int i) {
-                              final item = notifier.messages[i];
-
-                              return ChatBubble(
-                                text: item.text,
-                                time: item.sentTime,
-                                isMe: item.user.isMe!,
-                                isRead: item.isRead,
-                              );
-                            },
-                            itemCount: notifier.messages.length,
-                          ),
-                        ),
-                    ],
-                  );
-                },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ChatBubble extends StatelessWidget {
-  final String text;
-  final String time;
-  final bool isMe;
-  final bool isRead;
-
-  const ChatBubble({
-    super.key,
-    required this.text,
-    required this.time,
-    required this.isMe,
-    required this.isRead,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 14.0,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 10.0),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
-            ),
-            decoration: BoxDecoration(
-              color: isMe ? primaryColor : Colors.grey[200],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isMe ? 12.0 : 0.0),
-                topRight: Radius.circular(isMe ? 0.0 : 12.0),
-                bottomLeft: const Radius.circular(12.0),
-                bottomRight: const Radius.circular(12.0),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  text,
-                  style: robotoRegular.copyWith(
-                    color: isMe ? Colors.white : Colors.black,
-                    fontSize: Dimensions.fontSizeDefault,
-                  ),
-                ),
-
-                const SizedBox(height: 5.0),
-              ],
-            ),
-          ),
-
-          isMe
-              ? Text(
-                  time,
-                  style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeSmall,
-                  ),
-                )
-              : Text(
-                  time,
-                  style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeSmall,
-                  ),
-                ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

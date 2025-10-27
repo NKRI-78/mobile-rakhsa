@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +16,7 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifi
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import 'injection.dart';
 import 'main.dart';
 
 // check socket socket?.connected ?? false
@@ -32,9 +32,6 @@ class SocketIoService with ChangeNotifier {
   ConnectionIndicator get connectionIndicator => _connectionIndicator;
 
   StreamSubscription<List<ConnectivityResult>>? connection;
-
-  StreamSubscription? channelSubscription;
-  Timer? reconnectTimer;
 
   bool isConnected = false;
 
@@ -103,7 +100,7 @@ class SocketIoService with ChangeNotifier {
     }
 
     socket?.onConnect((_) {
-      debugPrint("=== CONNECTED SOCKET IO ===");
+      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG");
 
       setStateConnectionIndicator(ConnectionIndicator.yellow);
       Future.delayed(const Duration(seconds: 1), () {
@@ -115,100 +112,72 @@ class SocketIoService with ChangeNotifier {
 
     socket?.on("message", (message) {
       debugPrint("=== FETCH MESSAGE ===");
-
       final context = navigatorKey.currentContext;
-
-      debugPrint(
-        "cek context dari socket?.on(message, (message) apakah null? = ${context != null}",
-      );
-      if (context == null) return;
-      FirebaseCrashlytics.instance.recordError(
-        "context di socket.on(message) == null",
-        StackTrace.fromString(
-          "socket?.on(message, (message) lib/socketio.dart line 116",
-        ),
-      );
-
-      debugPrint("messages dari socket?.on(message, (message) = $message");
-
-      context.read<GetMessagesNotifier>().appendMessage(data: message);
+      if (context != null) {
+        context.read<GetMessagesNotifier>().appendMessage(data: message);
+      }
     });
 
     socket?.on("typing", (message) {
       debugPrint("=== TYPING ===");
 
       final context = navigatorKey.currentContext;
-
-      if (context == null) {
-        return;
+      if (context != null) {
+        context.read<GetMessagesNotifier>().updateUserTyping(data: message);
       }
-
-      context.read<GetMessagesNotifier>().updateUserTyping(data: message);
     });
 
     socket?.on("resolved-by-user", (message) {
       debugPrint("=== RESOLVED BY USER ===");
 
-      final context = navigatorKey.currentContext;
-
-      if (context == null) {
-        return;
-      }
-
-      context.read<UserProvider>().getUser();
+      locator<UserProvider>().getUser();
     });
 
     socket?.on("closed-by-agent", (message) {
       debugPrint("=== CLOSED BY AGENT ===");
 
+      locator<UserProvider>().getUser();
+
       final context = navigatorKey.currentContext;
-
-      if (context == null) {
-        return;
+      if (context != null) {
+        context.read<GetMessagesNotifier>().setStateNote(
+          val: message["note"].toString(),
+        );
       }
-
-      context.read<UserProvider>().getUser();
-
-      context.read<GetMessagesNotifier>().setStateNote(
-        val: message["note"].toString(),
-      );
     });
 
     socket?.on("confirmed-by-agent", (message) {
       debugPrint("=== CONFIRMED BY AGENT ===");
 
+      locator<UserProvider>().getUser();
+
       final context = navigatorKey.currentContext;
-
-      if (context == null) {
-        return;
-      }
-
-      context.read<UserProvider>().getUser();
-
-      StorageHelper.getUserSession().then((v) {
-        if (v == null) return;
-        if (message["sender"] == v.user.id) {
-          if (context.mounted) {
-            context.read<GetMessagesNotifier>().navigateToChat(
-              chatId: message["chat_id"].toString(),
-              status: "NONE",
-              recipientId: message["recipient_id"].toString(),
-              sosId: message["sos_id"].toString(),
-            );
+      if (context != null) {
+        StorageHelper.getUserSession().then((v) {
+          if (v == null) return;
+          if (message["sender"] == v.user.id) {
+            if (context.mounted) {
+              context.read<GetMessagesNotifier>().navigateToChat(
+                chatId: message["chat_id"].toString(),
+                status: "NONE",
+                recipientId: message["recipient_id"].toString(),
+                sosId: message["sos_id"].toString(),
+              );
+            }
           }
-        }
-      });
-
-      context.read<SosNotifier>().stopTimer();
+        });
+        context.read<SosNotifier>().stopTimer();
+      }
     });
 
     socket?.onReconnect((_) {
+      debugPrint("🔃 MENCOBA MENGHUBUNGKAN SOKET");
       isConnected = true;
       setStateConnectionIndicator(ConnectionIndicator.red);
     });
 
     socket?.onConnectError((data) {
-      debugPrint("=== ERROR CONNECTION SOCKET IO ${data.toString()} ===");
+      debugPrint("⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}");
     });
   }
 

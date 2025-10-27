@@ -14,7 +14,7 @@ class Avatar extends StatefulWidget {
     this.borderColor = blackColor,
   });
 
-  final String src;
+  final String? src;
   final String? initial;
   final double radius;
   final bool withBorder;
@@ -106,7 +106,7 @@ class _AvatarState extends State<Avatar> {
     );
 
     return CachedNetworkImage(
-      imageUrl: widget.src,
+      imageUrl: widget.src ?? "-",
       fit: BoxFit.cover,
       imageBuilder: (context, imageProvider) {
         return AnimatedContainer(

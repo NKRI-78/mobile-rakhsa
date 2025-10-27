@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
+
+class ChatBubble extends StatelessWidget {
+  final String text;
+  final String time;
+  final bool isMe;
+  final bool isRead;
+
+  const ChatBubble({
+    super.key,
+    required this.text,
+    required this.time,
+    required this.isMe,
+    required this.isRead,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 14.0,
+            ),
+            margin: const EdgeInsets.symmetric(vertical: 10.0),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: isMe ? primaryColor : Colors.grey[200],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(isMe ? 12.0 : 0.0),
+                topRight: Radius.circular(isMe ? 0.0 : 12.0),
+                bottomLeft: const Radius.circular(12.0),
+                bottomRight: const Radius.circular(12.0),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  text,
+                  style: robotoRegular.copyWith(
+                    color: isMe ? Colors.white : Colors.black,
+                    fontSize: Dimensions.fontSizeDefault,
+                  ),
+                ),
+
+                const SizedBox(height: 5.0),
+              ],
+            ),
+          ),
+
+          isMe
+              ? Text(
+                  time,
+                  style: robotoRegular.copyWith(
+                    color: ColorResources.black,
+                    fontSize: Dimensions.fontSizeSmall,
+                  ),
+                )
+              : Text(
+                  time,
+                  style: robotoRegular.copyWith(
+                    color: ColorResources.black,
+                    fontSize: Dimensions.fontSizeSmall,
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
+}
