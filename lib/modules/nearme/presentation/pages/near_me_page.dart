@@ -15,7 +15,7 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
 class NearMePage extends StatefulWidget {
@@ -28,14 +28,14 @@ class NearMePage extends StatefulWidget {
 }
 
 class NearMePageState extends State<NearMePage> {
-  late ProfileProvider profileNotifier;
+  late UserProvider profileNotifier;
   late GetNearbyPlacenNotifier getNearbyPlaceReligionNotifier;
   Set<Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    profileNotifier = context.read<ProfileProvider>();
+    profileNotifier = context.read<UserProvider>();
     getNearbyPlaceReligionNotifier = context.read<GetNearbyPlacenNotifier>();
 
     Future.microtask(() async {

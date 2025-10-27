@@ -18,7 +18,7 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.
 import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/main.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -32,7 +32,9 @@ import 'package:rakhsa/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, this.fromRegister = false});
+
+  final bool fromRegister;
 
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
@@ -48,7 +50,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late SocketIoService socketIoService;
-  late ProfileProvider profileNotifier;
+  late UserProvider profileNotifier;
   late WeatherNotifier weatherNotifier;
   late UpdateAddressNotifier updateAddressNotifier;
 
@@ -92,7 +94,7 @@ class DashboardScreenState extends State<DashboardScreen>
     WidgetsBinding.instance.addObserver(this);
 
     firebaseProvider = context.read<FirebaseProvider>();
-    profileNotifier = context.read<ProfileProvider>();
+    profileNotifier = context.read<UserProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
     weatherNotifier = context.read<WeatherNotifier>();
@@ -262,33 +264,37 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _initAndShowWelcomeDialog() async {
-    final showWelcomeDialog = !StorageHelper.containsKey("show_welcome_dialog");
-    await Future.delayed(Duration(seconds: 2));
-    if (mounted && showWelcomeDialog) {
-      bool? markAsDone = await AppDialog.show(
-        c: context,
-        canPop: false,
-        content: DialogContent(
-          assetIcon: AssetSource.iconWelcomeDialog,
-          titleAsync: StorageHelper.getUserSession().then((v) {
-            return "Terimakasih ${v?.user.name ?? "-"}";
-          }),
-          message: """
+    if (widget.fromRegister) {
+      final showWelcomeDialog = !StorageHelper.containsKey(
+        "show_welcome_dialog",
+      );
+      await Future.delayed(Duration(seconds: 2));
+      if (mounted && showWelcomeDialog) {
+        bool? markAsDone = await AppDialog.show(
+          c: context,
+          canPop: false,
+          content: DialogContent(
+            assetIcon: AssetSource.iconWelcomeDialog,
+            titleAsync: StorageHelper.getUserSession().then((v) {
+              return "Terimakasih ${v?.user.name ?? "-"}";
+            }),
+            message: """
 Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.
 Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!
 """,
-          style: DialogStyle(assetIconSize: 175),
-          actions: [
-            DialogActionButton(
-              label: "Mengerti",
-              primary: true,
-              onTap: () => context.pop(true),
-            ),
-          ],
-        ),
-      );
-      if (markAsDone == null || markAsDone) {
-        StorageHelper.write("show_welcome_dialog", "done");
+            style: DialogStyle(assetIconSize: 175),
+            actions: [
+              DialogActionButton(
+                label: "Mengerti",
+                primary: true,
+                onTap: () => context.pop(true),
+              ),
+            ],
+          ),
+        );
+        if (markAsDone == null || markAsDone) {
+          StorageHelper.write("show_welcome_dialog", "done");
+        }
       }
     }
   }

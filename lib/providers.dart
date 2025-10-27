@@ -4,7 +4,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_continent_notifier.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_state_notifier.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/detail_inbox_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_inbox_notifier.dart';
@@ -37,7 +37,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<SosNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosRatingNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<ProfileProvider>()),
+  ChangeNotifierProvider.value(value: di.locator<UserProvider>()),
   ChangeNotifierProvider.value(value: di.locator<GetChatsNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetContinentNotifier>()),

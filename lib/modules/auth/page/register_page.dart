@@ -69,6 +69,7 @@ class RegisterScreenState extends State<RegisterScreen> {
           Navigator.of(c).pushNamedAndRemoveUntil(
             RoutesNavigation.dashboard,
             (route) => false,
+            arguments: {"from_register": true},
           );
         },
         onError: (code, m) async {

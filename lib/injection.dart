@@ -63,7 +63,7 @@ import 'package:rakhsa/modules/administration/presentation/provider/get_continen
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 
@@ -174,7 +174,7 @@ void init() {
     ),
   );
   locator.registerFactory(
-    () => ProfileProvider(repository: locator<UserRepository>()),
+    () => UserProvider(repository: locator<UserRepository>()),
   );
   locator.registerFactory(() => SosNotifier(useCase: locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));

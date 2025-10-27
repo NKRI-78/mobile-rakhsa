@@ -9,7 +9,7 @@ import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 class CurrentLocationWidget extends StatelessWidget {
   final String avatar;
@@ -49,10 +49,10 @@ class CurrentLocationWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    context.watch<ProfileProvider>().getUserState ==
+                    context.watch<UserProvider>().getUserState ==
                             RequestState.error
                         ? const SizedBox()
-                        : context.watch<ProfileProvider>().getUserState ==
+                        : context.watch<UserProvider>().getUserState ==
                               RequestState.loading
                         ? const SizedBox()
                         : CachedNetworkImage(

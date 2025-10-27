@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:rakhsa/awesome_notification.dart';
+import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 
 import 'package:rakhsa/firebase.dart';
@@ -67,8 +68,7 @@ void onStart(ServiceInstance service) async {
       return;
     }
 
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    final androidInfo = await locator<DeviceInfoPlugin>().androidInfo;
 
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: AndroidSettings(accuracy: LocationAccuracy.best),
@@ -95,9 +95,7 @@ void onStart(ServiceInstance service) async {
           "device": androidInfo.model,
           "product_name": androidInfo.product,
           "no_serial": androidInfo.product,
-          "os_name": androidInfo.version.baseOS.toString() == ""
-              ? "Android"
-              : "IOS",
+          "os_name": Platform.isAndroid ? "Android" : "iOS",
           "lat": position.latitude,
           "lng": position.longitude,
         },

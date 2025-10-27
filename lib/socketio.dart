@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -155,7 +155,7 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileProvider>().getUser();
+      context.read<UserProvider>().getUser();
     });
 
     socket?.on("closed-by-agent", (message) {
@@ -167,7 +167,7 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileProvider>().getUser();
+      context.read<UserProvider>().getUser();
 
       context.read<GetMessagesNotifier>().setStateNote(
         val: message["note"].toString(),
@@ -183,7 +183,7 @@ class SocketIoService with ChangeNotifier {
         return;
       }
 
-      context.read<ProfileProvider>().getUser();
+      context.read<UserProvider>().getUser();
 
       StorageHelper.getUserSession().then((v) {
         if (v == null) return;

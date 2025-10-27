@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/capitalize.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
 
                         Container(
                           margin: const EdgeInsets.only(top: 45),
-                          child: Consumer<ProfileProvider>(
+                          child: Consumer<UserProvider>(
                             builder: (context, data, child) {
                               return SosButton(
                                 SosButtonParam(

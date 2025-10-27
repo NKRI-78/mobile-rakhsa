@@ -10,7 +10,7 @@ import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
@@ -127,32 +127,23 @@ class FirebaseProvider with ChangeNotifier {
         );
         break;
       case NotificationType.ews:
-        navigatorKey.currentContext!.read<ProfileProvider>().getUser();
+        navigatorKey.currentContext!.read<UserProvider>().getUser();
 
         Future.delayed(const Duration(seconds: 1), () {
           var lat =
               double.tryParse(
-                navigatorKey.currentContext!
-                        .read<ProfileProvider>()
-                        .user
-                        ?.lat ??
+                navigatorKey.currentContext!.read<UserProvider>().user?.lat ??
                     "0",
               ) ??
               0;
           var lng =
               double.tryParse(
-                navigatorKey.currentContext!
-                        .read<ProfileProvider>()
-                        .user
-                        ?.lng ??
+                navigatorKey.currentContext!.read<UserProvider>().user?.lng ??
                     "0",
               ) ??
               0;
           var state =
-              navigatorKey.currentContext!
-                  .read<ProfileProvider>()
-                  .user
-                  ?.state ??
+              navigatorKey.currentContext!.read<UserProvider>().user?.state ??
               "Indonesia";
 
           navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
@@ -185,16 +176,16 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void handleResolvedSos(BuildContext context, Map<String, dynamic> payload) {
-    context.read<ProfileProvider>().getUser();
+    context.read<UserProvider>().getUser();
   }
 
   void handleClosedSos(BuildContext context, Map<String, dynamic> payload) {
-    context.read<ProfileProvider>().getUser();
+    context.read<UserProvider>().getUser();
   }
 
   void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
     var messageNotifier = context.read<GetMessagesNotifier>();
-    context.read<ProfileProvider>().getUser();
+    context.read<UserProvider>().getUser();
     context.read<SosNotifier>().stopTimer();
 
     messageNotifier.resetTimer();
@@ -207,22 +198,20 @@ class FirebaseProvider with ChangeNotifier {
   ) async {
     // fetch realtime when notification without title and description
     if (payload['type'] == 'ews-delete') {
-      navigatorKey.currentContext!.read<ProfileProvider>().getUser();
+      navigatorKey.currentContext!.read<UserProvider>().getUser();
 
       var lat =
           double.tryParse(
-            navigatorKey.currentContext!.read<ProfileProvider>().user?.lat ??
-                "0",
+            navigatorKey.currentContext!.read<UserProvider>().user?.lat ?? "0",
           ) ??
           0;
       var lng =
           double.tryParse(
-            navigatorKey.currentContext!.read<ProfileProvider>().user?.lng ??
-                "0",
+            navigatorKey.currentContext!.read<UserProvider>().user?.lng ?? "0",
           ) ??
           0;
       var state =
-          navigatorKey.currentContext!.read<ProfileProvider>().user?.state ??
+          navigatorKey.currentContext!.read<UserProvider>().user?.state ??
           "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(
@@ -233,22 +222,20 @@ class FirebaseProvider with ChangeNotifier {
 
       // fetch realtime when notification with title and description
     } else if (payload['type'] == 'ews') {
-      navigatorKey.currentContext!.read<ProfileProvider>().getUser();
+      navigatorKey.currentContext!.read<UserProvider>().getUser();
 
       var lat =
           double.tryParse(
-            navigatorKey.currentContext!.read<ProfileProvider>().user?.lat ??
-                "0",
+            navigatorKey.currentContext!.read<UserProvider>().user?.lat ?? "0",
           ) ??
           0;
       var lng =
           double.tryParse(
-            navigatorKey.currentContext!.read<ProfileProvider>().user?.lng ??
-                "0",
+            navigatorKey.currentContext!.read<UserProvider>().user?.lng ?? "0",
           ) ??
           0;
       var state =
-          navigatorKey.currentContext!.read<ProfileProvider>().user?.state ??
+          navigatorKey.currentContext!.read<UserProvider>().user?.state ??
           "Indonesia";
 
       navigatorKey.currentContext!.read<DashboardNotifier>().getEws(

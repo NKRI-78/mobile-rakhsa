@@ -34,7 +34,11 @@ class RoutesNavigation {
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case dashboard:
-        return MaterialPageRoute(builder: (_) => const DashboardScreen());
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) =>
+              DashboardScreen(fromRegister: args?['from_register'] ?? false),
+        );
       case deviceNotSupport:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case register:

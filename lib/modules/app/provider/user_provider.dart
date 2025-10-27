@@ -6,9 +6,8 @@ import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
 
-class ProfileProvider with ChangeNotifier {
-  ProfileProvider({required UserRepository repository})
-    : _repository = repository;
+class UserProvider with ChangeNotifier {
+  UserProvider({required UserRepository repository}) : _repository = repository;
 
   final UserRepository _repository;
 

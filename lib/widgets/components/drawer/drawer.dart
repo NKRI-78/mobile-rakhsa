@@ -18,7 +18,7 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
@@ -47,7 +47,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Consumer<ProfileProvider>(
+                Consumer<UserProvider>(
                   builder: (context, p, child) {
                     if (p.getUserState == RequestState.error) {
                       return const SizedBox();

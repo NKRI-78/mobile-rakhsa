@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';
 import 'package:rakhsa/modules/dashboard/data/models/news.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_banner.dart';
@@ -13,7 +13,7 @@ enum BannerProviderState { idle, loading, empty, loaded, error }
 enum NewsProviderState { idle, loading, empty, loaded, error }
 
 class DashboardNotifier with ChangeNotifier {
-  final ProfileProvider profileNotifier;
+  final UserProvider profileNotifier;
   final GetNewsUseCase useCase;
   final GetBannerUseCase bannerUseCase;
 

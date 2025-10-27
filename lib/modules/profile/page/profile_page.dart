@@ -17,7 +17,7 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -30,7 +30,7 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   bool btnUpdateProfileLoading = false;
 
-  late ProfileProvider profileNotifier;
+  late UserProvider profileNotifier;
   // late UpdateProfileNotifier updateProfileNotifier;
   late UploadMediaNotifier uploadMediaNotifier;
 
@@ -167,7 +167,7 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
 
-    profileNotifier = context.read<ProfileProvider>();
+    profileNotifier = context.read<UserProvider>();
     // updateProfileNotifier = context.read<UpdateProfileNotifier>();
     uploadMediaNotifier = context.read<UploadMediaNotifier>();
 
@@ -270,7 +270,7 @@ class ProfilePageState extends State<ProfilePage> {
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-            if (context.watch<ProfileProvider>().getUserState ==
+            if (context.watch<UserProvider>().getUserState ==
                 RequestState.loading)
               const SliverFillRemaining(
                 hasScrollBody: false,
@@ -284,13 +284,13 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-            if (context.watch<ProfileProvider>().getUserState ==
+            if (context.watch<UserProvider>().getUserState ==
                 RequestState.error)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
                   child: Text(
-                    context.read<ProfileProvider>().errMessage ?? "-",
+                    context.read<UserProvider>().errMessage ?? "-",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black,
@@ -298,7 +298,7 @@ class ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-            if (context.watch<ProfileProvider>().getUserState ==
+            if (context.watch<UserProvider>().getUserState ==
                 RequestState.success)
               SliverPadding(
                 padding: const EdgeInsets.only(

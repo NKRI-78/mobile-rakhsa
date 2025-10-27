@@ -9,7 +9,7 @@ import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/modules/app/provider/profile_provider.dart';
+import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/socketio.dart';
@@ -33,7 +33,7 @@ class HeaderSection extends StatelessWidget {
             Flexible(
               child: GestureDetector(
                 onTap: () => scaffoldKey.currentState?.openEndDrawer(),
-                child: Consumer<ProfileProvider>(
+                child: Consumer<UserProvider>(
                   builder: (context, provider, child) {
                     return Avatar(
                       src: provider.user?.avatar ?? "",
@@ -80,7 +80,7 @@ class HeaderSection extends StatelessWidget {
                       color: ColorResources.hintColor,
                     ),
                   ),
-                  Consumer<ProfileProvider>(
+                  Consumer<UserProvider>(
                     builder: (context, provider, child) {
                       if (provider.getUserState == RequestState.success) {
                         return SizedBox(
