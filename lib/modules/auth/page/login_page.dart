@@ -65,8 +65,7 @@ class LoginScreenState extends State<LoginScreen> {
           );
         },
         onError: (code, message) async {
-          bool? tryAgain = await AppDialog.error(c: c, message: message);
-          if (tryAgain != null && tryAgain) loginUser();
+          await AppDialog.error(c: c, message: message);
           _phoneFNode.unfocus();
           _passFNode.unfocus();
         },

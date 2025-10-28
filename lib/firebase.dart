@@ -27,39 +27,8 @@ class NotificationType {
   static const historyUser = "history-user";
 }
 
-@pragma('vm:entry-point') // add this for production
-Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
-  // debugPrint("=== INCOMING BACKGROUND MESSAGE ===");
-  // final sharedPreferences = await SharedPreferences.getInstance();
-
-  // Position position = await Geolocator.getCurrentPosition(
-  //   desiredAccuracy: LocationAccuracy.best,
-  //   forceAndroidLocationManager: true,
-  // );
-
-  // final lat = position.latitude;
-  // final lng = position.longitude;
-
-  // List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-  // String country = placemarks[0].country ?? "-";
-  // String street = placemarks[0].street ?? "-";
-  // String administrativeArea = placemarks[0].administrativeArea ?? "-";
-  // String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-";
-
-  // String address = "$administrativeArea $subadministrativeArea\n$street, $country";
-
-  // save to db
-  // if(sharedPreferences.getString("user_id") != null) {
-  //   await Dio().post("${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
-  //     data: {
-  //       "user_id": sharedPreferences.getString("user_id"),
-  //       "address": address,
-  //       "lat": lat,
-  //       "lng": lng
-  //     }
-  //   );
-  // }
-}
+@pragma('vm:entry-point')
+Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {}
 
 class FirebaseProvider with ChangeNotifier {
   final Dio dio;

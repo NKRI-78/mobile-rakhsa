@@ -99,8 +99,8 @@ class SocketIoService with ChangeNotifier {
       socket?.connect();
     }
 
-    socket?.onConnect((_) {
-      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG");
+    socket?.onConnect((message) {
+      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG $message");
 
       setStateConnectionIndicator(ConnectionIndicator.yellow);
       Future.delayed(const Duration(seconds: 1), () {
@@ -110,8 +110,20 @@ class SocketIoService with ChangeNotifier {
       isConnected = true;
     });
 
+    socket?.onReconnect((_) {
+      debugPrint("🔃 MENCOBA MENGHUBUNGKAN SOKET");
+      isConnected = true;
+      setStateConnectionIndicator(ConnectionIndicator.red);
+    });
+
+    socket?.onConnectError((data) {
+      debugPrint("⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}");
+    });
+
     socket?.on("message", (message) {
-      debugPrint("=== FETCH MESSAGE ===");
+      debugPrint(
+        "PESAN MASUK VIA SOKET socket?.on(message, (message)) = $message",
+      );
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<GetMessagesNotifier>().appendMessage(data: message);
@@ -168,16 +180,6 @@ class SocketIoService with ChangeNotifier {
         });
         context.read<SosNotifier>().stopTimer();
       }
-    });
-
-    socket?.onReconnect((_) {
-      debugPrint("🔃 MENCOBA MENGHUBUNGKAN SOKET");
-      isConnected = true;
-      setStateConnectionIndicator(ConnectionIndicator.red);
-    });
-
-    socket?.onConnectError((data) {
-      debugPrint("⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}");
     });
   }
 

@@ -72,9 +72,8 @@ class RegisterScreenState extends State<RegisterScreen> {
             arguments: {"from_register": true},
           );
         },
-        onError: (code, m) async {
-          bool? tryAgain = await AppDialog.error(c: c, message: m);
-          if (tryAgain != null && tryAgain) registerUser();
+        onError: (code, m) {
+          AppDialog.error(c: c, message: m);
         },
       );
     }
@@ -148,6 +147,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               label: "Nama Lengkap",
                               hintText: "Masukan nama lengkap Anda",
                               controller: _fullNameController,
+                              fullname: true,
                               onFieldSubmitted: (_) =>
                                   _phoneFNode.requestFocus(),
                               validator: (val) {

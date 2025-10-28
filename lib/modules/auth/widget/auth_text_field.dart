@@ -13,6 +13,7 @@ class AuthTextField extends StatefulWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.validator,
+    this.fullname = false,
     this.password = false,
     this.phone = false,
   });
@@ -21,6 +22,7 @@ class AuthTextField extends StatefulWidget {
   final String? hintText;
   final TextEditingController? controller;
   final FocusNode? focusNode;
+  final bool fullname;
   final bool password;
   final bool phone;
   final void Function(String val)? onFieldSubmitted;
@@ -48,6 +50,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(100);
     final forrmatters = <TextInputFormatter>[
+      if (widget.fullname) CapitalizeEachWordFormatter(),
       if (widget.phone) PhoneNumberFormatter(),
     ];
 

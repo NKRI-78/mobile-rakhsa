@@ -87,7 +87,7 @@ class ChatPageState extends State<ChatPage> {
 
       if (hasConnection && _wasOffline) {
         debugPrint("Internet reconnected! Fetching missed messages...");
-        await getData();
+        // await getData();
         _wasOffline = false;
       } else if (!hasConnection) {
         _wasOffline = true;
@@ -119,11 +119,10 @@ class ChatPageState extends State<ChatPage> {
     Future.delayed(const Duration(milliseconds: 400), () {
       if (sC.hasClients) {
         sC.animateTo(
-          sC.position.maxScrollExtent,
+          sC.position.minScrollExtent,
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOut,
         );
-        // setState(() {});
       }
     });
 
@@ -131,22 +130,19 @@ class ChatPageState extends State<ChatPage> {
       Future.delayed(const Duration(milliseconds: 400), () {
         if (sC.hasClients) {
           sC.animateTo(
-            sC.position.maxScrollExtent,
+            sC.position.minScrollExtent,
             duration: const Duration(milliseconds: 400),
             curve: Curves.easeOut,
           );
-          // setState(() {});
         }
       });
     });
   }
 
   Future<void> sendMessage() async {
-    final session = await StorageHelper.getUserSession();
-    if (messageC.text.trim().isEmpty) {
-      return;
-    }
+    if (messageC.text.trim().isEmpty) return;
 
+    final session = await StorageHelper.getUserSession();
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     socketIoService.sendMessage(
@@ -184,11 +180,10 @@ class ChatPageState extends State<ChatPage> {
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
         sC.animateTo(
-          sC.position.maxScrollExtent,
+          sC.position.minScrollExtent,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
-        setState(() {});
       }
     });
   }
@@ -239,7 +234,7 @@ class ChatPageState extends State<ChatPage> {
             ),
             title: Consumer<GetMessagesNotifier>(
               builder: (context, notifier, child) {
-                final username = notifier.recipient.name ?? "User";
+                final username = notifier.recipient.name ?? "-";
                 final agentIsTyping = notifier.isTyping(widget.chatId);
                 return Row(
                   spacing: 10,
@@ -284,9 +279,10 @@ class ChatPageState extends State<ChatPage> {
                 children: [
                   Expanded(
                     child: ListView.builder(
+                      controller: sC,
                       reverse: true,
                       itemCount: notifier.messages.length,
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       itemBuilder: (context, index) {
                         final item = notifier.messages[index];
 

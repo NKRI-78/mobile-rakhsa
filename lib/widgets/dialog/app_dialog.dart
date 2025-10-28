@@ -39,7 +39,9 @@ class AppDialog {
     required String message,
     String? assetIcon,
     String? title,
-    List<DialogActionButton> actions = const [],
+    String? acceptButtonTitle,
+    String? rejectButtonTitle,
+    bool showRejectButton = false,
   }) {
     return show(
       c: c,
@@ -47,15 +49,19 @@ class AppDialog {
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
-        actions: actions.isEmpty
-            ? [
-                DialogActionButton(
-                  label: "Coba Lagi",
-                  primary: true,
-                  onTap: () => c.pop(true),
-                ),
-              ]
-            : actions,
+        actions: [
+          if (showRejectButton)
+            DialogActionButton(
+              label: rejectButtonTitle ?? "Batal",
+              onTap: () => c.pop(false),
+            ),
+
+          DialogActionButton(
+            label: acceptButtonTitle ?? "Coba Lagi",
+            primary: true,
+            onTap: () => c.pop(true),
+          ),
+        ],
       ),
     );
   }

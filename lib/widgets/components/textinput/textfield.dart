@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
+export 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
@@ -235,71 +237,6 @@ class CustomTextFieldState extends State<CustomTextField> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class UpperCaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    return TextEditingValue(
-      text: capitalize(newValue.text),
-      selection: newValue.selection,
-    );
-  }
-}
-
-String capitalize(String value) {
-  if (value.trim().isEmpty) return "";
-  return value
-      .split(' ')
-      .map(
-        (word) => word.isNotEmpty
-            ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
-            : "",
-      )
-      .join(' ');
-}
-
-class PhoneNumberFormatter extends TextInputFormatter {
-  static String unmask(String? text) {
-    if (text == null) return '';
-    return text.replaceAll(RegExp(r'[^0-9]'), '');
-  }
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    String digitsOnly = unmask(newValue.text);
-
-    if (digitsOnly.length > 13) {
-      digitsOnly = digitsOnly.substring(0, 13);
-    }
-
-    final buffer = StringBuffer();
-
-    for (int i = 0; i < digitsOnly.length; i++) {
-      buffer.write(digitsOnly[i]);
-
-      final isFourth = (i + 1) % 4 == 0;
-      final notLast = i + 1 != digitsOnly.length;
-      if (isFourth && notLast) {
-        buffer.write('-');
-      }
-    }
-
-    final formatted = buffer.toString();
-
-    int selectionIndex = formatted.length;
-
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
