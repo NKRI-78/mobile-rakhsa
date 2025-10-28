@@ -24,7 +24,11 @@ class AuthRepository {
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;
-      throw ClientException(code: e.code, message: message);
+      throw ClientException(
+        errorCode: e.message,
+        code: e.code,
+        message: message,
+      );
     } on DataParsingException catch (e) {
       throw ClientException(
         code: e.code,
@@ -56,7 +60,11 @@ class AuthRepository {
       final message = e.message == "User already exist"
           ? "Pengguna sudah terdaftar silahkan pakai nomor telepon lain."
           : e.message;
-      throw ClientException(code: e.code, message: message);
+      throw ClientException(
+        errorCode: e.message,
+        code: e.code,
+        message: message,
+      );
     } on DataParsingException catch (e) {
       throw ClientException(
         code: e.code,

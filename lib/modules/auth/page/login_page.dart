@@ -64,8 +64,14 @@ class LoginScreenState extends State<LoginScreen> {
             (route) => false,
           );
         },
-        onError: (code, message) async {
-          await AppDialog.error(c: c, message: message);
+        onError: (errorCode, code, message) async {
+          await AppDialog.error(
+            c: c,
+            title: errorCode == "User not found"
+                ? "Akun Belum Terdaftar"
+                : "Password Salah",
+            message: message,
+          );
           _phoneFNode.unfocus();
           _passFNode.unfocus();
         },

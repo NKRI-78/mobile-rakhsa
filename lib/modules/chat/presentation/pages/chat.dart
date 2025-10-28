@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
@@ -50,8 +48,6 @@ class ChatPage extends StatefulWidget {
 class ChatPageState extends State<ChatPage> {
   Timer? debounce;
 
-  bool showAutoGreetings = false;
-
   final sC = ScrollController();
 
   late TextEditingController messageC;
@@ -59,17 +55,14 @@ class ChatPageState extends State<ChatPage> {
   late GetMessagesNotifier messageNotifier;
   late SocketIoService socketIoService;
 
-  StreamSubscription<List<ConnectivityResult>>? _connSubscription;
-  bool _wasOffline = false;
-
   @override
   void initState() {
     super.initState();
 
-    showAutoGreetings = widget.autoGreetings;
-
     messageNotifier = context.read<GetMessagesNotifier>();
     socketIoService = context.read<SocketIoService>();
+
+    messageNotifier.initShowAutoGreetings(widget.autoGreetings);
 
     socketIoService.subscribeChat(widget.chatId);
 
@@ -79,20 +72,6 @@ class ChatPageState extends State<ChatPage> {
     messageC.addListener(handleTyping);
 
     Future.microtask(() => getData());
-
-    _connSubscription = locator<Connectivity>().onConnectivityChanged.listen((
-      results,
-    ) async {
-      final hasConnection = results.any((r) => r != ConnectivityResult.none);
-
-      if (hasConnection && _wasOffline) {
-        debugPrint("Internet reconnected! Fetching missed messages...");
-        // await getData();
-        _wasOffline = false;
-      } else if (!hasConnection) {
-        _wasOffline = true;
-      }
-    });
   }
 
   @override
@@ -105,9 +84,6 @@ class ChatPageState extends State<ChatPage> {
     messageC.dispose();
 
     debounce?.cancel();
-
-    _connSubscription?.cancel();
-    _connSubscription = null;
 
     super.dispose();
   }
@@ -124,18 +100,6 @@ class ChatPageState extends State<ChatPage> {
           curve: Curves.easeOut,
         );
       }
-    });
-
-    socketIoService.socket?.on("message", (message) {
-      Future.delayed(const Duration(milliseconds: 400), () {
-        if (sC.hasClients) {
-          sC.animateTo(
-            sC.position.minScrollExtent,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOut,
-          );
-        }
-      });
     });
   }
 
@@ -172,10 +136,7 @@ class ChatPageState extends State<ChatPage> {
 
     messageNotifier.appendMessage(data: message);
 
-    setState(() {
-      messageC.clear();
-      showAutoGreetings = false;
-    });
+    messageC.clear();
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (sC.hasClients) {
@@ -278,22 +239,63 @@ class ChatPageState extends State<ChatPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      controller: sC,
-                      reverse: true,
-                      itemCount: notifier.messages.length,
-                      padding: const EdgeInsets.all(16),
-                      itemBuilder: (context, index) {
-                        final item = notifier.messages[index];
+                    child: notifier.showAutoGreetings
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.all(12),
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeDefault,
+                                      color: ColorResources.white,
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text:
+                                            "Terima kasih telah menghubungi kami di ",
+                                      ),
+                                      TextSpan(
+                                        text: "Marlinda",
+                                        style: robotoRegular.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorResources.white,
+                                        ),
+                                      ),
+                                      const TextSpan(
+                                        text:
+                                            ". Apakah yang bisa kami bantu atas keluhan anda?",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            controller: sC,
+                            reverse: true,
+                            itemCount: notifier.messages.length,
+                            padding: const EdgeInsets.all(16),
+                            itemBuilder: (context, index) {
+                              final item = notifier.messages[index];
 
-                        return ChatBubble(
-                          text: item.text,
-                          time: item.sentTime,
-                          isMe: item.user.isMe!,
-                          isRead: item.isRead,
-                        );
-                      },
-                    ),
+                              return ChatBubble(
+                                text: item.text,
+                                time: item.sentTime,
+                                isMe: item.user.isMe!,
+                                isRead: item.isRead,
+                              );
+                            },
+                          ),
                   ),
 
                   // send message

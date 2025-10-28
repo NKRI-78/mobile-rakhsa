@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/firebase.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/main.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
@@ -17,9 +15,8 @@ class App extends StatefulWidget {
   State<App> createState() => AppState();
 }
 
-class AppState extends State<App> with WidgetsBindingObserver {
+class AppState extends State<App> {
   late FirebaseProvider firebaseProvider;
-  final _client = locator<DioClient>();
 
   Widget home = const SizedBox();
 
@@ -28,26 +25,20 @@ class AppState extends State<App> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
     firebaseProvider = context.read<FirebaseProvider>();
 
     Future.microtask(() => getData());
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    super.dispose();
-  }
-
   Future<Widget> getInitPage() async {
-    final res = await _client.get(endpoint: "/admin/toggle/feature");
-    if (res.data["feature_onboarding"] == true) {
-      final showOnBoarding = !StorageHelper.containsOnBoardingKey();
-      if (showOnBoarding) return OnBoardingPage();
-    }
+    // final res = await _client.get(endpoint: "/admin/toggle/feature");
+    // if (res.data["feature_onboarding"] == true) {
+    //   final showOnBoarding = !StorageHelper.containsOnBoardingKey();
+    //   if (showOnBoarding) return OnBoardingPage();
+    // }
+    final showOnBoarding = !StorageHelper.containsOnBoardingKey();
+    if (showOnBoarding) return OnBoardingPage();
     return const WelcomePage();
   }
 

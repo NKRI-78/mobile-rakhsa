@@ -26,6 +26,9 @@ class GetMessagesNotifier with ChangeNotifier {
   bool _isRunning = false;
   bool get isRunning => _isRunning;
 
+  bool _showAutoGreetings = false;
+  bool get showAutoGreetings => _showAutoGreetings;
+
   int _time = 60;
   int get time => _time;
 
@@ -125,6 +128,11 @@ class GetMessagesNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  void initShowAutoGreetings(bool show) {
+    _showAutoGreetings = show;
+    notifyListeners();
+  }
+
   Future<void> getMessages({
     required String chatId,
     required String status,
@@ -185,6 +193,9 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void appendMessage({required Map<String, dynamic> data}) {
+    _showAutoGreetings = false;
+    notifyListeners();
+
     String incomingChatId = data["chat_id"];
     String incomingMessageId = data["id"];
     bool isRead = data["is_read"];

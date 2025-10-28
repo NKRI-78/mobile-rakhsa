@@ -72,8 +72,14 @@ class RegisterScreenState extends State<RegisterScreen> {
             arguments: {"from_register": true},
           );
         },
-        onError: (code, m) {
-          AppDialog.error(c: c, message: m);
+        onError: (eCode, code, m) {
+          AppDialog.error(
+            c: c,
+            title: eCode == "User already exist"
+                ? "Akun Sudah Terdaftar"
+                : null,
+            message: m,
+          );
         },
       );
     }

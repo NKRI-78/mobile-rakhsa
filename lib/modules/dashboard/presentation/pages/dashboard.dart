@@ -40,8 +40,7 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends State<DashboardScreen>
-    with WidgetsBindingObserver {
+class DashboardScreenState extends State<DashboardScreen> {
   final globalKey = GlobalKey<ScaffoldState>();
 
   final _pageNotifyController = ValueNotifier<int>(0);
@@ -57,11 +56,6 @@ class DashboardScreenState extends State<DashboardScreen>
   Position? currentLocation;
   StreamSubscription? subscription;
 
-  bool isResumedProcessing = false;
-
-  List<Marker> _markers = [];
-  List<Marker> get markers => [..._markers];
-
   bool loadingGmaps = true;
 
   List<Widget> banners = [];
@@ -72,26 +66,11 @@ class DashboardScreenState extends State<DashboardScreen>
   String currentLng = "";
   String subAdministrativeArea = '';
 
-  bool isDialogLocationShowing = false;
-  bool isDialogNotificationShowing = false;
-  bool isDialogMicrophoneShowing = false;
-  bool isDialogCameraShowing = false;
-
   DateTime? lastTap;
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
-      StorageHelper.setIsLocked(val: true);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
 
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<UserProvider>();
@@ -113,7 +92,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _pageNotifyController.dispose();
     _pageController.dispose();
 
@@ -146,6 +124,31 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<void> getCurrentLocation() async {
+    final gpsEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!gpsEnabled) {
+      if (mounted) {
+        bool? openSetting = await AppDialog.show(
+          c: context,
+          content: DialogContent(
+            assetIcon: "assets/images/icons/current-location.png",
+            title: "GPS Tidak Aktif",
+            message:
+                "Mohon aktifkan GPS agar aplikasi Marlinda dapat mendeteksi lokasi Anda dengan akurat dan memungkinkan Anda menggunakan layanan SOS.",
+            actions: [
+              DialogActionButton(
+                label: "Aktifkan",
+                primary: true,
+                onTap: () => context.pop(true),
+              ),
+            ],
+          ),
+        );
+        if (openSetting != null && openSetting) {
+          await Geolocator.openLocationSettings();
+        }
+      }
+      return;
+    }
     Position position = await Geolocator.getCurrentPosition(
       locationSettings: AndroidSettings(
         accuracy: LocationAccuracy.best,
@@ -172,15 +175,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
       currentLat = position.latitude.toString();
       currentLng = position.longitude.toString();
-
-      _markers = [];
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("currentPosition"),
-          position: LatLng(position.latitude, position.longitude),
-          icon: BitmapDescriptor.defaultMarker,
-        ),
-      );
 
       loadingGmaps = false;
     });

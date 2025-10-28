@@ -28,7 +28,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String password,
     VoidCallback? onSuccess,
-    Function(int code, String message)? onError,
+    Function(String? errorCode, int code, String message)? onError,
   }) async {
     _loginState = RequestState.loading;
     notifyListeners();
@@ -45,7 +45,7 @@ class AuthProvider extends ChangeNotifier {
       _loginState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.code, e.message);
+      onError?.call(e.errorCode, e.code, e.message);
     }
   }
 
@@ -55,7 +55,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String password,
     VoidCallback? onSuccess,
-    Function(int code, String message)? onError,
+    Function(String? errorCode, int code, String message)? onError,
   }) async {
     _registerState = RequestState.loading;
     notifyListeners();
@@ -72,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
       _registerState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.code, e.message);
+      onError?.call(e.errorCode, e.code, e.message);
     }
   }
 
