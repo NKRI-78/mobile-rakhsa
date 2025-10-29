@@ -2,14 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import 'package:camera/camera.dart';
-
-import 'package:rakhsa/widgets/components/modal/modal.dart';
+import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -40,6 +42,8 @@ class CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
+  Timer? _timer;
+
   late SocketIoService socketIoService;
   late UploadMediaNotifier uploadMediaNotifier;
 
@@ -48,7 +52,8 @@ class CameraPageState extends State<CameraPage> {
   bool isRecording = false;
   bool isVideoMode = false;
 
-  int recordTimeLeft = 10;
+  static final int durationInSeconds = 10;
+  int recordTimeLeft = durationInSeconds;
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
@@ -59,47 +64,6 @@ class CameraPageState extends State<CameraPage> {
 
       startVideoRecording();
       setState(() {});
-    }
-  }
-
-  // void toggleMode() {
-  //   setState(() => isVideoMode = !isVideoMode);
-  // }
-
-  Future<void> takePicture() async {
-    if (controller == null || !controller!.value.isInitialized) return;
-    try {
-      final image = await controller!.takePicture();
-      File file = File(image.path);
-
-      setState(() => loading = true);
-
-      await uploadMediaNotifier.send(file: file, folderName: "pictures");
-
-      if (uploadMediaNotifier.message != "") {
-        GeneralModal.info(msg: uploadMediaNotifier.message);
-        return;
-      }
-
-      setState(() => loading = false);
-
-      String media = uploadMediaNotifier.entity!.path;
-      String ext = media.split('/').last.split('.').last;
-
-      socketIoService.sos(
-        location: widget.location,
-        country: widget.country,
-        media: media,
-        ext: ext,
-        lat: widget.lat,
-        lng: widget.lng,
-      );
-
-      if (mounted) {
-        Navigator.pop(context, "start");
-      }
-    } catch (e) {
-      debugPrint('Error taking picture: $e');
     }
   }
 
@@ -114,10 +78,13 @@ class CameraPageState extends State<CameraPage> {
         recordTimeLeft = 10;
       });
 
-      Timer.periodic(const Duration(seconds: 1), (timer) {
+      _timer?.cancel();
+      _timer = null;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (recordTimeLeft == 0) {
           stopVideoRecording();
           timer.cancel();
+          _timer?.cancel();
         } else {
           if (mounted) {
             setState(() {
@@ -132,6 +99,9 @@ class CameraPageState extends State<CameraPage> {
   }
 
   Future<void> stopVideoRecording() async {
+    _timer?.cancel();
+
+    locator<VibrationManager>().vibrate(duration: 50);
     if (controller == null || !isRecording) return;
 
     try {
@@ -201,113 +171,205 @@ class CameraPageState extends State<CameraPage> {
     super.dispose();
 
     controller?.dispose();
+    _timer?.cancel();
+    _timer = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: loading,
-      progressIndicator: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: ColorResources.white,
-          borderRadius: BorderRadius.circular(50.0),
+    return Scaffold(
+      backgroundColor: blackColor,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        elevation: 0.0,
+        scrolledUnderElevation: 0.0,
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarColor: blackColor,
+          systemNavigationBarColor: blackColor,
         ),
-        child: const CircularProgressIndicator(),
       ),
-      child: Scaffold(
-        body: controller == null || !controller!.value.isInitialized
-            ? const Center(child: CircularProgressIndicator())
-            : Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  CameraPreview(controller!),
+      body: controller == null || !controller!.value.isInitialized
+          ? Center(child: CircularProgressIndicator(color: whiteColor))
+          : Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CameraPreview(controller!),
 
-                  Positioned(
-                    bottom: 20,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // isVideoMode
-                        // ? IconButton(
-                        //     icon: Icon(
-                        //     isRecording
-                        //     ? Icons.stop
-                        //     : Icons.fiber_manual_record,
-                        //       color: Colors.red,
-                        //       size: 30,
-                        //     ),
-                        //     onPressed: isVideoMode
-                        //     ? (isRecording ? stopVideoRecording : startVideoRecording)
-                        //     : null,
-                        //   )
-                        // :
+                Positioned(
+                  bottom: 16,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    spacing: 4,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _RecordingButton(
+                        recordTimeLeft,
+                        durationInSeconds,
+                        isRecording ? stopVideoRecording : startVideoRecording,
+                      ),
 
-                        // isRecording
-                        // ? const SizedBox()
-                        // : IconButton(
-                        //     icon: const Icon(
-                        //       Icons.camera_alt,
-                        //       color: Colors.white,
-                        //       size: 28,
-                        //     ),
-                        //     onPressed: takePicture,
-                        //   ),
-
-                        // const SizedBox(width: 20.0),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.videocam,
-                            color: Colors.white,
-                            size: 28,
+                      if (isRecording)
+                        Text(
+                          '$recordTimeLeft s',
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.white,
+                            fontSize: Dimensions.fontSizeLarge,
                           ),
-                          onPressed: (isRecording
-                              ? stopVideoRecording
-                              : startVideoRecording),
                         ),
+                    ],
+                  ),
+                ),
 
-                        if (isRecording)
-                          Text(
-                            '$recordTimeLeft s',
-                            style: robotoRegular.copyWith(
-                              color: ColorResources.white,
-                              fontSize: Dimensions.fontSizeLarge,
-                            ),
-                          ),
-                      ],
+                if (loading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black54,
+                      child: Center(
+                        child: Consumer<UploadMediaNotifier>(
+                          builder: (context, notifier, child) {
+                            final percent = notifier.uploadPercent
+                                .toStringAsFixed(0);
+                            return Column(
+                              spacing: 12,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                42.spaceY,
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 32),
+                                  child: Row(
+                                    spacing: 12,
+                                    children: [
+                                      Icon(
+                                        IconsaxPlusLinear.user,
+                                        color: whiteColor,
+                                        size: 32,
+                                      ),
+                                      Expanded(
+                                        child: LinearProgressIndicator(
+                                          value: notifier.uploadProgress,
+                                          color: Colors.white,
+                                          backgroundColor: Colors.white
+                                              .withValues(alpha: 0.3),
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        IconsaxPlusLinear.security_user,
+                                        color: whiteColor,
+                                        size: 32,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  "Mengirim SOS $percent%",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
+              ],
+            ),
+    );
+  }
+}
 
-                  // Positioned(
-                  //   top: 50,
-                  //   right: 20,
-                  //   child: IconButton(
-                  //     icon: Icon(
-                  //       isVideoMode ? Icons.camera : Icons.videocam,
-                  //       color: Colors.white,
-                  //       size: 30,
-                  //     ),
-                  //     onPressed: toggleMode,
-                  //   ),
-                  // ),
+class _RecordingButton extends StatefulWidget {
+  final int recordTimeLeft;
+  final int durationInSeconds;
+  final VoidCallback onTap;
 
-                  // Positioned(
-                  //   top: 50,
-                  //   left: 20,
-                  //   child: Text(
-                  //     isVideoMode ? "Video Mode" : "Photo Mode",
-                  //     style: robotoRegular.copyWith(
-                  //       color: Colors.white,
-                  //       fontSize: 18,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-      ),
+  const _RecordingButton(
+    this.recordTimeLeft,
+    this.durationInSeconds,
+    this.onTap,
+  );
+
+  @override
+  State<_RecordingButton> createState() => _RecordingButtonState();
+}
+
+class _RecordingButtonState extends State<_RecordingButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: widget.durationInSeconds),
+    )..forward(from: 0.0);
+  }
+
+  @override
+  void didUpdateWidget(covariant _RecordingButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.durationInSeconds != widget.durationInSeconds) {
+      _controller.duration = Duration(seconds: widget.durationInSeconds);
+      _controller.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  double get _progress => 1.0 - _controller.value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SizedBox(
+          width: 80,
+          height: 80,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              return CircularProgressIndicator(
+                value: _progress,
+                strokeWidth: 4,
+                strokeCap: StrokeCap.round,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
+              );
+            },
+          ),
+        ),
+        Material(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(100),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(100),
+            onTap: widget.onTap,
+            child: const Padding(
+              padding: EdgeInsets.all(12),
+              child: Icon(Icons.stop_circle, color: Colors.white, size: 32),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

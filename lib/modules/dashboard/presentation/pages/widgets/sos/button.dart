@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/camera.dart';
+import 'package:rakhsa/injection.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 
 import 'package:rakhsa/modules/auth/page/login_page.dart';
@@ -102,6 +104,7 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   }
 
   Future<void> startTimer() async {
+    locator<VibrationManager>().vibrate();
     if (mounted) {
       Navigator.push(
         context,

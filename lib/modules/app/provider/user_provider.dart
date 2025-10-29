@@ -24,25 +24,38 @@ class UserProvider with ChangeNotifier {
     _getUserState = RequestState.loading;
     notifyListeners();
 
-    final localUser = _repository.getLocalUser();
-    if (localUser != null) {
-      _user = localUser;
+    // final localUser = _repository.getLocalUser();
+    // if (localUser != null) {
+    //   _user = localUser;
+    //   _getUserState = RequestState.success;
+    //   notifyListeners();
+    // } else {
+    //   try {
+    //     final uid = await StorageHelper.getUserSession().then(
+    //       (v) => v?.user.id ?? "-",
+    //     );
+    //     final remoteUser = await _repository.getRemoteUser(uid);
+    //     _user = remoteUser;
+    //     _getUserState = RequestState.success;
+    //     notifyListeners();
+    //   } on ClientException catch (e) {
+    //     _errMessage = e.message;
+    //     _getUserState = RequestState.error;
+    //     notifyListeners();
+    //   }
+    // }
+    try {
+      final uid = await StorageHelper.getUserSession().then(
+        (v) => v?.user.id ?? "-",
+      );
+      final remoteUser = await _repository.getRemoteUser(uid);
+      _user = remoteUser;
       _getUserState = RequestState.success;
       notifyListeners();
-    } else {
-      try {
-        final uid = await StorageHelper.getUserSession().then(
-          (v) => v?.user.id ?? "-",
-        );
-        final remoteUser = await _repository.getRemoteUser(uid);
-        _user = remoteUser;
-        _getUserState = RequestState.success;
-        notifyListeners();
-      } on ClientException catch (e) {
-        _errMessage = e.message;
-        _getUserState = RequestState.error;
-        notifyListeners();
-      }
+    } on ClientException catch (e) {
+      _errMessage = e.message;
+      _getUserState = RequestState.error;
+      notifyListeners();
     }
   }
 }

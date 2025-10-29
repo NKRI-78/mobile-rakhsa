@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:get_it/get_it.dart';
+import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
 import 'package:rakhsa/misc/helpers/dio.dart';
@@ -90,6 +91,7 @@ void init() {
   locator.registerLazySingleton(() => DioHelper().getClient());
   locator.registerLazySingleton(() => Connectivity());
   locator.registerLazySingleton(() => DioClient(locator<Connectivity>()));
+  locator.registerLazySingleton(() => VibrationManager());
   locator.registerLazySingleton(
     () => AuthRepository(client: locator<DioClient>()),
   );

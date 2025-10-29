@@ -10,6 +10,7 @@ abstract class MediaRemoteDatasource {
   Future<MediaModel> uploadMedia({
     required File file,
     required String folderName,
+    required void Function(int count, int total)? onSendProgress,
   });
 }
 
@@ -22,6 +23,7 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
   Future<MediaModel> uploadMedia({
     required File file,
     required String folderName,
+    required void Function(int count, int total)? onSendProgress,
   }) async {
     try {
       final fileName = file.path.split('/').last;
@@ -33,6 +35,7 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
       final res = await client.post(
         'https://api-media.inovatiftujuh8.com/api/v1/media/upload',
         data: formData,
+        onSendProgress: onSendProgress,
       );
       Map<String, dynamic> data = res.data;
       return MediaModel.fromJson(data);

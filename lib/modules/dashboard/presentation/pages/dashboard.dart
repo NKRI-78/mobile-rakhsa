@@ -8,7 +8,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
@@ -71,6 +73,8 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+
+    locator<VibrationManager>().init();
 
     firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<UserProvider>();

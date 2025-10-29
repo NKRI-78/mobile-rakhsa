@@ -69,9 +69,6 @@ dependencies:
   iconsax_plus: ^1.0.0
   image_picker: ^1.2.0
 
-  # M
-  modal_progress_hud_nsn: ^0.5.1
-
   # N
   new_version_plus: ^0.1.1
 
@@ -95,6 +92,9 @@ dependencies:
 
   # T
   tuple: ^2.0.2
+
+  # V
+  vibration: ^3.1.4
 
   # W
   weather: ^3.2.1

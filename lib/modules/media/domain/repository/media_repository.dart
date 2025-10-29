@@ -9,5 +9,6 @@ abstract class MediaRepository {
   Future<Either<Failure, Media>> uploadMedia({
     required File file,
     required String folderName,
+    required void Function(int count, int total)? onSendProgress,
   });
 }

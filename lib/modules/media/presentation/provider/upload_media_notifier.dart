@@ -15,6 +15,10 @@ class UploadMediaNotifier extends ChangeNotifier {
   Media? _entity;
   Media? get entity => _entity;
 
+  double _uploadProgress = 0.0;
+  double get uploadProgress => _uploadProgress;
+  double get uploadPercent => _uploadProgress * 100;
+
   ProviderState _state = ProviderState.empty;
   ProviderState get state => _state;
 
@@ -25,7 +29,14 @@ class UploadMediaNotifier extends ChangeNotifier {
     _state = ProviderState.loading;
     notifyListeners();
 
-    final result = await useCase.execute(file: file, folderName: folderName);
+    final result = await useCase.execute(
+      file: file,
+      folderName: folderName,
+      onSendProgress: (count, total) {
+        _uploadProgress = count / total;
+        notifyListeners();
+      },
+    );
     result.fold(
       (l) {
         _state = ProviderState.error;

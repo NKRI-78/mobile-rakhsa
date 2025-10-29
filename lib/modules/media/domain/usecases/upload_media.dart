@@ -15,7 +15,12 @@ class UploadMediaUseCase {
   Future<Either<Failure, Media>> execute({
     required File file,
     required String folderName,
+    required void Function(int count, int total)? onSendProgress,
   }) async {
-    return repository.uploadMedia(file: file, folderName: folderName);
+    return repository.uploadMedia(
+      file: file,
+      folderName: folderName,
+      onSendProgress: onSendProgress,
+    );
   }
 }

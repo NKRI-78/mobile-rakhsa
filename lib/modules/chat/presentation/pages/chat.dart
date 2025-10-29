@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
@@ -62,14 +64,16 @@ class ChatPageState extends State<ChatPage> {
     messageNotifier = context.read<GetMessagesNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    messageNotifier.initShowAutoGreetings(widget.autoGreetings);
-
     socketIoService.subscribeChat(widget.chatId);
 
     messageNotifier.startTimer();
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      messageNotifier.initShowAutoGreetings(widget.autoGreetings);
+    });
 
     Future.microtask(() => getData());
   }
@@ -240,46 +244,7 @@ class ChatPageState extends State<ChatPage> {
                 children: [
                   Expanded(
                     child: notifier.showAutoGreetings
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.all(12),
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.white,
-                                    ),
-                                    children: [
-                                      const TextSpan(
-                                        text:
-                                            "Terima kasih telah menghubungi kami di ",
-                                      ),
-                                      TextSpan(
-                                        text: "Marlinda",
-                                        style: robotoRegular.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorResources.white,
-                                        ),
-                                      ),
-                                      const TextSpan(
-                                        text:
-                                            ". Apakah yang bisa kami bantu atas keluhan anda?",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
+                        ? _buildAutoGreetings()
                         : ListView.builder(
                             controller: sC,
                             reverse: true,
@@ -307,27 +272,34 @@ class ChatPageState extends State<ChatPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (closedSession) ...[
-                          if (notifier.state == ProviderState.loading) ...[
-                            Text(
-                              "...",
-                              textAlign: TextAlign.center,
-                              style: robotoRegular.copyWith(
-                                color: ColorResources.black,
-                                fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.bold,
+                          Text(
+                            "Sesi Chat Berakhir",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          16.spaceY,
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                foregroundColor: whiteColor,
+                                padding: EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    12,
+                                  ),
+                                ),
                               ),
+                              onPressed: () {
+                                context.pushNamedAndRemoveUntil(
+                                  RoutesNavigation.dashboard,
+                                  (route) => false,
+                                );
+                              },
+                              child: Text("Kembali ke Beranda"),
                             ),
-                          ] else ...[
-                            Text(
-                              notifier.note,
-                              textAlign: TextAlign.center,
-                              style: robotoRegular.copyWith(
-                                color: ColorResources.black,
-                                fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                          ),
                         ] else ...[
                           if (notifier.isBtnSessionEnd)
                             Padding(
@@ -420,6 +392,45 @@ class ChatPageState extends State<ChatPage> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildAutoGreetings() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.all(12),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.white,
+              ),
+              children: [
+                const TextSpan(text: "Terima kasih telah menghubungi kami di "),
+                TextSpan(
+                  text: "Marlinda",
+                  style: robotoRegular.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: ColorResources.white,
+                  ),
+                ),
+                const TextSpan(
+                  text: ". Apakah yang bisa kami bantu atas keluhan anda?",
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

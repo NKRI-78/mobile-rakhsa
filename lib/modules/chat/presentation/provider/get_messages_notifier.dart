@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/chat/data/models/messages.dart';
@@ -196,55 +197,77 @@ class GetMessagesNotifier with ChangeNotifier {
     _showAutoGreetings = false;
     notifyListeners();
 
-    String incomingChatId = data["chat_id"];
-    String incomingMessageId = data["id"];
-    bool isRead = data["is_read"];
+    // flag closed by agent untuk create data dummy catatan penutup chat jadi bubble chat
+    // diakhir sesi chat sos
+    bool closedByAgent = data['closed_by_agent'] ?? false;
 
-    debugPrint("incomingChatId dari appendMessage = $incomingMessageId");
-    debugPrint("activeChatId dari appendMessage = $activeChatId");
-    debugPrint(
-      "apakah incomingChatId != activeChatId? ${incomingChatId != activeChatId}",
-    );
-    // if (incomingChatId != activeChatId) {
-    //   FirebaseCrashlytics.instance.recordError(
-    //     StateError(
-    //       "terdekteksi incomingChatId != activeChatId ${incomingChatId != activeChatId} pada appendMessage GetMessagesNotifier, user = ${data["user"]["name"]}",
-    //     ),
-    //     StackTrace.current,
-    //   );
-    // }
-
-    final containIncomingMsgId = _messages.any(
-      (msg) => msg.id == incomingMessageId,
-    );
-    debugPrint(
-      "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
-    );
-    if (containIncomingMsgId) return;
-
-    _messages.insert(
-      0,
-      MessageData(
-        id: incomingMessageId,
-        chatId: incomingChatId,
-        user: MessageUser(
-          id: data["user"]["id"],
-          isMe: data["user"]["is_me"],
-          avatar: data["user"]["avatar"],
-          name: data["user"]["name"],
+    if (closedByAgent) {
+      debugPrint("closedByAgent di trigger");
+      if (_messages.any((m) => m.id == "closed_by_agent")) return;
+      _messages.insert(
+        0,
+        MessageData(
+          id: "closed_by_agent",
+          chatId: activeChatId,
+          user: MessageUser(id: null, isMe: false, avatar: null, name: null),
+          isRead: true,
+          sentTime: DateTime.now().format("HH.mm"),
+          text: _note,
+          createdAt: DateTime.now(),
         ),
-        isRead: isRead,
-        sentTime: data["sent_time"],
-        text: data["text"],
-        createdAt: DateTime.now(),
-      ),
-    );
-
-    notifyListeners();
-
-    final filteredMsg = _messages.map((e) => e.text);
-    debugPrint(
-      "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
-    );
+      );
+      // notifyListeners();
+      debugPrint(
+        "closedByAgent _messages dari appendMessage ketika closed by agent = ${_messages.map((e) => e.text).toList()}",
+      );
+    } else {
+      String incomingChatId = data["chat_id"];
+      String incomingMessageId = data["id"];
+      bool isRead = data["is_read"];
+      debugPrint(
+        "incomingChatId dari appendMessage = ${incomingChatId.isNotEmpty ? incomingChatId : "-"}",
+      );
+      debugPrint(
+        "incomingChatId dari appendMessage = ${incomingChatId.isNotEmpty ? incomingChatId : "-"}",
+      );
+      debugPrint(
+        "incomingMessageId dari appendMessage = ${incomingMessageId.isNotEmpty ? incomingMessageId : "-"}",
+      );
+      debugPrint(
+        "activeChatId dari appendMessage = ${activeChatId.isNotEmpty ? activeChatId : "-"}",
+      );
+      debugPrint(
+        "apakah incomingChatId != activeChatId? ${incomingChatId != activeChatId}",
+      );
+      final containIncomingMsgId = _messages.any(
+        (msg) => msg.id == incomingMessageId,
+      );
+      debugPrint(
+        "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
+      );
+      if (containIncomingMsgId) return;
+      _messages.insert(
+        0,
+        MessageData(
+          id: incomingMessageId,
+          chatId: incomingChatId,
+          user: MessageUser(
+            id: data["user"]["id"],
+            isMe: data["user"]["is_me"],
+            avatar: data["user"]["avatar"],
+            name: data["user"]["name"],
+          ),
+          isRead: isRead,
+          sentTime: data["sent_time"],
+          text: data["text"],
+          createdAt: DateTime.now(),
+        ),
+      );
+      notifyListeners();
+      final filteredMsg = _messages.map((e) => e.text);
+      debugPrint(
+        "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
+      );
+    }
   }
 }

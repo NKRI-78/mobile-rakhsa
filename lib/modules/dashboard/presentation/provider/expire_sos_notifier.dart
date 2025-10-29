@@ -50,13 +50,11 @@ class SosNotifier with ChangeNotifier {
       begin: 1.0,
       end: 2.5,
     ).animate(CurvedAnimation(parent: pulseController!, curve: Curves.easeOut));
-
     // notifyListeners();
   }
 
   void resetAnimation() {
     pulseController!.reset();
-
     notifyListeners();
   }
 
@@ -68,12 +66,14 @@ class SosNotifier with ChangeNotifier {
 
     timerController!.addListener(() {
       countdownTime = (60 - timerController!.value * 60).round();
+      //TODO: masih error setState() or markNeedsBuild() called during build.
       notifyListeners();
     });
 
     if (countdownTime > 0) {
       final elapsedTime = (60 - countdownTime) / 60;
       timerController!.value = elapsedTime;
+      //TODO: masih error setState() or markNeedsBuild() called during build.
       notifyListeners();
     }
   }

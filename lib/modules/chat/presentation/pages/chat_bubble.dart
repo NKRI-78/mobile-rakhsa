@@ -22,60 +22,45 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 14.0,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 10.0),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
-            ),
-            decoration: BoxDecoration(
-              color: isMe ? primaryColor : Colors.grey[200],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isMe ? 12.0 : 0.0),
-                topRight: Radius.circular(isMe ? 0.0 : 12.0),
-                bottomLeft: const Radius.circular(12.0),
-                bottomRight: const Radius.circular(12.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
+        margin: EdgeInsets.only(bottom: 12),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ),
+        decoration: BoxDecoration(
+          color: isMe ? primaryColor : Colors.grey[200],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(isMe ? 12.0 : 0.0),
+            topRight: Radius.circular(isMe ? 0.0 : 12.0),
+            bottomLeft: const Radius.circular(12.0),
+            bottomRight: const Radius.circular(12.0),
+          ),
+        ),
+        child: Column(
+          spacing: 4,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              style: robotoRegular.copyWith(
+                color: isMe ? Colors.white : Colors.black,
+                fontSize: Dimensions.fontSizeDefault,
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  text,
-                  style: robotoRegular.copyWith(
-                    color: isMe ? Colors.white : Colors.black,
-                    fontSize: Dimensions.fontSizeDefault,
-                  ),
-                ),
 
-                const SizedBox(height: 5.0),
-              ],
+            Text(
+              time,
+              style: robotoRegular.copyWith(
+                color: isMe
+                    ? ColorResources.white
+                    : ColorResources.black.withValues(alpha: 0.8),
+                fontSize: Dimensions.fontSizeExtraSmall,
+              ),
             ),
-          ),
-
-          isMe
-              ? Text(
-                  time,
-                  style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeSmall,
-                  ),
-                )
-              : Text(
-                  time,
-                  style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeSmall,
-                  ),
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }

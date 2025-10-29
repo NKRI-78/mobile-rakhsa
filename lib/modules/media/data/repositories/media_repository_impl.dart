@@ -18,11 +18,13 @@ class MediaRepositoryImpl implements MediaRepository {
   Future<Either<Failure, Media>> uploadMedia({
     required File file,
     required String folderName,
+    required void Function(int count, int total)? onSendProgress,
   }) async {
     try {
       var result = await remoteDataSource.uploadMedia(
         file: file,
         folderName: folderName,
+        onSendProgress: onSendProgress,
       );
       return Right(result.data.toEntity());
     } on ServerException catch (e) {

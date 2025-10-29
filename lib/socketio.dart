@@ -16,7 +16,6 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifi
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import 'injection.dart';
 import 'main.dart';
 
 // check socket socket?.connected ?? false
@@ -142,18 +141,23 @@ class SocketIoService with ChangeNotifier {
     socket?.on("resolved-by-user", (message) {
       debugPrint("=== RESOLVED BY USER ===");
 
-      locator<UserProvider>().getUser();
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        context.read<UserProvider>().getUser();
+      }
     });
 
     socket?.on("closed-by-agent", (message) {
       debugPrint("=== CLOSED BY AGENT ===");
 
-      locator<UserProvider>().getUser();
-
       final context = navigatorKey.currentContext;
       if (context != null) {
+        context.read<UserProvider>().getUser();
         context.read<GetMessagesNotifier>().setStateNote(
           val: message["note"].toString(),
+        );
+        context.read<GetMessagesNotifier>().appendMessage(
+          data: {"closed_by_agent": true},
         );
       }
     });
@@ -161,10 +165,9 @@ class SocketIoService with ChangeNotifier {
     socket?.on("confirmed-by-agent", (message) {
       debugPrint("=== CONFIRMED BY AGENT ===");
 
-      locator<UserProvider>().getUser();
-
       final context = navigatorKey.currentContext;
       if (context != null) {
+        context.read<UserProvider>().getUser();
         StorageHelper.getUserSession().then((v) {
           if (v == null) return;
           if (message["sender"] == v.user.id) {
