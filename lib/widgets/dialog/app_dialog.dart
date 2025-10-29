@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 
 import 'dialog.dart';
@@ -39,9 +38,7 @@ class AppDialog {
     required String message,
     String? assetIcon,
     String? title,
-    String? acceptButtonTitle,
-    String? rejectButtonTitle,
-    bool showRejectButton = false,
+    List<DialogActionButton> actions = const <DialogActionButton>[],
   }) {
     return show(
       c: c,
@@ -49,19 +46,7 @@ class AppDialog {
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
-        actions: [
-          if (showRejectButton)
-            DialogActionButton(
-              label: rejectButtonTitle ?? "Batal",
-              onTap: () => c.pop(false),
-            ),
-
-          DialogActionButton(
-            label: acceptButtonTitle ?? "Coba Lagi",
-            primary: true,
-            onTap: () => c.pop(true),
-          ),
-        ],
+        actions: actions,
       ),
     );
   }

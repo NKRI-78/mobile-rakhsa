@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -14,7 +15,7 @@ import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/components/textinput/textfield.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
+import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -65,13 +66,34 @@ class LoginScreenState extends State<LoginScreen> {
           );
         },
         onError: (errorCode, code, message) async {
-          await AppDialog.error(
+          final userNotFound = errorCode == "User not found";
+          bool? notRegistered = await AppDialog.error(
             c: c,
-            title: errorCode == "User not found"
-                ? "Akun Belum Terdaftar"
-                : "Password Salah",
+            title: userNotFound ? "Akun Belum Terdaftar" : "Password Salah",
             message: message,
+            actions: [
+              if (userNotFound) ...[
+                DialogActionButton(
+                  label: "Daftar Akun",
+                  primary: true,
+                  onTap: () => context.pop(true),
+                ),
+              ] else ...[
+                DialogActionButton(
+                  label: "Cek Kembali",
+                  primary: true,
+                  onTap: () => context.pop(false),
+                ),
+              ],
+            ],
           );
+          if (notRegistered != null && notRegistered) {
+            await Future.delayed(Duration(milliseconds: 200));
+            if (mounted) {
+              context.pushNamed(RoutesNavigation.register);
+            }
+          }
+
           _phoneFNode.unfocus();
           _passFNode.unfocus();
         },
@@ -139,7 +161,7 @@ class LoginScreenState extends State<LoginScreen> {
                       Form(
                         key: _formKey,
                         child: Column(
-                          spacing: 16,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             AuthTextField(
                               phone: true,
@@ -160,6 +182,20 @@ class LoginScreenState extends State<LoginScreen> {
                               },
                             ),
 
+                            6.spaceY,
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text(
+                                "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: Dimensions.fontSizeExtraSmall,
+                                ),
+                              ),
+                            ),
+
+                            16.spaceY,
+
                             AuthTextField(
                               password: true,
                               label: "Password",
@@ -174,7 +210,7 @@ class LoginScreenState extends State<LoginScreen> {
                               },
                             ),
 
-                            8.spaceY,
+                            24.spaceY,
 
                             Consumer<AuthProvider>(
                               builder: (context, provider, child) {

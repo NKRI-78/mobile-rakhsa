@@ -20,7 +20,7 @@ class AuthRepository {
       return UserSession.fromJson(res.data);
     } on ClientException catch (e) {
       final message = e.message == "User not found"
-          ? "Nomor telepon atau kata sandi yang Anda masukkan salah silahkan cek kembali. Jika Anda belum memiliki akun, silakan daftar terlebih dahulu."
+          ? "Anda belum memiliki akun Marlinda. Silakan daftar terlebih dahulu untuk melanjutkan."
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;
@@ -58,7 +58,7 @@ class AuthRepository {
       return UserSession.fromJson(res.data);
     } on ClientException catch (e) {
       final message = e.message == "User already exist"
-          ? "Pengguna sudah terdaftar silahkan pakai nomor telepon lain."
+          ? "Pengguna sudah terdaftar. Silakan masuk untuk melanjutkan."
           : e.message;
       throw ClientException(
         errorCode: e.message,

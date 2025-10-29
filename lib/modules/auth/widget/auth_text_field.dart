@@ -13,6 +13,7 @@ class AuthTextField extends StatefulWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.validator,
+    this.autovalidateMode,
     this.fullname = false,
     this.password = false,
     this.phone = false,
@@ -25,6 +26,7 @@ class AuthTextField extends StatefulWidget {
   final bool fullname;
   final bool password;
   final bool phone;
+  final AutovalidateMode? autovalidateMode;
   final void Function(String val)? onFieldSubmitted;
   final String? Function(String? val)? validator;
 
@@ -77,7 +79,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
             ),
             child: TextFormField(
               controller: widget.controller,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode:
+                  widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
               focusNode: widget.focusNode,
               cursorColor: whiteColor,
               cursorErrorColor: whiteColor,

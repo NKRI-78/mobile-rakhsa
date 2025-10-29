@@ -10,6 +10,10 @@ extension ContextExtension on BuildContext {
     bool Function(Route<dynamic> route) predicate, {
     Object? arguments,
   }) => Navigator.of(this).pushNamedAndRemoveUntil(newRouteName, predicate);
+  Future<T?> pushNamed<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) => Navigator.of(this).pushNamed(routeName, arguments: arguments);
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
 }

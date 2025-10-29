@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -72,14 +73,36 @@ class RegisterScreenState extends State<RegisterScreen> {
             arguments: {"from_register": true},
           );
         },
-        onError: (eCode, code, m) {
-          AppDialog.error(
+        onError: (eCode, code, m) async {
+          final userAlreadyExists = eCode == "User already exist";
+          bool? readyExists = await AppDialog.error(
             c: c,
             title: eCode == "User already exist"
                 ? "Akun Sudah Terdaftar"
                 : null,
             message: m,
+            actions: [
+              if (userAlreadyExists) ...[
+                DialogActionButton(
+                  label: "Masuk",
+                  primary: true,
+                  onTap: () => context.pop(true),
+                ),
+              ] else ...[
+                DialogActionButton(
+                  label: "Cek Kembali",
+                  primary: true,
+                  onTap: () => context.pop(false),
+                ),
+              ],
+            ],
           );
+          if (readyExists != null && readyExists) {
+            await Future.delayed(Duration(milliseconds: 200));
+            if (mounted) {
+              context.pushNamed(RoutesNavigation.login);
+            }
+          }
         },
       );
     }
@@ -147,7 +170,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                       Form(
                         key: _formKey,
                         child: Column(
-                          spacing: 16,
+                          // spacing: 16,Au
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             AuthTextField(
                               label: "Nama Lengkap",
@@ -163,6 +187,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 return null;
                               },
                             ),
+
+                            16.spaceY,
+
                             AuthTextField(
                               phone: true,
                               label: "Nomor Telepon",
@@ -181,6 +208,20 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 return null;
                               },
                             ),
+                            6.spaceY,
+                            Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text(
+                                "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: Dimensions.fontSizeExtraSmall,
+                                ),
+                              ),
+                            ),
+
+                            16.spaceY,
+
                             AuthTextField(
                               password: true,
                               label: "Password",
@@ -196,6 +237,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 return null;
                               },
                             ),
+
+                            16.spaceY,
+
                             AuthTextField(
                               password: true,
                               label: "Konfirmasi Password",
@@ -214,7 +258,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               },
                             ),
 
-                            8.spaceY,
+                            24.spaceY,
 
                             Consumer<AuthProvider>(
                               builder: (context, state, child) {

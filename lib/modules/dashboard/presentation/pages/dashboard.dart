@@ -283,7 +283,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
             style: DialogStyle(assetIconSize: 175),
             actions: [
               DialogActionButton(
-                label: "Mengerti",
+                label: "Oke",
                 primary: true,
                 onTap: () => context.pop(true),
               ),
