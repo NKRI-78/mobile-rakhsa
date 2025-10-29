@@ -33,6 +33,7 @@ class ChatPage extends StatefulWidget {
   final String status;
   final String recipientId;
   final bool autoGreetings;
+  final bool newSession;
 
   const ChatPage({
     required this.sosId,
@@ -40,6 +41,7 @@ class ChatPage extends StatefulWidget {
     required this.status,
     required this.recipientId,
     required this.autoGreetings,
+    this.newSession = false,
     super.key,
   });
 
@@ -66,7 +68,10 @@ class ChatPageState extends State<ChatPage> {
 
     socketIoService.subscribeChat(widget.chatId);
 
-    messageNotifier.startTimer();
+    if (widget.newSession) {
+      messageNotifier.resetTimer();
+      messageNotifier.startTimer();
+    }
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);

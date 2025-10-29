@@ -57,6 +57,7 @@ class RoutesNavigation {
         String sosId = data["sos_id"];
         String recipientId = data["recipient_id"];
         String status = data["status"];
+        bool newNesssion = data['new_session'] ?? false;
 
         return MaterialPageRoute(
           builder: (_) => ChatPage(
@@ -65,6 +66,7 @@ class RoutesNavigation {
             recipientId: recipientId,
             sosId: sosId,
             status: status,
+            newSession: newNesssion,
           ),
         );
       case nearMeTypeList:

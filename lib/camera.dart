@@ -49,6 +49,8 @@ class CameraPageState extends State<CameraPage> {
 
   bool loading = false;
 
+  bool stop = false;
+
   bool isRecording = false;
   bool isVideoMode = false;
 
@@ -111,6 +113,7 @@ class CameraPageState extends State<CameraPage> {
 
       // Mark loading early
       setState(() {
+        stop = true;
         loading = true;
         isRecording = false;
       });
@@ -211,6 +214,7 @@ class CameraPageState extends State<CameraPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _RecordingButton(
+                        stop: stop,
                         recordTimeLeft,
                         durationInSeconds,
                         isRecording ? stopVideoRecording : startVideoRecording,
@@ -231,12 +235,13 @@ class CameraPageState extends State<CameraPage> {
                 if (loading)
                   Positioned.fill(
                     child: Container(
-                      color: Colors.black54,
+                      color: Colors.black87,
                       child: Center(
                         child: Consumer<UploadMediaNotifier>(
                           builder: (context, notifier, child) {
-                            final percent = notifier.uploadPercent
-                                .toStringAsFixed(0);
+                            final uploadPercent = notifier.uploadPercent;
+                            final percent = uploadPercent.toStringAsFixed(0);
+                            final processingData = uploadPercent.toInt() > 98;
                             return Column(
                               spacing: 12,
                               mainAxisSize: MainAxisSize.min,
@@ -271,11 +276,33 @@ class CameraPageState extends State<CameraPage> {
                                     ],
                                   ),
                                 ),
-                                Text(
-                                  "Mengirim SOS $percent%",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                if (processingData) ...[
+                                  Row(
+                                    spacing: 10,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Memproses data",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 0.9,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ] else ...[
+                                  Text(
+                                    "Mengirim SOS $percent%",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ],
                             );
                           },
@@ -290,6 +317,7 @@ class CameraPageState extends State<CameraPage> {
 }
 
 class _RecordingButton extends StatefulWidget {
+  final bool stop;
   final int recordTimeLeft;
   final int durationInSeconds;
   final VoidCallback onTap;
@@ -297,8 +325,9 @@ class _RecordingButton extends StatefulWidget {
   const _RecordingButton(
     this.recordTimeLeft,
     this.durationInSeconds,
-    this.onTap,
-  );
+    this.onTap, {
+    this.stop = false,
+  });
 
   @override
   State<_RecordingButton> createState() => _RecordingButtonState();
@@ -316,6 +345,10 @@ class _RecordingButtonState extends State<_RecordingButton>
       vsync: this,
       duration: Duration(seconds: widget.durationInSeconds),
     )..forward(from: 0.0);
+
+    if (!widget.stop) {
+      _controller.forward(from: 0.0);
+    }
   }
 
   @override
@@ -325,6 +358,14 @@ class _RecordingButtonState extends State<_RecordingButton>
     if (oldWidget.durationInSeconds != widget.durationInSeconds) {
       _controller.duration = Duration(seconds: widget.durationInSeconds);
       _controller.forward(from: 0.0);
+    }
+
+    if (oldWidget.stop != widget.stop) {
+      if (widget.stop) {
+        _controller.stop();
+      } else {
+        _controller.forward();
+      }
     }
   }
 

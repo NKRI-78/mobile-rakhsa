@@ -26,6 +26,7 @@ class UploadMediaNotifier extends ChangeNotifier {
   String get message => _message;
 
   Future<void> send({required File file, required String folderName}) async {
+    _uploadProgress = 0.0;
     _state = ProviderState.loading;
     notifyListeners();
 

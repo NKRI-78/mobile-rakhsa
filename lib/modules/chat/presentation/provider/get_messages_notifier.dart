@@ -30,7 +30,7 @@ class GetMessagesNotifier with ChangeNotifier {
   bool _showAutoGreetings = false;
   bool get showAutoGreetings => _showAutoGreetings;
 
-  int _time = 60;
+  int _time = 300;
   int get time => _time;
 
   RecipientUser _recipient = RecipientUser();
@@ -78,7 +78,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void resetTimer() {
     cancelTimer();
-    _time = 5;
+    _time = 300;
     notifyListeners();
   }
 
@@ -174,6 +174,7 @@ class GetMessagesNotifier with ChangeNotifier {
     required String status,
     required String recipientId,
     required String sosId,
+    bool newSession = false,
   }) {
     Navigator.pushNamedAndRemoveUntil(
       navigatorKey.currentContext!,
@@ -188,6 +189,7 @@ class GetMessagesNotifier with ChangeNotifier {
         "recipient_id": recipientId,
         "sos_id": sosId,
         "auto_greetings": true,
+        "new_session": newSession,
       },
       RoutesNavigation.chat,
     );

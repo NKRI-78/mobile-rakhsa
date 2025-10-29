@@ -6,6 +6,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/injection.dart';
@@ -148,7 +149,8 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         );
         if (openSetting != null && openSetting) {
-          await Geolocator.openLocationSettings();
+          // await Geolocator.openLocationSettings();
+          await location.Location().requestService();
         }
       }
       return;
