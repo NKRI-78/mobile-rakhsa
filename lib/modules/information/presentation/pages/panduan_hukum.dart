@@ -25,11 +25,16 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             pinned: true,
             expandedHeight: 180,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            shadowColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text("Panduan"),

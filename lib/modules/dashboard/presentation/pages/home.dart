@@ -196,6 +196,7 @@ class ImgBanner extends StatelessWidget {
       },
       child: CachedNetworkImage(
         imageUrl: img,
+        fit: BoxFit.cover,
         errorWidget: (_, __, ___) => Image.asset(AssetSource.iconDefaultImg),
         placeholder: (_, ___) =>
             const Center(child: CircularProgressIndicator()),

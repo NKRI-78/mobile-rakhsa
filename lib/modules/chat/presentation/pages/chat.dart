@@ -182,219 +182,230 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        StorageHelper.saveRecordScreen(isHome: false);
-        messageNotifier.clearActiveChatId();
-        Navigator.pop(context, "refetch");
-      },
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: AppBar(
-            backgroundColor: primaryColor,
-            leading: CupertinoNavigationBarBackButton(
-              color: whiteColor,
-              onPressed: () {
-                messageNotifier.clearActiveChatId();
-                Navigator.pop(context, "refetch");
-              },
-            ),
-            title: Consumer<GetMessagesNotifier>(
-              builder: (context, notifier, child) {
-                final username = notifier.recipient.name ?? "-";
-                final agentIsTyping = notifier.isTyping(widget.chatId);
-                return Row(
-                  spacing: 10,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Avatar(src: notifier.recipient.avatar, initial: username),
-                    Column(
-                      spacing: 3,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          username,
-                          style: robotoRegular.copyWith(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (agentIsTyping)
+    return GestureDetector(
+      onTap: () => context.unfocus(),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          StorageHelper.saveRecordScreen(isHome: false);
+          messageNotifier.clearActiveChatId();
+          Navigator.pop(context, "refetch");
+        },
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              backgroundColor: primaryColor,
+              leading: CupertinoNavigationBarBackButton(
+                color: whiteColor,
+                onPressed: () {
+                  messageNotifier.clearActiveChatId();
+                  Navigator.pop(context, "refetch");
+                },
+              ),
+              title: Consumer<GetMessagesNotifier>(
+                builder: (context, notifier, child) {
+                  final username = notifier.recipient.name ?? "-";
+                  final agentIsTyping = notifier.isTyping(widget.chatId);
+                  return Row(
+                    spacing: 10,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Avatar(src: notifier.recipient.avatar, initial: username),
+                      Column(
+                        spacing: 3,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            "Sedang mengetik...",
+                            username,
                             style: robotoRegular.copyWith(
-                              fontSize: 10.0,
+                              fontSize: 16.0,
                               color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                      ],
-                    ),
-                  ],
-                );
-              },
+                          if (agentIsTyping)
+                            Text(
+                              "Sedang mengetik...",
+                              style: robotoRegular.copyWith(
+                                fontSize: 10.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        body: Consumer<GetMessagesNotifier>(
-          builder: (context, notifier, child) {
-            final closedSession =
-                widget.status == "CLOSED" || notifier.note.isNotEmpty;
-            return SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: notifier.showAutoGreetings
-                        ? _buildAutoGreetings()
-                        : ListView.builder(
-                            controller: sC,
-                            reverse: true,
-                            itemCount: notifier.messages.length,
-                            padding: const EdgeInsets.all(16),
-                            itemBuilder: (context, index) {
-                              final item = notifier.messages[index];
+          body: Consumer<GetMessagesNotifier>(
+            builder: (context, notifier, child) {
+              final closedSession =
+                  widget.status == "CLOSED" || notifier.note.isNotEmpty;
+              return SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: notifier.showAutoGreetings
+                          ? _buildAutoGreetings()
+                          : ListView.builder(
+                              controller: sC,
+                              reverse: true,
+                              itemCount: notifier.messages.length,
+                              padding: const EdgeInsets.all(16),
+                              itemBuilder: (context, index) {
+                                final item = notifier.messages[index];
 
-                              return ChatBubble(
-                                text: item.text,
-                                time: item.sentTime,
-                                isMe: item.user.isMe!,
-                                isRead: item.isRead,
-                              );
-                            },
-                          ),
-                  ),
-
-                  // send message
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (closedSession) ...[
-                          Text(
-                            "Sesi Chat Berakhir",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          16.spaceY,
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: primaryColor,
-                                foregroundColor: whiteColor,
-                                padding: EdgeInsets.all(12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    12,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                context.pushNamedAndRemoveUntil(
-                                  RoutesNavigation.dashboard,
-                                  (route) => false,
+                                return ChatBubble(
+                                  text: item.text,
+                                  time: item.sentTime,
+                                  isMe: item.user.isMe!,
+                                  isRead: item.isRead,
                                 );
                               },
-                              child: Text("Kembali ke Beranda"),
                             ),
-                          ),
-                        ] else ...[
-                          if (notifier.isBtnSessionEnd)
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: CustomButton(
-                                onTap: () async {
-                                  GeneralModal.infoEndSos(
-                                    sosId: widget.sosId,
-                                    chatId: "-",
-                                    recipientId: "-",
-                                    msg:
-                                        "Apakah kasus Anda sebelumnya telah ditangani ?",
-                                    isHome: false,
+                    ),
+
+                    // send message
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (closedSession) ...[
+                            Text(
+                              "Sesi Chat Berakhir",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            16.spaceY,
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                  foregroundColor: whiteColor,
+                                  padding: EdgeInsets.all(12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      12,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  context.pushNamedAndRemoveUntil(
+                                    RoutesNavigation.dashboard,
+                                    (route) => false,
                                   );
                                 },
-                                btnColor: const Color(0xFFC82927),
-                                isLoading:
-                                    context.watch<SosNotifier>().state ==
-                                        ProviderState.loading
-                                    ? true
-                                    : false,
-                                isBorder: false,
-                                isBoxShadow: false,
-                                isBorderRadius: true,
-                                btnTxt: "Apa keluhan sudah ditangani ?",
+                                child: Text("Kembali ke Beranda"),
                               ),
                             ),
-                          Row(
-                            spacing: 14,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: TextField(
-                                  maxLines: null,
-                                  controller: messageC,
-                                  style: robotoRegular.copyWith(fontSize: 12.0),
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    filled: true,
-                                    fillColor: ColorResources.white,
-                                    hintText: "ketik pesan singkat dan jelas",
-                                    hintStyle: robotoRegular.copyWith(
-                                      fontSize: 12.0,
-                                      color: Colors.grey,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
+                          ] else ...[
+                            if (notifier.isBtnSessionEnd)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: CustomButton(
+                                  onTap: () async {
+                                    GeneralModal.infoEndSos(
+                                      sosId: widget.sosId,
+                                      chatId: "-",
+                                      recipientId: "-",
+                                      msg:
+                                          "Apakah kasus Anda sebelumnya telah ditangani ?",
+                                      isHome: false,
+                                    );
+                                  },
+                                  btnColor: const Color(0xFFC82927),
+                                  isLoading:
+                                      context.watch<SosNotifier>().state ==
+                                          ProviderState.loading
+                                      ? true
+                                      : false,
+                                  isBorder: false,
+                                  isBoxShadow: false,
+                                  isBorderRadius: true,
+                                  btnTxt: "Apa keluhan sudah ditangani ?",
                                 ),
                               ),
-                              Flexible(
-                                child: IconButton(
-                                  onPressed: sendMessage,
-                                  icon: Container(
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(50.0),
+                            Row(
+                              spacing: 14,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: TextField(
+                                    maxLines: null,
+                                    controller: messageC,
+                                    style: robotoRegular.copyWith(
+                                      fontSize: 12.0,
+                                    ),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: ColorResources.white,
+                                      hintText: "ketik pesan singkat dan jelas",
+                                      hintStyle: robotoRegular.copyWith(
+                                        fontSize: 12.0,
+                                        color: Colors.grey,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          30.0,
+                                        ),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          30.0,
+                                        ),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          30.0,
+                                        ),
+                                        borderSide: BorderSide.none,
                                       ),
                                     ),
-                                    child: const Icon(
-                                      Icons.send,
-                                      size: 20.0,
-                                      color: Colors.white,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: IconButton(
+                                    onPressed: sendMessage,
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: const BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0),
+                                        ),
+                                      ),
+                                      child: const Icon(
+                                        Icons.send,
+                                        size: 20.0,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
