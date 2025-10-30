@@ -204,6 +204,7 @@ class ChatPageState extends State<ChatPage> {
                   Navigator.pop(context, "refetch");
                 },
               ),
+              centerTitle: false,
               title: Consumer<GetMessagesNotifier>(
                 builder: (context, notifier, child) {
                   final username = notifier.recipient.name ?? "-";

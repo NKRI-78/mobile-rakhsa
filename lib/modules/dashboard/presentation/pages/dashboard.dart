@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -355,12 +356,17 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
 
         // BOTTOM NAV BAR
         bottomNavigationBar: SafeArea(
-          child: ClipRRect(
-            borderRadius: BorderRadiusGeometry.vertical(
-              top: Radius.circular(24),
+          bottom: Platform.isIOS ? false : true,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              splashFactory: InkSparkle.splashFactory,
+              splashColor: primaryColor.withValues(alpha: 0.5),
+              highlightColor: Colors.transparent,
             ),
-            child: SizedBox(
-              height: kBottomNavigationBarHeight + 12,
+            child: ClipRRect(
+              borderRadius: BorderRadiusGeometry.vertical(
+                top: Radius.circular(Platform.isIOS ? 16 : 24),
+              ),
               child: ValueListenableBuilder(
                 valueListenable: _pageNotifyController,
                 builder: (context, currentPage, child) {
@@ -371,6 +377,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
                     unselectedFontSize: 14,
                     backgroundColor: primaryColor,
                     selectedItemColor: whiteColor,
+                    type: BottomNavigationBarType.fixed,
                     unselectedItemColor: whiteColor.withValues(alpha: 0.7),
                     items: [
                       BottomNavigationBarItem(

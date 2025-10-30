@@ -141,7 +141,7 @@ class WelcomePageState extends State<WelcomePage> {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
       ),
     );

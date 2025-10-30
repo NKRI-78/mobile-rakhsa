@@ -16,6 +16,7 @@ extension ContextExtension on BuildContext {
   }) => Navigator.of(this).pushNamed(routeName, arguments: arguments);
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
+  double get bottom => mediaQuery.padding.bottom;
 }
 
 extension NumExtension on num {
