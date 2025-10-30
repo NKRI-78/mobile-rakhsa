@@ -68,10 +68,11 @@ class ChatPageState extends State<ChatPage> {
 
     socketIoService.subscribeChat(widget.chatId);
 
-    if (widget.newSession) {
-      messageNotifier.resetTimer();
-      messageNotifier.startTimer();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.newSession) {
+        messageNotifier.startTimer();
+      }
+    });
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);

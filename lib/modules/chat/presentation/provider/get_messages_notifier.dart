@@ -52,6 +52,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void startTimer() {
     if (_isRunning) return;
+    resetTimer();
 
     _isRunning = true;
 
