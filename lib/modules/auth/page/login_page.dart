@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
@@ -60,11 +61,14 @@ class LoginScreenState extends State<LoginScreen> {
       await c.read<AuthProvider>().login(
         phone: PhoneNumberFormatter.unmask(_phoneController.text),
         password: _passController.text,
-        onSuccess: () {
-          Navigator.of(c).pushNamedAndRemoveUntil(
-            RoutesNavigation.dashboard,
-            (route) => false,
-          );
+        onSuccess: () async {
+          await StorageHelper.loadlocalSession();
+          if (c.mounted) {
+            Navigator.of(c).pushNamedAndRemoveUntil(
+              RoutesNavigation.dashboard,
+              (route) => false,
+            );
+          }
         },
         onError: (errorCode, code, message) async {
           final userNotFound = errorCode == "User not found";

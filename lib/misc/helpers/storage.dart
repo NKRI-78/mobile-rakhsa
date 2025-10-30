@@ -1,9 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageHelper {
   static late SharedPreferences sharedPreferences;
+  static UserSession? _session;
+  static UserSession? get session {
+    log("session dari getter session = ${_session?.user.name}");
+    return _session;
+  }
 
   static Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -53,6 +60,16 @@ class StorageHelper {
     final sessionCache = await storage.read(key: "user_session");
     if (sessionCache == null) return null;
     return userSessionFromJson(sessionCache);
+  }
+
+  static Future<UserSession?> loadlocalSession() async {
+    if (_session != null) return _session;
+    final loaded = await getUserSession();
+    if (loaded != null) {
+      _session = loaded;
+    }
+    log("loadLocalSession dari loadLocalSession = ${_session?.user.name}");
+    return _session;
   }
 
   static Future<void> removeUserSession() {

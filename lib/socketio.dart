@@ -81,8 +81,7 @@ class SocketIoService with ChangeNotifier {
   }
 
   Future<void> init() async {
-    final session = await StorageHelper.getUserSession();
-
+    final session = await StorageHelper.loadlocalSession();
     if (session != null) {
       socket = IO.io(
         'https://socketio-rakhsa.langitdigital78.com',
@@ -170,20 +169,17 @@ class SocketIoService with ChangeNotifier {
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<UserProvider>().getUser();
-        StorageHelper.getUserSession().then((v) {
-          if (v == null) return;
-          if (message["sender"] == v.user.id) {
-            if (context.mounted) {
-              context.read<GetMessagesNotifier>().navigateToChat(
-                chatId: message["chat_id"].toString(),
-                status: "NONE",
-                recipientId: message["recipient_id"].toString(),
-                sosId: message["sos_id"].toString(),
-                newSession: true,
-              );
-            }
+        if (message["sender"] == session?.user.id) {
+          if (context.mounted) {
+            context.read<GetMessagesNotifier>().navigateToChat(
+              chatId: message["chat_id"].toString(),
+              status: "NONE",
+              recipientId: message["recipient_id"].toString(),
+              sosId: message["sos_id"].toString(),
+              newSession: true,
+            );
           }
-        });
+        }
         context.read<SosNotifier>().stopTimer();
       }
     });
@@ -213,7 +209,7 @@ class SocketIoService with ChangeNotifier {
     required String lat,
     required String lng,
   }) async {
-    final session = await StorageHelper.getUserSession();
+    final session = StorageHelper.session;
     if (session != null) {
       var payload = {
         "user_id": session.user.id,
@@ -234,7 +230,7 @@ class SocketIoService with ChangeNotifier {
     required String chatId,
     required bool isTyping,
   }) async {
-    final session = await StorageHelper.getUserSession();
+    final session = StorageHelper.session;
     if (session != null) {
       var payload = {
         "type": "typing",
@@ -253,7 +249,7 @@ class SocketIoService with ChangeNotifier {
     required String message,
     required String createdAt,
   }) async {
-    final session = await StorageHelper.getUserSession();
+    final session = StorageHelper.session;
     if (session != null) {
       var payload = {
         "chat_id": chatId,

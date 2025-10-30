@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/repositories/auth/model/user_session.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
@@ -14,11 +15,24 @@ class UserProvider with ChangeNotifier {
   User? _user;
   User? get user => _user;
 
+  UserSession? _session;
+
   String? _errMessage;
   String? get errMessage => _errMessage;
 
   RequestState _getUserState = RequestState.idle;
   RequestState get getUserState => _getUserState;
+
+  UserSession? get session => _session;
+
+  Future<void> loadlocalSession() async {
+    if (_session != null) return;
+    final loaded = await StorageHelper.getUserSession();
+    if (loaded != null) {
+      _session = loaded;
+      notifyListeners();
+    }
+  }
 
   Future<void> getUser({bool enableCache = false}) async {
     _getUserState = RequestState.loading;

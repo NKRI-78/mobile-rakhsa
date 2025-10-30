@@ -34,10 +34,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<InboxModel> getInbox() async {
     try {
-      final session = await StorageHelper.getUserSession();
       final response = await client.post(
         "https://api-ppob.langitdigital78.com/api/v1/inbox",
-        data: {"user_id": session?.user.id},
+        data: {"user_id": StorageHelper.session?.user.id},
       );
       Map<String, dynamic> data = response.data;
       InboxModel inboxModel = InboxModel.fromJson(data);
@@ -74,10 +73,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   @override
   Future<ChatsModel> getChats() async {
     try {
-      final session = await StorageHelper.getUserSession();
       final response = await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list",
-        data: {"user_id": session?.user.id, "is_agent": false},
+        data: {"user_id": StorageHelper.session?.user.id, "is_agent": false},
       );
       Map<String, dynamic> data = response.data;
       ChatsModel chatsModel = ChatsModel.fromJson(data);
@@ -97,11 +95,10 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     required String status,
   }) async {
     try {
-      final session = await StorageHelper.getUserSession();
       final response = await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
         data: {
-          "sender_id": session?.user.id,
+          "sender_id": StorageHelper.session?.user.id,
           "chat_id": chatId,
           "is_agent": false,
           "status": status,
@@ -127,12 +124,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     required DateTime createdAt,
   }) async {
     try {
-      final session = await StorageHelper.getUserSession();
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/insert-message",
         data: {
           "chat_id": chatId,
-          "sender": session?.user.id,
+          "sender": StorageHelper.session?.user.id,
           "recipient": recipient,
           "created_at": createdAt.toLocal().toIso8601String(),
           "text": text,

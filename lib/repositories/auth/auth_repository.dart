@@ -75,7 +75,7 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    final session = await StorageHelper.getUserSession();
+    final session = StorageHelper.session;
     if (session != null) {
       locator<SocketIoService>().socket?.emit("leave", {
         "user_id": session.user.id,

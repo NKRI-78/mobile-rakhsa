@@ -103,11 +103,10 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lng,
   }) async {
     try {
-      final session = await StorageHelper.getUserSession();
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
         data: {
-          "user_id": session?.user.id,
+          "user_id": StorageHelper.session?.user.id,
           "address": address,
           "lat": lat,
           "lng": lng,
@@ -130,11 +129,10 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lng,
   }) async {
     try {
-      final session = await StorageHelper.getUserSession();
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/address/update",
         data: {
-          "user_id": session?.user.id,
+          "user_id": StorageHelper.session?.user.id,
           "address": address,
           "state": state,
           "lat": lat,
@@ -172,10 +170,13 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required String rating,
   }) async {
     try {
-      final session = await StorageHelper.getUserSession();
       await client.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/rating",
-        data: {"id": sosId, "user_id": session?.user.id, "rate": rating},
+        data: {
+          "id": sosId,
+          "user_id": StorageHelper.session?.user.id,
+          "rate": rating,
+        },
       );
     } on DioException catch (e) {
       String message = handleDioException(e);

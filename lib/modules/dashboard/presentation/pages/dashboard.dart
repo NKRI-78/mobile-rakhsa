@@ -107,6 +107,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   Future<void> getData() async {
     if (!mounted) return;
     await profileNotifier.getUser();
+    await StorageHelper.loadlocalSession();
 
     if (!mounted) return;
     await firebaseProvider.initFcm();
@@ -276,9 +277,7 @@ class DashboardScreenState extends State<DashboardScreen> {
           canPop: false,
           content: DialogContent(
             assetIcon: AssetSource.iconWelcomeDialog,
-            titleAsync: StorageHelper.getUserSession().then((v) {
-              return "Terimakasih ${v?.user.name ?? "-"}";
-            }),
+            title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
             message: """
 Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.
 Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!

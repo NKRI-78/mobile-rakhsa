@@ -114,15 +114,19 @@ class ChatPageState extends State<ChatPage> {
   }
 
   Future<void> sendMessage() async {
-    if (messageC.text.trim().isEmpty) return;
+    if (messageC.text.trim().isEmpty) {
+      messageC.clear();
+      return;
+    }
 
-    final session = await StorageHelper.getUserSession();
+    // final session = context.read<UserProvider>().session;
+    // final session = StorageHelper.session;
     String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
     socketIoService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId,
-      message: messageC.text,
+      message: messageC.text.trimLeft().trimRight(),
       createdAt: createdAt,
     );
 
@@ -133,7 +137,7 @@ class ChatPageState extends State<ChatPage> {
       "id": const uuid.Uuid().v4(),
       "chat_id": widget.chatId,
       "user": {
-        "id": session?.user.id,
+        "id": StorageHelper.session?.user.id,
         "is_me": true,
         "avatar": "-",
         "name": "-",
@@ -141,7 +145,7 @@ class ChatPageState extends State<ChatPage> {
       "is_read": false,
       "sent_time": sentTime,
       "created_at": createdAt,
-      "text": messageC.text,
+      "text": messageC.text.trimLeft().trimRight(),
     };
 
     messageNotifier.appendMessage(data: message);
@@ -342,38 +346,51 @@ class ChatPageState extends State<ChatPage> {
                               children: [
                                 Expanded(
                                   flex: 5,
-                                  child: TextField(
-                                    maxLines: null,
-                                    controller: messageC,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: 12.0,
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      textSelectionTheme:
+                                          TextSelectionThemeData(
+                                            cursorColor: primaryColor,
+                                            selectionColor: primaryColor
+                                                .withValues(alpha: 0.1),
+                                            selectionHandleColor: primaryColor,
+                                          ),
                                     ),
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      filled: true,
-                                      fillColor: ColorResources.white,
-                                      hintText: "ketik pesan singkat dan jelas",
-                                      hintStyle: robotoRegular.copyWith(
+                                    child: TextField(
+                                      controller: messageC,
+                                      style: robotoRegular.copyWith(
                                         fontSize: 12.0,
-                                        color: Colors.grey,
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                      maxLines: 4,
+                                      minLines: 1,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: ColorResources.white,
+                                        hintText:
+                                            "ketik pesan singkat dan jelas",
+                                        hintStyle: robotoRegular.copyWith(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
                                         ),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
                                         ),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
                                         ),
-                                        borderSide: BorderSide.none,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
+                                        ),
                                       ),
                                     ),
                                   ),

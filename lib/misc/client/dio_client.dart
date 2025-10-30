@@ -50,11 +50,10 @@ class DioClient {
           ];
           final public = publicEndpoints.contains(options.path);
           if (!public) {
-            final token = await StorageHelper.getUserSession().then((v) {
-              return v?.token;
-            });
-            if (token != null) {
-              options.headers['Authorization'] = 'Bearer $token';
+            final session = StorageHelper.session;
+
+            if (session != null) {
+              options.headers['Authorization'] = 'Bearer ${session.token}';
             }
           }
           return handler.next(options);

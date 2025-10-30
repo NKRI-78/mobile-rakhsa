@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -67,12 +68,15 @@ class RegisterScreenState extends State<RegisterScreen> {
         fullname: _fullNameController.text,
         phone: PhoneNumberFormatter.unmask(_phoneController.text),
         password: _passController.text,
-        onSuccess: () {
-          Navigator.of(c).pushNamedAndRemoveUntil(
-            RoutesNavigation.dashboard,
-            (route) => false,
-            arguments: {"from_register": true},
-          );
+        onSuccess: () async {
+          await StorageHelper.loadlocalSession();
+          if (c.mounted) {
+            Navigator.of(c).pushNamedAndRemoveUntil(
+              RoutesNavigation.dashboard,
+              (route) => false,
+              arguments: {"from_register": true},
+            );
+          }
         },
         onError: (eCode, code, m) async {
           final userAlreadyExists = eCode == "User already exist";
