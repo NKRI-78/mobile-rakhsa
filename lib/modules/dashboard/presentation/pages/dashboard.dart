@@ -358,11 +358,13 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
         bottomNavigationBar: SafeArea(
           bottom: Platform.isIOS ? false : true,
           child: Theme(
-            data: Theme.of(context).copyWith(
-              splashFactory: InkSparkle.splashFactory,
-              splashColor: primaryColor.withValues(alpha: 0.5),
-              highlightColor: Colors.transparent,
-            ),
+            data: Platform.isIOS
+                ? Theme.of(context).copyWith(
+                    splashFactory: InkSparkle.splashFactory,
+                    splashColor: primaryColor.withValues(alpha: 0.5),
+                    highlightColor: Colors.transparent,
+                  )
+                : Theme.of(context),
             child: ClipRRect(
               borderRadius: BorderRadiusGeometry.vertical(
                 top: Radius.circular(Platform.isIOS ? 16 : 24),
