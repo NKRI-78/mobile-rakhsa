@@ -23,7 +23,9 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      context.read<UserProvider>().getUser(enableCache: true);
+      if (mounted) {
+        context.read<UserProvider>().getUser(enableCache: true);
+      }
     });
   }
 

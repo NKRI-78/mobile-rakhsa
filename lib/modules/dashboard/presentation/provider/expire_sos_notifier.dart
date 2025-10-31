@@ -55,7 +55,7 @@ class SosNotifier with ChangeNotifier {
 
   void resetAnimation() {
     pulseController!.reset();
-    notifyListeners();
+    // notifyListeners();
   }
 
   void initializeTimer(TickerProvider vsync) {
@@ -64,30 +64,40 @@ class SosNotifier with ChangeNotifier {
       vsync: vsync,
     );
 
-    timerController!.addListener(() {
-      countdownTime = (60 - timerController!.value * 60).round();
-      //TODO: masih error setState() or markNeedsBuild() called during build.
-      notifyListeners();
-    });
-
     if (countdownTime > 0) {
       final elapsedTime = (60 - countdownTime) / 60;
       timerController!.value = elapsedTime;
       //TODO: masih error setState() or markNeedsBuild() called during build.
-      notifyListeners();
+      // notifyListeners();
     }
+  }
+
+  void addCountdownListener() {
+    timerController?.addListener(_countdownListener);
+  }
+
+  void _countdownListener() {
+    countdownTime = (60 - timerController!.value * 60).round();
+    //TODO: masih error setState() or markNeedsBuild() called during build.
+    notifyListeners();
+  }
+
+  void disposeTimeController() {
+    timerController?.removeListener(_countdownListener);
+    timerController?.dispose();
+    // timerController = null;
   }
 
   void resumeTimer() {
     timerController!.forward().whenComplete(() {
       pulseController!.reverse();
-      notifyListeners();
+      // notifyListeners();
 
       isPressed = false;
       notifyListeners();
     });
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void startTimer() {
@@ -95,19 +105,19 @@ class SosNotifier with ChangeNotifier {
     notifyListeners();
 
     pulseController!.reverse();
-    notifyListeners();
+    // notifyListeners();
 
     timerController!
       ..reset()
       ..forward().whenComplete(() {
         pulseController!.reverse();
-        notifyListeners();
+        // notifyListeners();
 
         isPressed = false;
         notifyListeners();
       });
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void stopTimer() {

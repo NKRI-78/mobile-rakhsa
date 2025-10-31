@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -273,10 +272,7 @@ class ChatsPageState extends State<ChatsPage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  chat.messages.first.time
-                                      .formatTimeStringFromCMS("HH.mm"),
-                                ),
+                                Text(chat.messages.first.time),
                                 chat.messages.first.isMe
                                     ? const SizedBox(height: 8.0)
                                     : const SizedBox(),

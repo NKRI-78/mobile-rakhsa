@@ -25,12 +25,5 @@ extension NumExtension on num {
 }
 
 extension DateTimeExtension on DateTime {
-  String format(String pattern) => DateFormat(pattern).format(this);
-}
-
-extension StringExtension on String {
-  String formatTimeStringFromCMS(String pattern) {
-    final localDateTime = DateTime.tryParse(this) ?? DateTime.now();
-    return localDateTime.format(pattern);
-  }
+  String format(String pattern) => DateFormat(pattern).format(toLocal());
 }

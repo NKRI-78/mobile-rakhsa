@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/capitalize.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
@@ -28,7 +30,7 @@ import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
   final Future<void> Function() onRefresh;
   final List<Widget> banners;
@@ -43,14 +45,32 @@ class HomePage extends StatelessWidget {
   });
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          SizedBox.expand(
-            child: SafeArea(
+          Positioned.fill(
+            child: Container(
+              padding: EdgeInsets.only(top: context.top),
               child: RefreshIndicator.adaptive(
-                onRefresh: onRefresh,
+                onRefresh: widget.onRefresh,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   // padding bawah untuk memberikan ruang scrolling bagian bawah
@@ -62,7 +82,7 @@ class HomePage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        HeaderSection(scaffoldKey: globalKey),
+                        HeaderSection(scaffoldKey: widget.globalKey),
                         const SizedBox(height: 16),
 
                         Container(
@@ -90,12 +110,14 @@ class HomePage extends StatelessWidget {
                             builder: (context, data, child) {
                               return SosButton(
                                 SosButtonParam(
-                                  location: sosButtonParam.location,
-                                  country: sosButtonParam.country,
-                                  lat: sosButtonParam.lat,
-                                  lng: sosButtonParam.lng,
-                                  isConnected: sosButtonParam.isConnected,
-                                  loadingGmaps: sosButtonParam.loadingGmaps,
+                                  location: widget.sosButtonParam.location,
+                                  country: widget.sosButtonParam.country,
+                                  lat: widget.sosButtonParam.lat,
+                                  lng: widget.sosButtonParam.lng,
+                                  isConnected:
+                                      widget.sosButtonParam.isConnected,
+                                  loadingGmaps:
+                                      widget.sosButtonParam.loadingGmaps,
                                   profile: data.user,
                                 ),
                               );
@@ -160,10 +182,12 @@ class HomePage extends StatelessWidget {
                               child: (notifier.ews.isNotEmpty)
                                   ? EwsListWidget(
                                       getData: () {
-                                        onRefresh();
+                                        widget.onRefresh();
                                       },
                                     )
-                                  : HomeHightlightBanner(banners: banners),
+                                  : HomeHightlightBanner(
+                                      banners: widget.banners,
+                                    ),
                             );
                           },
                         ),

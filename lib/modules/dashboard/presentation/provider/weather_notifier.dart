@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 
 class WeatherNotifier extends ChangeNotifier {
-
   final WeatherFactory _weatherFactory;
 
-  WeatherNotifier({required WeatherFactory weather}) : _weatherFactory = weather;
+  WeatherNotifier({required WeatherFactory weather})
+    : _weatherFactory = weather;
 
   List<Weather> _weathers = [];
   List<Weather> get weathers => _weathers;
@@ -17,16 +16,32 @@ class WeatherNotifier extends ChangeNotifier {
   bool _error = false;
   bool get error => _error;
 
+  String get celcius {
+    if (_weathers.isEmpty) {
+      return "32\u00B0C"; // fallback
+    }
+    return "${(_weathers.first.temperature?.celsius ?? 0).round()}\u00B0C";
+  }
+
+  String get description {
+    if (_weathers.isEmpty) {
+      return "Berawan"; // fallback
+    }
+    return "${_weathers.first.weatherDescription?.toUpperCase()}";
+  }
+
   Future<void> getForecastWeather(double lat, double long) async {
     _loading = true;
     _error = false;
     notifyListeners();
     try {
-      final weathers = await _weatherFactory.fiveDayForecastByLocation(lat, long);
+      final weathers = await _weatherFactory.fiveDayForecastByLocation(
+        lat,
+        long,
+      );
 
       _weathers = _extractUniqueDailyWeathers(weathers);
       notifyListeners();
-
     } catch (e) {
       _loading = false;
       _error = true;
@@ -38,23 +53,22 @@ class WeatherNotifier extends ChangeNotifier {
 
   List<Weather> _extractUniqueDailyWeathers(List<Weather> weathers) {
     final Map<String, Weather> uniqueWeathers = {};
-    
+
     for (var weather in weathers) {
       final date = weather.date;
       if (date == null) continue;
-      
+
       final dateKey = "${date.year}-${date.month}-${date.day}";
-      
+
       // Simpan hanya cuaca pertama untuk setiap tanggal
       uniqueWeathers.putIfAbsent(dateKey, () => weather);
-      
+
       // Jika sudah 5 tanggal unik, hentikan iterasi
       if (uniqueWeathers.length == 5) break;
     }
 
     return uniqueWeathers.values.toList();
   }
-
 
   String getGreeting() {
     var hour = DateTime.now().hour;

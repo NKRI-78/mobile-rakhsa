@@ -122,7 +122,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     socketIoService.startListenConnection();
 
     initBanners();
-    setStatusBarStyle();
   }
 
   _onPageChanged(int index) {
@@ -246,11 +245,6 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
         double.parse(currentLng),
       );
 
-      String celcius =
-          "${(weatherNotifier.weathers.first.temperature?.celsius ?? 0).round()}\u00B0C";
-      String weatherDesc =
-          "${weatherNotifier.weathers.first.weatherDescription?.toUpperCase()}";
-
       Future.delayed(Duration.zero, () async {
         await updateAddressNotifier.updateAddress(
           address: address,
@@ -278,8 +272,9 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
             isForegroundMode: true,
             foregroundServiceNotificationId: 888,
             foregroundServiceTypes: [AndroidForegroundType.location],
-            initialNotificationTitle: "$celcius $subAdministrativeArea",
-            initialNotificationContent: weatherDesc,
+            initialNotificationTitle:
+                "${weatherNotifier.celcius} $subAdministrativeArea",
+            initialNotificationContent: weatherNotifier.description,
             notificationChannelId: "notification",
           ),
         );
@@ -308,16 +303,6 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
       }
       setState(() {});
     });
-  }
-
-  void setStatusBarStyle() {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: whiteColor,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
   }
 
   void _initAndShowWelcomeDialog() async {

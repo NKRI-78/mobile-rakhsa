@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
@@ -118,17 +119,19 @@ class ChatPageState extends State<ChatPage> {
       return;
     }
 
-    // dari hp ngirim ke cms
-    final dateToCms = DateTime.now().toUtc().format("yyyy-MM-dd HH:mm:ss");
-    // dari hp untuk ditampilkan di bubble chat
-    final dateForSelf = DateTime.now().toString();
+    String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    final msg = messageC.text.trimLeft().trimRight();
 
     socketIoService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId,
-      message: messageC.text.trimLeft().trimRight(),
-      createdAt: dateToCms,
+      message: msg,
+      createdAt: createdAt,
     );
+
+    String sentTime =
+        "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
 
     Map<String, dynamic> message = {
       "id": const uuid.Uuid().v4(),
@@ -140,9 +143,9 @@ class ChatPageState extends State<ChatPage> {
         "name": "-",
       },
       "is_read": false,
-      "sent_time": dateForSelf,
-      "created_at": dateForSelf,
-      "text": messageC.text.trimLeft().trimRight(),
+      "sent_time": sentTime,
+      "created_at": createdAt,
+      "text": msg,
     };
 
     messageNotifier.appendMessage(data: message);

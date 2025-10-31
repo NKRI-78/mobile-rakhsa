@@ -19,6 +19,8 @@ import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
+import 'package:rakhsa/widgets/dialog/dialog_action_button.dart';
 
 class CameraPage extends StatefulWidget {
   final String location;
@@ -122,9 +124,26 @@ class CameraPageState extends State<CameraPage> {
       uploadMediaNotifier
           .send(file: file, folderName: "videos")
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 300),
             onTimeout: () {
               setState(() => loading = false);
+              Future.delayed(Duration(milliseconds: 200)).then((_) {
+                if (mounted) {
+                  AppDialog.error(
+                    canPop: false,
+                    c: context,
+                    title: "Koneksi Internet Lemah",
+                    message:
+                        "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
+                    actions: [
+                      DialogActionButton(
+                        label: "Mengerti",
+                        onTap: () => context.pop(),
+                      ),
+                    ],
+                  );
+                }
+              });
             },
           )
           .then((_) {

@@ -38,10 +38,12 @@ class AppDialog {
     required String message,
     String? assetIcon,
     String? title,
+    bool canPop = true,
     List<DialogActionButton> actions = const <DialogActionButton>[],
   }) {
     return show(
       c: c,
+      canPop: canPop,
       content: DialogContent(
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",

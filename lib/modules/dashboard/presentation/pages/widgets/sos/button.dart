@@ -136,10 +136,19 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
 
     sosNotifier.initializePulse(this);
     sosNotifier.initializeTimer(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sosNotifier.addCountdownListener();
+    });
 
     if (sosNotifier.isPressed) {
       sosNotifier.resumeTimer();
     }
+  }
+
+  @override
+  void dispose() {
+    // sosNotifier.disposeTimeController();
+    super.dispose();
   }
 
   @override
