@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -18,12 +19,12 @@ import 'package:awesome_notifications/awesome_notifications.dart' as an;
 
 import 'package:rakhsa/awesome_notification.dart';
 import 'package:rakhsa/injection.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
 
 import 'package:rakhsa/injection.dart' as di;
+import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 
@@ -85,8 +86,8 @@ void onStart(ServiceInstance service) async {
     ].where((part) => part != null && part.isNotEmpty).join(", ");
 
     try {
-      await locator<DioClient>().post(
-        endpoint: "/profile/insert-user-track",
+      await Dio().post(
+        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
         data: {
           "user_id": userId,
           "address": address,
@@ -100,8 +101,10 @@ void onStart(ServiceInstance service) async {
       );
     } on DioException catch (e) {
       debugPrint(e.response?.data.toString());
+      throw Exception(e.response?.data['message'] ?? '-');
     } catch (e) {
       debugPrint("Error posting data: $e");
+      throw Exception(e.toString());
     }
   });
 }
@@ -129,17 +132,11 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
 
-  // FlutterError.onError = (errorDetails) {
-  //   if (kReleaseMode) {
-  //     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  //   }
-  // };
-  // PlatformDispatcher.instance.onError = (error, stack) {
-  //   if (kReleaseMode) {
-  //     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //   }
-  //   return true;
-  // };
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   await initializeDateFormatting('id_ID', null);
 
