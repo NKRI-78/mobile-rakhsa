@@ -143,7 +143,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                 "Mohon aktifkan GPS agar aplikasi Marlinda dapat mendeteksi lokasi Anda dengan akurat dan memungkinkan Anda menggunakan layanan SOS.",
             actions: [
               DialogActionButton(
-                label: "Aktifkan",
+                label: "Aktifkan GPS",
                 primary: true,
                 onTap: () => context.pop(true),
               ),
@@ -151,87 +151,142 @@ class DashboardScreenState extends State<DashboardScreen> {
           ),
         );
         if (openSetting != null && openSetting) {
-          // await Geolocator.openLocationSettings();
           await location.Location().requestService();
         }
       }
       return;
     }
-    Position position = await Geolocator.getCurrentPosition(
-      locationSettings: AndroidSettings(
-        accuracy: LocationAccuracy.best,
-        forceLocationManager: true,
-      ),
-    );
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-    String country = placemarks[0].country ?? "-";
-    String street = placemarks[0].street ?? "-";
-    String administrativeArea = placemarks[0].administrativeArea ?? "-";
-    String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-";
+    // check location permission
+    LocationPermission lp = await Geolocator.checkPermission();
+    if (lp == LocationPermission.denied) {
+      if (mounted) {
+        bool? request = await AppDialog.show(
+          c: context,
+          content: DialogContent(
+            assetIcon: "assets/images/icons/current-location.png",
+            title: "Permintaan Izin Lokasi",
+            message:
+                "Aplikasi memerlukan akses lokasi agar dapat mengirim SOS dengan akurat saat keadaan darurat. Mohon aktifkan izin lokasi untuk melanjutkan.",
+            actions: [
+              DialogActionButton(
+                label: "Minta Izin",
+                primary: true,
+                onTap: () => context.pop(true),
+              ),
+            ],
+          ),
+        );
+        if (request != null && request) {
+          lp = await Geolocator.requestPermission();
+        }
+      }
+    }
 
-    String address =
-        "$administrativeArea $subadministrativeArea\n$street, $country";
+    if (lp == LocationPermission.deniedForever) {
+      if (mounted) {
+        bool? openSettings = await AppDialog.show(
+          c: context,
+          content: DialogContent(
+            assetIcon: "assets/images/icons/current-location.png",
+            title: "Akses Lokasi Dinonaktifkan",
+            message: """
+Izin lokasi saat ini ditolak secara permanen.
+Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, lalu izinkan akses lokasi agar fitur SOS dapat berfungsi dengan benar.
+""",
+            actions: [
+              DialogActionButton(
+                label: "Buka Pengaturan",
+                primary: true,
+                onTap: () => context.pop(true),
+              ),
+            ],
+          ),
+        );
+        if (openSettings != null && openSettings) {
+          await Geolocator.openAppSettings();
+        }
+      }
+    }
 
-    setState(() {
-      currentAddress = address;
-      currentCountry = country;
-      subAdministrativeArea = subadministrativeArea;
-
-      currentLat = position.latitude.toString();
-      currentLng = position.longitude.toString();
-
-      loadingGmaps = false;
-    });
-
-    await weatherNotifier.getForecastWeather(
-      double.parse(currentLat),
-      double.parse(currentLng),
-    );
-
-    String celcius =
-        "${(weatherNotifier.weathers.first.temperature?.celsius ?? 0).round()}\u00B0C";
-    String weatherDesc =
-        "${weatherNotifier.weathers.first.weatherDescription?.toUpperCase()}";
-
-    Future.delayed(Duration.zero, () async {
-      await updateAddressNotifier.updateAddress(
-        address: address,
-        state: placemarks[0].country!,
-        lat: position.latitude,
-        lng: position.longitude,
-      );
-
-      StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
-
-      await dashboardNotifier.getEws(
-        lat: position.latitude,
-        lng: position.longitude,
-        state: country,
-      );
-
-      await service.configure(
-        iosConfiguration: IosConfiguration(
-          autoStart: true,
-          onForeground: onStart,
-          onBackground: onIosBackground,
-        ),
-        androidConfiguration: AndroidConfiguration(
-          onStart: onStart,
-          isForegroundMode: true,
-          foregroundServiceNotificationId: 888,
-          foregroundServiceTypes: [AndroidForegroundType.location],
-          initialNotificationTitle: "$celcius $subAdministrativeArea",
-          initialNotificationContent: weatherDesc,
-          notificationChannelId: "notification",
+    if (lp == LocationPermission.always ||
+        lp == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: AndroidSettings(
+          accuracy: LocationAccuracy.best,
+          forceLocationManager: true,
         ),
       );
 
-      startBackgroundService();
-    });
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      String country = placemarks[0].country ?? "-";
+      String street = placemarks[0].street ?? "-";
+      String administrativeArea = placemarks[0].administrativeArea ?? "-";
+      String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-";
+
+      String address =
+          "$administrativeArea $subadministrativeArea\n$street, $country";
+
+      setState(() {
+        currentAddress = address;
+        currentCountry = country;
+        subAdministrativeArea = subadministrativeArea;
+
+        currentLat = position.latitude.toString();
+        currentLng = position.longitude.toString();
+
+        loadingGmaps = false;
+      });
+
+      await weatherNotifier.getForecastWeather(
+        double.parse(currentLat),
+        double.parse(currentLng),
+      );
+
+      String celcius =
+          "${(weatherNotifier.weathers.first.temperature?.celsius ?? 0).round()}\u00B0C";
+      String weatherDesc =
+          "${weatherNotifier.weathers.first.weatherDescription?.toUpperCase()}";
+
+      Future.delayed(Duration.zero, () async {
+        await updateAddressNotifier.updateAddress(
+          address: address,
+          state: placemarks[0].country!,
+          lat: position.latitude,
+          lng: position.longitude,
+        );
+
+        StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
+
+        await dashboardNotifier.getEws(
+          lat: position.latitude,
+          lng: position.longitude,
+          state: country,
+        );
+
+        await service.configure(
+          iosConfiguration: IosConfiguration(
+            autoStart: true,
+            onForeground: onStart,
+            onBackground: onIosBackground,
+          ),
+          androidConfiguration: AndroidConfiguration(
+            onStart: onStart,
+            isForegroundMode: true,
+            foregroundServiceNotificationId: 888,
+            foregroundServiceTypes: [AndroidForegroundType.location],
+            initialNotificationTitle: "$celcius $subAdministrativeArea",
+            initialNotificationContent: weatherDesc,
+            notificationChannelId: "notification",
+          ),
+        );
+
+        startBackgroundService();
+      });
+    }
   }
 
   void initBanners() {

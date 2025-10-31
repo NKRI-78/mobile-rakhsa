@@ -5,7 +5,6 @@ import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
-import 'package:intl/intl.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -119,9 +118,7 @@ class ChatPageState extends State<ChatPage> {
       return;
     }
 
-    // final session = context.read<UserProvider>().session;
-    // final session = StorageHelper.session;
-    String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    String createdAt = DateTime.now().toUtc().toString();
 
     socketIoService.sendMessage(
       chatId: widget.chatId,
