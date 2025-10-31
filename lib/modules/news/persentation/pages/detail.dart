@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart' as fh;
 
 import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -50,10 +51,11 @@ class NewsDetailPageState extends State<NewsDetailPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      // canPop: false,
+      canPop: true,
       onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        Navigator.pushReplacementNamed(context, RoutesNavigation.dashboard);
+        // if (didPop) return;
+        // Navigator.pushReplacementNamed(context, RoutesNavigation.dashboard);
       },
       child: Scaffold(
         backgroundColor: const Color(0xffF4F4F7),
@@ -61,10 +63,11 @@ class NewsDetailPageState extends State<NewsDetailPage> {
           backgroundColor: const Color(0xffF4F4F7),
           leading: CupertinoNavigationBarBackButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(
-                context,
-                RoutesNavigation.dashboard,
-              );
+              // Navigator.pushReplacementNamed(
+              //   context,
+              //   RoutesNavigation.dashboard,
+              // );
+              context.pop();
             },
             color: ColorResources.black,
           ),

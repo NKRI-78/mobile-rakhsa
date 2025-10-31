@@ -118,17 +118,17 @@ class ChatPageState extends State<ChatPage> {
       return;
     }
 
-    String createdAt = DateTime.now().toUtc().toString();
+    // dari hp ngirim ke cms
+    final dateToCms = DateTime.now().toUtc().format("yyyy-MM-dd HH:mm:ss");
+    // dari hp untuk ditampilkan di bubble chat
+    final dateForSelf = DateTime.now().toString();
 
     socketIoService.sendMessage(
       chatId: widget.chatId,
       recipientId: widget.recipientId,
       message: messageC.text.trimLeft().trimRight(),
-      createdAt: createdAt,
+      createdAt: dateToCms,
     );
-
-    String sentTime =
-        "${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}";
 
     Map<String, dynamic> message = {
       "id": const uuid.Uuid().v4(),
@@ -140,8 +140,8 @@ class ChatPageState extends State<ChatPage> {
         "name": "-",
       },
       "is_read": false,
-      "sent_time": sentTime,
-      "created_at": createdAt,
+      "sent_time": dateForSelf,
+      "created_at": dateForSelf,
       "text": messageC.text.trimLeft().trimRight(),
     };
 
@@ -186,6 +186,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.unfocus(),
+      // onPanDown: (details) => context.unfocus(),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {

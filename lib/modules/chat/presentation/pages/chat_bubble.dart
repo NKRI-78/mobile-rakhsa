@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
@@ -20,6 +21,9 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final localDateTime = DateTime.tryParse(time) ?? DateTime.now();
+    // final formattedTime = localDateTime.format("HH.mm");
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -51,7 +55,7 @@ class ChatBubble extends StatelessWidget {
             ),
 
             Text(
-              time,
+              time.formatTimeStringFromCMS("HH.mm"),
               style: robotoRegular.copyWith(
                 color: isMe
                     ? ColorResources.white

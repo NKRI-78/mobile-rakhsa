@@ -163,7 +163,9 @@ class GetMessagesNotifier with ChangeNotifier {
         debugPrint('chat dari _messages = $_messages');
 
         _messages.addAll(r.data.messages);
-        debugPrint('chat dari _messages = $_messages');
+        debugPrint(
+          'chat dari _messages = ${_messages.map((e) => {"time": e.sentTime, "message": e.text}).toList()}',
+        );
 
         notifyListeners();
       },
@@ -249,6 +251,7 @@ class GetMessagesNotifier with ChangeNotifier {
         "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
       );
       if (containIncomingMsgId) return;
+      debugPrint("sent time dari cms = ${data["sent_time"] ?? "-"}");
       _messages.insert(
         0,
         MessageData(
@@ -267,7 +270,9 @@ class GetMessagesNotifier with ChangeNotifier {
         ),
       );
       notifyListeners();
-      final filteredMsg = _messages.map((e) => e.text);
+      final filteredMsg = _messages
+          .map((e) => {"time": e.sentTime, "message": e.text})
+          .toList();
       debugPrint(
         "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
       );
