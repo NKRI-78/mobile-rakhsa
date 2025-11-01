@@ -43,20 +43,28 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	
 	<key>NSCameraUsageDescription</key>
-	<string>Marlinda needs to access the camera for</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires location access to retrieve your address for weather updates.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app requires location access to retrieve your address for weather updates.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires location access to retrieve your address for weather updates.</string>
+	<string>Marlinda uses the camera to record live video during an SOS event to help capture the user’s real-time situation for safety and emergency assistance.</string>
+
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Marlinda needs to access the microphone</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Enter photo access will be used in Edit Profile</string>
+	<string>Marlinda uses the microphone to record audio together with video during an SOS event to provide complete context of the emergency situation.</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Marlinda uses your location to send accurate SOS alerts, show nearby facilities, and update the Early Warning System while the app is active.</string>
+
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Marlinda accesses your location in the background to ensure continuous SOS tracking, weather updates, and synchronization with the Early Warning System.</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Marlinda needs continuous location access to send real-time SOS alerts, detect nearby places, and keep your Early Warning System data up to date.</string>
+
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Enter photo access will be used in Edit Profile</string>
+	<string>Marlinda allows you to select and upload a photo from your library to update your profile.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Marlinda needs access to save profile photos that you update within the app.</string>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

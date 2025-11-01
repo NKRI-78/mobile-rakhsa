@@ -140,6 +140,15 @@ Future<void> main() async {
 
   await initializeDateFormatting('id_ID', null);
 
+  if (Platform.isIOS) {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+          alert: false,
+          badge: false,
+          sound: false,
+        );
+  }
+
   await an.AwesomeNotifications()
       .initialize('resource://drawable/ic_notification', [
         an.NotificationChannel(

@@ -39,12 +39,18 @@ class FirebaseProvider with ChangeNotifier {
     try {
       final session = await StorageHelper.getUserSession();
       String? token = await FirebaseMessaging.instance.getToken();
+      debugPrint(
+        "Loading initFCM = ${{"uid": session?.user.id ?? "-", "fcm_token": token ?? "-"}}",
+      );
       await dio.post(
         "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
         data: {"user_id": session?.user.id, "token": token},
       );
+      debugPrint(
+        "initFCM Berhasil = ${{"uid": session?.user.id ?? "-", "fcm_token": token ?? "-"}}",
+      );
     } catch (e) {
-      debugPrint("Error initializing FCM: $e");
+      debugPrint("Error initFCM: $e");
     }
   }
 
@@ -214,6 +220,7 @@ class FirebaseProvider with ChangeNotifier {
       );
     } else {
       if (notification != null) {
+        debugPrint("notifikasi masuk dengan payload = $payload");
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             payload: {
