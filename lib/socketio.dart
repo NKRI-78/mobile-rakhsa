@@ -12,13 +12,10 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
-import 'main.dart';
-
-// check socket socket?.connected ?? false
 
 enum ConnectionIndicator { red, yellow, green }
 

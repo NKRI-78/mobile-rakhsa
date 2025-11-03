@@ -8,14 +8,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
-
-import 'main.dart';
 
 class NotificationType {
   static const resolvedSos = "resolved-sos";

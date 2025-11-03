@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/firebase.dart';
-import 'package:rakhsa/main.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 class App extends StatefulWidget {

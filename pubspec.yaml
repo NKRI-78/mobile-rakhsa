@@ -119,6 +119,10 @@ flutter:
     - assets/images/update/
     - assets/sounds/
 
+    # env
+    - assets/env/.env.stag
+    - assets/env/.env.prod
+
   fonts:
     - family: Gilroy
       fonts:

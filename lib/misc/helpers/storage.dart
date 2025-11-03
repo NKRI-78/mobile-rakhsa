@@ -65,11 +65,9 @@ class StorageHelper {
   static Future<UserSession?> loadlocalSession() async {
     if (_session != null) return _session;
     final loaded = await getUserSession();
-    if (loaded != null) {
-      _session = loaded;
-    }
+    if (loaded != null) _session = loaded;
     log("loadLocalSession dari loadLocalSession = ${_session?.user.name}");
-    return _session;
+    return loaded;
   }
 
   static Future<void> removeUserSession() {

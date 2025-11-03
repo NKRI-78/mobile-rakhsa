@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rakhsa/misc/client/errors/code.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
@@ -17,7 +18,7 @@ class DioClient {
   DioClient(this._connectivity)
     : _dio = Dio(
         BaseOptions(
-          baseUrl: "https://api-rakhsa.inovatiftujuh8.com/api/v1",
+          baseUrl: dotenv.env['API_BASE_URL'] ?? "-",
           connectTimeout: const Duration(seconds: 90),
           receiveTimeout: const Duration(seconds: 90),
           sendTimeout: const Duration(minutes: 10),
@@ -296,4 +297,12 @@ class DioClient {
       throw ClientException.unknown(other: error.toString());
     }
   }
+
+  // String _getBaseUrl() {
+  //   if (BuildConfig.isProd) {
+  //     return dotenv.env['API_BASE_URL'] ?? "";
+  //   } else {
+  //     return ;
+  //   }
+  // }
 }

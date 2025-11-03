@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/chat/data/models/messages.dart';

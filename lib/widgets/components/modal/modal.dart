@@ -3,8 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/main.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 
 import 'package:rakhsa/routes/routes_navigation.dart';
 

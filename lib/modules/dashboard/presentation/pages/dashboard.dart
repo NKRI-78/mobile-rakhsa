@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/background_service.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
@@ -24,7 +25,6 @@ import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
-import 'package:rakhsa/main.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 

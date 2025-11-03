@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/main.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 
 class ShowSnackbar {
   ShowSnackbar._();

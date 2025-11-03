@@ -1,24 +1,55 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    /* ====== STAGING ====== */
     {
-      "name": "mobile-rakhsa",
-      "request": "launch",
-      "type": "dart"
-    },
-    {
-      "name": "mobile-rakhsa (profile mode)",
+      "name": "Marlinda • Staging (debug)",
       "request": "launch",
       "type": "dart",
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging"],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "Marlinda • Staging (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging"],
       "flutterMode": "profile"
     },
     {
-      "name": "mobile-rakhsa (release mode)",
+      "name": "Marlinda • Staging (release)",
       "request": "launch",
       "type": "dart",
+      "program": "lib/main_staging.dart",
+      "args": ["--flavor", "staging"],
+      "flutterMode": "release"
+    },
+
+    /* ====== PRODUCTION ====== */
+    {
+      "name": "Marlinda • Production (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "args": ["--flavor", "production"],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "Marlinda • Production (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "args": ["--flavor", "production"],
+      "flutterMode": "profile"
+    },
+    {
+      "name": "Marlinda • Production (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_production.dart",
+      "args": ["--flavor", "production"],
       "flutterMode": "release"
     }
   ]

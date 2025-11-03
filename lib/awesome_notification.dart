@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/modules/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
-
-import 'main.dart';
+import 'package:rakhsa/routes/nav_key.dart';
 
 class AwesomeNotificationService {
   static Future<void> onActionReceivedMethod(
