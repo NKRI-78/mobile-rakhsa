@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
@@ -60,7 +61,7 @@ class GetMessagesNotifier with ChangeNotifier {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time > 0) {
         _time--;
-        log("timer = $_time");
+        if (kDebugMode) log("timer = $_time");
         notifyListeners();
       } else {
         _timer.cancel();

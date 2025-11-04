@@ -90,9 +90,5 @@ Future<void> main() async {
 
   di.init();
 
-  // cameras = await availableCameras();
-
-  // HttpOverridesSetup.setup();
-
   runApp(MultiProvider(providers: providers, child: app.App()));
 }

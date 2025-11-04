@@ -108,7 +108,10 @@ class ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Nomor Telepon", style: labelStyle),
-                          Text("-", style: valueStyle),
+                          Text(
+                            notifier.user?.contact ?? "-",
+                            style: valueStyle,
+                          ),
                         ],
                       ),
                     ],

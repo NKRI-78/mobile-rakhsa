@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
@@ -18,8 +19,20 @@ class StorageHelper {
     sharedPreferences = await SharedPreferences.getInstance();
     secureStorage = FlutterSecureStorage(
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
-      iOptions: IOSOptions(),
+      iOptions: IOSOptions(accessibility: KeychainAccessibility.unlocked),
     );
+
+    if (Platform.isIOS) {
+      _removeiOSKeychainOnFirstRun();
+    }
+  }
+
+  static Future _removeiOSKeychainOnFirstRun() async {
+    final hasRun = sharedPreferences.getBool('has_run_before') ?? false;
+    if (!hasRun) {
+      await secureStorage.deleteAll();
+      await sharedPreferences.setBool('has_run_before', true);
+    }
   }
 
   static Future<bool> write(String key, String value) {

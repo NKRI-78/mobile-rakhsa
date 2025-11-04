@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Marlinda</string>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -43,28 +43,20 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	
 	<key>NSCameraUsageDescription</key>
 	<string>Marlinda uses the camera to record live video during an SOS event to help capture the user’s real-time situation for safety and emergency assistance.</string>
-
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Marlinda uses the microphone to record audio together with video during an SOS event to provide complete context of the emergency situation.</string>
-
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Marlinda uses your location to send accurate SOS alerts, show nearby facilities, and update the Early Warning System while the app is active.</string>
-
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Marlinda accesses your location in the background to ensure continuous SOS tracking, weather updates, and synchronization with the Early Warning System.</string>
-
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Marlinda needs continuous location access to send real-time SOS alerts, detect nearby places, and keep your Early Warning System data up to date.</string>
-
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Marlinda allows you to select and upload a photo from your library to update your profile.</string>
-
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Marlinda accesses your location in the background to ensure continuous SOS tracking, weather updates, and synchronization with the Early Warning System.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Marlinda uses your location to send accurate SOS alerts, show nearby facilities, and update the Early Warning System while the app is active.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Marlinda uses the microphone to record audio together with video during an SOS event to provide complete context of the emergency situation.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Marlinda needs access to save profile photos that you update within the app.</string>
-
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Marlinda allows you to select and upload a photo from your library to update your profile.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

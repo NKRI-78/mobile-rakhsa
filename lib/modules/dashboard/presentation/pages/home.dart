@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
@@ -238,6 +239,7 @@ class WeatherContent extends StatelessWidget {
   final LatLng coordinate;
 
   void navigateToWeatherDetail(BuildContext context) {
+    log("harusnya navigate to weather page");
     Navigator.pushNamed(
       context,
       RoutesNavigation.weather,
@@ -250,14 +252,14 @@ class WeatherContent extends StatelessWidget {
     return SizedBox(
       height: 190,
       width: double.infinity,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(AssetSource.bgCardWeather, fit: BoxFit.cover),
-          ),
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () => navigateToWeatherDetail(context),
+      child: GestureDetector(
+        onTap: () => navigateToWeatherDetail(context),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(AssetSource.bgCardWeather, fit: BoxFit.cover),
+            ),
+            Positioned.fill(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Consumer<WeatherNotifier>(
@@ -278,8 +280,8 @@ class WeatherContent extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
