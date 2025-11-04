@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:intl/intl.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -99,7 +100,10 @@ class ChatPageState extends State<ChatPage> {
   }
 
   Future<void> getData() async {
-    if (!mounted) return;
+    // if (!mounted) return;
+    log(
+      "sender_id = ${StorageHelper.session?.user.id}, chat_id = ${widget.chatId}",
+    );
     messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
 
     Future.delayed(const Duration(milliseconds: 400), () {

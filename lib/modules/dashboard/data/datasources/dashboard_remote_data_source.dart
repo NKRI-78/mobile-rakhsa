@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:rakhsa/build_config.dart';
 
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/client/errors/exception.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';
@@ -37,12 +37,12 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   DashboardRemoteDataSourceImpl({required this.client});
 
+  String get _baseUrl => BuildConfig.instance.apiBaseUrl ?? "";
+
   @override
   Future<BannerModel> getBanner() async {
     try {
-      final response = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/banner",
-      );
+      final response = await client.get("$_baseUrl/banner");
       Map<String, dynamic> data = response.data;
       BannerModel bannerModel = BannerModel.fromJson(data);
       return bannerModel;
@@ -63,7 +63,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   }) async {
     try {
       final response = await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/news/list-v2",
+        "$_baseUrl/news/list-v2",
         data: {"lat": lat.toString(), "lng": lng.toString(), "state": state},
       );
       Map<String, dynamic> data = response.data;
@@ -81,9 +81,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   @override
   Future<NewsDetailModel> getNewsDetail({required int id}) async {
     try {
-      final response = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/news/$id",
-      );
+      final response = await client.get("$_baseUrl/news/$id");
       Map<String, dynamic> data = response.data;
       NewsDetailModel newsDetailModel = NewsDetailModel.fromJson(data);
       return newsDetailModel;
@@ -104,7 +102,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   }) async {
     try {
       await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/insert-user-track",
+        "$_baseUrl/profile/insert-user-track",
         data: {
           "user_id": StorageHelper.session?.user.id,
           "address": address,
@@ -130,7 +128,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   }) async {
     try {
       await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/profile/address/update",
+        "$_baseUrl/profile/address/update",
         data: {
           "user_id": StorageHelper.session?.user.id,
           "address": address,
@@ -151,10 +149,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   @override
   Future<void> expireSos({required String sosId}) async {
     try {
-      await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/expire",
-        data: {"id": sosId},
-      );
+      await client.post("$_baseUrl/sos/expire", data: {"id": sosId});
     } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
@@ -171,7 +166,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   }) async {
     try {
       await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/sos/rating",
+        "$_baseUrl/sos/rating",
         data: {
           "id": sosId,
           "user_id": StorageHelper.session?.user.id,

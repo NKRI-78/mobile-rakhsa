@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -77,11 +78,13 @@ class SocketIoService with ChangeNotifier {
     notifyListeners();
   }
 
+  String get _baseUrl => BuildConfig.instance.socketBaseUrl ?? "-";
+
   Future<void> init() async {
     final session = await StorageHelper.loadlocalSession();
     if (session != null) {
       socket = IO.io(
-        'https://socketio-rakhsa.langitdigital78.com',
+        _baseUrl,
         OptionBuilder()
             .setTransports(['websocket'])
             .setAuth({'token': session.token})
@@ -95,7 +98,7 @@ class SocketIoService with ChangeNotifier {
     }
 
     socket?.onConnect((message) {
-      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG $message");
+      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG $_baseUrl");
 
       setStateConnectionIndicator(ConnectionIndicator.yellow);
       Future.delayed(const Duration(seconds: 1), () {
@@ -161,7 +164,9 @@ class SocketIoService with ChangeNotifier {
     });
 
     socket?.on("confirmed-by-agent", (message) {
-      debugPrint("=== CONFIRMED BY AGENT ===");
+      debugPrint(
+        "☺️ AGENT MENGKONFIRMASI SOS LEWAT SOKET, recipient_id = ${message["recipient_id"] ?? "-"}",
+      );
 
       final context = navigatorKey.currentContext;
       if (context != null) {
@@ -218,6 +223,7 @@ class SocketIoService with ChangeNotifier {
         "country": country,
         "platform_type": "raksha",
       };
+      debugPrint('SOS BERHASIL DIKIRIM $payload');
       socket?.emit("sos", payload);
     }
   }

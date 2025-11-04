@@ -27,18 +27,21 @@ import 'package:rakhsa/providers.dart';
 
 import './modules/app/app.dart' as app;
 
-// late List<CameraDescription> cameras;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: 'assets/env/.env.stag').onError((e, st) {
-    debugPrint("Gagal memuat env stagging = ${e.toString()}");
-    throw Exception(e.toString());
-  });
+  await dotenv
+      .load(fileName: 'assets/env/.env.stag')
+      .then((_) => debugPrint("env staging berhasil dimuat"))
+      .onError((e, st) {
+        debugPrint("Gagal memuat env stagging = ${e.toString()}");
+        throw Exception("Gagal memuat env stagging = ${e.toString()}");
+      });
   BuildConfig.init(
     flavor: Flavor.stag,
-    appName: dotenv.env['APP_NAME'] ?? 'Marlinda Stag',
+    appName: dotenv.env['APP_NAME'] ?? 'Marlinda-Staging',
+    apiBaseUrl: dotenv.env['API_BASE_URL'],
+    socketBaseUrl: dotenv.env['SOCKET_BASE_URL'],
   );
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -88,9 +91,7 @@ Future<void> main() async {
 
   di.init();
 
-  // cameras = await availableCameras();
-
-  HttpOverridesSetup.stup();
+  HttpOverridesSetup.setup();
 
   runApp(MultiProvider(providers: providers, child: app.App()));
 }

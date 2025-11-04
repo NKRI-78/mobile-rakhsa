@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:rakhsa/build_config.dart';
 
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/client/errors/exception.dart';
 
 import 'package:rakhsa/modules/information/data/models/kbri.dart';
@@ -20,11 +20,13 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
 
   KbriRemoteDataSourceImpl({required this.client});
 
+  String get _baseUrl => BuildConfig.instance.apiBaseUrl ?? "";
+
   @override
   Future<KbriInfoModel> infoKbriStateId({required String stateId}) async {
     try {
       Response res = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-kbri-state/$stateId",
+        "$_baseUrl/information/info-kbri-state/$stateId",
       );
       Map<String, dynamic> data = res.data;
       KbriInfoModel kbriInfoModel = KbriInfoModel.fromJson(data);
@@ -53,7 +55,7 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
 
     try {
       Response res = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-kbri-state-name/$stateNameVal",
+        "$_baseUrl/information/info-kbri-state-name/$stateNameVal",
       );
       Map<String, dynamic> data = res.data;
       KbriInfoModel kbriInfoModel = KbriInfoModel.fromJson(data);
@@ -72,7 +74,7 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
   Future<VisaContentModel> infoVisa({required String stateId}) async {
     try {
       Response res = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-visa?state_id=$stateId",
+        "$_baseUrl/information/info-visa?state_id=$stateId",
       );
       Map<String, dynamic> data = res.data;
       VisaContentModel visaContentModel = VisaContentModel.fromJson(data);
@@ -91,7 +93,7 @@ class KbriRemoteDataSourceImpl implements KbriRemoteDataSource {
   Future<PassportContentModel> infoPassport({required String stateId}) async {
     try {
       Response res = await client.get(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/information/info-passport?state_id=$stateId",
+        "$_baseUrl/information/info-passport?state_id=$stateId",
       );
       Map<String, dynamic> data = res.data;
       PassportContentModel passportContentModel = PassportContentModel.fromJson(

@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/client/errors/code.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
@@ -18,7 +18,7 @@ class DioClient {
   DioClient(this._connectivity)
     : _dio = Dio(
         BaseOptions(
-          baseUrl: dotenv.env['API_BASE_URL'] ?? "-",
+          baseUrl: BuildConfig.instance.apiBaseUrl ?? "",
           connectTimeout: const Duration(seconds: 90),
           receiveTimeout: const Duration(seconds: 90),
           sendTimeout: const Duration(minutes: 10),
@@ -52,7 +52,6 @@ class DioClient {
           final public = publicEndpoints.contains(options.path);
           if (!public) {
             final session = StorageHelper.session;
-
             if (session != null) {
               options.headers['Authorization'] = 'Bearer ${session.token}';
             }

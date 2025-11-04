@@ -78,11 +78,11 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
   bool get _lastIndex => (_currentPage == _contents.length - 1);
 
   void _actionOnTap(BuildContext context) async {
-    bool availOnBoardingKey = StorageHelper.containsOnBoardingKey();
-
     if (_lastIndex) {
       // set data ketika key tidak tersedia di prefs
-      if (!availOnBoardingKey) await StorageHelper.setOnBoardingKey();
+      if (!StorageHelper.containsKey("on_boarding_key")) {
+        await StorageHelper.write("on_boarding_key", "ob");
+      }
       if (context.mounted) {
         Navigator.pushNamed(context, RoutesNavigation.welcomePage);
       }

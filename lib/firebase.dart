@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:rakhsa/build_config.dart';
 
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
@@ -36,13 +36,13 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> initFcm() async {
     try {
-      final session = await StorageHelper.getUserSession();
+      final session = await StorageHelper.loadlocalSession();
       String? token = await FirebaseMessaging.instance.getToken();
       debugPrint(
         "Loading initFCM = ${{"uid": session?.user.id ?? "-", "fcm_token": token ?? "-"}}",
       );
       await dio.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/fcm",
+        "${BuildConfig.instance.apiBaseUrl}/fcm",
         data: {"user_id": session?.user.id, "token": token},
       );
       debugPrint(

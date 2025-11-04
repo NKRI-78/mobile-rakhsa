@@ -37,7 +37,7 @@ class AppState extends State<App> {
     //   final showOnBoarding = !StorageHelper.containsOnBoardingKey();
     //   if (showOnBoarding) return OnBoardingPage();
     // }
-    final showOnBoarding = !StorageHelper.containsOnBoardingKey();
+    final showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
     if (showOnBoarding) return OnBoardingPage();
     return const WelcomePage();
   }

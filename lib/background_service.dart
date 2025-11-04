@@ -13,6 +13,26 @@ import 'package:rakhsa/misc/helpers/storage.dart';
 
 final service = FlutterBackgroundService();
 
+Future<void> initBackgroundService(String title, String content) async {
+  if (await service.isRunning()) return;
+  await service.configure(
+    iosConfiguration: IosConfiguration(
+      autoStart: true,
+      onForeground: onStart,
+      onBackground: onIosBackground,
+    ),
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      isForegroundMode: true,
+      foregroundServiceNotificationId: 888,
+      foregroundServiceTypes: [AndroidForegroundType.location],
+      initialNotificationTitle: title,
+      initialNotificationContent: content,
+      notificationChannelId: "notification",
+    ),
+  );
+}
+
 void startBackgroundService() {
   service.startService();
 }
@@ -59,7 +79,7 @@ void onStart(ServiceInstance service) async {
         "user_id": userId,
         "address": address,
         "device": iOSInfo.model,
-        "product_name": iOSInfo.model,
+        "product_name": iOSInfo.modelName,
         "no_serial": iOSInfo.systemName,
         "os_name": "iOS",
         "lat": position.latitude,

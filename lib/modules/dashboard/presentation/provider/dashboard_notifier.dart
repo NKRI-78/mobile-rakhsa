@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';
@@ -23,9 +22,6 @@ class DashboardNotifier with ChangeNotifier {
     required this.bannerUseCase,
   });
 
-  bool _isLocked = false;
-  bool get isLocked => _isLocked;
-
   List<BannerData> _banners = [];
   List<BannerData> get banners => [..._banners];
 
@@ -46,18 +42,6 @@ class DashboardNotifier with ChangeNotifier {
 
   String _message = "";
   String get message => _message;
-
-  void checkIsLocked() {
-    _isLocked = StorageHelper.isLocked();
-
-    notifyListeners();
-  }
-
-  void setStateIsLocked({required bool val}) {
-    _isLocked = val;
-
-    notifyListeners();
-  }
 
   void setStateBanner(BannerProviderState newState) {
     _bannerState = newState;

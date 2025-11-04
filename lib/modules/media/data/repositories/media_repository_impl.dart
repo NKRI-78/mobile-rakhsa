@@ -26,7 +26,7 @@ class MediaRepositoryImpl implements MediaRepository {
         folderName: folderName,
         onSendProgress: onSendProgress,
       );
-      return Right(result.data.toEntity());
+      return Right(result.toEntity());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message.toString()));
     } catch (e) {

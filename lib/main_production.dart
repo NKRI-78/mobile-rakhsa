@@ -17,7 +17,6 @@ import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
-import 'package:rakhsa/http_overrides.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
@@ -27,18 +26,21 @@ import 'package:rakhsa/providers.dart';
 
 import './modules/app/app.dart' as app;
 
-// late List<CameraDescription> cameras;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: 'assets/env/.env.prod').onError((e, st) {
-    debugPrint("Gagal memuat env production = ${e.toString()}");
-    throw Exception(e.toString());
-  });
+  await dotenv
+      .load(fileName: 'assets/env/.env.prod')
+      .then((_) => debugPrint("env production berhasil dimuat"))
+      .onError((e, st) {
+        debugPrint("Gagal memuat env production = ${e.toString()}");
+        throw Exception("Gagal memuat env production = ${e.toString()}");
+      });
   BuildConfig.init(
     flavor: Flavor.prod,
-    appName: dotenv.env['APP_NAME'] ?? 'Marlinda Prod',
+    appName: dotenv.env['APP_NAME'] ?? 'Marlinda',
+    apiBaseUrl: dotenv.env['API_BASE_URL'],
+    socketBaseUrl: dotenv.env['SOCKET_BASE_URL'],
   );
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -90,7 +92,7 @@ Future<void> main() async {
 
   // cameras = await availableCameras();
 
-  HttpOverridesSetup.stup();
+  // HttpOverridesSetup.setup();
 
   runApp(MultiProvider(providers: providers, child: app.App()));
 }

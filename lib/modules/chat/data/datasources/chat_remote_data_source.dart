@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:rakhsa/build_config.dart';
 
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
 import 'package:rakhsa/misc/client/errors/exception.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 
@@ -30,6 +30,8 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   Dio client;
 
   ChatRemoteDataSourceImpl({required this.client});
+
+  String get _baseUrl => BuildConfig.instance.apiBaseUrl ?? "";
 
   @override
   Future<InboxModel> getInbox() async {
@@ -74,7 +76,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   Future<ChatsModel> getChats() async {
     try {
       final response = await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/list",
+        "$_baseUrl/chat/list",
         data: {"user_id": StorageHelper.session?.user.id, "is_agent": false},
       );
       Map<String, dynamic> data = response.data;
@@ -96,7 +98,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }) async {
     try {
       final response = await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/messages",
+        "$_baseUrl/chat/messages",
         data: {
           "sender_id": StorageHelper.session?.user.id,
           "chat_id": chatId,
@@ -125,7 +127,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   }) async {
     try {
       await client.post(
-        "${RemoteDataSourceConsts.baseUrlProd}/api/v1/chat/insert-message",
+        "$_baseUrl/chat/insert-message",
         data: {
           "chat_id": chatId,
           "sender": StorageHelper.session?.user.id,

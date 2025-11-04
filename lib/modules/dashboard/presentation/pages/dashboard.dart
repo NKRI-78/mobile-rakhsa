@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,6 +10,7 @@ import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/background_service.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
@@ -105,9 +105,10 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> getData() async {
+    await StorageHelper.loadlocalSession();
+
     if (!mounted) return;
     await profileNotifier.getUser();
-    await StorageHelper.loadlocalSession();
 
     if (!mounted) return;
     await firebaseProvider.initFcm();
@@ -261,25 +262,13 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
           state: country,
         );
 
-        await service.configure(
-          iosConfiguration: IosConfiguration(
-            autoStart: true,
-            onForeground: onStart,
-            onBackground: onIosBackground,
-          ),
-          androidConfiguration: AndroidConfiguration(
-            onStart: onStart,
-            isForegroundMode: true,
-            foregroundServiceNotificationId: 888,
-            foregroundServiceTypes: [AndroidForegroundType.location],
-            initialNotificationTitle:
-                "${weatherNotifier.celcius} $subAdministrativeArea",
-            initialNotificationContent: weatherNotifier.description,
-            notificationChannelId: "notification",
-          ),
-        );
-
-        startBackgroundService();
+        if (BuildConfig.isProd) {
+          await initBackgroundService(
+            "${weatherNotifier.celcius} $subAdministrativeArea",
+            weatherNotifier.description,
+          );
+          startBackgroundService();
+        }
       });
     }
   }

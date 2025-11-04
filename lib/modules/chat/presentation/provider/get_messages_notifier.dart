@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -59,6 +60,7 @@ class GetMessagesNotifier with ChangeNotifier {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_time > 0) {
         _time--;
+        log("timer = $_time");
         notifyListeners();
       } else {
         _timer.cancel();
@@ -114,18 +116,6 @@ class GetMessagesNotifier with ChangeNotifier {
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
-
-    notifyListeners();
-  }
-
-  void initializeBtnSessionEnd() {
-    _isBtnSessionEnd = false;
-
-    notifyListeners();
-  }
-
-  void showBtnSessionEnd() {
-    _isBtnSessionEnd = true;
 
     notifyListeners();
   }
@@ -229,21 +219,23 @@ class GetMessagesNotifier with ChangeNotifier {
       String incomingChatId = data["chat_id"];
       String incomingMessageId = data["id"];
       bool isRead = data["is_read"];
-      debugPrint(
-        "incomingChatId dari appendMessage = ${incomingChatId.isNotEmpty ? incomingChatId : "-"}",
-      );
-      debugPrint(
-        "incomingChatId dari appendMessage = ${incomingChatId.isNotEmpty ? incomingChatId : "-"}",
-      );
-      debugPrint(
-        "incomingMessageId dari appendMessage = ${incomingMessageId.isNotEmpty ? incomingMessageId : "-"}",
-      );
-      debugPrint(
-        "activeChatId dari appendMessage = ${activeChatId.isNotEmpty ? activeChatId : "-"}",
-      );
-      debugPrint(
-        "apakah incomingChatId != activeChatId? ${incomingChatId != activeChatId}",
-      );
+
+      final msgData = {
+        "msg_id": incomingMessageId,
+        "chat_id": incomingChatId,
+        "is_read": isRead,
+        "user": {
+          "id": data['user']['id'],
+          "isMe": data['user']['is_me'],
+          "avatar": data["user"]["avatar"],
+          "name": data["user"]["name"],
+        },
+        "sentTime": data["sent_time"],
+        "text": data["text"],
+      };
+
+      debugPrint("msg data = $msgData");
+
       final containIncomingMsgId = _messages.any(
         (msg) => msg.id == incomingMessageId,
       );
@@ -251,7 +243,6 @@ class GetMessagesNotifier with ChangeNotifier {
         "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
       );
       if (containIncomingMsgId) return;
-      debugPrint("sent time dari cms = ${data["sent_time"] ?? "-"}");
       _messages.insert(
         0,
         MessageData(

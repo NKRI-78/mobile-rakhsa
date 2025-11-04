@@ -50,12 +50,17 @@ android {
             dimension = "env"
             applicationIdSuffix = ".stag"
             versionNameSuffix = "-stag"
-            resValue("string", "app_name", "Marlinda (Staging)")
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "Marlinda Staging")
         }
         create("production") {
             dimension = "env"
-            applicationIdSuffix = ""
-            resValue("string", "app_name", "Marlinda")
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "Marlinda")
         }
     }
 
