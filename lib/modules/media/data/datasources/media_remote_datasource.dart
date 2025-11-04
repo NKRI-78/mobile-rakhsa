@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:rakhsa/misc/client/errors/exception.dart';
 
 import 'package:rakhsa/modules/media/data/models/media.dart';
 
 abstract class MediaRemoteDatasource {
-  Future<MediaData> uploadMedia({
+  Future<MediaModel> uploadMedia({
     required File file,
     required String folderName,
     required void Function(int count, int total)? onSendProgress,
@@ -16,12 +16,12 @@ abstract class MediaRemoteDatasource {
 }
 
 class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
-  final DioClient client;
+  final Dio client;
 
   MediaRemoteDataSourceImpl({required this.client});
 
   @override
-  Future<MediaData> uploadMedia({
+  Future<MediaModel> uploadMedia({
     required File file,
     required String folderName,
     required void Function(int count, int total)? onSendProgress,
@@ -34,11 +34,11 @@ class MediaRemoteDataSourceImpl implements MediaRemoteDatasource {
         "subfolder": "broadcast-raksha",
       });
       final res = await client.post(
-        endpoint: '/media',
+        '${dotenv.env['API_MEDIA_BASE_URL'] ?? "-"}/media/upload',
         data: formData,
         onSendProgress: onSendProgress,
       );
-      return MediaData.fromJson(res.data);
+      return MediaModel.fromJson(res.data);
     } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
