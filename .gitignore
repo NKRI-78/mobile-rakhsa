@@ -33,6 +33,10 @@ migrate_working_dir/
 .pub/
 /build/
 
+ios/.symlinks/
+ios/build/
+ios/Pods/
+
 # Symbolication related
 app.*.symbols
 
