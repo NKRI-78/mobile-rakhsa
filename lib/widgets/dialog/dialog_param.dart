@@ -10,6 +10,7 @@ class DialogContent {
   final Future<String>? messageAsync;
   final DialogStyle? style;
   final List<DialogActionButton> actions;
+  final List<DialogActionButton> Function(BuildContext c)? buildActions;
 
   DialogContent({
     this.assetIcon,
@@ -18,6 +19,7 @@ class DialogContent {
     this.titleAsync,
     this.messageAsync,
     this.style,
+    this.buildActions,
     this.actions = const <DialogActionButton>[],
   });
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +14,7 @@ import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/widgets/components/button/bounce.dart';
-import 'package:rakhsa/widgets/components/modal/modal.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class SosButtonParam {
   final String location;
@@ -50,14 +49,12 @@ class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
   late SosNotifier sosNotifier;
 
   Future<void> handleLongPressStart() async {
-    log("local profile data = ${widget.param.profile}");
     if (widget.param.profile?.sos?.running ?? false) {
-      GeneralModal.infoEndSos(
+      AppDialog.showEndSosDialog(
         sosId: widget.param.profile?.sos?.id ?? "-",
         chatId: widget.param.profile?.sos?.chatId ?? "-",
         recipientId: widget.param.profile?.sos?.recipientId ?? "-",
-        msg: "Apakah kasus Anda sebelumnya telah ditangani ?",
-        isHome: true,
+        fromHome: true,
       );
     } else {
       if (!await StorageHelper.isLoggedIn()) {

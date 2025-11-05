@@ -46,9 +46,14 @@ class DialogCard extends StatelessWidget {
     final titleStyle = content.style?.titleStyle ?? _defaultTitleStyle;
     final messageStyle = content.style?.messageStyle ?? _defaultMessageStyle;
 
-    final filteredActions = content.actions.length > 2
-        ? content.actions.sublist(0, 2)
-        : content.actions;
+    final actualActions =
+        content.buildActions?.call(context) ?? content.actions;
+    var filteredActions = <DialogActionButton>[];
+    if (actualActions.isNotEmpty) {
+      filteredActions = actualActions.length > 2
+          ? actualActions.sublist(0, 2)
+          : actualActions;
+    }
 
     return Dialog(
       backgroundColor: Colors.transparent,

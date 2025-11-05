@@ -13,7 +13,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   double _opacity = 0.2;
 
-  final _holdDuration = Duration(seconds: 3);
+  final holdDuration = Duration(seconds: 3);
 
   @override
   void initState() {
@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => _opacity = 1.0);
     });
-    Future.delayed(_holdDuration).then((_) async {
+    Future.delayed(holdDuration).then((_) async {
       final showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
       if (showOnBoarding) {
         _navigateTo(RoutesNavigation.onBoarding);
@@ -61,7 +61,7 @@ class _SplashPageState extends State<SplashPage> {
       body: Center(
         child: AnimatedOpacity(
           opacity: _opacity,
-          duration: _holdDuration,
+          duration: holdDuration,
           curve: Curves.easeInOut,
           child: Image.asset(
             "assets/images/logo-marlinda-no-title.png",

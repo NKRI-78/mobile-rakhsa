@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/socketio.dart';
@@ -24,7 +25,6 @@ import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
-import 'package:rakhsa/widgets/components/modal/modal.dart';
 
 import 'chat_bubble.dart';
 
@@ -327,13 +327,10 @@ class ChatPageState extends State<ChatPage> {
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: CustomButton(
                                   onTap: () async {
-                                    GeneralModal.infoEndSos(
+                                    AppDialog.showEndSosDialog(
                                       sosId: widget.sosId,
                                       chatId: "-",
                                       recipientId: "-",
-                                      msg:
-                                          "Apakah kasus Anda sebelumnya telah ditangani ?",
-                                      isHome: false,
                                     );
                                   },
                                   btnColor: const Color(0xFFC82927),
