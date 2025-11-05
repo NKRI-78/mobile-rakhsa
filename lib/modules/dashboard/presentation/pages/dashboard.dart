@@ -119,9 +119,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     if (!mounted) return;
     await dashboardNotifier.getBanner();
 
-    if (!mounted) return;
-    socketIoService.startListenConnection();
-
     initBanners();
   }
 
@@ -362,18 +359,22 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
               controller: _pageController,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                HomePage(
-                  globalKey: globalKey,
-                  onRefresh: () => getData(),
-                  banners: banners,
-                  sosButtonParam: SosButtonParam(
-                    location: currentAddress,
-                    country: currentCountry,
-                    lat: currentLat,
-                    lng: currentLng,
-                    loadingGmaps: loadingGmaps,
-                    isConnected: context.watch<SocketIoService>().isConnected,
-                  ),
+                Consumer<SocketIoService>(
+                  builder: (context, n, child) {
+                    return HomePage(
+                      globalKey: globalKey,
+                      onRefresh: () => getData(),
+                      banners: banners,
+                      sosButtonParam: SosButtonParam(
+                        location: currentAddress,
+                        country: currentCountry,
+                        lat: currentLat,
+                        lng: currentLng,
+                        loadingGmaps: loadingGmaps,
+                        isConnected: n.isConnected,
+                      ),
+                    );
+                  },
                 ),
                 InformationListPage(),
                 NearMeListTypePage(),

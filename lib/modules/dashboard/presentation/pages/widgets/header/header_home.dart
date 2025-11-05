@@ -12,8 +12,8 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
-import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/widgets/avatar.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key, required this.scaffoldKey});
@@ -104,15 +104,14 @@ class HeaderSection extends StatelessWidget {
               ),
             ),
 
-            // connection indicator
             Consumer<SocketIoService>(
-              builder: (context, provider, child) {
+              builder: (context, n, child) {
                 return Container(
-                  width: 14.0,
-                  height: 14.0,
+                  width: 15,
+                  height: 15,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: provider.indicatorColor,
+                    color: n.connStatus.color,
                   ),
                 );
               },

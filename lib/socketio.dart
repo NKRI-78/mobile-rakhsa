@@ -2,13 +2,11 @@
 
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
@@ -18,63 +16,28 @@ import 'package:rakhsa/routes/nav_key.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-enum ConnectionIndicator { red, yellow, green }
+enum SocketConnectionStatus { idle, connect, reconnect, error }
+
+extension SocketConnectionStatusExtension on SocketConnectionStatus {
+  Color get color => switch (this) {
+    SocketConnectionStatus.idle => Colors.grey.shade600,
+    SocketConnectionStatus.connect => Colors.green,
+    SocketConnectionStatus.reconnect => Colors.yellow,
+    SocketConnectionStatus.error => Colors.red,
+  };
+}
 
 class SocketIoService with ChangeNotifier {
   static final shared = SocketIoService();
 
   IO.Socket? socket;
 
-  ConnectionIndicator _connectionIndicator = ConnectionIndicator.yellow;
-  ConnectionIndicator get connectionIndicator => _connectionIndicator;
+  SocketConnectionStatus _connStatus = SocketConnectionStatus.idle;
+  SocketConnectionStatus get connStatus => _connStatus;
+  bool get isConnected => _connStatus == SocketConnectionStatus.connect;
 
-  StreamSubscription<List<ConnectivityResult>>? connection;
-
-  bool isConnected = false;
-
-  Color get indicatorColor {
-    switch (connectionIndicator) {
-      case ConnectionIndicator.green:
-        return ColorResources.green;
-      case ConnectionIndicator.yellow:
-        return ColorResources.yellow;
-      case ConnectionIndicator.red:
-        return ColorResources.error;
-    }
-  }
-
-  void startListenConnection() {
-    connection = Connectivity().onConnectivityChanged.listen((result) {
-      final hasConnectionResult =
-          (result.contains(ConnectivityResult.mobile)) ||
-          (result.contains(ConnectivityResult.wifi)) ||
-          (result.contains(ConnectivityResult.vpn));
-
-      isConnected = hasConnectionResult;
-      notifyListeners();
-
-      if (hasConnectionResult) {
-        setStateConnectionIndicator(ConnectionIndicator.green);
-      } else {
-        setStateConnectionIndicator(ConnectionIndicator.red);
-      }
-    });
-  }
-
-  void stopListenConnection() async {
-    connection?.cancel();
-    connection = null;
-  }
-
-  void setStateConnectionIndicator(ConnectionIndicator connectionIndicators) {
-    _connectionIndicator = connectionIndicators;
-
-    notifyListeners();
-  }
-
-  void toggleConnection(bool connection) {
-    isConnected = connection;
-
+  void _setConnectionStatus(SocketConnectionStatus newStatus) {
+    _connStatus = newStatus;
     notifyListeners();
   }
 
@@ -99,23 +62,17 @@ class SocketIoService with ChangeNotifier {
 
     socket?.onConnect((message) {
       debugPrint("🛜 SOKET BERHASIL TERSAMBUNG $_baseUrl");
-
-      setStateConnectionIndicator(ConnectionIndicator.yellow);
-      Future.delayed(const Duration(seconds: 1), () {
-        setStateConnectionIndicator(ConnectionIndicator.green);
-        toggleConnection(true);
-      });
-      isConnected = true;
+      _setConnectionStatus(SocketConnectionStatus.connect);
     });
 
     socket?.onReconnect((_) {
       debugPrint("🔃 MENCOBA MENGHUBUNGKAN SOKET");
-      isConnected = true;
-      setStateConnectionIndicator(ConnectionIndicator.red);
+      _setConnectionStatus(SocketConnectionStatus.reconnect);
     });
 
     socket?.onConnectError((data) {
       debugPrint("⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}");
+      _setConnectionStatus(SocketConnectionStatus.error);
     });
 
     socket?.on("message", (message) {
@@ -189,8 +146,6 @@ class SocketIoService with ChangeNotifier {
     if (socket == null || !(socket?.connected ?? false)) {
       init();
     }
-    isConnected = true;
-    notifyListeners();
   }
 
   void subscribeChat(String chatId) {
