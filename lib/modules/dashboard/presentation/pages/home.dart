@@ -218,7 +218,10 @@ class ImgBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await launchUrl(Uri.parse(link));
+        final uri = Uri.parse(link);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+        }
       },
       child: CachedNetworkImage(
         imageUrl: img,
