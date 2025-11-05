@@ -38,10 +38,6 @@ class GetChatsNotifier with ChangeNotifier {
         _chats = [];
         _chats.addAll(r.data);
         setStateProvider(ProviderState.loaded);
-
-        if (chats.isEmpty) {
-          setStateProvider(ProviderState.empty);
-        }
       },
     );
   }

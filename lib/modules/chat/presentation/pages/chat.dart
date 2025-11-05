@@ -64,6 +64,10 @@ class ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
 
+    log(
+      "${{"sosId": widget.sosId, "chatId": widget.chatId, "status": widget.status, "recipientId": widget.recipientId, "autoGreetings": widget.autoGreetings, "newSession": widget.newSession}}",
+    );
+
     messageNotifier = context.read<GetMessagesNotifier>();
     socketIoService = context.read<SocketIoService>();
 

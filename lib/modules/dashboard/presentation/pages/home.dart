@@ -72,6 +72,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(top: context.top),
               child: RefreshIndicator.adaptive(
                 onRefresh: widget.onRefresh,
+                color: primaryColor,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   // padding bawah untuk memberikan ruang scrolling bagian bawah

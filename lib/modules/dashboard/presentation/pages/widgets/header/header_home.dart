@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 
 import 'package:flutter/material.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
@@ -136,7 +137,7 @@ class HeaderSection extends StatelessWidget {
                         ),
                       ),
                       child: const Icon(
-                        Icons.notifications_active_outlined,
+                        IconsaxPlusLinear.notification,
                         size: 28,
                       ),
                     );
