@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/firebase.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/modules/auth/page/welcome_page.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -18,44 +14,14 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   late FirebaseProvider firebaseProvider;
 
-  Widget home = const SizedBox();
-
-  bool isResumedProcessing = false;
-
   @override
   void initState() {
     super.initState();
-
     firebaseProvider = context.read<FirebaseProvider>();
-
-    Future.microtask(() => getData());
+    _setup();
   }
 
-  Future<Widget> getInitPage() async {
-    // final res = await _client.get(endpoint: "/admin/toggle/feature");
-    // if (res.data["feature_onboarding"] == true) {
-    //   final showOnBoarding = !StorageHelper.containsOnBoardingKey();
-    //   if (showOnBoarding) return OnBoardingPage();
-    // }
-    final showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
-    if (showOnBoarding) return OnBoardingPage();
-    return const WelcomePage();
-  }
-
-  Future<void> getData() async {
-    final isLoggedIn = await StorageHelper.isLoggedIn();
-    Widget initPage = await getInitPage();
-
-    if (isLoggedIn) {
-      if (mounted) {
-        setState(() => home = DashboardScreen());
-      }
-    } else {
-      if (mounted) {
-        setState(() => home = initPage);
-      }
-    }
-
+  void _setup() async {
     if (!mounted) return;
     await firebaseProvider.setupInteractedMessage(context);
 
@@ -71,7 +37,7 @@ class AppState extends State<App> {
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      home: home,
+      initialRoute: RoutesNavigation.splash,
     );
   }
 }

@@ -45,9 +45,9 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
     } else {
       try {
-        final uid = await StorageHelper.getUserSession().then(
-          (v) => v?.user.id ?? "-",
-        );
+        final uid = await StorageHelper.loadlocalSession().then((v) {
+          return v?.user.id ?? "-";
+        });
         final remoteUser = await _repository.getRemoteUser(uid);
         _user = remoteUser;
         _getUserState = RequestState.success;

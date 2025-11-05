@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/auth/page/register_page.dart';
+import 'package:rakhsa/modules/auth/page/splash_page.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chats.dart';
@@ -11,12 +12,15 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/modules/news/persentation/pages/list.dart';
+import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 
 class RoutesNavigation {
   RoutesNavigation._();
 
+  static const splash = '/splash';
   static const dashboard = '/dashboard';
   static const nearMe = '/near-me';
+  static const onBoarding = '/on-boarding';
   static const welcomePage = '/welcome';
   static const register = '/register';
   static const weather = '/weather';
@@ -39,6 +43,10 @@ class RoutesNavigation {
           builder: (_) =>
               DashboardScreen(fromRegister: args?['from_register'] ?? false),
         );
+      case splash:
+        return MaterialPageRoute(builder: (_) => const SplashPage());
+      case onBoarding:
+        return MaterialPageRoute(builder: (_) => const OnBoardingPage());
       case deviceNotSupport:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case register:

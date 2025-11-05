@@ -24,7 +24,7 @@ import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/providers.dart';
 
-import './modules/app/app.dart' as app;
+import './modules/app/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,12 +77,10 @@ Future<void> main() async {
         ),
       ], debug: false);
 
-  an.AwesomeNotifications().getInitialNotificationAction().then((
-    receivedAction,
-  ) {
-    if (receivedAction != null) {
-      AwesomeNotificationService.onActionReceivedMethod(receivedAction);
-      AwesomeNotificationService.onDismissAction(receivedAction);
+  an.AwesomeNotifications().getInitialNotificationAction().then((r) {
+    if (r != null) {
+      AwesomeNotificationService.onActionReceivedMethod(r);
+      AwesomeNotificationService.onDismissAction(r);
     }
   });
 
@@ -90,5 +88,5 @@ Future<void> main() async {
 
   di.init();
 
-  runApp(MultiProvider(providers: providers, child: app.App()));
+  runApp(MultiProvider(providers: providers, child: App()));
 }
