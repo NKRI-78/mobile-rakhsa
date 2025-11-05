@@ -71,16 +71,15 @@ class ChatPageState extends State<ChatPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.newSession) {
-        messageNotifier.startTimer();
+        messageNotifier.initTimeSession();
       }
+
+      messageNotifier.initShowAutoGreetings(widget.autoGreetings);
+      messageNotifier.checkTimeSession();
     });
 
     messageC = TextEditingController();
     messageC.addListener(handleTyping);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      messageNotifier.initShowAutoGreetings(widget.autoGreetings);
-    });
 
     Future.microtask(() => getData());
   }

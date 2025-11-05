@@ -12,7 +12,6 @@ import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
@@ -158,12 +157,8 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
-    var messageNotifier = context.read<GetMessagesNotifier>();
     context.read<UserProvider>().getUser();
     context.read<SosNotifier>().stopTimer();
-
-    messageNotifier.resetTimer();
-    messageNotifier.startTimer();
   }
 
   Future<void> showNotification(

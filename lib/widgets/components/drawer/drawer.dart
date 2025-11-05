@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
@@ -158,11 +156,11 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   ),
                 );
                 if (logout != null && logout) {
-                  log("mounted? before logout ${context.mounted}");
                   // ignore: use_build_context_synchronously
-                  await locator<AuthProvider>().logout();
+                  await context.read<AuthProvider>().logout();
+                  // ignore: use_build_context_synchronously
+                  context.read<GetMessagesNotifier>().clearTimeSession();
                   widget.globalKey.currentState?.closeDrawer();
-                  log("mounted? after logout ${context.mounted}");
                   Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
                     context,

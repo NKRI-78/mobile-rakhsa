@@ -143,7 +143,6 @@ class SocketIoService with ChangeNotifier {
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<UserProvider>().getUser();
-        context.read<GetMessagesNotifier>().resetTimer();
       }
     });
 
@@ -159,7 +158,6 @@ class SocketIoService with ChangeNotifier {
         context.read<GetMessagesNotifier>().appendMessage(
           data: {"closed_by_agent": true},
         );
-        context.read<GetMessagesNotifier>().resetTimer();
       }
     });
 

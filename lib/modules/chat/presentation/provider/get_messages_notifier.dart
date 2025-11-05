@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -17,6 +16,9 @@ class GetMessagesNotifier with ChangeNotifier {
 
   GetMessagesNotifier({required this.useCase});
 
+  final sessionCacheKey = "end_session";
+  final endSessionDuration = 5; // dalam hitungan menit
+
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
 
@@ -26,14 +28,8 @@ class GetMessagesNotifier with ChangeNotifier {
   bool _isBtnSessionEnd = false;
   bool get isBtnSessionEnd => _isBtnSessionEnd;
 
-  bool _isRunning = false;
-  bool get isRunning => _isRunning;
-
   bool _showAutoGreetings = false;
   bool get showAutoGreetings => _showAutoGreetings;
-
-  int _time = 300;
-  int get time => _time;
 
   RecipientUser _recipient = RecipientUser();
   RecipientUser get recipient => _recipient;
@@ -50,40 +46,33 @@ class GetMessagesNotifier with ChangeNotifier {
   Map<String, bool> onlineStatus = {};
   Map<String, bool> typingStatus = {};
 
-  late Timer _timer;
-
-  void startTimer() {
-    if (_isRunning) return;
-    resetTimer();
-
-    _isRunning = true;
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_time > 0) {
-        _time--;
-        if (kDebugMode) log("timer = $_time");
-        notifyListeners();
-      } else {
-        _timer.cancel();
-        _isBtnSessionEnd = true;
-        notifyListeners();
-      }
-    });
+  void initTimeSession() async {
+    await StorageHelper.write(sessionCacheKey, DateTime.now().toString());
   }
 
-  void cancelTimer() {
-    if (_isRunning) {
-      _timer.cancel();
+  void checkTimeSession() {
+    final cSession = StorageHelper.read(sessionCacheKey);
+    if (cSession != null) {
+      final savedSession = DateTime.parse(cSession);
+      final diffInMinutes = DateTime.now().difference(savedSession).inMinutes;
+
+      // dibaca cuy 🙏😋
+      // jika selisih waktu sudah/lebih dari 5 menit maka _isBtnSessionEnd = true
+      if (diffInMinutes >= endSessionDuration) {
+        _isBtnSessionEnd = true;
+        notifyListeners();
+      } else {
+        _isBtnSessionEnd = false;
+        notifyListeners();
+      }
+    } else {
       _isBtnSessionEnd = false;
-      _isRunning = false;
       notifyListeners();
     }
   }
 
-  void resetTimer() {
-    cancelTimer();
-    _time = 300;
-    notifyListeners();
+  void clearTimeSession() async {
+    await StorageHelper.delete(sessionCacheKey);
   }
 
   void clearActiveChatId() {
