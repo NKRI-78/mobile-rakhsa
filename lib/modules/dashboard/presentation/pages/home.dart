@@ -116,8 +116,8 @@ class _HomePageState extends State<HomePage> {
                                   country: widget.sosButtonParam.country,
                                   lat: widget.sosButtonParam.lat,
                                   lng: widget.sosButtonParam.lng,
-                                  isConnected:
-                                      widget.sosButtonParam.isConnected,
+                                  hasSocketConnection:
+                                      widget.sosButtonParam.hasSocketConnection,
                                   loadingGmaps:
                                       widget.sosButtonParam.loadingGmaps,
                                   profile: data.user,

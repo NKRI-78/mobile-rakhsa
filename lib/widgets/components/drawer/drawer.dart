@@ -1,3 +1,4 @@
+import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -8,8 +9,6 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
-
-import 'package:rakhsa/widgets/components/button/bounce.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -133,9 +132,9 @@ class DrawerWidgetState extends State<DrawerWidget> {
               ],
             ),
 
-            Bouncing(
+            Bounce(
               child: Image.asset(logoutTitle, width: 110.0, height: 110.0),
-              onPress: () async {
+              onTap: () async {
                 bool? logout = await AppDialog.show(
                   c: context,
                   content: DialogContent(

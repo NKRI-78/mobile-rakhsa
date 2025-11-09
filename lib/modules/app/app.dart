@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
@@ -38,6 +39,13 @@ class AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
       initialRoute: RoutesNavigation.splash,
+      builder: BuildConfig.isStag
+          ? (context, child) => Banner(
+              message: "Staging",
+              location: BannerLocation.topEnd,
+              child: child,
+            )
+          : null,
     );
   }
 }

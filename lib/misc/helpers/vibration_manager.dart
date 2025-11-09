@@ -8,7 +8,7 @@ class VibrationManager {
     _hasVibrator = await Vibration.hasVibrator();
   }
 
-  void vibrate({int duration = 150}) {
-    if (_hasVibrator) Vibration.vibrate(duration: duration);
+  void vibrate({int durationInMs = 150}) {
+    if (_hasVibrator) Vibration.vibrate(duration: durationInMs);
   }
 }

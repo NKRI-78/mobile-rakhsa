@@ -28,7 +28,6 @@ abstract class DashboardRemoteDataSource {
     required double lat,
     required double lng,
   });
-  Future<void> expireSos({required String sosId});
   Future<void> ratingSos({required String sosId, required String rating});
 }
 
@@ -137,19 +136,6 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
           "lng": lng,
         },
       );
-    } on DioException catch (e) {
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
-  Future<void> expireSos({required String sosId}) async {
-    try {
-      await client.post("$_baseUrl/sos/expire", data: {"id": sosId});
     } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);

@@ -2,18 +2,20 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/injection.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 class NotificationType {
   static const resolvedSos = "resolved-sos";
@@ -26,7 +28,15 @@ class NotificationType {
 }
 
 @pragma('vm:entry-point')
-Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {}
+Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  final data = message.data;
+  final type = data['type'];
+  if (type == NotificationType.confirmSos) {
+    await SosCoordinator.markPendingStopFromBackground();
+  }
+}
 
 class FirebaseProvider with ChangeNotifier {
   final Dio dio;
@@ -158,7 +168,8 @@ class FirebaseProvider with ChangeNotifier {
 
   void handleConfirmSos(BuildContext context, Map<String, dynamic> payload) {
     context.read<UserProvider>().getUser();
-    context.read<SosNotifier>().stopTimer();
+    // context.read<SosNotifier>().stopTimer();
+    locator<SosCoordinator>().stop(reason: "fcm-opened-app");
   }
 
   Future<void> showNotification(

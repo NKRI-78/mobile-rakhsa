@@ -16,13 +16,11 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 
@@ -334,11 +332,7 @@ class ChatPageState extends State<ChatPage> {
                                     );
                                   },
                                   btnColor: const Color(0xFFC82927),
-                                  isLoading:
-                                      context.watch<SosNotifier>().state ==
-                                          ProviderState.loading
-                                      ? true
-                                      : false,
+                                  isLoading: false,
                                   isBorder: false,
                                   isBoxShadow: false,
                                   isBorderRadius: true,

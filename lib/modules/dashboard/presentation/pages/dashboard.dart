@@ -31,7 +31,6 @@ import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/widgets/components/drawer/drawer.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/misc/helpers/snackbar.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
@@ -334,14 +333,13 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
 
         if (lastTap == null) {
           lastTap = DateTime.now();
-          ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+          AppDialog.showToast("Tekan sekali lagi untuk keluar");
         } else {
-          if (DateTime.now().difference(lastTap!) <
-              const Duration(seconds: 2)) {
+          if (DateTime.now().difference(lastTap!) < Duration(seconds: 2)) {
             SystemNavigator.pop();
           } else {
             lastTap = DateTime.now();
-            ShowSnackbar.snackbarDefault('Tekan sekali lagi untuk keluar');
+            AppDialog.showToast("Tekan sekali lagi untuk keluar");
           }
         }
       },
@@ -371,7 +369,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
                         lat: currentLat,
                         lng: currentLng,
                         loadingGmaps: loadingGmaps,
-                        isConnected: n.isConnected,
+                        hasSocketConnection: n.isConnected,
                       ),
                     );
                   },

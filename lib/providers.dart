@@ -5,6 +5,7 @@ import 'package:rakhsa/modules/administration/presentation/provider/get_continen
 import 'package:rakhsa/modules/administration/presentation/provider/get_country_notifier.dart';
 import 'package:rakhsa/modules/administration/presentation/provider/get_state_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/detail_inbox_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_inbox_notifier.dart';
@@ -12,7 +13,6 @@ import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.
 import 'package:rakhsa/modules/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
@@ -31,10 +31,10 @@ import 'package:rakhsa/socketio.dart';
 List<SingleChildWidget> providers = [...independentServices];
 
 List<SingleChildWidget> independentServices = [
+  ChangeNotifierProvider.value(value: di.locator<AuthProvider>()),
   ChangeNotifierProvider.value(value: di.locator<FirebaseProvider>()),
   ChangeNotifierProvider.value(value: di.locator<DashboardNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailNewsNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<SosNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosRatingNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<UserProvider>()),

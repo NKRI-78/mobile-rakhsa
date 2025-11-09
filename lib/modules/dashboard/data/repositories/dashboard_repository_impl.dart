@@ -47,18 +47,6 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<Either<Failure, void>> expireSos({required String sosId}) async {
-    try {
-      var result = await remoteDataSource.expireSos(sosId: sosId);
-      return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message.toString()));
-    } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> updateAddress({
     required String address,
     required String state,

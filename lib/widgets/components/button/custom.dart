@@ -1,10 +1,9 @@
+import 'package:bounce/bounce.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-
-import 'package:rakhsa/widgets/components/button/bounce.dart';
 
 class CustomButton extends StatelessWidget {
   final Function() onTap;
@@ -52,8 +51,8 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Bouncing(
-      onPress: isLoading ? null : onTap,
+    return Bounce(
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: width,
         height: height,

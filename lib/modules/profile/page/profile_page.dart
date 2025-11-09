@@ -1,3 +1,4 @@
+import 'package:bounce/bounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +10,6 @@ import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/widgets/avatar.dart';
-import 'package:rakhsa/widgets/components/button/bounce.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -77,9 +77,9 @@ class ProfilePageState extends State<ProfilePage> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  child: Bouncing(
-                    onPress: () =>
-                        locator<VibrationManager>().vibrate(duration: 50),
+                  child: Bounce(
+                    onTap: () =>
+                        locator<VibrationManager>().vibrate(durationInMs: 50),
                     child: Avatar(
                       src: notifier.user?.avatar,
                       radius: 53,

@@ -22,10 +22,12 @@ import 'package:rakhsa/http_overrides.dart';
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/providers.dart';
 
 import './modules/app/app.dart';
+import 'injection.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,15 +46,13 @@ Future<void> main() async {
     socketBaseUrl: dotenv.env['SOCKET_BASE_URL'],
   );
 
+  await StorageHelper.init();
+
+  di.init();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
-
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
 
   await initializeDateFormatting('id_ID', null);
 
@@ -87,11 +87,15 @@ Future<void> main() async {
     }
   });
 
-  await StorageHelper.init();
-
-  di.init();
-
   HttpOverridesSetup.setup();
+
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  locator<SosCoordinator>().initAndRestore();
 
   runApp(MultiProvider(providers: providers, child: App()));
 }

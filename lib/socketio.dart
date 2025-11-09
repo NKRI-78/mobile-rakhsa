@@ -5,12 +5,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/injection.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
+import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
@@ -123,6 +124,8 @@ class SocketIoService with ChangeNotifier {
         "☺️ AGENT MENGKONFIRMASI SOS LEWAT SOKET, recipient_id = ${message["recipient_id"] ?? "-"}",
       );
 
+      locator<SosCoordinator>().stop(reason: "socket-admin-confirmed");
+
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<UserProvider>().getUser();
@@ -137,7 +140,7 @@ class SocketIoService with ChangeNotifier {
             );
           }
         }
-        context.read<SosNotifier>().stopTimer();
+        // context.read<SosNotifier>().stopTimer();
       }
     });
   }

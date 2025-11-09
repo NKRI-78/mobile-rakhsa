@@ -8,6 +8,9 @@ import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/socketio.dart';
 
+export 'package:fluttertoast/fluttertoast.dart'
+    show Fluttertoast, ToastGravity, Toast;
+
 import 'dialog.dart';
 
 class AppDialog {
@@ -60,17 +63,36 @@ class AppDialog {
     );
   }
 
+  static Future<bool?> showToast(
+    String message, {
+    ToastGravity? gravity = ToastGravity.BOTTOM,
+    Toast? length = Toast.LENGTH_SHORT,
+    bool enableCancel = true,
+  }) async {
+    if (enableCancel) await cancelToast();
+    return Fluttertoast.showToast(
+      msg: message,
+      toastLength: length,
+      gravity: gravity,
+      textColor: Colors.white,
+      fontSize: 12.0,
+    );
+  }
+
+  static Future<bool?> cancelToast() => Fluttertoast.cancel();
+
   static Future<T?> showEndSosDialog<T extends Object?>({
     required String sosId,
     required String chatId,
     required String recipientId,
+    String? title,
     bool fromHome = false,
   }) {
     return show(
       c: navigatorKey.currentContext!,
       content: DialogContent(
         assetIcon: "assets/images/ic-alert.png",
-        title: "Akhiri Sesi Bantuan",
+        title: title ?? "Akhiri Sesi Bantuan",
         message: "Apakah kasus Anda sebelumnya telah ditangani?",
         buildActions: (c) {
           return [
@@ -79,7 +101,7 @@ class AppDialog {
               onTap: () {
                 c.pop();
                 if (fromHome) {
-                  Future.delayed(Duration(seconds: 1), () {
+                  Future.delayed(Duration(milliseconds: 300), () {
                     Navigator.push(
                       navigatorKey.currentContext!,
                       MaterialPageRoute(

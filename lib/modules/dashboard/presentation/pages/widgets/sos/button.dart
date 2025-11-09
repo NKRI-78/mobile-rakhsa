@@ -1,27 +1,28 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:bounce/bounce.dart';
 import 'package:rakhsa/camera.dart';
+
 import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 
-import 'package:rakhsa/modules/auth/page/login_page.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/expire_sos_notifier.dart';
 import 'package:rakhsa/repositories/user/model/user.dart';
-import 'package:rakhsa/widgets/components/button/bounce.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
+import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SosButtonParam {
   final String location;
   final String country;
   final String lat;
   final String lng;
-  final bool isConnected;
+  final bool hasSocketConnection;
   final bool loadingGmaps;
   final User? profile;
 
@@ -30,7 +31,7 @@ class SosButtonParam {
     required this.country,
     required this.lat,
     required this.lng,
-    required this.isConnected,
+    required this.hasSocketConnection,
     required this.loadingGmaps,
     this.profile,
   });
@@ -45,219 +46,412 @@ class SosButton extends StatefulWidget {
   SosButtonState createState() => SosButtonState();
 }
 
-class SosButtonState extends State<SosButton> with TickerProviderStateMixin {
-  late SosNotifier sosNotifier;
+class SosButtonState extends State<SosButton>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  static final Duration countdownDuration = Duration(seconds: 60);
 
-  Future<void> handleLongPressStart() async {
-    if (widget.param.profile?.sos?.running ?? false) {
-      AppDialog.showEndSosDialog(
-        sosId: widget.param.profile?.sos?.id ?? "-",
-        chatId: widget.param.profile?.sos?.chatId ?? "-",
-        recipientId: widget.param.profile?.sos?.recipientId ?? "-",
-        fromHome: true,
-      );
-    } else {
-      if (!await StorageHelper.isLoggedIn()) {
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return const LoginPage();
-              },
-            ),
-          );
-        }
-      } else {
-        sosNotifier.pulseController?.forward();
-        sosNotifier.holdTimer = Timer(const Duration(milliseconds: 2000), () {
-          sosNotifier.pulseController!.reverse();
-          startTimer();
-        });
-      }
-    }
-  }
+  // animation controller
+  AnimationController? _pulseController;
+  AnimationController? _tickerController;
+  Animation<double>? _pulseAnimation;
 
-  void handleLongPressEnd() async {
-    if (!await StorageHelper.isLoggedIn()) {
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginPage();
-            },
-          ),
-        );
-      }
-    } else {
-      if (sosNotifier.holdTimer?.isActive ?? false) {
-        sosNotifier.holdTimer?.cancel();
-        sosNotifier.pulseController!.reverse();
-      } else if (!sosNotifier.isPressed) {
-        setState(() => sosNotifier.isPressed = false);
-      }
-    }
-  }
+  // state
+  // cd = countdown Duration inSeconds
+  final _cdInSeconds = countdownDuration.inSeconds;
+  int _remainingSeconds = countdownDuration.inSeconds;
+  bool _isCountingDown = false;
 
-  Future<void> startTimer() async {
-    locator<VibrationManager>().vibrate();
-    if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return CameraPage(
-              location: widget.param.location,
-              country: widget.param.country,
-              lat: widget.param.lat,
-              lng: widget.param.lng,
-            );
-          },
-        ),
-      ).then((value) {
-        if (value != null) {
-          sosNotifier.startTimer();
-        } else {
-          sosNotifier.resetAnimation();
-        }
-      });
-    }
-  }
+  Timer? _holdPulseTimer;
+
+  StreamSubscription<SosEvent>? _sosSub;
+
+  // style
+  final buttonSize = 180.0; //px
+  final buttonColor = Color(0xFFFE1717);
+  final disabledColor = Color(0xFF7A7A7A);
+  final countdownColor = Color(0xFF1FFE17);
+
+  SharedPreferences get _prefs => StorageHelper.sharedPreferences;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initAnimationController();
 
-    sosNotifier = context.read<SosNotifier>();
+    _sosSub = SosCoordinator().events.listen((e) {
+      if (!mounted) return;
 
-    sosNotifier.initializePulse(this);
-    sosNotifier.initializeTimer(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      sosNotifier.addCountdownListener();
+      switch (e.type) {
+        case SosEventType.start:
+          _resetAndStartCountdown();
+          break;
+        case SosEventType.stop:
+          _stopCountdown();
+          break;
+      }
     });
 
-    if (sosNotifier.isPressed) {
-      sosNotifier.resumeTimer();
+    _restoreCountdownState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (!_isCountingDown) return;
+    if (state == AppLifecycleState.resumed) {
+      _resumeFromPresists();
     }
   }
 
   @override
   void dispose() {
-    // sosNotifier.disposeTimeController();
+    WidgetsBinding.instance.removeObserver(this);
+    _presistCountdownState();
+    _sosSub?.cancel();
+    _holdPulseTimer?.cancel();
+    _pulseController?.dispose();
+    _tickerController?.dispose();
     super.dispose();
+  }
+
+  void _initAnimationController() {
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+    _tickerController = AnimationController(
+      vsync: this,
+      duration: countdownDuration,
+    );
+
+    // init pulse animation
+    if (_pulseController != null) {
+      _pulseAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
+        CurvedAnimation(parent: _pulseController!, curve: Curves.easeOut),
+      );
+    }
+
+    if (_tickerController != null) {
+      _tickerController!.addListener(() {
+        if (!mounted) return;
+        final remaining =
+            (_cdInSeconds - (_tickerController!.value * _cdInSeconds))
+                .ceil()
+                .clamp(0, _cdInSeconds);
+        if (remaining != _remainingSeconds) {
+          locator<VibrationManager>().vibrate(durationInMs: 10);
+          setState(() => _remainingSeconds = remaining);
+        }
+      });
+      _tickerController!.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          if (!mounted) return;
+          setState(() {
+            _remainingSeconds = 0;
+            _isCountingDown = false;
+          });
+          _presistCountdownState();
+        }
+      });
+    }
+  }
+
+  bool _checkUserIsLoggedIn() {
+    final userLoggedIn = StorageHelper.session != null;
+    if (!userLoggedIn && mounted) {
+      AppDialog.show(
+        c: context,
+        dismissible: false,
+        content: DialogContent(
+          title: "Pengguna Tidak Ditemukan",
+          message: """
+Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk melanjutkan penggunaan aplikasi.
+""",
+          buildActions: (c) {
+            return [
+              DialogActionButton(
+                label: "Keluar",
+                primary: true,
+                onTap: () {
+                  c.pop();
+                  Future.delayed(Duration(milliseconds: 200)).then((_) {
+                    if (mounted) {
+                      Navigator.pushNamed(
+                        context,
+                        RoutesNavigation.welcomePage,
+                      );
+                    }
+                  });
+                },
+              ),
+            ];
+          },
+        ),
+      );
+    }
+    return userLoggedIn;
+  }
+
+  bool _checkIfSessionIsRunning() {
+    final isActive = widget.param.profile?.sos?.running ?? false;
+    if (isActive) {
+      AppDialog.showEndSosDialog(
+        title: "Sesi Bantuan Sedang Berlangsung",
+        sosId: widget.param.profile?.sos?.id ?? "-",
+        chatId: widget.param.profile?.sos?.chatId ?? "-",
+        recipientId: widget.param.profile?.sos?.recipientId ?? "-",
+        fromHome: true,
+      );
+    }
+    return isActive;
+  }
+
+  Future<bool> _handleShouldLongPressStart() async {
+    final userLoggedIn = _checkUserIsLoggedIn();
+    final activeRunning = _checkIfSessionIsRunning();
+    final hasSocketConnection = widget.param.hasSocketConnection;
+    final isGettingLocation = widget.param.loadingGmaps;
+    final waitingConfirmSOS = _isCountingDown && _remainingSeconds > 0;
+
+    // handle toast
+    if (!hasSocketConnection) {
+      await AppDialog.showToast("Sedang menghubungkan koneksi ke server");
+    }
+    if (isGettingLocation) {
+      await AppDialog.showToast("Sedang mendapatkan lokasi");
+    }
+    if (waitingConfirmSOS) {
+      await AppDialog.showToast(
+        "Anda dapat mengirim SOS setelah $_cdInSeconds detik",
+      );
+    }
+
+    // jalankan longpress start ketika
+    // 1. user isLoggedIn
+    // 2. lagi ga aktif running sos (isRunning didapat dari fetch user)
+    // 3. soket aktif
+    // 4. lagi ga get current location
+    // 5. ga lagi waiting sos
+    return userLoggedIn &&
+        !activeRunning &&
+        hasSocketConnection &&
+        !isGettingLocation &&
+        !waitingConfirmSOS;
+  }
+
+  Future<bool> _handleShouldLongPressEnd() async {
+    final userLoggedIn = _checkUserIsLoggedIn();
+    final hasSocketConnection = widget.param.hasSocketConnection;
+    final isGettingLocation = widget.param.loadingGmaps;
+
+    // jalankan longpress end ketika
+    // 1. user isLoggedIn
+    // 2. soket aktif
+    // 3. lagi ga get current location
+    return userLoggedIn && hasSocketConnection && !isGettingLocation;
+  }
+
+  void _onLongPressStart(LongPressStartDetails _) async {
+    locator<VibrationManager>().vibrate(durationInMs: 50);
+    final shouldPress = await _handleShouldLongPressStart();
+    if (shouldPress) {
+      _pulseController?.forward();
+      _holdPulseTimer = Timer(Duration(seconds: 2), () async {
+        _runSOS();
+      });
+    }
+  }
+
+  void _onLongPressEnd(LongPressEndDetails _) async {
+    final shouldPress = await _handleShouldLongPressEnd();
+    if (shouldPress) {
+      if (_holdPulseTimer?.isActive ?? false) {
+        _holdPulseTimer?.cancel();
+        _pulseController?.reverse();
+      }
+    }
+  }
+
+  void _runSOS() {
+    locator<VibrationManager>().vibrate(durationInMs: 100);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return CameraPage(
+            location: widget.param.location,
+            country: widget.param.country,
+            lat: widget.param.lat,
+            lng: widget.param.lng,
+          );
+        },
+      ),
+    ).then((onNavigateSOSCameraResult) {
+      _pulseController?.reset();
+      if (onNavigateSOSCameraResult != null) {
+        SosCoordinator().start();
+      } else {
+        _pulseController?.reset();
+      }
+    });
+  }
+
+  Future<void> _presistCountdownState() async {
+    await _prefs.setBool(SosCoordinator.kWaitingKey, _isCountingDown);
+    await _prefs.setInt(SosCoordinator.kRemainKey, _remainingSeconds);
+    await _prefs.setInt(
+      SosCoordinator.kSavedAtKey,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  Future<void> _restoreCountdownState() async {
+    final waiting = _prefs.getBool(SosCoordinator.kWaitingKey) ?? false;
+    if (!waiting) {
+      setState(() {
+        _isCountingDown = false;
+        _remainingSeconds = _cdInSeconds;
+      });
+      _tickerController?.value = 0;
+      return;
+    }
+    _isCountingDown = true;
+    await _resumeFromPresists();
+  }
+
+  Future<void> _resumeFromPresists() async {
+    final lastRemaining = _prefs.getInt(SosCoordinator.kRemainKey);
+    final lastSavedTime = _prefs.getInt(SosCoordinator.kSavedAtKey);
+
+    int currentRemaining = _cdInSeconds;
+    if (lastRemaining != null && lastSavedTime != null) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final elapsed = ((now - lastSavedTime) / 1000).floor();
+      currentRemaining = (lastRemaining - elapsed).clamp(0, _cdInSeconds);
+    }
+    if (!mounted) return;
+
+    setState(() => _remainingSeconds = currentRemaining);
+
+    if (currentRemaining <= 0) {
+      setState(() => _isCountingDown = false);
+      _tickerController?.value = 1;
+      await _presistCountdownState();
+      return;
+    }
+
+    final startValue = 1 - (currentRemaining / _cdInSeconds);
+    _tickerController?.stop();
+    _tickerController?.value = startValue;
+    _tickerController?.forward(from: startValue);
+  }
+
+  Future<void> _resetAndStartCountdown() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isCountingDown = true;
+      _remainingSeconds = _cdInSeconds;
+    });
+
+    _tickerController?.stop();
+    _tickerController?.value = 0;
+    _tickerController?.forward(from: 0);
+
+    await _presistCountdownState();
+  }
+
+  Future<void> _stopCountdown() async {
+    if (!mounted) return;
+    _tickerController?.stop();
+    setState(() {
+      _isCountingDown = false;
+      _remainingSeconds = 0;
+    });
+    _tickerController?.value = 1;
+    await _presistCountdownState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SosNotifier>(
-      builder: (BuildContext context, SosNotifier notifier, Widget? child) {
-        return Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              for (double scaleFactor in [0.8, 1.2, 1.4])
-                AnimatedBuilder(
-                  animation: notifier.pulseAnimation,
-                  builder: (BuildContext context, Widget? child) {
-                    return Transform.scale(
-                      scale: notifier.pulseAnimation.value * scaleFactor,
-                      child: Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(
-                            0xFFFE1717,
-                          ).withValues(alpha: 0.2 / scaleFactor),
-                        ),
+    final isWaitingConfirmSOS = _isCountingDown && _remainingSeconds > 0;
+
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (_pulseAnimation != null)
+            for (var scaleFactor in [0.8, 1.2, 1.4])
+              AnimatedBuilder(
+                animation: _pulseAnimation!,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _pulseAnimation!.value * scaleFactor,
+                    child: Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: buttonColor.withValues(alpha: 0.2 / scaleFactor),
                       ),
-                    );
-                  },
-                ),
-              if (notifier.isPressed)
-                SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: CircularProgressIndicator(
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color(0xFF1FFE17),
                     ),
+                  );
+                },
+              ),
+          if (_tickerController != null && isWaitingConfirmSOS)
+            AnimatedBuilder(
+              animation: _tickerController!,
+              builder: (context, _) {
+                return SizedBox(
+                  width: buttonSize + 4,
+                  height: buttonSize + 4,
+                  child: CircularProgressIndicator(
                     strokeWidth: 6,
-                    value: 1 - notifier.timerController!.value,
+                    value: 1 - _tickerController!.value,
                     backgroundColor: Colors.transparent,
+                    valueColor: AlwaysStoppedAnimation(countdownColor),
+                  ),
+                );
+              },
+            ),
+          GestureDetector(
+            onLongPressStart: _onLongPressStart,
+            onLongPressEnd: _onLongPressEnd,
+            child: Bounce(
+              onTap: () {},
+              child: Container(
+                width: buttonSize,
+                height: buttonSize,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.param.hasSocketConnection
+                      ? buttonColor
+                      : disabledColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: widget.param.hasSocketConnection
+                          ? buttonColor.withValues(alpha: 0.5)
+                          : disabledColor.withValues(alpha: 0.5),
+                      blurRadius: 10,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  isWaitingConfirmSOS ? "$_remainingSeconds" : "SOS",
+                  style: robotoRegular.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              GestureDetector(
-                onLongPressStart:
-                    (LongPressStartDetails longPressStartDetails) async =>
-                        widget.param.isConnected
-                        ? notifier.isTimerRunning
-                              ? () {}
-                              : widget.param.loadingGmaps
-                              ? () {}
-                              : await handleLongPressStart()
-                        : () {},
-                onLongPressEnd: (_) => widget.param.isConnected
-                    ? notifier.isTimerRunning
-                          ? () {}
-                          : widget.param.loadingGmaps
-                          ? () {}
-                          : handleLongPressEnd()
-                    : () {},
-                child: AnimatedBuilder(
-                  animation: notifier.timerController!,
-                  builder: (BuildContext context, Widget? child) {
-                    return Bouncing(
-                      onPress: () async => widget.param.isConnected
-                          ? notifier.isTimerRunning
-                                ? () {}
-                                : widget.param.loadingGmaps
-                                ? () {}
-                                : () {}
-                          : () {},
-                      child: Container(
-                        width: 180,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: widget.param.isConnected
-                              ? const Color(0xFFFE1717)
-                              : const Color(0xFF7A7A7A),
-                          boxShadow: [
-                            BoxShadow(
-                              color: widget.param.isConnected
-                                  ? const Color(
-                                      0xFFFE1717,
-                                    ).withValues(alpha: 0.5)
-                                  : const Color(
-                                      0xFF7A7A7A,
-                                    ).withValues(alpha: 0.5),
-                              blurRadius: 10,
-                              spreadRadius: 5,
-                            ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          sosNotifier.isPressed
-                              ? "${notifier.countdownTime}"
-                              : "SOS",
-                          style: robotoRegular.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ),
-            ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

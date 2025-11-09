@@ -105,7 +105,7 @@ class CameraPageState extends State<CameraPage> {
   Future<void> stopVideoRecording() async {
     _timer?.cancel();
 
-    locator<VibrationManager>().vibrate(duration: 50);
+    locator<VibrationManager>().vibrate(durationInMs: 50);
     if (controller == null || !isRecording) return;
 
     try {
