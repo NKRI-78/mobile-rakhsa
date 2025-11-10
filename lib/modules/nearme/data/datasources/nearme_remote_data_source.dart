@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:rakhsa/misc/client/errors/exception.dart';
 
@@ -27,7 +27,7 @@ class NearmeRemoteDataSourceImpl implements NearmeRemoteDataSource {
   }) async {
     try {
       final response = await client.get(
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=3000&key=${RemoteDataSourceConsts.gmaps}",
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$currentLat,$currentLng&types=$type&radius=3000&key=${dotenv.env['GOOGLE_MAPS_API_KEY'] ?? "-"}",
       );
       Map<String, dynamic> data = response.data;
       NearbyplaceModel nearby = NearbyplaceModel.fromJson(data);

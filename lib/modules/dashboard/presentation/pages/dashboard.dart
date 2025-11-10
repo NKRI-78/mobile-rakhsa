@@ -10,7 +10,6 @@ import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/background_service.dart';
-import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
@@ -258,13 +257,11 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
           state: country,
         );
 
-        if (BuildConfig.isProd) {
-          await initBackgroundService(
-            "${weatherNotifier.celcius} $subAdministrativeArea",
-            weatherNotifier.description,
-          );
-          startBackgroundService();
-        }
+        await initBackgroundService(
+          "${weatherNotifier.celcius} $subAdministrativeArea",
+          weatherNotifier.description,
+        );
+        startBackgroundService();
       });
     }
   }

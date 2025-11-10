@@ -18,8 +18,15 @@ class BuildConfig {
     this.socketBaseUrl,
   );
 
-  static late BuildConfig _instance;
-  static BuildConfig get instance => _instance;
+  static BuildConfig? _instance;
+  static BuildConfig get instance {
+    if (_instance == null) {
+      throw StateError(
+        'BuildConfig not initialized. Call BuildConfig.init(...) in main().',
+      );
+    }
+    return _instance!;
+  }
 
   static void init({
     required Flavor flavor,

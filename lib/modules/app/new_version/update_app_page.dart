@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/new_version_plus.dart';
 
-import 'package:rakhsa/misc/constants/remote_data_source_consts.dart';
-
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -63,13 +61,6 @@ class UpdateAppPageState extends State<UpdateAppPage> {
                                 color: ColorResources.black,
                               ),
                             ),
-                          // if(Platform.isIOS)
-                          // Text("Versi terbaru Raksha tersedia di App Store",
-                          //   style: robotoRegular.copyWith(
-                          //     fontSize: Dimensions.fontSizeDefault,
-                          //     color: ColorResources.black
-                          //   ),
-                          // ),
                         ],
                       ),
                     ],
@@ -86,10 +77,8 @@ class UpdateAppPageState extends State<UpdateAppPage> {
                       );
                       if (Platform.isAndroid) {
                         newVersion.launchAppStore(
-                          RemoteDataSourceConsts.googleUrl,
+                          "https://play.google.com/store/apps/details?id=com.inovatiftujuh8.rakhsa",
                         );
-                      } else {
-                        // newVersion.launchAppStore("https://apps.apple.com/id/app/fspmi/id1639982534");
                       }
                     },
                     isBorderRadius: false,

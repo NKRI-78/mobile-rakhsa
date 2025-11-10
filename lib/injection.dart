@@ -1,12 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
-import 'package:rakhsa/misc/helpers/dio.dart';
 import 'package:rakhsa/repositories/media/media_repository.dart';
 
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart' as ap;
@@ -87,7 +87,7 @@ void init() {
   locator.registerLazySingleton(() => DeviceInfoPlugin());
   locator.registerLazySingleton(() => FirebaseAuth.instance);
 
-  locator.registerLazySingleton(() => DioHelper().getClient());
+  locator.registerLazySingleton(() => Dio());
   locator.registerLazySingleton(() => Connectivity());
   locator.registerLazySingleton(() => DioClient(locator<Connectivity>()));
   locator.registerLazySingleton(() => VibrationManager());
@@ -141,7 +141,7 @@ void init() {
   locator.registerLazySingleton<NearmeRepository>(
     () => NearmeRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<MediaRepo>(() => MediaRepo());
+  locator.registerLazySingleton<MediaRepo>(() => MediaRepo(dio: locator()));
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));

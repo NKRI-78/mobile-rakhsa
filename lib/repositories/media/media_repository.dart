@@ -2,15 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path/path.dart';
-import 'package:rakhsa/misc/utils/dio.dart';
 
 class MediaRepo {
   Response? response;
+  final Dio dio;
+
+  MediaRepo({required this.dio});
 
   Future<Response> postMedia(File file) async {
     try {
-      Dio dio = DioManager.shared.getClient();
       FormData formData = FormData.fromMap({
         "folder": "images",
         "subfolder": "raksha",
@@ -20,7 +22,7 @@ class MediaRepo {
         ),
       });
       Response res = await dio.post(
-        "https://api-media.inovatiftujuh8.com/api/v1/media/upload",
+        "${dotenv.env['API_MEDIA_BASE_URL'] ?? "-"}/media/upload",
         data: formData,
       );
       response = res;
