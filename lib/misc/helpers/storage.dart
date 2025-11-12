@@ -15,10 +15,8 @@ class StorageHelper {
     return _session;
   }
 
-  static Future<void> init({bool fromBgService = false}) async {
-    if (!fromBgService) {
-      sharedPreferences = await SharedPreferences.getInstance();
-    }
+  static Future<void> init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
     secureStorage = FlutterSecureStorage(
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
       iOptions: IOSOptions(accessibility: KeychainAccessibility.unlocked),

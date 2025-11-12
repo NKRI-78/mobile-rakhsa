@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -18,6 +19,9 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+    // save base url yang nanti digunakan untuk di background service
+    _presistBaseUrlFromEnv();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => _opacity = 1.0);
     });
@@ -38,6 +42,12 @@ class _SplashPageState extends State<SplashPage> {
 
   void _navigateTo(String newPath) {
     if (mounted) Navigator.pushNamed(context, newPath);
+  }
+
+  void _presistBaseUrlFromEnv() async {
+    // fallback string kosong yang nanti bisa dihandle dari bg service
+    final baseUrl = BuildConfig.instance.apiBaseUrl ?? "";
+    await StorageHelper.write("base_url_cache", baseUrl);
   }
 
   @override

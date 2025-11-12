@@ -13,7 +13,7 @@ extension ContextExtension on BuildContext {
   Future<T?> pushNamed<T extends Object?>(
     String routeName, {
     Object? arguments,
-  }) => Navigator.of(this).pushNamed(routeName, arguments: arguments);
+  }) => Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
   double get bottom => mediaQuery.padding.bottom;

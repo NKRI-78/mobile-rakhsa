@@ -65,12 +65,12 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> setupInteractedMessage(BuildContext context) async {
     await FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        handleMessage(message);
+        processMessage(message);
       }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      handleMessage(message);
+      processMessage(message);
     });
   }
 
@@ -83,10 +83,6 @@ class FirebaseProvider with ChangeNotifier {
         debugPrint("Error processing notification: $e");
       }
     });
-  }
-
-  void handleMessage(RemoteMessage message) {
-    processMessage(message);
   }
 
   void processMessage(RemoteMessage message) {

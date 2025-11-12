@@ -56,7 +56,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   late UpdateAddressNotifier updateAddressNotifier;
 
   Position? currentLocation;
-  StreamSubscription? subscription;
 
   bool loadingGmaps = true;
 
@@ -257,11 +256,13 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
           state: country,
         );
 
+        // handle service is running
+        if (await bgServiceIsRunning) return;
         await initBackgroundService(
           "${weatherNotifier.celcius} $subAdministrativeArea",
           weatherNotifier.description,
         );
-        startBackgroundService();
+        await startBackgroundService();
       });
     }
   }
@@ -283,17 +284,14 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
       for (var banner in dashboardNotifier.banners) {
         banners.add(ImgBanner(banner.link, banner.imageUrl));
       }
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
   void _initAndShowWelcomeDialog() async {
     if (widget.fromRegister) {
-      final showWelcomeDialog = !StorageHelper.containsKey(
-        "show_welcome_dialog",
-      );
       await Future.delayed(Duration(seconds: 2));
-      if (mounted && showWelcomeDialog) {
+      if (mounted) {
         bool? markAsDone = await AppDialog.show(
           c: context,
           canPop: false,

@@ -51,3 +51,6 @@ app.*.map.json
 # build env
 assets/env/.env.stag
 assets/env/.env.prod
+
+# asset links
+assetlinks.json
