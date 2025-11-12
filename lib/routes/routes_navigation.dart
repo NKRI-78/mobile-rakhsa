@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/modules/auth/page/forgot_password_page.dart';
 import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/auth/page/register_page.dart';
 import 'package:rakhsa/modules/auth/page/splash_page.dart';
@@ -20,6 +21,7 @@ class RoutesNavigation {
   static const splash = '/splash';
   static const dashboard = '/dashboard';
   static const nearMe = '/near-me';
+  static const forgotPassword = '/forgot-password';
   static const onBoarding = '/on-boarding';
   static const welcomePage = '/welcome';
   static const register = '/register';
@@ -83,6 +85,8 @@ class RoutesNavigation {
         return MaterialPageRoute(builder: (_) => const WelcomePage());
       case login:
         return MaterialPageRoute(builder: (_) => const LoginPage());
+      case forgotPassword:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordPage());
       case nearMe:
         final type = settings.arguments as String;
         return MaterialPageRoute(builder: (_) => NearMePage(type: type));

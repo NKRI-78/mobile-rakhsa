@@ -1,20 +1,21 @@
+import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:provider/provider.dart';
 
+import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
-
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/modules/auth/page/forgot_password_page.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/modules/auth/validator/auth_field.dart';
+import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
-
+import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/components/textinput/textfield.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -47,6 +48,8 @@ class LoginScreenState extends State<LoginScreen> {
   final _phoneFNode = FocusNode();
   final _passFNode = FocusNode();
 
+  final _errFields = <AuthField, ErrorReason>{};
+
   @override
   void dispose() {
     _phoneController.dispose();
@@ -56,56 +59,148 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _onNavigateToForgotPassword(BuildContext c) async {
+    bool? successUpdate = await Navigator.of(c).push<bool?>(
+      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+    );
+    if (c.mounted) c.unfocus();
+    if (successUpdate != null && successUpdate) {
+      final phone = StorageHelper.read("phone_cache");
+      if (phone != null) {
+        _phoneController.text = phone;
+        _passController.text = "";
+        await Future.delayed(Duration(milliseconds: 100));
+        if (mounted) _passFNode.requestFocus();
+        await Future.delayed(Duration(milliseconds: 200));
+        AppDialog.showToast(
+          "Masuk menggunakan password baru Anda",
+          length: Toast.LENGTH_LONG,
+        );
+      }
+    }
+  }
+
+  void _addErrField(AuthField field, ErrorReason reason) {
+    _errFields[field] = reason;
+  }
+
+  void _removeErrField(AuthField field) {
+    _errFields.remove(field);
+  }
+
+  String? _onValidatePhoneNumber(String? val) {
+    final field = AuthField.phone;
+    final reason = ErrorReason();
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Kosong",
+          message: "Harap mengisi nomor telepon.",
+        ),
+      );
+      return "Nomor Telepon tidak boleh kosong.";
+    }
+    if (val.length < 10) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Tidak Valid",
+          message: "Nomor telepon minimal 10 digit angka.",
+        ),
+      );
+      return "Nomor telepon minimal 10 digit angka.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
+  String? _onValidatePassword(String? val) {
+    final field = AuthField.password;
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        ErrorReason(
+          title: "Password Kosong",
+          message: "Harap mengisi password.",
+        ),
+      );
+      return "Password tidak boleh kosong.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
   void _onLoginUser(BuildContext c) async {
-    Future loginUser() async {
+    if (_formKey.currentState!.validate()) {
       await c.read<AuthProvider>().login(
         phone: PhoneNumberFormatter.unmask(_phoneController.text),
         password: _passController.text,
         onSuccess: () async {
           await StorageHelper.loadlocalSession();
+          await StorageHelper.delete("phone_cache");
           if (c.mounted) {
-            Navigator.of(c).pushNamedAndRemoveUntil(
+            c.pushNamedAndRemoveUntil(
               RoutesNavigation.dashboard,
               (route) => false,
             );
           }
         },
         onError: (errorCode, code, message) async {
+          _phoneFNode.unfocus();
+          _passFNode.unfocus();
+
           final userNotFound = errorCode == "User not found";
-          bool? notRegistered = await AppDialog.error(
+          await AppDialog.error(
             c: c,
             title: userNotFound ? "Akun Belum Terdaftar" : "Password Salah",
             message: message,
-            actions: [
-              if (userNotFound) ...[
-                DialogActionButton(
-                  label: "Daftar Akun",
-                  primary: true,
-                  onTap: () => context.pop(true),
-                ),
-              ] else ...[
-                DialogActionButton(
-                  label: "Cek Kembali",
-                  primary: true,
-                  onTap: () => context.pop(false),
-                ),
-              ],
-            ],
+            buildActions: (c) {
+              return [
+                if (userNotFound) ...[
+                  DialogActionButton(
+                    label: "Daftar Akun",
+                    primary: true,
+                    onTap: () async {
+                      c.pop();
+                      await Future.delayed(Duration(milliseconds: 230));
+                      if (mounted) {
+                        context.pushNamed(RoutesNavigation.register);
+                      }
+                    },
+                  ),
+                ] else ...[
+                  DialogActionButton(
+                    label: "Cek Kembali",
+                    primary: true,
+                    onTap: c.pop,
+                  ),
+                ],
+              ];
+            },
           );
-          if (notRegistered != null && notRegistered) {
-            await Future.delayed(Duration(milliseconds: 200));
-            if (mounted) {
-              context.pushNamed(RoutesNavigation.register);
-            }
-          }
-
-          _phoneFNode.unfocus();
-          _passFNode.unfocus();
         },
       );
-    }
+    } else {
+      final phoneErr = _errFields[AuthField.phone];
+      final passErr = _errFields[AuthField.password];
 
-    if (_formKey.currentState!.validate()) await loginUser();
+      final err = phoneErr ?? passErr;
+
+      AppDialog.show(
+        c: c,
+        content: DialogContent(
+          assetIcon: 'assets/images/ic-alert.png',
+          title: err?.title ?? "Terjadi Kesalahan Form",
+          message: err?.message ?? "Cek kembali data inputan Anda.",
+          buildActions: (c) {
+            return [
+              DialogActionButton(label: "Periksa", primary: true, onTap: c.pop),
+            ];
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -183,15 +278,7 @@ class LoginScreenState extends State<LoginScreen> {
                               focusNode: _phoneFNode,
                               onFieldSubmitted: (_) =>
                                   _passFNode.requestFocus(),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Nomor Telepon tidak boleh kosong.";
-                                }
-                                if (val.length < 10) {
-                                  return "Nomor Telepon minimal 10 digit angka.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidatePhoneNumber,
                             ),
 
                             6.spaceY,
@@ -214,15 +301,38 @@ class LoginScreenState extends State<LoginScreen> {
                               hintText: "******",
                               controller: _passController,
                               focusNode: _passFNode,
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Password tidak boleh kosong.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidatePassword,
                             ),
 
-                            24.spaceY,
+                            8.spaceY,
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Bounce(
+                                  scaleFactor: 0.98,
+                                  onTap: () =>
+                                      _onNavigateToForgotPassword(context),
+                                  child: Container(
+                                    height: kMinInteractiveDimension,
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.only(left: 12),
+                                    child: Text(
+                                      "Lupa Password",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            8.spaceY,
 
                             Consumer<AuthProvider>(
                               builder: (context, provider, child) {

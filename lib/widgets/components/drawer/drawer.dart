@@ -156,7 +156,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
                 );
                 if (logout != null && logout) {
                   // ignore: use_build_context_synchronously
-                  await context.read<AuthProvider>().logout();
+                  await context.read<AuthProvider>().logout(context);
                   // ignore: use_build_context_synchronously
                   context.read<GetMessagesNotifier>().clearTimeSession();
                   widget.globalKey.currentState?.closeDrawer();

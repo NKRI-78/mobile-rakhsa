@@ -84,7 +84,7 @@ class ChatsPageState extends State<ChatsPage> {
                 ],
               );
             }
-            return Text("Noitifikasi", style: titleStyle);
+            return Text("Notifikasi", style: titleStyle);
           },
         ),
         leading: CupertinoNavigationBarBackButton(

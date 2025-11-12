@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -50,11 +51,17 @@ class GetMessagesNotifier with ChangeNotifier {
     await StorageHelper.write(sessionCacheKey, DateTime.now().toString());
   }
 
+  void initTimeSessionWhenIsNull() async {
+    if (StorageHelper.containsKey(sessionCacheKey)) return;
+    await StorageHelper.write(sessionCacheKey, DateTime.now().toString());
+  }
+
   void checkTimeSession() {
     final cSession = StorageHelper.read(sessionCacheKey);
     if (cSession != null) {
       final savedSession = DateTime.parse(cSession);
       final diffInMinutes = DateTime.now().difference(savedSession).inMinutes;
+      log("diffInMinutes? ${diffInMinutes}s");
 
       // dibaca cuy 🙏😋
       // jika selisih waktu sudah/lebih dari 5 menit maka _isBtnSessionEnd = true

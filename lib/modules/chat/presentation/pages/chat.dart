@@ -76,6 +76,12 @@ class ChatPageState extends State<ChatPage> {
         messageNotifier.initTimeSession();
       }
 
+      // dibaca cuy 😘😘
+      // ini handle kalau time session ga kesimpen didalam shared prefs
+      // momenya ketika sesi chat masih ada tapi app sudah diunistall itu bikin bug button end session ga bakal muncul
+      // time session ga ada didalam shared prefs terus juga ga ke init karena bukan kondisi widget.newSession
+      messageNotifier.initTimeSessionWhenIsNull();
+
       messageNotifier.initShowAutoGreetings(widget.autoGreetings);
       messageNotifier.checkTimeSession();
     });

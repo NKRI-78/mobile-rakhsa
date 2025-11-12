@@ -12,6 +12,7 @@ class AuthProvider extends ChangeNotifier {
   // state
   RequestState _loginState = RequestState.idle;
   RequestState _registerState = RequestState.idle;
+  RequestState _forgotPassState = RequestState.idle;
 
   // error
   String? _errorMessage;
@@ -20,8 +21,10 @@ class AuthProvider extends ChangeNotifier {
   // getter
   RequestState get loginState => _loginState;
   RequestState get registerState => _registerState;
+  RequestState get forgotPassState => _forgotPassState;
   bool get loginLoading => _loginState == RequestState.loading;
   bool get registerLoading => _registerState == RequestState.loading;
+  bool get forgotPassLoading => _forgotPassState == RequestState.loading;
 
   // login
   Future<void> login({
@@ -76,6 +79,30 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // forgotPassword
+  Future<void> forgotPassword({
+    required String phone,
+    required String newPassword,
+    VoidCallback? onSuccess,
+    Function(String? errorCode, int code, String message)? onError,
+  }) async {
+    _forgotPassState = RequestState.loading;
+    notifyListeners();
+
+    try {
+      await _repository.forgotPassword(phone, newPassword);
+
+      _forgotPassState = RequestState.success;
+      notifyListeners();
+      onSuccess?.call();
+    } on ClientException catch (e) {
+      _forgotPassState = RequestState.error;
+      _errorMessage = e.message;
+      notifyListeners();
+      onError?.call(e.errorCode, e.code, e.message);
+    }
+  }
+
   // logout
-  Future<void> logout() => _repository.logout();
+  Future<void> logout(BuildContext c) => _repository.logout(c);
 }

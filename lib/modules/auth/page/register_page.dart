@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/modules/auth/validator/auth_field.dart';
+import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -48,6 +50,8 @@ class RegisterScreenState extends State<RegisterScreen> {
   final _passFNode = FocusNode();
   final _confirmPassFNode = FocusNode();
 
+  final _errFields = <AuthField, ErrorReason>{};
+
   @override
   void dispose() {
     _fullNameController.dispose();
@@ -62,8 +66,102 @@ class RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _addErrField(AuthField field, ErrorReason reason) {
+    _errFields[field] = reason;
+  }
+
+  void _removeErrField(AuthField field) {
+    _errFields.remove(field);
+  }
+
+  String? _onValidateFullname(String? val) {
+    final field = AuthField.fullname;
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        ErrorReason(
+          title: "Nama Lengkap Kosong",
+          message: "Harap mengisi nama lengkap.",
+        ),
+      );
+      return "Nama Lengkap tidak boleh kosong.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
+  String? _onValidatePhoneNumber(String? val) {
+    final field = AuthField.phone;
+    final reason = ErrorReason();
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Kosong",
+          message: "Harap mengisi nomor telepon.",
+        ),
+      );
+      return "Nomor Telepon tidak boleh kosong.";
+    }
+    if (val.length < 10) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Tidak Valid",
+          message: "Nomor telepon minimal 10 digit angka.",
+        ),
+      );
+      return "Nomor telepon minimal 10 digit angka.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
+  String? _onValidatePassword(String? val) {
+    final field = AuthField.password;
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        ErrorReason(
+          title: "Password Kosong",
+          message: "Harap mengisi password.",
+        ),
+      );
+      return "Password tidak boleh kosong.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
+  String? _onValidateConfirmPassword(String? val) {
+    final field = AuthField.confirmPassword;
+    final reason = ErrorReason();
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Password Kosong",
+          message: "Harap mengisi password.",
+        ),
+      );
+      return "Password tidak boleh kosong.";
+    }
+    if (val != _passController.text) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Konfirmasi Password Tidak Sama",
+          message: "Pastikan password dan konfirmasi password sesuai.",
+        ),
+      );
+      return "Password tidak sama.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
   void _onRegisterUser(BuildContext c) async {
-    Future registerUser() async {
+    if (_formKey.currentState!.validate()) {
       await c.read<AuthProvider>().register(
         fullname: _fullNameController.text,
         phone: PhoneNumberFormatter.unmask(_phoneController.text),
@@ -71,48 +169,71 @@ class RegisterScreenState extends State<RegisterScreen> {
         onSuccess: () async {
           await StorageHelper.loadlocalSession();
           if (c.mounted) {
-            Navigator.of(c).pushNamedAndRemoveUntil(
+            c.pushNamedAndRemoveUntil(
               RoutesNavigation.dashboard,
               (route) => false,
               arguments: {"from_register": true},
             );
           }
         },
-        onError: (eCode, code, m) async {
+        onError: (eCode, code, message) async {
+          _phoneFNode.unfocus();
+          _passFNode.unfocus();
+          _confirmPassFNode.unfocus();
+
           final userAlreadyExists = eCode == "User already exist";
-          bool? readyExists = await AppDialog.error(
+          AppDialog.error(
             c: c,
             title: eCode == "User already exist"
                 ? "Akun Sudah Terdaftar"
                 : null,
-            message: m,
+            message: message,
             actions: [
               if (userAlreadyExists) ...[
                 DialogActionButton(
                   label: "Masuk",
                   primary: true,
-                  onTap: () => context.pop(true),
+                  onTap: () async {
+                    c.pop();
+                    await Future.delayed(Duration(milliseconds: 230));
+                    if (mounted) {
+                      context.pushNamed(RoutesNavigation.login);
+                    }
+                  },
                 ),
               ] else ...[
                 DialogActionButton(
                   label: "Cek Kembali",
                   primary: true,
-                  onTap: () => context.pop(false),
+                  onTap: c.pop,
                 ),
               ],
             ],
           );
-          if (readyExists != null && readyExists) {
-            await Future.delayed(Duration(milliseconds: 200));
-            if (mounted) {
-              context.pushNamed(RoutesNavigation.login);
-            }
-          }
         },
       );
-    }
+    } else {
+      final fullnameErr = _errFields[AuthField.fullname];
+      final phoneErr = _errFields[AuthField.phone];
+      final passErr = _errFields[AuthField.password];
+      final confirmPassErr = _errFields[AuthField.confirmPassword];
 
-    if (_formKey.currentState!.validate()) registerUser();
+      final err = fullnameErr ?? phoneErr ?? passErr ?? confirmPassErr;
+
+      AppDialog.show(
+        c: c,
+        content: DialogContent(
+          assetIcon: 'assets/images/ic-alert.png',
+          title: err?.title ?? "Terjadi Kesalahan Form",
+          message: err?.message ?? "Cek kembali data inputan Anda.",
+          buildActions: (c) {
+            return [
+              DialogActionButton(label: "Periksa", primary: true, onTap: c.pop),
+            ];
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -192,12 +313,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               fullname: true,
                               onFieldSubmitted: (_) =>
                                   _phoneFNode.requestFocus(),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Nama Lengkap tidak boleh kosong.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidateFullname,
                             ),
 
                             16.spaceY,
@@ -210,15 +326,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               focusNode: _phoneFNode,
                               onFieldSubmitted: (_) =>
                                   _passFNode.requestFocus(),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Nomor Telepon tidak boleh kosong.";
-                                }
-                                if (val.length < 10) {
-                                  return "Nomor Telepon minimal 10 digit angka.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidatePhoneNumber,
                             ),
                             6.spaceY,
                             Padding(
@@ -242,12 +350,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               focusNode: _passFNode,
                               onFieldSubmitted: (_) =>
                                   _confirmPassFNode.requestFocus(),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Password tidak boleh kosong.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidatePassword,
                             ),
 
                             16.spaceY,
@@ -259,15 +362,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               controller: _confirmPassController,
                               focusNode: _confirmPassFNode,
                               onFieldSubmitted: (_) => context.unfocus(),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return "Password tidak boleh kosong.";
-                                }
-                                if (val != _passController.text) {
-                                  return "Password tidak sama.";
-                                }
-                                return null;
-                              },
+                              validator: _onValidateConfirmPassword,
                             ),
 
                             24.spaceY,

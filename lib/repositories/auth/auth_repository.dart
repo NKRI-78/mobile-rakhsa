@@ -1,4 +1,5 @@
-import 'package:rakhsa/injection.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
@@ -74,12 +75,34 @@ class AuthRepository {
     }
   }
 
-  Future<void> logout() async {
-    final session = StorageHelper.session;
-    if (session != null) {
-      locator<SocketIoService>().socket?.emit("leave", {
-        "user_id": session.user.id,
-      });
+  Future<void> forgotPassword(String phone, String newPassword) async {
+    try {
+      await _client.post(
+        endpoint: '/auth/forgot-password',
+        data: {"phone": phone, "new_password": newPassword},
+      );
+    } on ClientException catch (e) {
+      final message = e.message == "User not found"
+          ? "Tidak ada akun yang terdaftar untuk nomor ini. Cek kembali nomor anda atau Registrasi ulang dengan nomor yang baru."
+          : e.message;
+      throw ClientException(
+        errorCode: e.message,
+        code: e.code,
+        message: message,
+      );
+    } on DataParsingException catch (e) {
+      throw ClientException(
+        code: e.code,
+        message: e.message,
+        errorCode: e.errorCode,
+      );
+    }
+  }
+
+  Future<void> logout(BuildContext c) async {
+    final uid = StorageHelper.session?.user.id;
+    if (uid != null) {
+      c.read<SocketIoService>().socket?.emit("leave", {"user_id": uid});
     }
     await StorageHelper.removeUserSession();
     await StorageHelper.delete(UserRepository.cacheKey);

@@ -48,17 +48,21 @@ class AppDialog {
     required String message,
     String? assetIcon,
     String? title,
+    bool dismissible = true,
     bool canPop = true,
+    List<DialogActionButton> Function(BuildContext c)? buildActions,
     List<DialogActionButton> actions = const <DialogActionButton>[],
   }) {
     return show(
       c: c,
       canPop: canPop,
+      dismissible: dismissible,
       content: DialogContent(
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
         actions: actions,
+        buildActions: buildActions,
       ),
     );
   }
