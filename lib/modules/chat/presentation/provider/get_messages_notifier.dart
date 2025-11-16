@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -61,7 +62,6 @@ class GetMessagesNotifier with ChangeNotifier {
     if (cSession != null) {
       final savedSession = DateTime.parse(cSession);
       final diffInMinutes = DateTime.now().difference(savedSession).inMinutes;
-      log("diffInMinutes? ${diffInMinutes}s");
 
       // dibaca cuy 🙏😋
       // jika selisih waktu sudah/lebih dari 5 menit maka _isBtnSessionEnd = true
@@ -76,10 +76,6 @@ class GetMessagesNotifier with ChangeNotifier {
       _isBtnSessionEnd = false;
       notifyListeners();
     }
-  }
-
-  void clearTimeSession() async {
-    await StorageHelper.delete(sessionCacheKey);
   }
 
   void clearActiveChatId() {
@@ -133,7 +129,7 @@ class GetMessagesNotifier with ChangeNotifier {
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(ProviderState.error);
       },
       (r) {
         _recipient = r.data.recipient;
@@ -144,13 +140,13 @@ class GetMessagesNotifier with ChangeNotifier {
 
         _state = ProviderState.loaded;
 
-        debugPrint('chat masuk = ${r.data.messages}');
+        log('chat masuk = ${r.data.messages}');
 
         _messages = [];
-        debugPrint('chat dari _messages = $_messages');
+        log('chat dari _messages = $_messages');
 
         _messages.addAll(r.data.messages);
-        debugPrint(
+        log(
           'chat dari _messages = ${_messages.map((e) => {"time": e.sentTime, "message": e.text}).toList()}',
         );
 
@@ -175,8 +171,8 @@ class GetMessagesNotifier with ChangeNotifier {
       navigatorKey.currentContext!,
       arguments: {
         "chat_id": chatId,
-        "status": status,
         "recipient_id": recipientId,
+        "status": status,
         "sos_id": sosId,
         "auto_greetings": true,
         "new_session": newSession,
@@ -185,7 +181,7 @@ class GetMessagesNotifier with ChangeNotifier {
     );
   }
 
-  void appendMessage({required Map<String, dynamic> data}) {
+  void appendMessage({required Map<String, dynamic> data}) async {
     _showAutoGreetings = false;
     notifyListeners();
 
@@ -194,7 +190,7 @@ class GetMessagesNotifier with ChangeNotifier {
     bool closedByAgent = data['closed_by_agent'] ?? false;
 
     if (closedByAgent) {
-      debugPrint("closedByAgent di trigger");
+      log("closedByAgent di trigger");
       if (_messages.any((m) => m.id == "closed_by_agent")) return;
       _messages.insert(
         0,
@@ -208,8 +204,9 @@ class GetMessagesNotifier with ChangeNotifier {
           createdAt: DateTime.now(),
         ),
       );
+      await NotificationManager().dismissAllNotification();
       // notifyListeners();
-      debugPrint(
+      log(
         "closedByAgent _messages dari appendMessage ketika closed by agent = ${_messages.map((e) => e.text).toList()}",
       );
     } else {
@@ -231,12 +228,12 @@ class GetMessagesNotifier with ChangeNotifier {
         "text": data["text"],
       };
 
-      debugPrint("msg data = $msgData");
+      log("msg data = $msgData");
 
       final containIncomingMsgId = _messages.any(
         (msg) => msg.id == incomingMessageId,
       );
-      debugPrint(
+      log(
         "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
       );
       if (containIncomingMsgId) return;
@@ -261,7 +258,7 @@ class GetMessagesNotifier with ChangeNotifier {
       final filteredMsg = _messages
           .map((e) => {"time": e.sentTime, "message": e.text})
           .toList();
-      debugPrint(
+      log(
         "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
       );
     }

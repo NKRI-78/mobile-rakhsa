@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rakhsa/location_manager.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
+import 'package:rakhsa/repositories/user/user_repository.dart';
+import 'package:rakhsa/socketio.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider({required AuthRepository repository}) : _repository = repository;
@@ -104,5 +108,18 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // logout
-  Future<void> logout(BuildContext c) => _repository.logout(c);
+  Future<void> logout(BuildContext c) async {
+    final socketService = c.read<SocketIoService>();
+
+    // pre-logout // leave socket > send latest location > clear time session
+    final uid = StorageHelper.session?.user.id;
+    if (uid != null) {
+      socketService.socket?.emit("leave", {"user_id": uid});
+      await sendLatestLocation("User Logout");
+    }
+
+    // logout -> hapus session + user
+    await StorageHelper.removeUserSession();
+    await StorageHelper.delete(UserRepository.cacheKey);
+  }
 }

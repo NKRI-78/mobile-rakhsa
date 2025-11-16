@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/modules/chat/presentation/pages/chat.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
+import 'package:rakhsa/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/socketio.dart';
@@ -12,8 +13,14 @@ export 'package:fluttertoast/fluttertoast.dart'
     show Fluttertoast, ToastGravity, Toast;
 
 import 'dialog.dart';
+import 'overlay_loading.dart';
 
 class AppDialog {
+  AppDialog._();
+
+  static OverlayEntry? _entry;
+  static bool get isShowing => _entry != null;
+
   static Future<T?> show<T extends Object?>({
     required BuildContext c,
     required DialogContent content,
@@ -85,6 +92,35 @@ class AppDialog {
 
   static Future<bool?> cancelToast() => Fluttertoast.cancel();
 
+  static void showLoading(
+    BuildContext context, {
+    String? message,
+    bool dismissible = false,
+    Color barrierColor = Colors.black54,
+  }) {
+    if (_entry != null) return;
+
+    final overlayState = Overlay.of(context, rootOverlay: true);
+
+    _entry = OverlayEntry(
+      builder: (context) => OverlayLoading(
+        message: message,
+        dismissible: dismissible,
+        barrierColor: barrierColor,
+        onDismissRequested: () => dismissLoading(),
+      ),
+    );
+
+    overlayState.insert(_entry!);
+  }
+
+  static void dismissLoading() {
+    try {
+      _entry?.remove();
+    } catch (_) {}
+    _entry = null;
+  }
+
   static Future<T?> showEndSosDialog<T extends Object?>({
     required String sosId,
     required String chatId,
@@ -110,7 +146,7 @@ class AppDialog {
                       navigatorKey.currentContext!,
                       MaterialPageRoute(
                         builder: (context) {
-                          return ChatPage(
+                          return ChatRoomPage(
                             sosId: sosId,
                             chatId: chatId,
                             status: "NONE",
@@ -127,13 +163,14 @@ class AppDialog {
             DialogActionButton(
               label: "Sudah",
               primary: true,
-              onTap: () {
+              onTap: () async {
                 c.read<SosRatingNotifier>().sosRating(sosId: sosId);
                 c.read<SocketIoService>().userResolvedSos(sosId: sosId);
                 c.pop();
                 if (!fromHome) {
                   Navigator.pushNamed(c, RoutesNavigation.dashboard);
                 }
+                await NotificationManager().dismissAllNotification();
               },
             ),
           ];

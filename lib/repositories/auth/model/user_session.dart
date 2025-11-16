@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:rakhsa/misc/client/errors/code.dart';
@@ -52,6 +53,10 @@ class UserSession {
     "refresh_token": refreshToken,
     "user": user.toJson(),
   };
+
+  @override
+  String toString() =>
+      'UserSession(token: $token, refreshToken: $refreshToken, user: $user)';
 }
 
 class UserDataSession {
@@ -120,4 +125,9 @@ class UserDataSession {
     "access": access,
     "enabled": enabled,
   };
+
+  @override
+  String toString() {
+    return 'UserDataSession(id: $id, name: $name, email: $email, phone: $phone, role: $role, access: $access, enabled: $enabled)';
+  }
 }

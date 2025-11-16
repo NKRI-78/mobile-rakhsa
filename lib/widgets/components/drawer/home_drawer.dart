@@ -6,7 +6,7 @@ import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
+import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
@@ -21,15 +21,77 @@ import 'package:rakhsa/modules/profile/page/profile_page.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class DrawerWidget extends StatefulWidget {
-  final GlobalKey<ScaffoldState> globalKey;
-  const DrawerWidget({required this.globalKey, super.key});
+class HomeDrawer extends StatefulWidget {
+  const HomeDrawer({super.key});
 
   @override
-  State<DrawerWidget> createState() => DrawerWidgetState();
+  State<HomeDrawer> createState() => _HomeDrawerState();
 }
 
-class DrawerWidgetState extends State<DrawerWidget> {
+class _HomeDrawerState extends State<HomeDrawer> {
+  void _onUserLogout() async {
+    final isSOSRunning = SosCoordinator().getWaitingFlag();
+    if (isSOSRunning) {
+      context.pop(); // close drawer
+      await Future.delayed(Duration(milliseconds: 300));
+      if (!mounted) return;
+      AppDialog.error(
+        c: context,
+        title: "SOS Sedang Berjalan",
+        message:
+            "Anda tidak bisa keluar dari aplikasi ketika SOS sedang berjalan, tunggu hingga hitung mundur selesai baru Anda bisa keluar.",
+        buildActions: (c) => [
+          DialogActionButton(label: "Mengerti", primary: true, onTap: c.pop),
+        ],
+      );
+      return;
+    }
+
+    await AppDialog.show(
+      c: context,
+      content: DialogContent(
+        assetIcon: "assets/images/logout-icon.png",
+        title: "Permintaan Keluar",
+        message: "Apakah kamu yakin ingin keluar dari Marlinda?",
+        // dc => dialog context
+        buildActions: (dc) {
+          return [
+            DialogActionButton(label: "Batal", onTap: dc.pop),
+            DialogActionButton(
+              label: "Keluar",
+              primary: true,
+              onTap: () async {
+                dc.pop(); // close dialog dc = dialog context
+
+                final navigator = Navigator.of(context);
+                final auth = context.read<AuthProvider>();
+
+                AppDialog.showLoading(context);
+
+                await auth.logout(context);
+                if (!mounted) return;
+
+                AppDialog.dismissLoading();
+
+                await Future.delayed(Duration(milliseconds: 300));
+
+                if (mounted) context.pop(); // close drawer
+
+                await Future.delayed(Duration(milliseconds: 300));
+
+                navigator.pushNamedAndRemoveUntil(
+                  RoutesNavigation.welcomePage,
+                  (route) => false,
+                  arguments: {"from_logout": true},
+                );
+              },
+            ),
+          ];
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -133,46 +195,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
             ),
 
             Bounce(
+              onTap: _onUserLogout,
               child: Image.asset(logoutTitle, width: 110.0, height: 110.0),
-              onTap: () async {
-                bool? logout = await AppDialog.show(
-                  c: context,
-                  content: DialogContent(
-                    assetIcon: "assets/images/logout-icon.png",
-                    title: "Permintaan Keluar",
-                    message: "Apakah kamu yakin ingin keluar dari Marlinda?",
-                    actions: [
-                      DialogActionButton(
-                        label: "Batal",
-                        onTap: () => context.pop(false),
-                      ),
-                      DialogActionButton(
-                        label: "Keluar",
-                        primary: true,
-                        onTap: () => context.pop(true),
-                      ),
-                    ],
-                  ),
-                );
-                if (logout != null && logout) {
-                  // ignore: use_build_context_synchronously
-                  await context.read<AuthProvider>().logout(context);
-                  // ignore: use_build_context_synchronously
-                  context.read<GetMessagesNotifier>().clearTimeSession();
-                  widget.globalKey.currentState?.closeDrawer();
-                  Navigator.pushNamedAndRemoveUntil(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    RoutesNavigation.welcomePage,
-                    (route) => false,
-                  );
-                } else {
-                  Future.delayed(Duration(milliseconds: 300)).then((value) {
-                    // ignore: use_build_context_synchronously
-                    context.pop();
-                  });
-                }
-              },
             ),
           ],
         ),

@@ -14,6 +14,8 @@ extension ContextExtension on BuildContext {
     String routeName, {
     Object? arguments,
   }) => Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
+  Future<T?> push<T extends Object?>(Route<T> route) =>
+      Navigator.of(this).push<T>(route);
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
   double get bottom => mediaQuery.padding.bottom;

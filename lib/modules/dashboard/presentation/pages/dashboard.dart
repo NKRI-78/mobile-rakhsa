@@ -9,7 +9,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/background_service.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
@@ -19,15 +18,14 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
 
-import 'package:rakhsa/firebase.dart';
-
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/notification_manager.dart';
 
-import 'package:rakhsa/widgets/components/drawer/drawer.dart';
+import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/socketio.dart';
@@ -48,7 +46,6 @@ class DashboardScreenState extends State<DashboardScreen> {
   final _pageNotifyController = ValueNotifier<int>(0);
   final _pageController = PageController();
 
-  late FirebaseProvider firebaseProvider;
   late DashboardNotifier dashboardNotifier;
   late SocketIoService socketIoService;
   late UserProvider profileNotifier;
@@ -75,7 +72,6 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     locator<VibrationManager>().init();
 
-    firebaseProvider = context.read<FirebaseProvider>();
     profileNotifier = context.read<UserProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
@@ -91,6 +87,8 @@ class DashboardScreenState extends State<DashboardScreen> {
     });
 
     Future.microtask(() => getData());
+
+    // _sendLatestLocation();
   }
 
   @override
@@ -108,7 +106,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     await profileNotifier.getUser();
 
     if (!mounted) return;
-    await firebaseProvider.initFcm();
+    await NotificationManager().initializeFcmToken();
 
     if (!mounted) return;
     await getCurrentLocation();
@@ -255,14 +253,6 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
           lng: position.longitude,
           state: country,
         );
-
-        // handle service is running
-        if (await bgServiceIsRunning) return;
-        await initBackgroundService(
-          "${weatherNotifier.celcius} $subAdministrativeArea",
-          weatherNotifier.description,
-        );
-        await startBackgroundService();
       });
     }
   }
@@ -342,7 +332,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
         key: globalKey,
 
         // PROFIlE DRAWER
-        endDrawer: SafeArea(child: DrawerWidget(globalKey: globalKey)),
+        endDrawer: SafeArea(child: HomeDrawer()),
 
         // HOME PAGE
         body: ValueListenableBuilder(

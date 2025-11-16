@@ -23,7 +23,6 @@ import 'package:rakhsa/modules/information/presentation/provider/passport_notifi
 import 'package:rakhsa/modules/information/presentation/provider/visa_notifier.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
-import 'package:rakhsa/firebase.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/socketio.dart';
@@ -32,7 +31,6 @@ List<SingleChildWidget> providers = [...independentServices];
 
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<AuthProvider>()),
-  ChangeNotifierProvider.value(value: di.locator<FirebaseProvider>()),
   ChangeNotifierProvider.value(value: di.locator<DashboardNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailNewsNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),

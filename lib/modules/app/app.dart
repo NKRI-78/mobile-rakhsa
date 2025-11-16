@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/firebase.dart';
+import 'package:rakhsa/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
@@ -13,21 +12,15 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  late FirebaseProvider firebaseProvider;
-
   @override
   void initState() {
     super.initState();
-    firebaseProvider = context.read<FirebaseProvider>();
-    _setup();
+    _initializeService();
   }
 
-  void _setup() async {
-    if (!mounted) return;
-    await firebaseProvider.setupInteractedMessage(context);
-
-    if (!mounted) return;
-    firebaseProvider.listenNotification(context);
+  void _initializeService() async {
+    await NotificationManager().initializeFcmHandlers();
+    await NotificationManager().setForegroundMessageActionListeners();
   }
 
   @override

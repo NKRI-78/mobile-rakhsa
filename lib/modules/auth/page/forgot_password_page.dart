@@ -9,6 +9,8 @@ import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/modules/auth/validator/auth_field.dart';
+import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -40,6 +42,8 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
 
   final _newPassFNode = FocusNode();
 
+  final _errFields = <AuthField, ErrorReason>{};
+
   @override
   void dispose() {
     _newPassFNode.dispose();
@@ -48,9 +52,61 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
     super.dispose();
   }
 
+  void _addErrField(AuthField field, ErrorReason reason) {
+    _errFields[field] = reason;
+  }
+
+  void _removeErrField(AuthField field) {
+    _errFields.remove(field);
+  }
+
+  String? _onValidatePhoneNumber(String? val) {
+    final field = AuthField.phone;
+    final reason = ErrorReason();
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Kosong",
+          message: "Harap mengisi nomor telepon.",
+        ),
+      );
+      return "Nomor Telepon tidak boleh kosong.";
+    }
+    if (val.length < 10) {
+      _addErrField(
+        field,
+        reason.copyWith(
+          title: "Nomor Telepon Tidak Valid",
+          message: "Nomor telepon minimal 10 digit angka.",
+        ),
+      );
+      return "Nomor telepon minimal 10 digit angka.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
+  String? _onValidatePassword(String? val) {
+    final field = AuthField.password;
+    if (val == null || val.isEmpty) {
+      _addErrField(
+        field,
+        ErrorReason(
+          title: "Password Kosong",
+          message: "Harap mengisi password.",
+        ),
+      );
+      return "Password tidak boleh kosong.";
+    }
+    _removeErrField(field);
+    return null;
+  }
+
   void _onSubmitNewPassword(BuildContext c) async {
     final phone = PhoneNumberFormatter.unmask(_phoneController.text);
-    Future forgotPassword() async {
+
+    if (_formKey.currentState!.validate()) {
       await c.read<AuthProvider>().forgotPassword(
         phone: phone,
         newPassword: _newPassController.text,
@@ -103,9 +159,26 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
           );
         },
       );
-    }
+    } else {
+      final phoneErr = _errFields[AuthField.phone];
+      final passErr = _errFields[AuthField.password];
 
-    if (_formKey.currentState!.validate()) await forgotPassword();
+      final err = phoneErr ?? passErr;
+
+      AppDialog.show(
+        c: c,
+        content: DialogContent(
+          assetIcon: 'assets/images/ic-alert.png',
+          title: err?.title ?? "Terjadi Kesalahan Form",
+          message: err?.message ?? "Cek kembali data inputan Anda.",
+          buildActions: (c) {
+            return [
+              DialogActionButton(label: "Periksa", primary: true, onTap: c.pop),
+            ];
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -187,15 +260,7 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
                                 controller: _phoneController,
                                 onFieldSubmitted: (_) =>
                                     _newPassFNode.requestFocus(),
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Nomor Telepon tidak boleh kosong.";
-                                  }
-                                  if (val.length < 10) {
-                                    return "Nomor Telepon minimal 10 digit angka.";
-                                  }
-                                  return null;
-                                },
+                                validator: _onValidatePhoneNumber,
                               ),
 
                               16.spaceY,
@@ -206,12 +271,7 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
                                 hintText: "Masukan Password yang baru",
                                 controller: _newPassController,
                                 focusNode: _newPassFNode,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Password tidak boleh kosong.";
-                                  }
-                                  return null;
-                                },
+                                validator: _onValidatePassword,
                               ),
 
                               24.spaceY,

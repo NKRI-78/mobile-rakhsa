@@ -128,10 +128,8 @@ class _HomePageState extends State<HomePage> {
                         ),
 
                         Consumer<DashboardNotifier>(
-                          builder: (context, notifier, child) {
-                            if (notifier.state == ProviderState.loading ||
-                                notifier.bannerState ==
-                                    BannerProviderState.loading) {
+                          builder: (context, n, child) {
+                            if (n.state == ProviderState.loading) {
                               return Container(
                                 margin: EdgeInsets.only(top: 32),
                                 padding: EdgeInsets.all(16),
@@ -164,12 +162,12 @@ class _HomePageState extends State<HomePage> {
                               );
                             }
 
-                            if (notifier.state == ProviderState.error) {
+                            if (n.state == ProviderState.error) {
                               return SizedBox(
                                 height: 200.0,
                                 child: Center(
                                   child: Text(
-                                    notifier.message,
+                                    n.message,
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeDefault,
                                       color: ColorResources.black,
@@ -181,12 +179,8 @@ class _HomePageState extends State<HomePage> {
 
                             return Padding(
                               padding: const EdgeInsets.only(top: 45.0),
-                              child: (notifier.ews.isNotEmpty)
-                                  ? EwsListWidget(
-                                      getData: () {
-                                        widget.onRefresh();
-                                      },
-                                    )
+                              child: (n.ews.isNotEmpty)
+                                  ? EwsListWidget(getData: widget.onRefresh)
                                   : HomeHightlightBanner(
                                       banners: widget.banners,
                                     ),

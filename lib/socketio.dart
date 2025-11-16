@@ -1,6 +1,7 @@
 // ignore_for_file: library_prefixes
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,14 @@ import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 enum SocketConnectionStatus { idle, connect, reconnect, error }
+
+class HttpOverridesConfig extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (cert, host, port) => true;
+  }
+}
 
 extension SocketConnectionStatusExtension on SocketConnectionStatus {
   Color get color => switch (this) {
@@ -95,7 +104,7 @@ class SocketIoService with ChangeNotifier {
       }
     });
 
-    socket?.on("resolved-by-user", (message) {
+    socket?.on("resolved-by-user", (message) async {
       debugPrint("=== RESOLVED BY USER ===");
 
       final context = navigatorKey.currentContext;
@@ -104,7 +113,7 @@ class SocketIoService with ChangeNotifier {
       }
     });
 
-    socket?.on("closed-by-agent", (message) {
+    socket?.on("closed-by-agent", (message) async {
       debugPrint("=== CLOSED BY AGENT ===");
 
       final context = navigatorKey.currentContext;

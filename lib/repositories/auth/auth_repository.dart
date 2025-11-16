@@ -1,11 +1,6 @@
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
-import 'package:rakhsa/repositories/user/user_repository.dart';
-import 'package:rakhsa/socketio.dart';
 
 class AuthRepository {
   AuthRepository({required DioClient client}) : _client = client;
@@ -97,14 +92,5 @@ class AuthRepository {
         errorCode: e.errorCode,
       );
     }
-  }
-
-  Future<void> logout(BuildContext c) async {
-    final uid = StorageHelper.session?.user.id;
-    if (uid != null) {
-      c.read<SocketIoService>().socket?.emit("leave", {"user_id": uid});
-    }
-    await StorageHelper.removeUserSession();
-    await StorageHelper.delete(UserRepository.cacheKey);
   }
 }

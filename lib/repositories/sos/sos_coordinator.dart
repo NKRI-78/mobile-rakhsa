@@ -69,7 +69,7 @@ class SosCoordinator {
     await prefs.remove(_kPendingStopKey);
   }
 
-  Future<bool> getWaitingFlag() async {
+  bool getWaitingFlag() {
     return _prefs.getBool(kWaitingKey) ?? false;
   }
 }

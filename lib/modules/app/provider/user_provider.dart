@@ -34,7 +34,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getUser({bool enableCache = false}) async {
+  Future<User?> getUser({bool enableCache = false}) async {
     _getUserState = RequestState.loading;
     notifyListeners();
 
@@ -43,19 +43,22 @@ class UserProvider with ChangeNotifier {
       _user = localUser;
       _getUserState = RequestState.success;
       notifyListeners();
+      return localUser;
     } else {
       try {
-        final uid = await StorageHelper.loadlocalSession().then((v) {
+        final uid = await StorageHelper.getUserSession().then((v) {
           return v?.user.id ?? "-";
         });
         final remoteUser = await _repository.getRemoteUser(uid);
         _user = remoteUser;
         _getUserState = RequestState.success;
         notifyListeners();
+        return remoteUser;
       } on ClientException catch (e) {
         _errMessage = e.message;
         _getUserState = RequestState.error;
         notifyListeners();
+        return null;
       }
     }
   }

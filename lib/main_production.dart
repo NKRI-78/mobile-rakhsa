@@ -10,12 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-import 'package:awesome_notifications/awesome_notifications.dart' as an;
-
-import 'package:rakhsa/awesome_notification.dart';
+import 'package:rakhsa/notification_manager.dart';
 import 'package:rakhsa/build_config.dart';
 
-import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/firebase_options.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -24,12 +21,14 @@ import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/providers.dart';
+import 'package:rakhsa/socketio.dart';
 
 import './modules/app/app.dart';
-import 'injection.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await StorageHelper.init();
 
   await dotenv
       .load(fileName: 'assets/env/.env.prod')
@@ -38,14 +37,11 @@ Future<void> main() async {
         debugPrint("Gagal memuat env production = ${e.toString()}");
         throw Exception("Gagal memuat env production = ${e.toString()}");
       });
-  BuildConfig.init(
+  await BuildConfig.initialize(
     flavor: Flavor.prod,
-    appName: dotenv.env['APP_NAME'] ?? 'Marlinda',
     apiBaseUrl: dotenv.env['API_BASE_URL'],
     socketBaseUrl: dotenv.env['SOCKET_BASE_URL'],
   );
-
-  await StorageHelper.init();
 
   di.init();
 
@@ -55,34 +51,7 @@ Future<void> main() async {
 
   await initializeDateFormatting('id_ID', null);
 
-  if (Platform.isIOS) {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-          alert: false,
-          badge: false,
-          sound: false,
-        );
-  }
-
-  await an.AwesomeNotifications()
-      .initialize('resource://drawable/ic_notification', [
-        an.NotificationChannel(
-          channelKey: 'notification',
-          channelName: 'notification',
-          channelDescription: 'Notification',
-          playSound: true,
-          channelShowBadge: true,
-          criticalAlerts: true,
-          importance: an.NotificationImportance.High,
-        ),
-      ], debug: false);
-
-  an.AwesomeNotifications().getInitialNotificationAction().then((r) {
-    if (r != null) {
-      AwesomeNotificationService.onActionReceivedMethod(r);
-      AwesomeNotificationService.onDismissAction(r);
-    }
-  });
+  await NotificationManager().initializeLocalNotification();
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -90,7 +59,9 @@ Future<void> main() async {
     return true;
   };
 
-  locator<SosCoordinator>().initAndRestore();
+  await SosCoordinator().initAndRestore();
+
+  HttpOverrides.global = HttpOverridesConfig();
 
   runApp(MultiProvider(providers: providers, child: App()));
 }

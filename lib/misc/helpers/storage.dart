@@ -15,10 +15,16 @@ class StorageHelper {
     return _session;
   }
 
+  // udah sesuai best practice dari dokumentasi flutter_secure_storage
+  // jika encryptedSharedPreferences = true
+  static AndroidOptions _getAndroidOptions() =>
+      const AndroidOptions(encryptedSharedPreferences: true);
+
   static Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
+
     secureStorage = FlutterSecureStorage(
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+      aOptions: _getAndroidOptions(),
       iOptions: IOSOptions(accessibility: KeychainAccessibility.unlocked),
     );
 
@@ -53,11 +59,20 @@ class StorageHelper {
 
   static Future<bool> clear() => sharedPreferences.clear();
 
-  static Future<void> saveUserSession(UserSession newSession) {
-    return secureStorage.write(
+  static Future<void> saveUserSession(UserSession newSession) async {
+    await secureStorage.write(
       key: "user_session",
       value: userSessionToJson(newSession),
     );
+
+    // dibaca beb.. 😘😘
+    // revalidate cache _session biar ga bikin bug
+    // kalau ini ga dilakuin aplikasi masih menyimpan data cache _session sebelumnya
+    // walupun sudah login diakun yang berbeda
+    final newCacheSession = await getUserSession();
+    if (newCacheSession != null) {
+      _session = newCacheSession;
+    }
   }
 
   static Future<UserSession?> getUserSession() async {
@@ -74,8 +89,9 @@ class StorageHelper {
     return loaded;
   }
 
-  static Future<void> removeUserSession() {
-    return secureStorage.delete(key: "user_session");
+  static Future<void> removeUserSession() async {
+    await secureStorage.delete(key: "user_session");
+    _session = null;
   }
 
   static String? getUserNationality() {

@@ -73,7 +73,6 @@ import 'package:rakhsa/modules/nearme/data/repositories/nearme_repository_impl.d
 import 'package:rakhsa/modules/nearme/domain/repository/nearme_repository.dart';
 import 'package:rakhsa/modules/nearme/domain/usecases/get_place_nearby.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
-import 'package:rakhsa/firebase.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
@@ -197,8 +196,6 @@ void init() {
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
 
   locator.registerFactory(() => WeatherNotifier(weather: locator()));
-
-  locator.registerFactory(() => FirebaseProvider(dio: locator()));
 
   locator.registerLazySingleton(
     () => WeatherFactory(

@@ -31,11 +31,11 @@ class DashboardNotifier with ChangeNotifier {
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
 
-  BannerProviderState _bannerState = BannerProviderState.loading;
-  BannerProviderState get bannerState => _bannerState;
+  // BannerProviderState _bannerState = BannerProviderState.loading;
+  // BannerProviderState get bannerState => _bannerState;
 
-  NewsProviderState _newsState = NewsProviderState.loading;
-  NewsProviderState get newsState => _newsState;
+  // NewsProviderState _newsState = NewsProviderState.loading;
+  // NewsProviderState get newsState => _newsState;
 
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
@@ -43,17 +43,17 @@ class DashboardNotifier with ChangeNotifier {
   String _message = "";
   String get message => _message;
 
-  void setStateBanner(BannerProviderState newState) {
-    _bannerState = newState;
+  // void setStateBanner(BannerProviderState newState) {
+  //   _bannerState = newState;
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
-  void setStateNews(NewsProviderState newState) {
-    _newsState = newState;
+  // void setStateNews(NewsProviderState newState) {
+  //   _newsState = newState;
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;
@@ -62,44 +62,44 @@ class DashboardNotifier with ChangeNotifier {
   }
 
   Future<void> getBanner() async {
-    setStateBanner(BannerProviderState.loading);
+    setStateProvider(ProviderState.loading);
 
     final result = await bannerUseCase.execute();
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateBanner(BannerProviderState.error);
+        setStateProvider(ProviderState.error);
       },
       (r) {
         _banners = [];
         _banners.addAll(r.data);
-        setStateBanner(BannerProviderState.loaded);
+        setStateProvider(ProviderState.loaded);
 
         if (news.isEmpty) {
-          setStateBanner(BannerProviderState.empty);
+          setStateProvider(ProviderState.empty);
         }
       },
     );
   }
 
   Future<void> getNews({required double lat, required double lng}) async {
-    setStateNews(NewsProviderState.loading);
+    setStateProvider(ProviderState.loading);
 
     final result = await useCase.execute(lat: lat, lng: lng, state: "-");
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateNews(NewsProviderState.error);
+        setStateProvider(ProviderState.error);
       },
       (r) {
         _news = [];
         _news.addAll(r.data);
-        setStateNews(NewsProviderState.loaded);
+        setStateProvider(ProviderState.loaded);
 
         if (news.isEmpty) {
-          setStateNews(NewsProviderState.empty);
+          setStateProvider(ProviderState.empty);
         }
       },
     );

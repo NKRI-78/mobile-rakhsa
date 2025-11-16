@@ -18,14 +18,14 @@ import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ChatsPage extends StatefulWidget {
-  const ChatsPage({super.key});
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({super.key});
 
   @override
-  State<ChatsPage> createState() => ChatsPageState();
+  State<NotificationPage> createState() => NotificationPageState();
 }
 
-class ChatsPageState extends State<ChatsPage> {
+class NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();

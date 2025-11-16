@@ -42,7 +42,6 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   flutter_launcher_icons: ^0.14.4
   flutter_widget_from_html: ^0.17.1
-  flutter_background_service: ^5.1.0
   flutter_google_maps_webservices: ^1.1.1
 
   # Firebase

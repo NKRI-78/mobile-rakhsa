@@ -158,6 +158,7 @@ class LoginScreenState extends State<LoginScreen> {
             buildActions: (c) {
               return [
                 if (userNotFound) ...[
+                  DialogActionButton(label: "Tutup", onTap: c.pop),
                   DialogActionButton(
                     label: "Daftar Akun",
                     primary: true,

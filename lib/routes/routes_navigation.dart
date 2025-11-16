@@ -4,8 +4,8 @@ import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/auth/page/register_page.dart';
 import 'package:rakhsa/modules/auth/page/splash_page.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
-import 'package:rakhsa/modules/chat/presentation/pages/chat.dart';
-import 'package:rakhsa/modules/chat/presentation/pages/chats.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/notification_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/weather_page.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
@@ -59,7 +59,7 @@ class RoutesNavigation {
         final data = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => WeatherPage(data));
       case chats:
-        return MaterialPageRoute(builder: (_) => const ChatsPage());
+        return MaterialPageRoute(builder: (_) => const NotificationPage());
       case chat:
         final data = settings.arguments as Map<String, dynamic>;
         bool autoGreetings = data["auto_greetings"];
@@ -70,7 +70,7 @@ class RoutesNavigation {
         bool newNesssion = data['new_session'] ?? false;
 
         return MaterialPageRoute(
-          builder: (_) => ChatPage(
+          builder: (_) => ChatRoomPage(
             autoGreetings: autoGreetings,
             chatId: chatId,
             recipientId: recipientId,
@@ -82,7 +82,7 @@ class RoutesNavigation {
       case nearMeTypeList:
         return MaterialPageRoute(builder: (_) => const NearMeListTypePage());
       case welcomePage:
-        return MaterialPageRoute(builder: (_) => const WelcomePage());
+        return MaterialPageRoute(builder: (_) => WelcomePage());
       case login:
         return MaterialPageRoute(builder: (_) => const LoginPage());
       case forgotPassword:

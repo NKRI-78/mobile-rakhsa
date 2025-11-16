@@ -6,10 +6,6 @@
     <!-- NOTIFICATION -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- FG SERVICE -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-
     <!-- VIBRATE -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -69,11 +65,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <service
-            android:name="id.flutter.flutter_background_service.BackgroundService"
-            android:foregroundServiceType="location"
-        />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

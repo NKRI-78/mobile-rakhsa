@@ -296,12 +296,4 @@ class DioClient {
       throw ClientException.unknown(other: error.toString());
     }
   }
-
-  // String _getBaseUrl() {
-  //   if (BuildConfig.isProd) {
-  //     return dotenv.env['API_BASE_URL'] ?? "";
-  //   } else {
-  //     return ;
-  //   }
-  // }
 }

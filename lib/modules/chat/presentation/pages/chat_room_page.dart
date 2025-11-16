@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:intl/intl.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
@@ -24,9 +25,7 @@ import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 
-import 'chat_bubble.dart';
-
-class ChatPage extends StatefulWidget {
+class ChatRoomPage extends StatefulWidget {
   final String sosId;
   final String chatId;
   final String status;
@@ -34,7 +33,7 @@ class ChatPage extends StatefulWidget {
   final bool autoGreetings;
   final bool newSession;
 
-  const ChatPage({
+  const ChatRoomPage({
     required this.sosId,
     required this.chatId,
     required this.status,
@@ -45,10 +44,10 @@ class ChatPage extends StatefulWidget {
   });
 
   @override
-  State<ChatPage> createState() => ChatPageState();
+  State<ChatRoomPage> createState() => ChatRoomPageState();
 }
 
-class ChatPageState extends State<ChatPage> {
+class ChatRoomPageState extends State<ChatRoomPage> {
   Timer? debounce;
 
   final sC = ScrollController();
@@ -200,7 +199,6 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.unfocus(),
-      // onPanDown: (details) => context.unfocus(),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
