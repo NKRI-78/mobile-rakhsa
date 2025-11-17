@@ -18,7 +18,7 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 import 'package:rakhsa/widgets/dialog/dialog_action_button.dart';
 

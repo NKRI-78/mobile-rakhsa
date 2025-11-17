@@ -8,7 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/repositories/location/location_manager.dart';
+import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
@@ -19,9 +19,9 @@ import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
-import 'misc/helpers/storage.dart';
-import 'modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'repositories/sos/sos_coordinator.dart';
+import '../../misc/helpers/storage.dart';
+import '../../modules/dashboard/presentation/provider/dashboard_notifier.dart';
+import '../sos/sos_coordinator.dart';
 
 class NotificationType {
   NotificationType._();

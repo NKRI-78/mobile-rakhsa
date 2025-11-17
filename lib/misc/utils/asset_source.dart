@@ -15,12 +15,10 @@ class AssetSource {
   static const String onBoarding2 = 'assets/images/on-boarding-content-2.png';
   static const String onBoarding3 = 'assets/images/on-boarding-content-3.png';
 
-  static const String passportError = 'assets/images/passport-error.png';
   static const String bgCardWeather = 'assets/images/bg-card-weather.png';
 
   static const String logoutTitle = "assets/images/logout.png";
   static const String loginOrnament = "assets/images/login-ornament.png";
-  static const String signWithGoogle = "assets/images/sign-with-google.png";
   static const String iconCalendar = "assets/images/icon-calendar.png";
   static const String iconNoProfile = "assets/images/default.jpeg";
   static const String iconDefaultImg = "assets/images/default_image.png";
@@ -33,26 +31,11 @@ class AssetSource {
   static const String iconFamilyCall = "assets/images/icon-familycall.png";
   static const String iconInfoBottom = "assets/images/icon-info-bottom.pngic-";
 
-  // dashboard bottom nav bar
-  static const String iconNavBarHome =
-      "assets/images/icon-bottom-nav-bar-home.png";
-  static const String iconNavBarMainMenu =
-      "assets/images/icon-bottom-nav-bar-main-menu.png";
-  static const String iconNavBarWallet =
-      "assets/images/icon-bottom-nav-bar-wallet.png";
-  static const String iconMenuInformation =
-      "assets/images/icon-menu-information.png";
-  static const String iconMenuItinerary =
-      "assets/images/icon-menu-itinerary.png";
-  static const String iconMenuMart = "assets/images/icon-menu-mart.png";
-  static const String iconMenuNearme = "assets/images/icon-menu-nearme.png";
-  static const String iconMenuNews = "assets/images/icon-menu-news.png";
-
   // main menu -> near me
   static const String iconTempatIbadah = "assets/images/icon-tempat-ibadah.png";
   static const String iconKantorPolisi = "assets/images/icon-kantor-polisi.png";
-  static const String iconRestoran = "assets/images/icon-hotel.png";
-  static const String iconHotel = "assets/images/icon-restoran.png";
+  static const String iconRestoran = "assets/images/icon-restoran.png";
+  static const String iconHotel = "assets/images/icon-hotel.png";
 
   // icons
   static const String lodging = "assets/images/icons/lodging";

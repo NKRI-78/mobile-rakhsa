@@ -9,7 +9,7 @@ import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

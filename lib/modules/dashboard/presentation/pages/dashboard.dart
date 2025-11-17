@@ -20,12 +20,12 @@ import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/notification_manager.dart';
+import 'package:rakhsa/service/notification/notification_manager.dart';
 
 import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class DashboardScreen extends StatefulWidget {

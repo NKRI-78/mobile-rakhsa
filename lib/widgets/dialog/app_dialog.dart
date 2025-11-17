@@ -4,10 +4,10 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
-import 'package:rakhsa/notification_manager.dart';
+import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 export 'package:fluttertoast/fluttertoast.dart'
     show Fluttertoast, ToastGravity, Toast;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/notification_manager.dart';
+import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 

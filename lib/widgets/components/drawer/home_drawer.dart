@@ -6,7 +6,7 @@ import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
-import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
+import 'package:rakhsa/service/sos/sos_coordinator.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 

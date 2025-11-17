@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
-import 'package:rakhsa/camera.dart';
+import 'package:rakhsa/service/sos/sos_camera.dart';
 
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -10,7 +10,7 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
+import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';

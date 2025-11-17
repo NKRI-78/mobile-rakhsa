@@ -9,7 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 
-import 'package:rakhsa/notification_manager.dart';
+import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/firebase_options.dart';
@@ -17,10 +17,10 @@ import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart' as di;
 
 import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
+import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/providers.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 import './modules/app/app.dart';
 

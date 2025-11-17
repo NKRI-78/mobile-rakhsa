@@ -175,7 +175,7 @@ class WelcomePageState extends State<WelcomePage> {
                   Text(
                     '\n"Mari Lindungi Diri Anda"\n',
                     textAlign: TextAlign.center,
-                    style: gilroyRegular.copyWith(
+                    style: TextStyle(
                       color: whiteColor,
                       fontWeight: FontWeight.bold,
                       fontSize: fontSizeExtraLarge,

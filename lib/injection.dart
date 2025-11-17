@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
-import 'package:rakhsa/repositories/sos/sos_coordinator.dart';
+import 'package:rakhsa/service/sos/sos_coordinator.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
 import 'package:rakhsa/repositories/media/media_repository.dart';
@@ -75,7 +75,7 @@ import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 final locator = GetIt.instance;
 

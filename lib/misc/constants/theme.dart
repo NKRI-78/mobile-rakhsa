@@ -1,41 +1,5 @@
 import 'package:flutter/material.dart';
 
-var baseDarkTheme = ThemeData(
-  colorScheme: const ColorScheme.dark(
-    surface: Color(0xff000000),
-  ),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: redColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-);
-
-var baseTheme = ThemeData(
-  colorScheme: const ColorScheme.light(),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: redColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      textStyle: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-);
-
 const redColor = Color(0xffFC0102);
 const errorColor = Color(0xffFC0102);
 const blueColor = Color(0xff008CEB);
@@ -61,7 +25,6 @@ const gradeIpkColor = Color(0xFFF89D4A);
 //images
 const String logoutTitle = "assets/images/logout.png";
 const String loginOrnament = "assets/images/login-ornament.png";
-const String signWithGoogle = "assets/images/sign-with-google.png";
 
 //Font Size
 const double fontSizeOverExtraSmall = 9.0;

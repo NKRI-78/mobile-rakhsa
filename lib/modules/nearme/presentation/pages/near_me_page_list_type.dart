@@ -57,15 +57,6 @@ class NearMeListTypePage extends StatelessWidget {
       backgroundColor: Colors.grey.shade100,
       body: CustomScrollView(
         slivers: [
-          // app bar
-          // SliverAppBar(
-          //   backgroundColor: ColorResources.backgroundColor,
-          //   leading: CupertinoNavigationBarBackButton(
-          //     onPressed: () => Navigator.of(context).pop(),
-          //     color: ColorResources.black,
-          //   ),
-          // ),
-
           // title kategori
           SliverPadding(
             padding: EdgeInsetsGeometry.only(top: context.top + kToolbarHeight),

@@ -26,7 +26,7 @@ import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
 import 'package:rakhsa/injection.dart' as di;
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 List<SingleChildWidget> providers = [...independentServices];
 

@@ -6,7 +6,7 @@ import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/notification_manager.dart';
+import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 

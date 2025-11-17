@@ -15,7 +15,7 @@ import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 class GeneralModal {
   static Future<void> dialogRequestPermission({

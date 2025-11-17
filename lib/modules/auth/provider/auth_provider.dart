@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
-import 'package:rakhsa/repositories/location/location_manager.dart';
+import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
-import 'package:rakhsa/socketio.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider({required AuthRepository repository}) : _repository = repository;
