@@ -9,6 +9,7 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
 
 import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
@@ -71,24 +72,25 @@ class SocketIoService with ChangeNotifier {
     }
 
     socket?.onConnect((message) {
-      debugPrint("🛜 SOKET BERHASIL TERSAMBUNG $_baseUrl");
+      log("🛜 SOKET BERHASIL TERSAMBUNG $_baseUrl", label: "SOCKET_SERVICE");
       _setConnectionStatus(SocketConnectionStatus.connect);
     });
 
     socket?.onReconnect((_) {
-      debugPrint("🔃 MENCOBA MENGHUBUNGKAN SOKET");
+      log("🔃 MENCOBA MENGHUBUNGKAN SOKET", label: "SOCKET_SERVICE");
       _setConnectionStatus(SocketConnectionStatus.reconnect);
     });
 
     socket?.onConnectError((data) {
-      debugPrint("⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}");
+      log(
+        "⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}",
+        label: "SOCKET_SERVICE",
+      );
       _setConnectionStatus(SocketConnectionStatus.error);
     });
 
     socket?.on("message", (message) {
-      debugPrint(
-        "PESAN MASUK VIA SOKET socket?.on(message, (message)) = $message",
-      );
+      log("chat masuk via soket $message", label: "SOCKET_SERVICE");
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<GetMessagesNotifier>().appendMessage(data: message);
@@ -96,7 +98,7 @@ class SocketIoService with ChangeNotifier {
     });
 
     socket?.on("typing", (message) {
-      debugPrint("=== TYPING ===");
+      log("agent typing", label: "SOCKET_SERVICE");
 
       final context = navigatorKey.currentContext;
       if (context != null) {
@@ -105,7 +107,7 @@ class SocketIoService with ChangeNotifier {
     });
 
     socket?.on("resolved-by-user", (message) async {
-      debugPrint("=== RESOLVED BY USER ===");
+      log("resolved by user", label: "SOCKET_SERVICE");
 
       final context = navigatorKey.currentContext;
       if (context != null) {
@@ -114,7 +116,7 @@ class SocketIoService with ChangeNotifier {
     });
 
     socket?.on("closed-by-agent", (message) async {
-      debugPrint("=== CLOSED BY AGENT ===");
+      log("closed by agent", label: "SOCKET_SERVICE");
 
       final context = navigatorKey.currentContext;
       if (context != null) {
@@ -129,8 +131,9 @@ class SocketIoService with ChangeNotifier {
     });
 
     socket?.on("confirmed-by-agent", (message) {
-      debugPrint(
-        "☺️ AGENT MENGKONFIRMASI SOS LEWAT SOKET, recipient_id = ${message["recipient_id"] ?? "-"}",
+      log(
+        "confirmed by agent, recipient_id = ${message["recipient_id"] ?? "-"}",
+        label: "SOCKET_SERVICE",
       );
 
       locator<SosCoordinator>().stop(reason: "socket-admin-confirmed");
@@ -158,6 +161,14 @@ class SocketIoService with ChangeNotifier {
     if (socket == null || !(socket?.connected ?? false)) {
       init();
     }
+  }
+
+  void close() {
+    socket?.close();
+    socket?.disconnect();
+    socket?.dispose();
+    socket = null;
+    log("soket dihapus", label: "SOCKET_SERVICE");
   }
 
   void subscribeChat(String chatId) {
@@ -188,7 +199,7 @@ class SocketIoService with ChangeNotifier {
         "country": country,
         "platform_type": "raksha",
       };
-      debugPrint('SOS BERHASIL DIKIRIM $payload');
+      log('SOS BERHASIL DIKIRIM $payload', label: "SOCKET_SERVICE");
       socket?.emit("sos", payload);
     }
   }

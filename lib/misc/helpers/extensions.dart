@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rakhsa/repositories/location/model/location_data.dart';
 
 extension ContextExtension on BuildContext {
   void unfocus({UnfocusDisposition disposition = UnfocusDisposition.scope}) =>
@@ -28,4 +29,32 @@ extension NumExtension on num {
 
 extension DateTimeExtension on DateTime {
   String format(String pattern) => DateFormat(pattern).format(toLocal());
+}
+
+extension PlacemarkExtension on Placemark {
+  String getAddress([
+    List<PlacemarkPart> parts = const [
+      PlacemarkPart.administrativeArea,
+      PlacemarkPart.subAdministrativeArea,
+      PlacemarkPart.street,
+      PlacemarkPart.country,
+    ],
+  ]) {
+    final values = <String>[];
+
+    for (final part in parts) {
+      final value = part.getValue(this);
+
+      if (value != null) {
+        final trimmed = value.trim();
+        if (trimmed.isNotEmpty) {
+          values.add(trimmed);
+        }
+      }
+    }
+
+    if (values.isEmpty) return "-";
+
+    return values.join(', ');
+  }
 }

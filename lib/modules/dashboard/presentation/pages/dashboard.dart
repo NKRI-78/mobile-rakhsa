@@ -3,19 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/vibration_manager.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
@@ -41,7 +38,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashboardScreenState extends State<DashboardScreen> {
-  final globalKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _pageNotifyController = ValueNotifier<int>(0);
   final _pageController = PageController();
@@ -49,20 +46,10 @@ class DashboardScreenState extends State<DashboardScreen> {
   late DashboardNotifier dashboardNotifier;
   late SocketIoService socketIoService;
   late UserProvider profileNotifier;
-  late WeatherNotifier weatherNotifier;
+  late LocationProvider locationProvider;
   late UpdateAddressNotifier updateAddressNotifier;
 
-  Position? currentLocation;
-
-  bool loadingGmaps = true;
-
   List<Widget> banners = [];
-
-  String currentAddress = "";
-  String currentCountry = "";
-  String currentLat = "";
-  String currentLng = "";
-  String subAdministrativeArea = '';
 
   DateTime? lastTap;
 
@@ -75,7 +62,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     profileNotifier = context.read<UserProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
     dashboardNotifier = context.read<DashboardNotifier>();
-    weatherNotifier = context.read<WeatherNotifier>();
+    locationProvider = context.read<LocationProvider>();
     socketIoService = context.read<SocketIoService>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -87,8 +74,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     });
 
     Future.microtask(() => getData());
-
-    // _sendLatestLocation();
   }
 
   @override
@@ -120,6 +105,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
+    locator<VibrationManager>().vibrate(durationInMs: 40);
   }
 
   Future<void> getCurrentLocation() async {
@@ -203,72 +189,40 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
 
     if (lp == LocationPermission.always ||
         lp == LocationPermission.whileInUse) {
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: AndroidSettings(
-          accuracy: LocationAccuracy.best,
-          forceLocationManager: true,
-        ),
-      );
+      await locationProvider.getCurrentLocation();
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-      String country = placemarks[0].country ?? "-";
-      String street = placemarks[0].street ?? "-";
-      String administrativeArea = placemarks[0].administrativeArea ?? "-";
-      String subadministrativeArea = placemarks[0].subAdministrativeArea ?? "-";
+      final newLocation = locationProvider.location;
 
-      String address =
-          "$administrativeArea $subadministrativeArea\n$street, $country";
+      if (newLocation != null) {
+        final placemark = newLocation.placemark;
+        final coord = newLocation.coord;
 
-      setState(() {
-        currentAddress = address;
-        currentCountry = country;
-        subAdministrativeArea = subadministrativeArea;
+        Future.delayed(Duration.zero, () async {
+          await updateAddressNotifier.updateAddress(
+            address: placemark?.getAddress() ?? "-",
+            state: placemark?.country ?? "-",
+            lat: coord.lat,
+            lng: coord.lng,
+          );
 
-        currentLat = position.latitude.toString();
-        currentLng = position.longitude.toString();
+          StorageHelper.saveUserNationality(
+            nationality: placemark?.country ?? "-",
+          );
 
-        loadingGmaps = false;
-      });
-
-      await weatherNotifier.getForecastWeather(
-        double.parse(currentLat),
-        double.parse(currentLng),
-      );
-
-      Future.delayed(Duration.zero, () async {
-        await updateAddressNotifier.updateAddress(
-          address: address,
-          state: placemarks[0].country!,
-          lat: position.latitude,
-          lng: position.longitude,
-        );
-
-        StorageHelper.saveUserNationality(nationality: placemarks[0].country!);
-
-        await dashboardNotifier.getEws(
-          lat: position.latitude,
-          lng: position.longitude,
-          state: country,
-        );
-      });
+          await dashboardNotifier.getEws(
+            lat: coord.lat,
+            lng: coord.lng,
+            state: placemark?.country ?? "-",
+          );
+        });
+      }
     }
   }
 
   void initBanners() {
     banners.clear();
 
-    banners.add(
-      WeatherContent(
-        subAdministrativeArea,
-        LatLng(
-          double.tryParse(currentLat) ?? 0.0,
-          double.tryParse(currentLng) ?? 0.0,
-        ),
-      ),
-    );
+    banners.add(WeatherContent());
 
     Future.delayed(const Duration(seconds: 1), () async {
       for (var banner in dashboardNotifier.banners) {
@@ -329,7 +283,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
         }
       },
       child: Scaffold(
-        key: globalKey,
+        key: _scaffoldKey,
 
         // PROFIlE DRAWER
         endDrawer: SafeArea(child: HomeDrawer()),
@@ -342,22 +296,10 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
               controller: _pageController,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                Consumer<SocketIoService>(
-                  builder: (context, n, child) {
-                    return HomePage(
-                      globalKey: globalKey,
-                      onRefresh: () => getData(),
-                      banners: banners,
-                      sosButtonParam: SosButtonParam(
-                        location: currentAddress,
-                        country: currentCountry,
-                        lat: currentLat,
-                        lng: currentLng,
-                        loadingGmaps: loadingGmaps,
-                        hasSocketConnection: n.isConnected,
-                      ),
-                    );
-                  },
+                HomePage(
+                  globalKey: _scaffoldKey,
+                  onRefresh: () => getData(),
+                  banners: banners,
                 ),
                 InformationListPage(),
                 NearMeListTypePage(),

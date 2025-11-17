@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/location_manager.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
+import 'package:rakhsa/repositories/location/location_manager.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
@@ -110,12 +111,17 @@ class AuthProvider extends ChangeNotifier {
   // logout
   Future<void> logout(BuildContext c) async {
     final socketService = c.read<SocketIoService>();
+    final locationProvider = c.read<LocationProvider>();
 
     // pre-logout // leave socket > send latest location > clear time session
     final uid = StorageHelper.session?.user.id;
     if (uid != null) {
       socketService.socket?.emit("leave", {"user_id": uid});
-      await sendLatestLocation("User Logout");
+      socketService.close();
+      await sendLatestLocation(
+        "User Logout",
+        otherSource: locationProvider.location,
+      );
     }
 
     // logout -> hapus session + user

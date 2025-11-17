@@ -21,6 +21,7 @@ import 'package:rakhsa/modules/information/presentation/provider/kbri_id_notifie
 import 'package:rakhsa/modules/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/passport_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/visa_notifier.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
@@ -31,6 +32,7 @@ List<SingleChildWidget> providers = [...independentServices];
 
 List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<AuthProvider>()),
+  ChangeNotifierProvider(create: (_) => LocationProvider()),
   ChangeNotifierProvider.value(value: di.locator<DashboardNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<DetailNewsNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<TrackUserNotifier>()),
@@ -49,7 +51,14 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<PassportNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<WeatherNotifier>()),
+  ChangeNotifierProxyProvider<LocationProvider, WeatherNotifier>(
+    create: (_) => WeatherNotifier(),
+    update: (_, locationProvider, weatherNotifier) {
+      weatherNotifier ??= WeatherNotifier();
+      weatherNotifier.updateFromLocation(locationProvider.location);
+      return weatherNotifier;
+    },
+  ),
   ChangeNotifierProvider.value(value: di.locator<DetailInboxNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetInboxNotifier>()),
   ChangeNotifierProvider(

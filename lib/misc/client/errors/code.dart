@@ -54,3 +54,19 @@ extension ErrorCodeExtension on ErrorCode {
     };
   }
 }
+
+enum LocationErrorCode { gpsDisabled, deniedPermission }
+
+extension LocationErrorCodeExtension on LocationErrorCode {
+  String get errCode => switch (this) {
+    LocationErrorCode.gpsDisabled => "gps_disabled",
+    LocationErrorCode.deniedPermission => "denied_permission",
+  };
+
+  String get message => switch (this) {
+    LocationErrorCode.gpsDisabled =>
+      "GPS tidak aktif. Aktifkan lokasi untuk melanjutkan.",
+    LocationErrorCode.deniedPermission =>
+      "Akses lokasi belum diizinkan. Izinkan terlebih dahulu untuk melanjutkan.",
+  };
+}

@@ -30,7 +30,6 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notif
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
 import 'package:rakhsa/modules/administration/domain/usecases/get_country.dart';
 import 'package:rakhsa/modules/administration/domain/usecases/get_state.dart';
 import 'package:rakhsa/modules/information/data/datasources/kbri_remote_datasource.dart';
@@ -77,7 +76,6 @@ import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
 import 'package:rakhsa/socketio.dart';
-import 'package:weather/weather.dart';
 
 final locator = GetIt.instance;
 
@@ -194,13 +192,4 @@ void init() {
   locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
   locator.registerFactory(() => DetailInboxNotifier(useCase: locator()));
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
-
-  locator.registerFactory(() => WeatherNotifier(weather: locator()));
-
-  locator.registerLazySingleton(
-    () => WeatherFactory(
-      '067cd306a519e9153f2ae44e71c8b4f3',
-      language: Language.INDONESIAN,
-    ),
-  );
 }

@@ -11,7 +11,6 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/socketio.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
@@ -123,13 +122,13 @@ class HeaderSection extends StatelessWidget {
               onTap: () => Navigator.pushNamed(context, RoutesNavigation.chats),
               borderRadius: BorderRadius.circular(8),
               child: Material(
-                child: Consumer<GetChatsNotifier>(
-                  builder: (context, notifier, child) {
+                child: Consumer<UserProvider>(
+                  builder: (context, n, child) {
                     return badges.Badge(
-                      showBadge: notifier.chats.isNotEmpty,
+                      showBadge: n.user?.sos?.running ?? false,
                       position: badges.BadgePosition.custom(top: -8, end: -4),
                       badgeContent: Text(
-                        notifier.chats.length.toString(),
+                        "1",
                         style: robotoRegular.copyWith(
                           color: whiteColor,
                           fontSize: 9,

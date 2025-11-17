@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/capitalize.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
+import 'package:rakhsa/socketio.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,8 +19,6 @@ import 'package:rakhsa/modules/dashboard/presentation/pages/widgets/header/heade
 import 'package:rakhsa/modules/dashboard/presentation/pages/widgets/home_highlight_banner.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/widgets/sos/button.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/material.dart';
 
@@ -35,13 +35,11 @@ class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
   final Future<void> Function() onRefresh;
   final List<Widget> banners;
-  final SosButtonParam sosButtonParam;
 
   const HomePage({
     required this.globalKey,
     required this.onRefresh,
     required this.banners,
-    required this.sosButtonParam,
     super.key,
   });
 
@@ -65,138 +63,123 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
+      body: Container(
+        padding: EdgeInsets.only(top: context.top),
+        child: RefreshIndicator.adaptive(
+          onRefresh: widget.onRefresh,
+          color: primaryColor,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
-              padding: EdgeInsets.only(top: context.top),
-              child: RefreshIndicator.adaptive(
-                onRefresh: widget.onRefresh,
-                color: primaryColor,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  // padding bawah untuk memberikan ruang scrolling bagian bawah
-                  padding: const EdgeInsets.only(
-                    bottom: kBottomNavigationBarHeight,
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HeaderSection(scaffoldKey: widget.globalKey),
-                        const SizedBox(height: 16),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HeaderSection(scaffoldKey: widget.globalKey),
 
-                        Container(
-                          margin: const EdgeInsets.only(top: 24),
-                          child: Row(
+                  40.spaceY,
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
+                          textAlign: TextAlign.center,
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  45.spaceY,
+
+                  Consumer3<UserProvider, LocationProvider, SocketIoService>(
+                    builder: (_, u, l, s, _) {
+                      final coord = l.location?.coord;
+                      final placemark = l.location?.placemark;
+                      return SosButton(
+                        SosButtonParam(
+                          location: placemark?.getAddress() ?? "-",
+                          country: placemark?.country ?? "-",
+                          lat: (coord?.lat ?? 0.0).toString(),
+                          lng: (coord?.lng ?? 0.0).toString(),
+                          hasSocketConnection: s.isConnected,
+                          loadingGmaps: l.isGetLocationState(
+                            RequestState.loading,
+                          ),
+                          profile: u.user,
+                        ),
+                      );
+                    },
+                  ),
+
+                  Consumer<DashboardNotifier>(
+                    builder: (context, n, child) {
+                      if (n.state == ProviderState.loading) {
+                        return Container(
+                          margin: EdgeInsets.only(top: 46),
+                          padding: EdgeInsets.all(16),
+                          height: 200.0,
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            spacing: 12,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Flexible(
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.red,
+                                  backgroundColor: Colors.red.shade50,
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.maxFinite,
                                 child: Text(
-                                  "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
+                                  "Memuat Informasi",
                                   textAlign: TextAlign.center,
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                        );
+                      }
 
-                        Container(
-                          margin: const EdgeInsets.only(top: 45),
-                          child: Consumer<UserProvider>(
-                            builder: (context, data, child) {
-                              return SosButton(
-                                SosButtonParam(
-                                  location: widget.sosButtonParam.location,
-                                  country: widget.sosButtonParam.country,
-                                  lat: widget.sosButtonParam.lat,
-                                  lng: widget.sosButtonParam.lng,
-                                  hasSocketConnection:
-                                      widget.sosButtonParam.hasSocketConnection,
-                                  loadingGmaps:
-                                      widget.sosButtonParam.loadingGmaps,
-                                  profile: data.user,
-                                ),
-                              );
-                            },
+                      if (n.state == ProviderState.error) {
+                        return SizedBox(
+                          height: 200.0,
+                          child: Center(
+                            child: Text(
+                              n.message,
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeDefault,
+                                color: ColorResources.black,
+                              ),
+                            ),
                           ),
-                        ),
+                        );
+                      }
 
-                        Consumer<DashboardNotifier>(
-                          builder: (context, n, child) {
-                            if (n.state == ProviderState.loading) {
-                              return Container(
-                                margin: EdgeInsets.only(top: 32),
-                                padding: EdgeInsets.all(16),
-                                height: 200.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade50,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Column(
-                                  spacing: 12,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.red,
-                                        backgroundColor: Colors.red.shade50,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: double.maxFinite,
-                                      child: Text(
-                                        "Memuat Informasi",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-
-                            if (n.state == ProviderState.error) {
-                              return SizedBox(
-                                height: 200.0,
-                                child: Center(
-                                  child: Text(
-                                    n.message,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: ColorResources.black,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 45.0),
-                              child: (n.ews.isNotEmpty)
-                                  ? EwsListWidget(getData: widget.onRefresh)
-                                  : HomeHightlightBanner(
-                                      banners: widget.banners,
-                                    ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 45.0),
+                        child: (n.ews.isNotEmpty)
+                            ? EwsListWidget(getData: widget.onRefresh)
+                            : HomeHightlightBanner(banners: widget.banners),
+                      );
+                    },
                   ),
-                ),
+                ],
               ),
             ),
           ),
-
-          const _BottomFadeEffect(),
-        ],
+        ),
       ),
     );
   }
@@ -231,56 +214,72 @@ class ImgBanner extends StatelessWidget {
 }
 
 class WeatherContent extends StatelessWidget {
-  const WeatherContent(this.area, this.coordinate, {super.key});
-
-  final String area;
-  final LatLng coordinate;
-
-  void navigateToWeatherDetail(BuildContext context) {
-    log("harusnya navigate to weather page");
-    Navigator.pushNamed(
-      context,
-      RoutesNavigation.weather,
-      arguments: {'area': area, 'coordinate': coordinate},
-    );
-  }
+  const WeatherContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 190,
-      width: double.infinity,
-      child: GestureDetector(
-        onTap: () => navigateToWeatherDetail(context),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(AssetSource.bgCardWeather, fit: BoxFit.cover),
-            ),
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Consumer<WeatherNotifier>(
-                  builder: (context, notifier, child) {
-                    return Column(
-                      children: [
-                        // cuaca hari ini
-                        Expanded(child: _todayWeather(notifier, area)),
-
-                        // divider
-                        const SizedBox(height: 8),
-
-                        // ramalan cuaca 5 hari kedepan
-                        _forecastWeather(notifier),
-                      ],
+    return Consumer<LocationProvider>(
+      builder: (context, p, child) {
+        final area = p.location?.placemark?.subAdministrativeArea ?? "-";
+        return SizedBox(
+          height: 190,
+          width: double.infinity,
+          child: p.isGetLocationState(RequestState.success)
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      RoutesNavigation.weather,
+                      arguments: {
+                        'area': area,
+                        'coordinate': p.location!.coord,
+                      },
                     );
                   },
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          AssetSource.bgCardWeather,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Consumer<WeatherNotifier>(
+                            builder: (context, notifier, child) {
+                              if (notifier.loading) return Container();
+                              return Column(
+                                children: [
+                                  // cuaca hari ini
+                                  Expanded(
+                                    child: _todayWeather(notifier, area),
+                                  ),
+
+                                  // divider
+                                  const SizedBox(height: 8),
+
+                                  // ramalan cuaca 5 hari kedepan
+                                  _forecastWeather(notifier),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(color: primaryColor),
+                  ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -417,34 +416,6 @@ class WeatherContent extends StatelessWidget {
           ],
         );
       }).toList(),
-    );
-  }
-}
-
-class _BottomFadeEffect extends StatelessWidget {
-  const _BottomFadeEffect();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.white.withValues(alpha: 0.1),
-              Colors.white.withValues(alpha: 0.5),
-              Colors.white,
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

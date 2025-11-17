@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/repositories/location/model/location_data.dart';
 import 'package:weather/weather.dart';
 
 class WeatherNotifier extends ChangeNotifier {
-  final WeatherFactory _weatherFactory;
-
-  WeatherNotifier({required WeatherFactory weather})
-    : _weatherFactory = weather;
+  final _weatherFactory = WeatherFactory(
+    '067cd306a519e9153f2ae44e71c8b4f3',
+    language: Language.INDONESIAN,
+  );
 
   List<Weather> _weathers = [];
   List<Weather> get weathers => _weathers;
@@ -15,6 +16,8 @@ class WeatherNotifier extends ChangeNotifier {
 
   bool _error = false;
   bool get error => _error;
+
+  Coord? _lastCoord;
 
   String get celcius {
     if (_weathers.isEmpty) {
@@ -30,24 +33,51 @@ class WeatherNotifier extends ChangeNotifier {
     return "${_weathers.first.weatherDescription?.toUpperCase()}";
   }
 
-  Future<void> getForecastWeather(double lat, double long) async {
-    _loading = true;
-    _error = false;
-    notifyListeners();
-    try {
-      final weathers = await _weatherFactory.fiveDayForecastByLocation(
-        lat,
-        long,
-      );
-
-      _weathers = _extractUniqueDailyWeathers(weathers);
-      notifyListeners();
-    } catch (e) {
-      _loading = false;
-      _error = true;
-    } finally {
+  void updateFromLocation(LocationData? locationData) {
+    final coord = locationData?.coord;
+    if (coord == null) {
+      _lastCoord = null;
+      _weathers = [];
       _loading = false;
       _error = false;
+      notifyListeners();
+      return;
+    }
+
+    if (_lastCoord != null &&
+        _lastCoord!.lat == coord.lat &&
+        _lastCoord!.lng == coord.lng) {
+      return;
+    }
+
+    _lastCoord = coord;
+    getForecastWeather(lat: coord.lat, lng: coord.lng);
+  }
+
+  Future<void> getForecastWeather({double? lat, double? lng}) async {
+    final latitude = lat ?? _lastCoord?.lat;
+    final longitude = lng ?? _lastCoord?.lng;
+
+    if (latitude != null && longitude != null) {
+      _loading = true;
+      _error = false;
+      notifyListeners();
+
+      try {
+        final weathers = await _weatherFactory.fiveDayForecastByLocation(
+          latitude,
+          longitude,
+        );
+
+        _weathers = _extractUniqueDailyWeathers(weathers);
+        notifyListeners();
+      } catch (e) {
+        _loading = false;
+        _error = true;
+      } finally {
+        _loading = false;
+        _error = false;
+      }
     }
   }
 

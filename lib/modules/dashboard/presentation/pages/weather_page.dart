@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
+import 'package:rakhsa/repositories/location/model/location_data.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage(this.data, {super.key});
@@ -31,10 +31,10 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   Future<void> loadData() async {
-    final coordinate = widget.data['coordinate'] as LatLng;
+    final coordinate = widget.data['coordinate'] as Coord;
     await weatherNotifier.getForecastWeather(
-      coordinate.latitude,
-      coordinate.longitude,
+      lat: coordinate.lat,
+      lng: coordinate.lng,
     );
   }
 

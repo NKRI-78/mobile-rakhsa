@@ -37,3 +37,10 @@ class DataParsingException implements Exception {
   @override
   String toString() => 'DataParsingException: $message';
 }
+
+class LocationException implements Exception {
+  final String errCode;
+  final String message;
+
+  LocationException({required this.errCode, required this.message});
+}

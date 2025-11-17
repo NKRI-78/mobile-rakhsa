@@ -1,7 +1,7 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +11,10 @@ class StorageHelper {
 
   static UserSession? _session;
   static UserSession? get session {
-    log("session dari getter session = ${_session?.user.name}");
+    log(
+      "session dari getter session = ${_session?.user.name}",
+      label: "STORAGE_HELPER",
+    );
     return _session;
   }
 
@@ -85,7 +88,10 @@ class StorageHelper {
     if (_session != null) return _session;
     final loaded = await getUserSession();
     if (loaded != null) _session = loaded;
-    log("loadLocalSession dari loadLocalSession = ${_session?.user.name}");
+    log(
+      "session dari loadLocalSession, username ${_session?.user.name}",
+      label: "STORAGE_HELPER",
+    );
     return loaded;
   }
 

@@ -8,7 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/location_manager.dart';
+import 'package:rakhsa/repositories/location/location_manager.dart';
 import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
@@ -52,7 +52,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage m) async {
   final data = m.data;
   String? type = data['type'] ?? "";
 
-  d.log("notifikasi dari background = $data");
+  d.log("notifikasi dari background = $data", label: "NOTIFICATION_MANAGER");
 
   if (type != null && type.isNotEmpty) {
     if (type == NotificationType.fetchLatestLocation) {
@@ -109,6 +109,7 @@ class NotificationManager {
     if (action != null) {
       d.log(
         "notifikasi di tap dari AwesomeNotifications().getInitialNotificationAction() | payload = ${action.payload ?? "-"}",
+        label: "NOTIFICATION_MANAGER",
       );
       await handleNotificationOnTap(action.payload);
     }
@@ -125,12 +126,10 @@ class NotificationManager {
         "user_id": session?.user.id ?? "-",
         "token": token ?? "-",
       };
-
-      d.log("loading initFCM = $data");
       await locator<DioClient>().post(endpoint: "/fcm", data: data);
-      d.log("initFCM erhbasil = $data");
+      d.log("initFCM erhbasil = $data", label: "NOTIFICATION_MANAGER");
     } catch (e) {
-      d.log("rrror initFCM: $e");
+      d.log("error initFCM: $e", label: "NOTIFICATION_MANAGER");
     }
   }
 
@@ -139,6 +138,7 @@ class NotificationManager {
     if (rm != null) {
       d.log(
         "notifikasi di tap dari FirebaseMessaging.instance.getInitialMessage() | payload = ${rm.data}",
+        label: "NOTIFICATION_MANAGER",
       );
       await handleNotificationOnTap(rm.data);
     }
@@ -148,7 +148,10 @@ class NotificationManager {
       final data = m.data;
       String type = data['type'] ?? "";
 
-      d.log("notifikasi dari foreground = $data");
+      d.log(
+        "notifikasi dari foreground = $data",
+        label: "NOTIFICATION_MANAGER",
+      );
 
       // pokoknya jangan show local notification di iOS biar ga dobel notifikasinya
       if (Platform.isIOS && type == NotificationType.chat) return;
@@ -177,7 +180,10 @@ class NotificationManager {
           },
         );
       } catch (e) {
-        d.log("Error processing notification: $e");
+        d.log(
+          "error processing notification: $e",
+          label: "NOTIFICATION_MANAGER",
+        );
       }
     });
 
@@ -185,6 +191,7 @@ class NotificationManager {
     FirebaseMessaging.onMessageOpenedApp.listen((m) async {
       d.log(
         "notifikasi di tap dari FirebaseMessaging.onMessageOpenedApp | payload = ${m.data}",
+        label: "NOTIFICATION_MANAGER",
       );
       await handleNotificationOnTap(m.data);
     });
@@ -224,7 +231,7 @@ class NotificationManager {
   }
 
   Future<void> dismissAllNotification() {
-    d.log("cancel semua notif");
+    d.log("cancel semua notif", label: "NOTIFICATION_MANAGER");
     return AwesomeNotifications().dismissAllNotifications();
   }
 
@@ -254,7 +261,10 @@ class NotificationManager {
         _handleChatOnTap(c, data);
         break;
       default:
-        d.log("Unhandled notification type: $type");
+        d.log(
+          "Unhandled notification type: $type",
+          label: "NOTIFICATION_MANAGER",
+        );
     }
 
     // buat increment badge di logo launcher aplikasi
@@ -357,6 +367,7 @@ class NotificationActionController {
   static Future<void> onActionReceivedMethod(ReceivedAction r) async {
     d.log(
       "notifikasi di tap dari NotificationActionController.onActionReceivedMethod() | payload = ${r.payload ?? "-"}",
+      label: "NOTIFICATION_MANAGER",
     );
     await NotificationManager().handleNotificationOnTap(r.payload);
   }

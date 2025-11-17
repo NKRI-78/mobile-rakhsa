@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -53,12 +51,6 @@ Future<void> main() async {
   await initializeDateFormatting('id_ID', null);
 
   await NotificationManager().initializeLocalNotification();
-
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
 
   await SosCoordinator().initAndRestore();
 

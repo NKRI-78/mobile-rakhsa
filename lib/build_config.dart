@@ -30,13 +30,16 @@ class BuildConfig {
     bool persist = true,
   }) async {
     _instance = BuildConfig._(flavor, apiBaseUrl, socketBaseUrl);
-    log('BuildConfig initialized: ${_instance.toString()}');
+    log(
+      'BuildConfig initialized: ${_instance.toString()}',
+      label: "BUILD_CONFIG",
+    );
 
     if (persist) {
       try {
         await _persistConfig(_instance!);
       } catch (e, st) {
-        log('Failed persisting BuildConfig: $e\n$st');
+        log('Failed persisting BuildConfig: $e\n$st', label: "BUILD_CONFIG");
       }
     }
   }

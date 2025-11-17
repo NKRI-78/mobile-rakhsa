@@ -31,29 +31,11 @@ class DashboardNotifier with ChangeNotifier {
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
 
-  // BannerProviderState _bannerState = BannerProviderState.loading;
-  // BannerProviderState get bannerState => _bannerState;
-
-  // NewsProviderState _newsState = NewsProviderState.loading;
-  // NewsProviderState get newsState => _newsState;
-
   ProviderState _state = ProviderState.loading;
   ProviderState get state => _state;
 
   String _message = "";
   String get message => _message;
-
-  // void setStateBanner(BannerProviderState newState) {
-  //   _bannerState = newState;
-
-  //   notifyListeners();
-  // }
-
-  // void setStateNews(NewsProviderState newState) {
-  //   _newsState = newState;
-
-  //   notifyListeners();
-  // }
 
   void setStateProvider(ProviderState newState) {
     _state = newState;

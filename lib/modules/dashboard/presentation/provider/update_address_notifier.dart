@@ -9,15 +9,6 @@ class UpdateAddressNotifier with ChangeNotifier {
 
   UpdateAddressNotifier({required this.useCase});
 
-  late AnimationController? pulseController;
-  late AnimationController? timerController;
-
-  late Animation<double> pulseAnimation;
-
-  late int countdownTime;
-
-  bool isPressed = false;
-
   ProviderState _state = ProviderState.idle;
   ProviderState get state => _state;
 

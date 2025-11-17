@@ -8,26 +8,14 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-
-class Coord {
-  final double lat;
-  final double lng;
-
-  Coord({this.lat = 0.0, this.lng = 0.0});
-}
-
-class ForegroundLocationData {
-  final Coord coord;
-  final String address;
-
-  ForegroundLocationData({required this.coord, required this.address});
-}
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 
 Future<bool> sendLatestLocation(
   String event, {
-  ForegroundLocationData? foregroundData,
+  LocationData? otherSource,
 }) async {
   Dio? client;
   DeviceInfoPlugin? deviceInfo;
@@ -37,7 +25,7 @@ Future<bool> sendLatestLocation(
   final baseUrl = (apiBaseUrl?.isNotEmpty ?? false)
       ? apiBaseUrl!
       : "https://api-rakhsa.inovatiftujuh8.com/api/v1";
-  log("SCHEDULER RUNNING ON START: baseUrl = $baseUrl");
+  log("base url = $baseUrl", label: "SEND_LATEST_LOCATION");
 
   // set dio client
   client = Dio(
@@ -65,7 +53,7 @@ Future<bool> sendLatestLocation(
 
   // get uid
   final uid = await StorageHelper.loadlocalSession().then((v) => v?.user.id);
-  log("SCHEDULER RUNNING ON START: uid = $uid");
+  log("user id = $uid", label: "SEND_LATEST_LOCATION");
   if (uid == null) return false;
 
   // check internet conn
@@ -77,12 +65,12 @@ Future<bool> sendLatestLocation(
             c.contains(ConnectivityResult.vpn);
       })
       .onError((e, st) => false);
-  log("SCHEDULER RUNNING: hass conn? $hasConn");
+  log("has koneksi? $hasConn", label: "SEND_LATEST_LOCATION");
   if (!hasConn) return false;
 
   //* KIRIM LOKASI VIA FOREGROUND
-  if (foregroundData != null) {
-    log("SCHEDULER RUNNING: send lokasi via foreground");
+  if (otherSource != null) {
+    log("send lokasi via foreground", label: "SEND_LATEST_LOCATION");
     // send data
     deviceInfo = DeviceInfoPlugin();
     var sendData = <String, dynamic>{};
@@ -99,9 +87,9 @@ Future<bool> sendLatestLocation(
         "product_name": iOSInfo.modelName,
         "no_serial": iOSInfo.systemName,
 
-        "lat": foregroundData.coord.lat,
-        "lng": foregroundData.coord.lng,
-        "address": foregroundData.address,
+        "lat": otherSource.coord.lat,
+        "lng": otherSource.coord.lng,
+        "address": otherSource.placemark?.getAddress(),
       };
     } else if (Platform.isAndroid) {
       final androidInfo = await deviceInfo.androidInfo;
@@ -116,29 +104,33 @@ Future<bool> sendLatestLocation(
         "product_name": androidInfo.product,
         "no_serial": androidInfo.product,
 
-        "lat": foregroundData.coord.lat,
-        "lng": foregroundData.coord.lng,
-        "address": foregroundData.address,
+        "lat": otherSource.coord.lat,
+        "lng": otherSource.coord.lng,
+        "address": otherSource.placemark?.getAddress(),
       };
     }
     try {
-      log("SCHEDULER RUNNING: mencoba mengirim data..");
+      log("mencoba mengirim data..", label: "SEND_LATEST_LOCATION");
       await client.post("/profile/insert-user-track", data: sendData);
-      log("SCHEDULER RUNNING: send data berhasil= $sendData");
+      log("send data berhasil= $sendData", label: "SEND_LATEST_LOCATION");
       return true;
     } on DioException catch (e) {
       log(
-        "SCHEDULER RUNNING: Error posting data DioException: ${e.response?.data ?? "-"}",
+        "error send data DioException: ${e.response?.data ?? "-"}",
+        label: "SEND_LATEST_LOCATION",
       );
       return false;
     } catch (e) {
-      log("SCHEDULER RUNNING: Error posting data: $e");
+      log(
+        "error send data UnhandledException: $e",
+        label: "SEND_LATEST_LOCATION",
+      );
       return false;
     }
   }
 
   //* KIRIM LOKASI VIA BACKGROUND
-  log("SCHEDULER RUNNING: send lokasi via background");
+  log("send lokasi via background", label: "SEND_LATEST_LOCATION");
 
   // send data
   // struktur sendData seharusnya begini:
@@ -169,10 +161,10 @@ Future<bool> sendLatestLocation(
             p == LocationPermission.whileInUse;
       })
       .onError((e, st) => false);
-  log("SCHEDULER RUNNING: hasPermission? $hasPermission");
+  log("hasPermission? $hasPermission", label: "SEND_LATEST_LOCATION");
   if (hasPermission) {
     Position? position;
-    log("SCHEDULER RUNNING: sedang mendapatkan lokasi...");
+    log("sedang mendapatkan lokasi...", label: "SEND_LATEST_LOCATION");
     try {
       position = await Geolocator.getCurrentPosition(
         locationSettings: Platform.isIOS
@@ -192,29 +184,21 @@ Future<bool> sendLatestLocation(
       };
     }
     log(
-      "SCHEDULER RUNNING: current location = ${{"lat": sendData['lat'], "lng": sendData['lng']}}",
+      "get lokasi berhasil = ${{"lat": sendData['lat'], "lng": sendData['lng']}}",
+      label: "SEND_LATEST_LOCATION",
     );
 
     // fetch address
     if (position != null) {
-      final addr =
-          await placemarkFromCoordinates(position.latitude, position.longitude)
-              .then((pcl) {
-                if (pcl.isEmpty) return "";
-                var parts = <String?>[
-                  pcl[0].administrativeArea,
-                  pcl[0].subAdministrativeArea,
-                  pcl[0].street,
-                  pcl[0].country,
-                ];
-                return parts.where((p) => p != null && p.isNotEmpty).join(", ");
-              })
-              .onError((e, st) => "");
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-      if (addr.isNotEmpty) {
+      if (placemarks.isNotEmpty) {
         sendData = {
           ...sendData,
-          "address": addr,
+          "address": placemarks[0].getAddress(),
           "reason": "Berhasil mendapatkan lokasi terkini.",
         };
       } else {
@@ -224,7 +208,10 @@ Future<bool> sendLatestLocation(
         };
       }
 
-      log("SCHEDULER RUNNING: address = ${sendData['address'] ?? "-"}");
+      log(
+        "fetch alamat berhasil = ${sendData['address'] ?? "-"}",
+        label: "SEND_LATEST_LOCATION",
+      );
     }
   } else {
     sendData = {
@@ -257,17 +244,21 @@ Future<bool> sendLatestLocation(
 
   // hit api
   try {
-    log("SCHEDULER RUNNING: mencoba mengirim data..");
+    log("mencoba mengirim data..", label: "SEND_LATEST_LOCATION");
     await client.post("/profile/insert-user-track", data: sendData);
-    log("SCHEDULER RUNNING: send data berhasil= $sendData");
+    log("send data berhasil = $sendData", label: "SEND_LATEST_LOCATION");
     return true;
   } on DioException catch (e) {
     log(
-      "SCHEDULER RUNNING: Error posting data DioException: ${e.response?.data ?? "-"}",
+      "error send data DioException: ${e.response?.data ?? "-"}",
+      label: "SEND_LATEST_LOCATION",
     );
     return false;
   } catch (e) {
-    log("SCHEDULER RUNNING: Error posting data: $e");
+    log(
+      "error send data UnhandledException: $e",
+      label: "SEND_LATEST_LOCATION",
+    );
     return false;
   }
 }
