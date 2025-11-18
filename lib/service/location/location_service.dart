@@ -165,28 +165,69 @@ Future<bool> sendLatestLocation(
   if (hasPermission) {
     Position? position;
     log("sedang mendapatkan lokasi...", label: "SEND_LATEST_LOCATION");
-    try {
-      position = await Geolocator.getCurrentPosition(
-        locationSettings: Platform.isIOS
-            ? AppleSettings(accuracy: LocationAccuracy.best)
-            : AndroidSettings(accuracy: LocationAccuracy.best),
+
+    // handle service gps jika tidak aktif maka akan menggunakan get lastknown position dari native
+    final isGPSEnabled = await Geolocator.isLocationServiceEnabled();
+    log("isGPSEnabled? $isGPSEnabled", label: "SEND_LATEST_LOCATION");
+    if (isGPSEnabled) {
+      log(
+        "mengambil lokasi dari getCurrentPosition...",
+        label: "SEND_LATEST_LOCATION",
       );
-      sendData = {
-        ...sendData,
-        "lat": position.latitude,
-        "lng": position.longitude,
-      };
-    } catch (e) {
-      position = null;
-      sendData = {
-        ...sendData,
-        "reason": "Gagal mendapatkan koordinat lokasi terkini.",
-      };
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: Platform.isIOS
+              ? AppleSettings(accuracy: LocationAccuracy.best)
+              : AndroidSettings(accuracy: LocationAccuracy.best),
+        );
+        sendData = {
+          ...sendData,
+          "lat": position.latitude,
+          "lng": position.longitude,
+        };
+      } catch (e) {
+        position = null;
+        sendData = {
+          ...sendData,
+          "reason": "Gagal mendapatkan koordinat lokasi terkini.",
+        };
+      }
+      log(
+        "get koordinat lokasi berhasil dari getCurrentPosition = ${{"lat": sendData['lat'], "lng": sendData['lng']}}",
+        label: "SEND_LATEST_LOCATION",
+      );
+    } else {
+      log(
+        "mengambil lokasi dari lastKnownPosition...",
+        label: "SEND_LATEST_LOCATION",
+      );
+      try {
+        position = await Geolocator.getLastKnownPosition();
+        if (position != null) {
+          sendData = {
+            ...sendData,
+            "lat": position.latitude,
+            "lng": position.longitude,
+          };
+        } else {
+          position = null;
+          sendData = {
+            ...sendData,
+            "reason": "Gagal mendapatkan koordinat lokasi terkini.",
+          };
+        }
+      } catch (e) {
+        position = null;
+        sendData = {
+          ...sendData,
+          "reason": "Gagal mendapatkan koordinat lokasi terkini.",
+        };
+      }
+      log(
+        "get koordinat lokasi berhasil dari getLastKnownPosition = ${{"lat": sendData['lat'], "lng": sendData['lng']}}",
+        label: "SEND_LATEST_LOCATION",
+      );
     }
-    log(
-      "get lokasi berhasil = ${{"lat": sendData['lat'], "lng": sendData['lng']}}",
-      label: "SEND_LATEST_LOCATION",
-    );
 
     // fetch address
     if (position != null) {
