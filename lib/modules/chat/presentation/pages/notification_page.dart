@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
@@ -39,7 +38,6 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   void _navigateToChatRoom(ChatsData c) {
-    StorageHelper.saveRecordScreen(isHome: false);
     Navigator.pushNamed(
       context,
       RoutesNavigation.chat,

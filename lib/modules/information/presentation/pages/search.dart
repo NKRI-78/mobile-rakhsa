@@ -86,252 +86,213 @@ class SearchPageState extends State<SearchPage> {
               ),
 
               Consumer<KbriNameNotifier>(
-                builder:
-                    (
-                      BuildContext context,
-                      KbriNameNotifier kbriNameNotifier,
-                      Widget? child,
-                    ) {
-                      if (kbriNameNotifier.state == ProviderState.loading) {
-                        return const SliverFillRemaining(
-                          child: Center(
-                            child: SpinKitChasingDots(color: primaryColor),
-                          ),
-                        );
-                      }
-                      if (kbriNameNotifier.state == ProviderState.error) {
-                        return const SliverToBoxAdapter(child: SizedBox());
-                      }
-                      if (kbriNameNotifier.state == ProviderState.empty) {
-                        return const SliverToBoxAdapter(child: SizedBox());
-                      }
-                      return SliverToBoxAdapter(
-                        child: Container(
-                          margin: const EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: ColorResources.white,
-                          ),
-                          child: Card(
-                            color: ColorResources.white,
-                            surfaceTintColor: ColorResources.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    kbriNameNotifier.entity.data!.title
-                                        .toString(),
-                                    style: robotoRegular.copyWith(
-                                      color: ColorResources.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: Dimensions.fontSizeLarge,
-                                    ),
-                                  ),
-
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 16.0,
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: kbriNameNotifier
-                                          .entity
-                                          .data!
-                                          .img
-                                          .toString(),
-                                      imageBuilder:
-                                          (
-                                            BuildContext context,
-                                            ImageProvider<Object> imageProvider,
-                                          ) {
-                                            return Container(
-                                              width: double.infinity,
-                                              height: 180.0,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                      Radius.circular(10.0),
-                                                    ),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: imageProvider,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                      placeholder:
-                                          (BuildContext context, String url) {
-                                            return Container(
-                                              width: double.infinity,
-                                              height: 180.0,
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0),
-                                                ),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage(
-                                                    'assets/images/default_image.png',
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                      errorWidget:
-                                          (
-                                            BuildContext context,
-                                            String url,
-                                            Object error,
-                                          ) {
-                                            return Container(
-                                              width: double.infinity,
-                                              height: 180.0,
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0),
-                                                ),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage(
-                                                    'assets/images/default_image.png',
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 8.0),
-
-                                  Container(
-                                    width: double.infinity,
-                                    height: 180.0,
-                                    margin: const EdgeInsets.only(
-                                      top: 16.0,
-                                      bottom: 16.0,
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        GoogleMap(
-                                          mapType: MapType.normal,
-                                          // gestureRecognizers: {}..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                                          myLocationEnabled: false,
-                                          zoomControlsEnabled: false,
-                                          zoomGesturesEnabled: false,
-                                          initialCameraPosition: CameraPosition(
-                                            target: LatLng(
-                                              double.parse(
-                                                kbriNameNotifier
-                                                    .entity
-                                                    .data!
-                                                    .lat,
-                                              ),
-                                              double.parse(
-                                                kbriNameNotifier
-                                                    .entity
-                                                    .data!
-                                                    .lng,
-                                              ),
-                                            ),
-                                            zoom: 15.0,
-                                          ),
-                                          markers: <Marker>{
-                                            Marker(
-                                              markerId: MarkerId(
-                                                kbriNameNotifier
-                                                        .entity
-                                                        .data
-                                                        ?.title
-                                                        .toString() ??
-                                                    "-",
-                                              ),
-                                              position: LatLng(
-                                                double.parse(
-                                                  kbriNameNotifier
-                                                      .entity
-                                                      .data!
-                                                      .lat,
-                                                ),
-                                                double.parse(
-                                                  kbriNameNotifier
-                                                      .entity
-                                                      .data!
-                                                      .lng,
-                                                ),
-                                              ),
-                                            ),
-                                          },
-                                        ),
-
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                              right: 8.0,
-                                              bottom: 8.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: ColorResources.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            child: Material(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  final String googleMapsUrl =
-                                                      'https://www.google.com/maps/search/?api=1&query=${kbriNameNotifier.entity.data!.lat},${kbriNameNotifier.entity.data!.lng}';
-                                                  final Uri uri = Uri.parse(
-                                                    googleMapsUrl,
-                                                  );
-
-                                                  if (await canLaunchUrl(
-                                                    Uri.parse(uri.toString()),
-                                                  )) {
-                                                    await launchUrl(
-                                                      Uri.parse(uri.toString()),
-                                                    );
-                                                  } else {
-                                                    throw 'Could not open maps';
-                                                  }
-                                                },
-                                                child: const Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.directions,
-                                                        color: Colors.blue,
-                                                        size: 26.0,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                builder: (context, kbriNameNotifier, child) {
+                  if (kbriNameNotifier.state == ProviderState.loading) {
+                    return const SliverFillRemaining(
+                      child: Center(
+                        child: SpinKitChasingDots(color: primaryColor),
+                      ),
+                    );
+                  }
+                  if (kbriNameNotifier.state == ProviderState.error) {
+                    return const SliverToBoxAdapter(child: SizedBox());
+                  }
+                  if (kbriNameNotifier.state == ProviderState.empty) {
+                    return const SliverToBoxAdapter(child: SizedBox());
+                  }
+                  return SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      decoration: const BoxDecoration(
+                        color: ColorResources.white,
+                      ),
+                      child: Card(
+                        color: ColorResources.white,
+                        surfaceTintColor: ColorResources.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                kbriNameNotifier.entity.data!.title.toString(),
+                                style: robotoRegular.copyWith(
+                                  color: ColorResources.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Dimensions.fontSizeLarge,
+                                ),
                               ),
-                            ),
+
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 16.0,
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: kbriNameNotifier.entity.data!.img
+                                      .toString(),
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 180.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: imageProvider,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  placeholder: (context, url) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 180.0,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                            'assets/images/default_image.png',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 180.0,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                            'assets/images/default_image.png',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(height: 8.0),
+
+                              Container(
+                                width: double.infinity,
+                                height: 180.0,
+                                margin: const EdgeInsets.only(
+                                  top: 16.0,
+                                  bottom: 16.0,
+                                ),
+                                child: Stack(
+                                  children: [
+                                    GoogleMap(
+                                      mapType: MapType.normal,
+                                      myLocationEnabled: false,
+                                      zoomControlsEnabled: false,
+                                      zoomGesturesEnabled: false,
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          double.parse(
+                                            kbriNameNotifier.entity.data!.lat,
+                                          ),
+                                          double.parse(
+                                            kbriNameNotifier.entity.data!.lng,
+                                          ),
+                                        ),
+                                        zoom: 15.0,
+                                      ),
+                                      markers: <Marker>{
+                                        Marker(
+                                          markerId: MarkerId(
+                                            kbriNameNotifier.entity.data?.title
+                                                    .toString() ??
+                                                "-",
+                                          ),
+                                          position: LatLng(
+                                            double.parse(
+                                              kbriNameNotifier.entity.data!.lat,
+                                            ),
+                                            double.parse(
+                                              kbriNameNotifier.entity.data!.lng,
+                                            ),
+                                          ),
+                                        ),
+                                      },
+                                    ),
+
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 8.0,
+                                          bottom: 8.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: ColorResources.white,
+                                          borderRadius: BorderRadius.circular(
+                                            8.0,
+                                          ),
+                                        ),
+                                        child: Material(
+                                          borderRadius: BorderRadius.circular(
+                                            8.0,
+                                          ),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              final String googleMapsUrl =
+                                                  'https://www.google.com/maps/search/?api=1&query=${kbriNameNotifier.entity.data!.lat},${kbriNameNotifier.entity.data!.lng}';
+                                              final Uri uri = Uri.parse(
+                                                googleMapsUrl,
+                                              );
+
+                                              if (await canLaunchUrl(
+                                                Uri.parse(uri.toString()),
+                                              )) {
+                                                await launchUrl(
+                                                  Uri.parse(uri.toString()),
+                                                );
+                                              } else {
+                                                throw 'Could not open maps';
+                                              }
+                                            },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.directions,
+                                                    color: Colors.blue,
+                                                    size: 26.0,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    ),
+                  );
+                },
               ),
 
               SliverToBoxAdapter(

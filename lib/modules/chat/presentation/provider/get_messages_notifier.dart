@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
@@ -140,17 +140,16 @@ class GetMessagesNotifier with ChangeNotifier {
 
         _state = ProviderState.loaded;
 
-        log('chat masuk = ${r.data.messages}');
-
         _messages = [];
-        log('chat dari _messages = $_messages');
 
         _messages.addAll(r.data.messages);
-        log(
-          'chat dari _messages = ${_messages.map((e) => {"time": e.sentTime, "message": e.text}).toList()}',
-        );
 
         notifyListeners();
+
+        log(
+          'semua chat dari getMessageNotifier.getMessages = ${_messages.map((e) => {"time": e.sentTime, "message": e.text}).toList()}',
+          label: "GET_MESSAGE_NOTIFIER",
+        );
       },
     );
   }
@@ -190,7 +189,6 @@ class GetMessagesNotifier with ChangeNotifier {
     bool closedByAgent = data['closed_by_agent'] ?? false;
 
     if (closedByAgent) {
-      log("closedByAgent di trigger");
       if (_messages.any((m) => m.id == "closed_by_agent")) return;
       _messages.insert(
         0,
@@ -205,10 +203,6 @@ class GetMessagesNotifier with ChangeNotifier {
         ),
       );
       await NotificationManager().dismissAllNotification();
-      // notifyListeners();
-      log(
-        "closedByAgent _messages dari appendMessage ketika closed by agent = ${_messages.map((e) => e.text).toList()}",
-      );
     } else {
       String incomingChatId = data["chat_id"];
       String incomingMessageId = data["id"];
@@ -228,13 +222,17 @@ class GetMessagesNotifier with ChangeNotifier {
         "text": data["text"],
       };
 
-      log("msg data = $msgData");
+      log(
+        "messageData dari appendMessage = $msgData",
+        label: "GET_MESSAGE_NOTIFIER",
+      );
 
       final containIncomingMsgId = _messages.any(
         (msg) => msg.id == incomingMessageId,
       );
       log(
         "apakah _messages memuat id yang sama dengan incomingMessageId? $containIncomingMsgId",
+        label: "GET_MESSAGE_NOTIFIER",
       );
       if (containIncomingMsgId) return;
       _messages.insert(
@@ -255,11 +253,9 @@ class GetMessagesNotifier with ChangeNotifier {
         ),
       );
       notifyListeners();
-      final filteredMsg = _messages
-          .map((e) => {"time": e.sentTime, "message": e.text})
-          .toList();
       log(
-        "_messages dari appendMessage setelah di notifyListeners() = $filteredMsg",
+        "_messages dari appendMessage setelah di notifyListeners() = ${_messages.map((e) => {"time": e.sentTime, "message": e.text}).toList()}",
+        label: "GET_MESSAGE_NOTIFIER",
       );
     }
   }

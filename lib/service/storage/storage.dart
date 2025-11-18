@@ -12,7 +12,7 @@ class StorageHelper {
   static UserSession? _session;
   static UserSession? get session {
     log(
-      "session dari getter session = ${_session?.user.name}",
+      "UserSession dari getter, username = ${_session?.user.name}",
       label: "STORAGE_HELPER",
     );
     return _session;
@@ -106,19 +106,11 @@ class StorageHelper {
     return nationality;
   }
 
-  static void saveRecordScreen({required bool isHome}) async {
-    await sharedPreferences.setBool("is_home", isHome);
-  }
-
   static void saveUserNationality({required String nationality}) async {
     await sharedPreferences.setString("nationality", nationality.toLowerCase());
   }
 
-  static Future<bool> isLoggedIn() async {
-    final containSessionKey = await secureStorage.containsKey(
-      key: "user_session",
-    );
-    final sessionCache = await secureStorage.read(key: "user_session");
-    return containSessionKey && (sessionCache != null);
+  static bool isLoggedIn() {
+    return session != null;
   }
 }

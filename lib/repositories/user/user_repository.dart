@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import './model/user.dart';
 
 class UserRepository {

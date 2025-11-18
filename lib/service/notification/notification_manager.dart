@@ -19,7 +19,7 @@ import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 
-import '../../misc/helpers/storage.dart';
+import '../storage/storage.dart';
 import '../../modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import '../sos/sos_coordinator.dart';
 
@@ -258,7 +258,7 @@ class NotificationManager {
         _handleEwsOnTap(c, newsId);
         break;
       case NotificationType.chat:
-        _handleChatOnTap(c, data);
+        _handleChatOnTap(data);
         break;
       default:
         d.log(
@@ -326,11 +326,16 @@ class NotificationManager {
     });
   }
 
-  void _handleChatOnTap(BuildContext c, Map<String, dynamic>? data) {
+  void _handleChatOnTap(Map<String, dynamic>? data) {
     String chatId = data?["chat_id"] ?? "-";
     String recipientId = data?["recipient_id"] ?? "-";
     String sosId = data?["sos_id"] ?? "-";
-    c.pushNamed(
+    final currentState = navigatorKey.currentState;
+    d.log(
+      "hasCurrentState? ${currentState != null}",
+      label: "NOTIFICATION_MANAGER",
+    );
+    currentState?.pushNamed(
       RoutesNavigation.chat,
       arguments: {
         "chat_id": chatId,

@@ -8,10 +8,9 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:camera/camera.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/helpers/vibration_manager.dart';
+import 'package:rakhsa/service/device/vibration_manager.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -105,7 +104,7 @@ class CameraPageState extends State<CameraPage> {
   Future<void> stopVideoRecording() async {
     _timer?.cancel();
 
-    locator<VibrationManager>().vibrate(durationInMs: 50);
+    VibrationManager.instance.vibrate(durationInMs: 50);
     if (controller == null || !isRecording) return;
 
     try {

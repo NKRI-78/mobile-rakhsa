@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/misc/client/errors/exception.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';
 
 import 'package:rakhsa/modules/dashboard/data/models/news.dart';

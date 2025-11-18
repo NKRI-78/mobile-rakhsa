@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';

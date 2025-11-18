@@ -16,10 +16,10 @@ import 'package:rakhsa/firebase_options.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
-import 'package:rakhsa/providers.dart';
+import 'package:rakhsa/service/provider/providers.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 
 import './modules/app/app.dart';
@@ -28,12 +28,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await StorageHelper.init();
+  await StorageHelper.loadlocalSession();
 
   await dotenv
       .load(fileName: 'assets/env/.env.stag')
-      .then((_) => log("env staging berhasil dimuat"))
+      .then((_) => log("env staging berhasil dimuat", label: "DOT_ENV"))
       .onError((e, st) {
-        log("Gagal memuat env stagging = ${e.toString()}");
+        log("Gagal memuat env stagging = ${e.toString()}", label: "DOT_ENV");
         throw Exception("Gagal memuat env stagging = ${e.toString()}");
       });
   await BuildConfig.initialize(

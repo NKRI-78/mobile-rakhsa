@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';

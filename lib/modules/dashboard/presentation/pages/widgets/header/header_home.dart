@@ -128,9 +128,9 @@ class HeaderSection extends StatelessWidget {
                       showBadge: n.user?.sos?.running ?? false,
                       position: badges.BadgePosition.custom(top: -8, end: -4),
                       badgeContent: Text(
-                        "1",
+                        "0",
                         style: robotoRegular.copyWith(
-                          color: whiteColor,
+                          color: primaryColor,
                           fontSize: 9,
                         ),
                       ),

@@ -7,9 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/vibration_manager.dart';
+import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
@@ -20,11 +19,12 @@ import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 
 import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
 
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
@@ -57,7 +57,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
 
-    locator<VibrationManager>().init();
+    VibrationManager.instance.init();
 
     profileNotifier = context.read<UserProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
@@ -74,6 +74,8 @@ class DashboardScreenState extends State<DashboardScreen> {
     });
 
     Future.microtask(() => getData());
+
+    _sendLatestLocation();
   }
 
   @override
@@ -105,7 +107,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
-    locator<VibrationManager>().vibrate(durationInMs: 40);
+    VibrationManager.instance.vibrate(durationInMs: 40);
   }
 
   Future<void> getCurrentLocation() async {
@@ -216,6 +218,46 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
           );
         });
       }
+    }
+  }
+
+  Future<bool> _shouldSendLatestLocation({
+    Duration sendInterval = const Duration(days: 1),
+  }) async {
+    final prefs = StorageHelper.sharedPreferences;
+    final key = "dashboard_latest_location_cache_key";
+
+    final savedMils = prefs.getInt(key);
+
+    try {
+      if (savedMils == null) {
+        await prefs.setInt(key, DateTime.now().millisecondsSinceEpoch);
+        return true;
+      }
+
+      // bandingkan waktu
+      final latestSavedTime = DateTime.fromMillisecondsSinceEpoch(savedMils);
+      final diff = DateTime.now().difference(latestSavedTime);
+
+      // kalau udah waktunya
+      if (diff >= sendInterval) {
+        await prefs.setInt(key, DateTime.now().millisecondsSinceEpoch);
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _sendLatestLocation() async {
+    final shouldSend = await _shouldSendLatestLocation();
+    if (shouldSend) {
+      await sendLatestLocation(
+        "User open the App",
+        otherSource: locationProvider.location,
+      );
     }
   }
 

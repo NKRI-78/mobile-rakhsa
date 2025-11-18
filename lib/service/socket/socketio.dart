@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
 
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';

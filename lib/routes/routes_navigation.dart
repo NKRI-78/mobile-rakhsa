@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/modules/auth/page/forgot_password_page.dart';
 import 'package:rakhsa/modules/auth/page/login_page.dart';
 import 'package:rakhsa/modules/auth/page/register_page.dart';
-import 'package:rakhsa/modules/auth/page/splash_page.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/notification_page.dart';
@@ -18,7 +17,6 @@ import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 class RoutesNavigation {
   RoutesNavigation._();
 
-  static const splash = '/splash';
   static const dashboard = '/dashboard';
   static const nearMe = '/near-me';
   static const forgotPassword = '/forgot-password';
@@ -45,8 +43,6 @@ class RoutesNavigation {
           builder: (_) =>
               DashboardScreen(fromRegister: args?['from_register'] ?? false),
         );
-      case splash:
-        return MaterialPageRoute(builder: (_) => const SplashPage());
       case onBoarding:
         return MaterialPageRoute(builder: (_) => const OnBoardingPage());
       case deviceNotSupport:

@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -63,6 +63,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
     log(
       "${{"sosId": widget.sosId, "chatId": widget.chatId, "status": widget.status, "recipientId": widget.recipientId, "autoGreetings": widget.autoGreetings, "newSession": widget.newSession}}",
+      label: "CHAT_ROOM_PAGE",
     );
 
     messageNotifier = context.read<GetMessagesNotifier>();
@@ -106,11 +107,16 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   }
 
   Future<void> getData() async {
-    // if (!mounted) return;
+    final uid = await StorageHelper.loadlocalSession().then((v) => v?.user.id);
+
     log(
-      "sender_id = ${StorageHelper.session?.user.id}, chat_id = ${widget.chatId}",
+      "sender_id = ${uid ?? "-"}, chat_id = ${widget.chatId}",
+      label: "CHAT_ROOM_PAGE",
     );
-    messageNotifier.getMessages(chatId: widget.chatId, status: widget.status);
+    await messageNotifier.getMessages(
+      chatId: widget.chatId,
+      status: widget.status,
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (sC.hasClients) {
@@ -202,9 +208,16 @@ class ChatRoomPageState extends State<ChatRoomPage> {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
+          log(
+            "pop dari onPopInvokedWithResult didPop? $didPop",
+            label: "CHAT_ROOM_PAGE",
+          );
           if (didPop) return;
-          StorageHelper.saveRecordScreen(isHome: false);
           messageNotifier.clearActiveChatId();
+          log(
+            "pop dari onPopInvokedWithResult navigator pop",
+            label: "CHAT_ROOM_PAGE",
+          );
           Navigator.pop(context, "refetch");
         },
         child: Scaffold(

@@ -3,6 +3,7 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -12,6 +13,9 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
+  final _showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
+  final _userIsLoggedIn = StorageHelper.isLoggedIn();
+
   @override
   void initState() {
     super.initState();
@@ -25,15 +29,21 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final initialRoute = _showOnBoarding
+        ? RoutesNavigation.onBoarding
+        : _userIsLoggedIn
+        ? RoutesNavigation.dashboard
+        : RoutesNavigation.welcomePage;
+
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      initialRoute: RoutesNavigation.splash,
+      initialRoute: initialRoute,
       builder: BuildConfig.isStag
-          ? (context, child) => Banner(
+          ? (_, child) => Banner(
               message: "Staging",
               location: BannerLocation.topEnd,
               child: child,

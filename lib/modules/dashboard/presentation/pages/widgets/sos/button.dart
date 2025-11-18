@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
 import 'package:rakhsa/service/sos/sos_camera.dart';
 
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 
-import 'package:rakhsa/misc/helpers/storage.dart';
-import 'package:rakhsa/misc/helpers/vibration_manager.dart';
+import 'package:rakhsa/service/storage/storage.dart';
+import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
@@ -140,7 +139,7 @@ class SosButtonState extends State<SosButton>
                 .ceil()
                 .clamp(0, _cdInSeconds);
         if (remaining != _remainingSeconds) {
-          locator<VibrationManager>().vibrate(durationInMs: 10);
+          VibrationManager.instance.vibrate(durationInMs: 10);
           setState(() => _remainingSeconds = remaining);
         }
       });
@@ -253,7 +252,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   void _onLongPressStart(LongPressStartDetails _) async {
-    locator<VibrationManager>().vibrate(durationInMs: 50);
+    VibrationManager.instance.vibrate(durationInMs: 50);
     final shouldPress = await _handleShouldLongPressStart();
     if (shouldPress) {
       _pulseController?.forward();
@@ -274,7 +273,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   void _runSOS() {
-    locator<VibrationManager>().vibrate(durationInMs: 100);
+    VibrationManager.instance.vibrate(durationInMs: 100);
     Navigator.push(
       context,
       MaterialPageRoute(

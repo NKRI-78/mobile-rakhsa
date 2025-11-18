@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rakhsa/misc/client/errors/code.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 
 import 'package:rakhsa/repositories/location/model/location_data.dart';

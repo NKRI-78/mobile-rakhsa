@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';

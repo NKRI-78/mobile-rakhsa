@@ -6,7 +6,7 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/client/errors/code.dart';
 import 'package:rakhsa/misc/client/errors/exceptions.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
-import 'package:rakhsa/misc/helpers/storage.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 
 typedef ReceivedProgressCallback = void Function(int received, int total);
 typedef SendProgressCallback = void Function(int count, int total);
