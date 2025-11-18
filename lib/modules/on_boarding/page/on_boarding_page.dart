@@ -99,7 +99,11 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
         await StorageHelper.write("on_boarding_key", "ob");
       }
       if (context.mounted) {
-        Navigator.pushNamed(context, RoutesNavigation.welcomePage);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RoutesNavigation.welcomePage,
+          (route) => false,
+        );
       }
     } else {
       _pageController.nextPage(

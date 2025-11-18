@@ -96,8 +96,8 @@ class StorageHelper {
   }
 
   static Future<void> removeUserSession() async {
-    await secureStorage.delete(key: "user_session");
     _session = null;
+    await secureStorage.delete(key: "user_session");
   }
 
   static String? getUserNationality() {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/modules/auth/page/welcome_page.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
+import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
@@ -29,19 +32,17 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    final initialRoute = _showOnBoarding
-        ? RoutesNavigation.onBoarding
-        : _userIsLoggedIn
-        ? RoutesNavigation.dashboard
-        : RoutesNavigation.welcomePage;
-
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      initialRoute: initialRoute,
+      home: _showOnBoarding
+          ? OnBoardingPage()
+          : _userIsLoggedIn
+          ? DashboardScreen()
+          : WelcomePage(),
       builder: BuildConfig.isStag
           ? (_, child) => Banner(
               message: "Staging",
