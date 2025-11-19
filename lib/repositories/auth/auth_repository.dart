@@ -93,4 +93,8 @@ class AuthRepository {
       );
     }
   }
+
+  Future<void> logout(String uid) async {
+    await _client.post(endpoint: "/auth/logout", data: {"user_id": uid});
+  }
 }

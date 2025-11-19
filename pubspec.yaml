@@ -42,7 +42,6 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   flutter_launcher_icons: ^0.14.4
   flutter_widget_from_html: ^0.17.1
-  flutter_google_maps_webservices: ^1.1.1
 
   # Firebase
   firebase_auth: ^6.1.1
@@ -58,14 +57,9 @@ dependencies:
   get_it: ^8.2.0
   geocoding: ^4.0.0
   geolocator: ^14.0.2
-  gallery_saver_plus: ^3.2.9
-
-  # H
-  http: ^1.5.0
 
   # I
   intl: ^0.20.2
-  image: ^4.5.4
   iconsax_plus: ^1.0.0
   image_picker: ^1.2.0
 
@@ -80,7 +74,6 @@ dependencies:
   shared_preferences: ^2.5.3
 
   # P
-  path: ^1.9.1
   provider: ^6.1.5+1
   path_provider: ^2.1.5
   pretty_dio_logger: ^1.4.0
@@ -92,9 +85,6 @@ dependencies:
 
   # S
   shimmer: ^3.0.0
-
-  # T
-  tuple: ^2.0.2
 
   # V
   vibration: ^3.1.4

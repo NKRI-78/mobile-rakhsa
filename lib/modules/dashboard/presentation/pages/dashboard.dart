@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -252,8 +253,10 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
   }
 
   void _sendLatestLocation() async {
+    if (widget.fromRegister) return;
     final shouldSend = await _shouldSendLatestLocation();
     if (shouldSend) {
+      await _showLocationAlwaysDialog();
       await sendLatestLocation(
         "User open the App",
         otherSource: locationProvider.location,
@@ -278,9 +281,8 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
     if (widget.fromRegister) {
       await Future.delayed(Duration(seconds: 2));
       if (mounted) {
-        bool? markAsDone = await AppDialog.show(
+        await AppDialog.show(
           c: context,
-          canPop: false,
           content: DialogContent(
             assetIcon: AssetSource.iconWelcomeDialog,
             title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
@@ -298,10 +300,38 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
             ],
           ),
         );
-        if (markAsDone == null || markAsDone) {
-          StorageHelper.write("show_welcome_dialog", "done");
-        }
       }
+    }
+  }
+
+  Future<void> _showLocationAlwaysDialog() async {
+    await Future.delayed(Duration(seconds: 2));
+    if (mounted) {
+      await AppDialog.show(
+        c: context,
+        canPop: false,
+        content: DialogContent(
+          assetIcon: "assets/images/icons/location.png",
+          title: "Tingkatkan Keandalan Fitur Keselamatan",
+          message: """
+Dengan mengizinkan akses lokasi Selalu, aplikasi dapat lebih responsif saat Anda membutuhkan fitur SOS. Izin ini sepenuhnya opsional—namun akan sangat membantu agar sistem dapat bekerja lebih optimal.
+""",
+          style: DialogStyle(assetIconSize: 175),
+          buildActions: (c) {
+            return [
+              DialogActionButton(
+                label: "Aktifkan",
+                primary: true,
+                onTap: () async {
+                  c.pop();
+                  await Future.delayed(Duration(milliseconds: 300));
+                  await Permission.locationAlways.request();
+                },
+              ),
+            ];
+          },
+        ),
+      );
     }
   }
 
