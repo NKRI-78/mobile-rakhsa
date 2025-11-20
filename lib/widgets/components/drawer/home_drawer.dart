@@ -1,12 +1,12 @@
 import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
@@ -15,7 +15,6 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
-import 'package:rakhsa/modules/profile/page/profile_page.dart';
 
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -62,7 +61,6 @@ class _HomeDrawerState extends State<HomeDrawer> {
               onTap: () async {
                 dc.pop(); // close dialog dc = dialog context
 
-                final navigator = Navigator.of(context);
                 final auth = context.read<AuthProvider>();
 
                 AppDialog.showLoading(context);
@@ -78,11 +76,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
                 await Future.delayed(Duration(milliseconds: 300));
 
-                navigator.pushNamedAndRemoveUntil(
-                  RoutesNavigation.welcomePage,
-                  (route) => false,
-                  arguments: {"from_logout": true},
-                );
+                // ignore: use_build_context_synchronously
+                WelcomeRoute().go(context);
               },
             ),
           ];
@@ -164,16 +159,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           const SizedBox(height: 15.0),
 
                           CustomButton(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return const ProfilePage();
-                                  },
-                                ),
-                              );
-                            },
+                            onTap: () => ProfileRoute().go(context),
                             isBorder: true,
                             isBorderRadius: true,
                             height: 40.0,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:provider/provider.dart';
@@ -135,10 +136,7 @@ class CameraPageState extends State<CameraPage> {
                     message:
                         "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
                     actions: [
-                      DialogActionButton(
-                        label: "Mengerti",
-                        onTap: () => context.pop(),
-                      ),
+                      DialogActionButton(label: "Mengerti", onTap: context.pop),
                     ],
                   );
                 }
@@ -160,9 +158,7 @@ class CameraPageState extends State<CameraPage> {
                 lng: widget.lng,
               );
 
-              if (mounted) {
-                Navigator.pop(context, "start");
-              }
+              if (mounted) context.pop("start");
             }
           })
           .catchError((e) {

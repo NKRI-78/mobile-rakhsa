@@ -1,31 +1,28 @@
 import 'dart:async';
 
-import 'package:intl/intl.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
-import 'package:rakhsa/widgets/avatar.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
-import 'package:uuid/uuid.dart' as uuid;
-
-import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart' as uuid;
 
-import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-
+import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
+import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/service/socket/socketio.dart';
+import 'package:rakhsa/service/storage/storage.dart';
+import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
-class ChatRoomPage extends StatefulWidget {
+class ChatRoomParams {
   final String sosId;
   final String chatId;
   final String status;
@@ -33,15 +30,42 @@ class ChatRoomPage extends StatefulWidget {
   final bool autoGreetings;
   final bool newSession;
 
-  const ChatRoomPage({
+  ChatRoomParams({
     required this.sosId,
     required this.chatId,
     required this.status,
     required this.recipientId,
     required this.autoGreetings,
     this.newSession = false,
-    super.key,
   });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'sosId': sosId,
+      'chatId': chatId,
+      'status': status,
+      'recipientId': recipientId,
+      'autoGreetings': autoGreetings,
+      'newSession': newSession,
+    };
+  }
+
+  factory ChatRoomParams.fromMap(Map<String, dynamic> map) {
+    return ChatRoomParams(
+      sosId: map['sosId'] as String,
+      chatId: map['chatId'] as String,
+      status: map['status'] as String,
+      recipientId: map['recipientId'] as String,
+      autoGreetings: map['autoGreetings'] as bool,
+      newSession: map['newSession'] as bool,
+    );
+  }
+}
+
+class ChatRoomPage extends StatefulWidget {
+  final ChatRoomParams param;
+
+  const ChatRoomPage(this.param, {super.key});
 
   @override
   State<ChatRoomPage> createState() => ChatRoomPageState();
@@ -62,27 +86,27 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     super.initState();
 
     log(
-      "${{"sosId": widget.sosId, "chatId": widget.chatId, "status": widget.status, "recipientId": widget.recipientId, "autoGreetings": widget.autoGreetings, "newSession": widget.newSession}}",
+      "${{"sosId": widget.param.sosId, "chatId": widget.param.chatId, "status": widget.param.status, "recipientId": widget.param.recipientId, "autoGreetings": widget.param.autoGreetings, "newSession": widget.param.newSession}}",
       label: "CHAT_ROOM_PAGE",
     );
 
     messageNotifier = context.read<GetMessagesNotifier>();
     socketIoService = context.read<SocketIoService>();
 
-    socketIoService.subscribeChat(widget.chatId);
+    socketIoService.subscribeChat(widget.param.chatId);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.newSession) {
+      if (widget.param.newSession) {
         messageNotifier.initTimeSession();
       }
 
       // dibaca cuy 😘😘
       // ini handle kalau time session ga kesimpen didalam shared prefs
       // momenya ketika sesi chat masih ada tapi app sudah diunistall itu bikin bug button end session ga bakal muncul
-      // time session ga ada didalam shared prefs terus juga ga ke init karena bukan kondisi widget.newSession
+      // time session ga ada didalam shared prefs terus juga ga ke init karena bukan kondisi widget.param.newSession
       messageNotifier.initTimeSessionWhenIsNull();
 
-      messageNotifier.initShowAutoGreetings(widget.autoGreetings);
+      messageNotifier.initShowAutoGreetings(widget.param.autoGreetings);
       messageNotifier.checkTimeSession();
     });
 
@@ -94,7 +118,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   void dispose() {
-    socketIoService.unsubscribeChat(widget.chatId);
+    socketIoService.unsubscribeChat(widget.param.chatId);
 
     sC.dispose();
 
@@ -110,12 +134,12 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     final uid = await StorageHelper.loadlocalSession().then((v) => v?.user.id);
 
     log(
-      "sender_id = ${uid ?? "-"}, chat_id = ${widget.chatId}",
+      "sender_id = ${uid ?? "-"}, chat_id = ${widget.param.chatId}",
       label: "CHAT_ROOM_PAGE",
     );
     await messageNotifier.getMessages(
-      chatId: widget.chatId,
-      status: widget.status,
+      chatId: widget.param.chatId,
+      status: widget.param.status,
     );
 
     Future.delayed(const Duration(milliseconds: 400), () {
@@ -140,8 +164,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     final msg = messageC.text.trimLeft().trimRight();
 
     socketIoService.sendMessage(
-      chatId: widget.chatId,
-      recipientId: widget.recipientId,
+      chatId: widget.param.chatId,
+      recipientId: widget.param.recipientId,
       message: msg,
       createdAt: createdAt,
     );
@@ -151,7 +175,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
     Map<String, dynamic> message = {
       "id": const uuid.Uuid().v4(),
-      "chat_id": widget.chatId,
+      "chat_id": widget.param.chatId,
       "user": {
         "id": StorageHelper.session?.user.id,
         "is_me": true,
@@ -182,8 +206,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   void handleTyping() {
     if (messageC.text.isNotEmpty) {
       socketIoService.typing(
-        chatId: widget.chatId,
-        recipientId: widget.recipientId,
+        chatId: widget.param.chatId,
+        recipientId: widget.param.recipientId,
         isTyping: true,
       );
 
@@ -193,8 +217,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
       debounce = Timer(const Duration(seconds: 1), () {
         socketIoService.typing(
-          chatId: widget.chatId,
-          recipientId: widget.recipientId,
+          chatId: widget.param.chatId,
+          recipientId: widget.param.recipientId,
           isTyping: false,
         );
       });
@@ -218,7 +242,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
             "pop dari onPopInvokedWithResult navigator pop",
             label: "CHAT_ROOM_PAGE",
           );
-          Navigator.pop(context, "refetch");
+          context.pop("refetch");
         },
         child: Scaffold(
           appBar: PreferredSize(
@@ -229,14 +253,14 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                 color: whiteColor,
                 onPressed: () {
                   messageNotifier.clearActiveChatId();
-                  Navigator.pop(context, "refetch");
+                  context.pop("refetch");
                 },
               ),
               centerTitle: false,
               title: Consumer<GetMessagesNotifier>(
                 builder: (context, notifier, child) {
                   final username = notifier.recipient.name ?? "-";
-                  final agentIsTyping = notifier.isTyping(widget.chatId);
+                  final agentIsTyping = notifier.isTyping(widget.param.chatId);
                   return Row(
                     spacing: 10,
                     mainAxisSize: MainAxisSize.min,
@@ -273,7 +297,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
           body: Consumer<GetMessagesNotifier>(
             builder: (context, notifier, child) {
               final closedSession =
-                  widget.status == "CLOSED" || notifier.note.isNotEmpty;
+                  widget.param.status == "CLOSED" || notifier.note.isNotEmpty;
               return SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -327,12 +351,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                     ),
                                   ),
                                 ),
-                                onPressed: () {
-                                  context.pushNamedAndRemoveUntil(
-                                    RoutesNavigation.dashboard,
-                                    (route) => false,
-                                  );
-                                },
+                                onPressed: () => DashboardRoute().go(context),
                                 child: Text("Kembali ke Beranda"),
                               ),
                             ),
@@ -343,7 +362,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                 child: CustomButton(
                                   onTap: () async {
                                     AppDialog.showEndSosDialog(
-                                      sosId: widget.sosId,
+                                      sosId: widget.param.sosId,
                                       chatId: "-",
                                       recipientId: "-",
                                     );

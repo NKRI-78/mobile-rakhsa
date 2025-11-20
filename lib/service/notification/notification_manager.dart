@@ -8,16 +8,16 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
+import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/router/router.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 
 import '../storage/storage.dart';
 import '../../modules/dashboard/presentation/provider/dashboard_notifier.dart';
@@ -258,7 +258,7 @@ class NotificationManager {
         _handleEwsOnTap(c, newsId);
         break;
       case NotificationType.chat:
-        _handleChatOnTap(data);
+        _handleChatOnTap(c, data);
         break;
       default:
         d.log(
@@ -297,10 +297,9 @@ class NotificationManager {
   }
 
   void _handleNewsOnTap(BuildContext c, String id) {
-    c.pushNamed(
-      RoutesNavigation.news,
-      arguments: {"id": int.parse(id), "type": "news"},
-    );
+    NewsDetailRoute(
+      NewsDetailPageParams(id: int.parse(id), type: "news"),
+    ).go(c);
   }
 
   void _handleEwsOnTap(BuildContext c, String newsId) async {
@@ -315,18 +314,14 @@ class NotificationManager {
         lng: lng,
         state: state,
       );
-      // ignore: use_build_context_synchronously
-      c.push(
-        MaterialPageRoute(
-          builder: (_) {
-            return NewsDetailPage(id: int.parse(newsId), type: "ews");
-          },
-        ),
-      );
+      NewsDetailRoute(
+        NewsDetailPageParams(id: int.parse(newsId), type: "news"),
+        // ignore: use_build_context_synchronously
+      ).go(c);
     });
   }
 
-  void _handleChatOnTap(Map<String, dynamic>? data) {
+  void _handleChatOnTap(BuildContext c, Map<String, dynamic>? data) {
     String chatId = data?["chat_id"] ?? "-";
     String recipientId = data?["recipient_id"] ?? "-";
     String sosId = data?["sos_id"] ?? "-";
@@ -335,17 +330,16 @@ class NotificationManager {
       "hasCurrentState? ${currentState != null}",
       label: "NOTIFICATION_MANAGER",
     );
-    currentState?.pushNamed(
-      RoutesNavigation.chat,
-      arguments: {
-        "chat_id": chatId,
-        "recipient_id": recipientId,
-        "status": "PROCESS",
-        "sos_id": sosId,
-        "auto_greetings": false,
-        "new_session": false,
-      },
-    );
+    ChatRoomRoute(
+      ChatRoomParams(
+        sosId: sosId,
+        chatId: chatId,
+        status: "PROCESS",
+        recipientId: recipientId,
+        autoGreetings: false,
+        newSession: false,
+      ),
+    ).go(c);
   }
 }
 

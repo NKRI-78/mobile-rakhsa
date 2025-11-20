@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/sos/sos_camera.dart';
-
-import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -12,7 +12,6 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -175,12 +174,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                 onTap: () {
                   c.pop();
                   Future.delayed(Duration(milliseconds: 200)).then((_) {
-                    if (mounted) {
-                      Navigator.pushNamed(
-                        context,
-                        RoutesNavigation.welcomePage,
-                      );
-                    }
+                    if (mounted) WelcomeRoute().go(context);
                   });
                 },
               ),
@@ -196,11 +190,11 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     final isActive = widget.param.profile?.sos?.running ?? false;
     if (isActive) {
       AppDialog.showEndSosDialog(
+        fromHome: true,
         title: "Sesi Bantuan Sedang Berlangsung",
         sosId: widget.param.profile?.sos?.id ?? "-",
         chatId: widget.param.profile?.sos?.chatId ?? "-",
         recipientId: widget.param.profile?.sos?.recipientId ?? "-",
-        fromHome: true,
       );
     }
     return isActive;

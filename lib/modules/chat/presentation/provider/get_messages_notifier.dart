@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
+import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/router/router.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/modules/chat/data/models/messages.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_messages.dart';
@@ -161,23 +162,16 @@ class GetMessagesNotifier with ChangeNotifier {
     required String sosId,
     bool newSession = false,
   }) {
-    Navigator.pushNamedAndRemoveUntil(
-      navigatorKey.currentContext!,
-      RoutesNavigation.dashboard,
-      (route) => false,
-    );
-    Navigator.pushNamed(
-      navigatorKey.currentContext!,
-      arguments: {
-        "chat_id": chatId,
-        "recipient_id": recipientId,
-        "status": status,
-        "sos_id": sosId,
-        "auto_greetings": true,
-        "new_session": newSession,
-      },
-      RoutesNavigation.chat,
-    );
+    ChatRoomRoute(
+      ChatRoomParams(
+        chatId: chatId,
+        recipientId: recipientId,
+        status: status,
+        sosId: sosId,
+        autoGreetings: true,
+        newSession: newSession,
+      ),
+    ).go(navigatorKey.currentContext!);
   }
 
   void appendMessage({required Map<String, dynamic> data}) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:provider/provider.dart';
@@ -11,9 +12,10 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/chat/data/models/chats.dart';
+import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -38,18 +40,16 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   void _navigateToChatRoom(ChatsData c) {
-    Navigator.pushNamed(
-      context,
-      RoutesNavigation.chat,
-      arguments: {
-        "chat_id": c.chat.id,
-        "sos_id": c.sosId,
-        "recipient_id": c.user.id,
-        "auto_greetings": false,
-        "status": c.status,
-        "new_session": false,
-      },
-    );
+    ChatRoomRoute(
+      ChatRoomParams(
+        chatId: c.chat.id,
+        sosId: c.sosId,
+        recipientId: c.user.id,
+        autoGreetings: false,
+        status: c.status,
+        newSession: false,
+      ),
+    ).push(context);
   }
 
   @override

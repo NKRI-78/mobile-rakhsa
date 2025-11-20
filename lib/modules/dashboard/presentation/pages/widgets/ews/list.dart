@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_html/flutter_html.dart' as fh;
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/router/route_trees.dart';
 
 class EwsListWidget extends StatelessWidget {
   final Function getData;
@@ -33,16 +33,9 @@ class EwsListWidget extends StatelessWidget {
           items: notifier.ews.map((item) {
             return GestureDetector(
               onTap: () {
-                context
-                    .pushNamed(
-                      RoutesNavigation.newsDetail,
-                      arguments: {"id": item.id, "type": item.type},
-                    )
-                    .then((value) {
-                      if (value != null) {
-                        getData();
-                      }
-                    });
+                NewsDetailRoute(
+                  NewsDetailPageParams(id: item.id, type: item.type),
+                ).go(context);
               },
               child: Card(
                 shape: const RoundedRectangleBorder(

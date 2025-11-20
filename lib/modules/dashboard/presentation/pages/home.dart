@@ -8,7 +8,9 @@ import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/weather_page.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -21,7 +23,6 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -226,14 +227,13 @@ class WeatherContent extends StatelessWidget {
           child: p.isGetLocationState(RequestState.success)
               ? GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      RoutesNavigation.weather,
-                      arguments: {
-                        'area': area,
-                        'coordinate': p.location!.coord,
-                      },
-                    );
+                    WeatherRoute(
+                      WeatherPageParams(
+                        area: area,
+                        lat: p.location!.coord.lat,
+                        lng: p.location!.coord.lng,
+                      ),
+                    ).go(context);
                   },
                   child: Stack(
                     children: [
@@ -248,7 +248,17 @@ class WeatherContent extends StatelessWidget {
                           padding: const EdgeInsets.all(16),
                           child: Consumer<WeatherNotifier>(
                             builder: (context, notifier, child) {
-                              if (notifier.loading) return Container();
+                              if (notifier.loading) {
+                                return Center(
+                                  child: Text(
+                                    "Memuat Cuaca..",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                );
+                              }
                               return Column(
                                 children: [
                                   // cuaca hari ini

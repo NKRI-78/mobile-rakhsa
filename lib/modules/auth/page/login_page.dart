@@ -1,45 +1,32 @@
 import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/modules/auth/page/forgot_password_page.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/components/textinput/textfield.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: locator<AuthProvider>(),
-      child: LoginScreen(),
-    );
-  }
+  State<LoginPage> createState() => LoginPageState();
 }
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => LoginScreenState();
-}
-
-class LoginScreenState extends State<LoginScreen> {
+class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _phoneController = TextEditingController();
@@ -60,9 +47,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void _onNavigateToForgotPassword(BuildContext c) async {
-    bool? successUpdate = await Navigator.of(c).push<bool?>(
-      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
-    );
+    bool? successUpdate = await ForgotPasswordRoute().push<bool?>(context);
     if (c.mounted) c.unfocus();
     if (successUpdate != null && successUpdate) {
       final phone = StorageHelper.read("phone_cache");
@@ -139,12 +124,7 @@ class LoginScreenState extends State<LoginScreen> {
         onSuccess: () async {
           await StorageHelper.loadlocalSession();
           await StorageHelper.delete("phone_cache");
-          if (c.mounted) {
-            c.pushNamedAndRemoveUntil(
-              RoutesNavigation.dashboard,
-              (route) => false,
-            );
-          }
+          if (c.mounted) DashboardRoute().go(c);
         },
         onError: (errorCode, code, message) async {
           _phoneFNode.unfocus();
@@ -165,9 +145,7 @@ class LoginScreenState extends State<LoginScreen> {
                     onTap: () async {
                       c.pop();
                       await Future.delayed(Duration(milliseconds: 230));
-                      if (mounted) {
-                        context.pushNamed(RoutesNavigation.register);
-                      }
+                      if (mounted) RegisterRoute().push(context);
                     },
                   ),
                 ] else ...[

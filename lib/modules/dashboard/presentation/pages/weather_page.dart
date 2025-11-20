@@ -3,17 +3,25 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
-import 'package:rakhsa/repositories/location/model/location_data.dart';
+
+class WeatherPageParams {
+  final String area;
+  final double lat;
+  final double lng;
+
+  WeatherPageParams({required this.area, required this.lat, required this.lng});
+}
 
 class WeatherPage extends StatefulWidget {
-  const WeatherPage(this.data, {super.key});
+  const WeatherPage(this.param, {super.key});
 
-  final Map<String, dynamic> data;
+  final WeatherPageParams param;
 
   @override
   State<WeatherPage> createState() => _WeatherPageState();
@@ -31,16 +39,14 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   Future<void> loadData() async {
-    final coordinate = widget.data['coordinate'] as Coord;
     await weatherNotifier.getForecastWeather(
-      lat: coordinate.lat,
-      lng: coordinate.lng,
+      lat: widget.param.lat,
+      lng: widget.param.lng,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final area = widget.data['area'] as String?;
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -49,9 +55,7 @@ class _WeatherPageState extends State<WeatherPage> {
         elevation: 0,
         leading: CupertinoNavigationBarBackButton(
           color: ColorResources.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: context.pop,
         ),
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.light,
@@ -138,7 +142,7 @@ class _WeatherPageState extends State<WeatherPage> {
                       child: _WeatherViewState(
                         key: const ValueKey('viewState'),
                         provider,
-                        area,
+                        widget.param.area,
                       ),
                     );
                   }

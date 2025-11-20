@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,8 +18,6 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/administration/presentation/provider/get_country_notifier.dart';
-import 'package:rakhsa/modules/information/presentation/pages/kbri.dart';
-import 'package:rakhsa/modules/information/presentation/pages/passport_visa/index.dart';
 import 'package:rakhsa/modules/information/presentation/provider/kbri_name_notifier.dart';
 
 class SearchPage extends StatefulWidget {
@@ -69,7 +69,7 @@ class SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       body: Consumer<GetCountryNotifier>(
-        builder: (BuildContext context, GetCountryNotifier notifier, Widget? child) {
+        builder: (context, notifier, child) {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
@@ -78,9 +78,7 @@ class SearchPageState extends State<SearchPage> {
               SliverAppBar(
                 backgroundColor: ColorResources.backgroundColor,
                 leading: CupertinoNavigationBarBackButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: context.pop,
                   color: ColorResources.black,
                 ),
               ),
@@ -315,7 +313,7 @@ class SearchPageState extends State<SearchPage> {
               if (notifier.state == ProviderState.loaded)
                 SliverList.builder(
                   itemCount: notifier.entity.length,
-                  itemBuilder: (BuildContext context, int i) {
+                  itemBuilder: (context, i) {
                     return Container(
                       margin: const EdgeInsets.only(
                         top: 10.0,
@@ -331,28 +329,14 @@ class SearchPageState extends State<SearchPage> {
                           onTap: () {
                             switch (widget.info) {
                               case "informasi-kbri":
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return KbriPage(
-                                        stateId: notifier.entity[i].id,
-                                      );
-                                    },
-                                  ),
-                                );
+                                KBRIDetailRoute(
+                                  stateId: notifier.entity[i].id,
+                                ).push(context);
                                 break;
                               case "passport-visa":
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return PassportVisaIndexPage(
-                                        stateId: notifier.entity[i].id,
-                                      );
-                                    },
-                                  ),
-                                );
+                                KBRIUserDocumentRoute(
+                                  stateId: notifier.entity[i].id,
+                                ).push(context);
                                 break;
                               case "panduan-hukum":
                                 break;

@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
 
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/components/textinput/textfield.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: locator<AuthProvider>(),
-      child: RegisterScreen(),
-    );
-  }
+  State<RegisterPage> createState() => RegisterPageState();
 }
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
-
-  @override
-  State<RegisterScreen> createState() => RegisterScreenState();
-}
-
-class RegisterScreenState extends State<RegisterScreen> {
+class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _fullNameController = TextEditingController();
@@ -168,13 +156,7 @@ class RegisterScreenState extends State<RegisterScreen> {
         password: _passController.text,
         onSuccess: () async {
           await StorageHelper.loadlocalSession();
-          if (c.mounted) {
-            c.pushNamedAndRemoveUntil(
-              RoutesNavigation.dashboard,
-              (route) => false,
-              arguments: {"from_register": true},
-            );
-          }
+          if (c.mounted) DashboardRoute(fromRegister: true).go(c);
         },
         onError: (eCode, code, message) async {
           _phoneFNode.unfocus();
@@ -184,9 +166,7 @@ class RegisterScreenState extends State<RegisterScreen> {
           final userAlreadyExists = eCode == "User already exist";
           AppDialog.error(
             c: c,
-            title: eCode == "User already exist"
-                ? "Akun Sudah Terdaftar"
-                : null,
+            title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
             message: message,
             actions: [
               if (userAlreadyExists) ...[
@@ -196,9 +176,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   onTap: () async {
                     c.pop();
                     await Future.delayed(Duration(milliseconds: 230));
-                    if (mounted) {
-                      context.pushNamed(RoutesNavigation.login);
-                    }
+                    if (mounted) LoginRoute().go(context);
                   },
                 ),
               ] else ...[

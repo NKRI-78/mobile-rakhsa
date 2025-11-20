@@ -111,6 +111,6 @@ class StorageHelper {
   }
 
   static bool isLoggedIn() {
-    return session != null;
+    return _session != null;
   }
 }

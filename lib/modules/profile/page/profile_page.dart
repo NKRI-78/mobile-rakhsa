@@ -2,9 +2,9 @@ import 'package:bounce/bounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
@@ -21,7 +21,7 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<UserProvider>().getUser(enableCache: true);
       }
@@ -46,7 +46,7 @@ class ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.transparent,
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
-          onPressed: context.pop,
+          onPressed: () => context.pop(),
         ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,

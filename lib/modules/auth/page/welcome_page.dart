@@ -4,16 +4,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 
 import 'package:rakhsa/widgets/components/modal/modal.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({super.key, this.fromLogout = false});
-
-  final bool fromLogout;
+  const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => WelcomePageState();
@@ -186,8 +184,7 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // login button
                   ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, RoutesNavigation.login),
+                    onPressed: () => LoginRoute().go(context),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
                       backgroundColor: primaryColor,
@@ -235,8 +232,7 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // register button
                   OutlinedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, RoutesNavigation.register),
+                    onPressed: () => RegisterRoute().go(context),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: blackColor,
                       backgroundColor: whiteColor,

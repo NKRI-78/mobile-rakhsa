@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/router/router.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -109,7 +109,7 @@ class GeneralModal {
                                 openAppSettings();
                               }
 
-                              Navigator.pop(context);
+                              context.pop();
                             },
                             btnTxt: "Izinkan",
                           ),
@@ -216,14 +216,9 @@ class GeneralModal {
                                       .read<SocketIoService>()
                                       .userResolvedSos(sosId: sosId);
 
-                                  Navigator.pop(context);
+                                  context.pop();
 
-                                  if (!isHome) {
-                                    Navigator.pushNamed(
-                                      context,
-                                      RoutesNavigation.dashboard,
-                                    );
-                                  }
+                                  if (!isHome) DashboardRoute().go(context);
                                 },
                               ),
                             ],

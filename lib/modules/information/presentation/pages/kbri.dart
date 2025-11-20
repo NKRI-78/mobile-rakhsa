@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -66,9 +67,7 @@ class KbriPageState extends State<KbriPage> {
                   title: const SizedBox(),
                   leading: CupertinoNavigationBarBackButton(
                     color: ColorResources.black,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: context.pop,
                   ),
                 ),
 

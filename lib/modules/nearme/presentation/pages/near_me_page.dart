@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -58,7 +59,7 @@ class NearMePageState extends State<NearMePage> {
 
   Future<void> getData() async {
     if (!mounted) return;
-    await profileNotifier.getUser();
+    await profileNotifier.getUser(enableCache: true);
 
     if (!mounted) return;
     await getNearbyPlaceReligionNotifier.getNearme(
@@ -145,7 +146,7 @@ class NearMePageState extends State<NearMePage> {
         centerTitle: true,
         backgroundColor: ColorResources.backgroundColor,
         leading: CupertinoNavigationBarBackButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: context.pop,
           color: ColorResources.black,
         ),
       ),

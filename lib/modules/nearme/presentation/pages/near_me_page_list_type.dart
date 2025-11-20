@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/router/route_trees.dart';
 
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -18,38 +17,22 @@ class NearMeListTypePage extends StatelessWidget {
       NearMeType(
         title: 'Kantor Polisi',
         assets: AssetSource.iconKantorPolisi,
-        action: () => Navigator.pushNamed(
-          context,
-          RoutesNavigation.nearMe,
-          arguments: "police",
-        ),
+        action: () => NearMeRoute(type: "police").go(context),
       ),
       NearMeType(
         title: 'Tempat Ibadah',
         assets: AssetSource.iconTempatIbadah,
-        action: () => Navigator.pushNamed(
-          context,
-          RoutesNavigation.nearMe,
-          arguments: "mosque",
-        ),
+        action: () => NearMeRoute(type: "mosque").go(context),
       ),
       NearMeType(
         title: 'Hotel',
         assets: AssetSource.iconHotel,
-        action: () => Navigator.pushNamed(
-          context,
-          RoutesNavigation.nearMe,
-          arguments: "lodging",
-        ),
+        action: () => NearMeRoute(type: "lodging").go(context),
       ),
       NearMeType(
         title: 'Restoran',
         assets: AssetSource.iconRestoran,
-        action: () => Navigator.pushNamed(
-          context,
-          RoutesNavigation.nearMe,
-          arguments: "restaurant",
-        ),
+        action: () => NearMeRoute(type: "restaurant").go(context),
       ),
     ];
 

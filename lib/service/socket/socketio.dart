@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/router/router.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
@@ -14,7 +15,6 @@ import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
-import 'package:rakhsa/routes/nav_key.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;

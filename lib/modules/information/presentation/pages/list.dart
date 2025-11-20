@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum.dart';
-import 'package:rakhsa/modules/information/presentation/pages/search.dart';
 
 import 'package:rakhsa/modules/information/presentation/pages/widgets/list_card.dart';
+import 'package:rakhsa/router/route_trees.dart';
 
 class InformationListPage extends StatelessWidget {
   const InformationListPage({super.key});
@@ -16,11 +15,6 @@ class InformationListPage extends StatelessWidget {
       backgroundColor: const Color(0xffF4F4F7),
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
-        // leading: CupertinoNavigationBarBackButton(
-        //   onPressed: () {
-        //     return Navigator.pop(context);
-        //   },
-        // ),
         automaticallyImplyLeading: false,
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(80.0),
@@ -37,16 +31,7 @@ class InformationListPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         children: [
           ListCardInformation(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const SearchPage(info: "informasi-kbri");
-                  },
-                ),
-              );
-            },
+            onTap: () => InformasiKBRIRoute(info: "informasi-kbri").go(context),
             image: AssetSource.iconInfo,
             title: "Informasi KBRI",
           ),
@@ -54,16 +39,7 @@ class InformationListPage extends StatelessWidget {
           16.spaceY,
 
           ListCardInformation(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const PanduanHukumPage();
-                  },
-                ),
-              );
-            },
+            onTap: () => PanduanHukumRoute().go(context),
             image: AssetSource.iconHukum,
             title: "Panduan",
           ),

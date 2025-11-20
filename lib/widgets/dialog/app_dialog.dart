@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
+import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/router/router.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 
 export 'package:fluttertoast/fluttertoast.dart'
@@ -138,25 +138,19 @@ class AppDialog {
           return [
             DialogActionButton(
               label: "Belum",
-              onTap: () {
+              onTap: () async {
                 c.pop();
+                await Future.delayed(Duration(milliseconds: 300));
                 if (fromHome) {
-                  Future.delayed(Duration(milliseconds: 300), () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChatRoomPage(
-                            sosId: sosId,
-                            chatId: chatId,
-                            status: "NONE",
-                            recipientId: recipientId,
-                            autoGreetings: false,
-                          );
-                        },
-                      ),
-                    );
-                  });
+                  ChatRoomRoute(
+                    ChatRoomParams(
+                      sosId: sosId,
+                      chatId: chatId,
+                      status: "NONE",
+                      recipientId: recipientId,
+                      autoGreetings: false,
+                    ),
+                  ).go(navigatorKey.currentContext!);
                 }
               },
             ),
@@ -168,7 +162,7 @@ class AppDialog {
                 c.read<SocketIoService>().userResolvedSos(sosId: sosId);
                 c.pop();
                 if (!fromHome) {
-                  Navigator.pushNamed(c, RoutesNavigation.dashboard);
+                  DashboardRoute().go(navigatorKey.currentContext!);
                 }
                 await NotificationManager().dismissAllNotification();
               },

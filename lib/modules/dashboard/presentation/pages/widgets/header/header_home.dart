@@ -5,7 +5,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
@@ -119,7 +119,7 @@ class HeaderSection extends StatelessWidget {
 
             // icon notif
             InkWell(
-              onTap: () => Navigator.pushNamed(context, RoutesNavigation.chats),
+              onTap: () => NotificationRoute().go(context),
               borderRadius: BorderRadius.circular(8),
               child: Material(
                 child: Consumer<UserProvider>(

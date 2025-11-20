@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/modules/auth/page/welcome_page.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
+import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/router/router.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
-import 'package:rakhsa/service/storage/storage.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -16,12 +14,12 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  final _showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
-  final _userIsLoggedIn = StorageHelper.isLoggedIn();
+  late GoRouter router;
 
   @override
   void initState() {
     super.initState();
+    router = AppRouter().generateRoute(locator<AuthProvider>());
     _initializeService();
   }
 
@@ -32,17 +30,11 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       scaffoldMessengerKey: scaffoldKey,
-      navigatorKey: navigatorKey,
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
-      onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      home: _showOnBoarding
-          ? OnBoardingPage()
-          : _userIsLoggedIn
-          ? DashboardScreen()
-          : WelcomePage(),
       builder: BuildConfig.isStag
           ? (_, child) => Banner(
               message: "Staging",

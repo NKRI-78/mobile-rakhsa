@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 
@@ -11,17 +12,17 @@ class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
 
   @override
-  State<OnBoardingPage> createState() => _OnBoardingPageState();
+  State<OnBoardingPage> createState() => _OnBoardingPage();
 }
 
-class _OnBoardingPageState extends State<OnBoardingPage> {
+class _OnBoardingPage extends State<OnBoardingPage> {
   @override
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
       ),
     );
@@ -92,19 +93,10 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
 
   bool get _lastIndex => (_currentPage == _contents.length - 1);
 
-  void _actionOnTap(BuildContext context) async {
+  void _actionOnTap(BuildContext c) async {
     if (_lastIndex) {
-      // set data ketika key tidak tersedia di prefs
-      if (!StorageHelper.containsKey("on_boarding_key")) {
-        await StorageHelper.write("on_boarding_key", "ob");
-      }
-      if (context.mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          RoutesNavigation.welcomePage,
-          (route) => false,
-        );
-      }
+      await c.read<AuthProvider>().completeOnBoarding();
+      if (c.mounted) WelcomeRoute().go(c);
     } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 600),

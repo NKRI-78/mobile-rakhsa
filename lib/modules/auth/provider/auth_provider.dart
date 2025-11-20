@@ -109,6 +109,8 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  bool userIsLoggedIn() => StorageHelper.isLoggedIn();
+
   // logout
   Future<void> logout(BuildContext c) async {
     final socketService = c.read<SocketIoService>();
@@ -130,5 +132,15 @@ class AuthProvider extends ChangeNotifier {
     // logout -> hapus session + user
     await StorageHelper.removeUserSession();
     await StorageHelper.delete(UserRepository.cacheKey);
+  }
+
+  Future<void> completeOnBoarding() {
+    return StorageHelper.sharedPreferences.setBool("on_boarding_key", true);
+  }
+
+  bool showOnBoarding() {
+    final containKeyOnBoarding =
+        StorageHelper.sharedPreferences.getBool("on_boarding_key") ?? false;
+    return !containKeyOnBoarding;
   }
 }

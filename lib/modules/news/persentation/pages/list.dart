@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/router/route_trees.dart';
 
-import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
@@ -48,11 +49,7 @@ class NewsListPageState extends State<NewsListPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
-        leading: CupertinoNavigationBarBackButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        leading: CupertinoNavigationBarBackButton(onPressed: context.pop),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60.0),
           child: Padding(
@@ -109,18 +106,12 @@ class NewsListPageState extends State<NewsListPage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return NewsDetailPage(
-                            id: n.news[0].id,
-                            type: n.news[0].type.toString(),
-                          );
-                        },
+                    NewsDetailRoute(
+                      NewsDetailPageParams(
+                        id: n.news[0].id,
+                        type: n.news[0].type,
                       ),
-                      (route) => route.isFirst,
-                    );
+                    ).go(context);
                   },
                   child: Container(
                     clipBehavior: Clip.antiAlias,
@@ -198,15 +189,12 @@ class NewsListPageState extends State<NewsListPage> {
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            RoutesNavigation.newsDetail,
-                            (route) => route.isFirst,
-                            arguments: {
-                              'id': n.news[i].id,
-                              'type': n.news[i].type.toString(),
-                            },
-                          );
+                          NewsDetailRoute(
+                            NewsDetailPageParams(
+                              id: n.news[i].id,
+                              type: n.news[i].type,
+                            ),
+                          ).go(context);
                         },
                         child: Container(
                           clipBehavior: Clip.antiAlias,

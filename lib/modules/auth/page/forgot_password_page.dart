@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -15,26 +15,14 @@ import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: locator<AuthProvider>(),
-      child: ForgotPassworScreen(),
-    );
-  }
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class ForgotPassworScreen extends StatefulWidget {
-  const ForgotPassworScreen({super.key});
-
-  @override
-  State<ForgotPassworScreen> createState() => _ForgotPassworScreenState();
-}
-
-class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _phoneController = TextEditingController();
   final _newPassController = TextEditingController();
 
