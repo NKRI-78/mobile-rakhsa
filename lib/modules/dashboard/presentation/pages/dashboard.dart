@@ -224,7 +224,7 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
   }
 
   Future<bool> _shouldSendLatestLocation({
-    Duration sendInterval = const Duration(days: 1),
+    Duration sendInterval = const Duration(hours: 12),
   }) async {
     final prefs = StorageHelper.sharedPreferences;
     final key = "dashboard_latest_location_cache_key";
@@ -257,7 +257,7 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
     if (widget.fromRegister) return;
     final shouldSend = await _shouldSendLatestLocation();
     if (shouldSend) {
-      await _showLocationAlwaysDialog();
+      if (Platform.isAndroid) await _showLocationAlwaysDialog();
       await sendLatestLocation(
         "User open the App",
         otherSource: locationProvider.location,
@@ -306,6 +306,14 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
   }
 
   Future<void> _showLocationAlwaysDialog() async {
+    final bgLocation = Permission.locationAlways;
+    final hasPermission = await bgLocation.status
+        .then((p) {
+          return p == PermissionStatus.granted || p == PermissionStatus.limited;
+        })
+        .onError((e, st) => false);
+    if (hasPermission) return;
+
     await Future.delayed(Duration(seconds: 2));
     if (mounted) {
       await AppDialog.show(
@@ -326,7 +334,7 @@ Dengan mengizinkan akses lokasi Selalu, aplikasi dapat lebih responsif saat Anda
                 onTap: () async {
                   c.pop();
                   await Future.delayed(Duration(milliseconds: 300));
-                  await Permission.locationAlways.request();
+                  await bgLocation.request();
                 },
               ),
             ];
