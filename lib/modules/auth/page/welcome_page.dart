@@ -4,11 +4,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/modules/auth/widget/terms_and_conditions_dialog.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 
 import 'package:rakhsa/widgets/components/modal/modal.dart';
+import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key, this.fromLogout = false});
@@ -120,17 +122,33 @@ class WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
 
-    Future.microtask(() async {
-      if (await Geolocator.checkPermission() == LocationPermission.denied) {
-        await Geolocator.requestPermission();
-      }
-
-      await [
-        Permission.camera,
-        Permission.microphone,
-        Permission.notification,
-      ].request();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (TermsAndConditionsDialog.hasLaunchBefore) return;
+      _showTermsAndConditionDialog();
     });
+  }
+
+  Future<void> _showTermsAndConditionDialog() async {
+    await Future.delayed(Duration(milliseconds: 200));
+    if (!mounted) return;
+    bool? agree = await TermsAndConditionsDialog.launch(context, false);
+    if (mounted && agree != null && agree) {
+      await Future.delayed(Duration(milliseconds: 300));
+      // ignore: use_build_context_synchronously
+      AppDialog.showLoading(context);
+      await Future.delayed(Duration(milliseconds: 600));
+      AppDialog.dismissLoading();
+      await _requestAllPermissions();
+    }
+  }
+
+  Future<Map<Permission, PermissionStatus>> _requestAllPermissions() {
+    return [
+      Permission.camera,
+      Permission.microphone,
+      Permission.notification,
+      Permission.location,
+    ].request();
   }
 
   @override

@@ -33,10 +33,20 @@ class AppDialog {
         context: c,
         barrierDismissible: dismissible,
         barrierLabel: dismissible ? "" : null,
-        transitionBuilder: (_, animation, _, child) {
+        transitionBuilder: (ctx, anim, _, child) {
+          final curved = CurvedAnimation(
+            parent: anim,
+            curve: Curves.easeOutBack,
+          );
+          final scale = Tween<double>(begin: 0.5, end: 1.0).evaluate(curved);
+          final opacity = Tween<double>(begin: 0.0, end: 1.0).evaluate(curved);
           return FadeTransition(
-            opacity: animation,
-            child: ScaleTransition(scale: animation, child: child),
+            opacity: AlwaysStoppedAnimation(opacity),
+            child: Transform.scale(
+              scale: scale,
+              alignment: Alignment.center,
+              child: child,
+            ),
           );
         },
         pageBuilder: (_, _, _) =>
