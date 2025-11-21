@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import './model/user.dart';
 
@@ -12,21 +12,19 @@ class UserRepository {
 
   static String cacheKey = "user_data";
 
-  Future<User> getRemoteUser(String uid) async {
+  Future<User> getRemoteUser(String uid, {bool persists = true}) async {
     try {
       final res = await _client.post(
         endpoint: "/profile",
         data: {"user_id": uid},
       );
-      final stringUser = jsonEncode(res.data);
-      await StorageHelper.write(cacheKey, stringUser);
+      if (persists) {
+        final stringUser = jsonEncode(res.data);
+        await StorageHelper.write(cacheKey, stringUser);
+      }
       return User.fromJson(res.data);
     } on DataParsingException catch (e) {
-      throw ClientException(
-        code: e.code,
-        message: e.message,
-        errorCode: e.errorCode,
-      );
+      throw NetworkException(message: e.message, errorCode: e.errorCode);
     }
   }
 

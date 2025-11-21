@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/service/storage/storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TermsAndConditionsDialog extends StatefulWidget {
   const TermsAndConditionsDialog._(this.canPop);
@@ -94,46 +95,77 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
                     physics: BouncingScrollPhysics(),
                     child: Html(
                       data: """
-                        <p><strong>Dengan menggunakan Aplikasi MARLINDA, Anda setuju pada S&amp;K berikut.</strong></p>
-                        
-                        <p><strong>1. Tujuan Layanan</strong><br/>
-                        Aplikasi ini adalah Tombol Darurat (Panic Button) untuk Warga Negara Indonesia (WNI) di luar negeri, memfasilitasi koordinasi bantuan darurat langsung dengan KBRI/KJRI setempat.</p>
-                        
-                        <p><strong>2. Persyaratan Utama Penggunaan (Wajib)</strong></p>
-                        <ul>
-                          <li><strong>WNI</strong>: Layanan hanya untuk WNI.</li>
-                          <li><strong>Roaming Telkomsel</strong>: Aplikasi hanya berfungsi jika Anda mengaktifkan paket roaming internasional Telkomsel. Tanpa paket aktif, layanan darurat akan gagal.</li>
-                          <li><strong>GPS Aktif</strong>: Anda wajib mengaktifkan Layanan Lokasi (GPS) agar KBRI dapat menemukan lokasi Anda secara akurat.</li>
-                        </ul>
-                        
-                        <p><strong>3. Prosedur Darurat</strong></p>
-                        <ul>
-                          <li><strong>Aktivasi</strong>: Menekan Panic Button akan otomatis mengirimkan lokasi Anda ke KBRI/KJRI dan memulai Perekaman Insiden (audio/video).</li>
-                          <li><strong>Respon KBRI</strong>: KBRI/KJRI akan merespon sesuai diskresi dan prosedur internal mereka. Kami hanya bertindak sebagai fasilitator komunikasi.</li>
-                        </ul>
-                        
-                        <p><strong>4. Batasan Tanggung Jawab</strong></p>
-                        <ul>
-                          <li>Kami tidak bertanggung jawab atas kegagalan layanan yang disebabkan oleh:
-                            <ul>
-                              <li>Gangguan sinyal, jaringan, atau ketiadaan paket roaming Telkomsel yang aktif.</li>
-                              <li>Ketidakakuratan GPS.</li>
-                              <li>Keterlambatan respons yang disebabkan oleh faktor eksternal (lalu lintas, keamanan setempat, dll.).</li>
-                            </ul>
-                          </li>
-                          <li>Layanan dan waktu respon KBRI/KJRI tunduk pada kebijakan mereka dan kondisi negara setempat.</li>
-                        </ul>
-                        
-                        <p><strong>5. Larangan Penyalahgunaan</strong></p>
-                        <ul>
-                          <li>Gunakan Panic Button hanya dalam situasi darurat yang sesungguhnya.</li>
-                          <li>Penyalahgunaan (termasuk false alarm / lelucon) dapat menyebabkan penangguhan akun dan/atau tuntutan ganti rugi atas biaya pengerahan sumber daya yang tidak perlu.</li>
-                        </ul>
-                        
-                        <p><strong>6. Data Pribadi</strong><br/>
-                        Saat tombol ditekan, data Identitas, Lokasi Real-Time, dan Rekaman Insiden akan dikumpulkan dan dibagikan kepada KBRI/KJRI serta otoritas darurat setempat untuk tujuan bantuan.</p>
-                        
-                        """,
+<p><strong>Terakhir diperbarui: 21 November 2025</strong></p>
+
+<p>Selamat datang di Marlinda. Dengan menggunakan aplikasi ini, Anda setuju untuk terikat dengan Syarat dan Ketentuan berikut. Harap baca dengan saksama sebelum menggunakan layanan.</p>
+
+<p><strong>1. Definisi</strong></p>
+<ul>
+  <li><strong>Aplikasi</strong>: Marlinda, platform komunikasi bagi WNI ke luar negeri.</li>
+  <li><strong>Pengguna</strong>: Individu yang mengakses dan menggunakan aplikasi.</li>
+  <li><strong>Layanan</strong>: Seluruh fitur komunikasi, informasi, dan bantuan yang tersedia dalam aplikasi.</li>
+</ul>
+
+<p class="mt"><strong>2. Penerimaan Syarat</strong><br/>
+Dengan mengakses atau menggunakan aplikasi, pengguna dianggap telah membaca, memahami, dan menyetujui seluruh Syarat dan Ketentuan ini.</p>
+
+<p><strong>3. Penggunaan Layanan</strong></p>
+<ul>
+  <li>Pengguna wajib menggunakan aplikasi sesuai hukum yang berlaku.</li>
+  <li>Pengguna tidak diperkenankan menggunakan aplikasi untuk tindakan yang melanggar hukum, menipu, mengganggu, atau merusak pihak lain.</li>
+  <li>Pengguna bertanggung jawab atas keamanan akun dan aktivitas dalam akunnya.</li>
+</ul>
+
+<p><strong>4. Akun Pengguna</strong></p>
+<ul>
+  <li>Pengguna harus menyediakan informasi yang akurat dan benar saat membuat akun.</li>
+  <li>Pengguna bertanggung jawab menjaga kerahasiaan informasi login.</li>
+  <li>Marlinda berhak menangguhkan atau menghapus akun yang melanggar aturan.</li>
+</ul>
+
+<p><strong>5. Data dan Privasi</strong></p>
+<ul>
+  <li>Kami mengumpulkan data sesuai kebutuhan layanan, termasuk informasi dasar profil dan data penggunaan.</li>
+  <li>Data digunakan untuk meningkatkan layanan, analisis internal, dan komunikasi penting.</li>
+  <li>Privasi pengguna dilindungi sesuai Kebijakan Privasi yang berlaku.</li>
+</ul>
+
+<p><strong>6. Konten Pengguna</strong></p>
+<ul>
+  <li>Pengguna bertanggung jawab atas konten yang dikirimkan atau dibagikan.</li>
+  <li>Pengguna dilarang mengunggah konten ilegal, berbahaya, atau melanggar hak kekayaan intelektual.</li>
+  <li>Marlinda berhak menghapus konten yang dianggap melanggar ketentuan.</li>
+</ul>
+
+<p><strong>7. Hak Kekayaan Intelektual</strong></p>
+<ul>
+  <li>Semua logo, desain, teks, software, dan elemen aplikasi adalah milik Marlinda.</li>
+  <li>Dilarang mendistribusikan, memodifikasi, atau menggunakan materi tersebut tanpa izin tertulis.</li>
+</ul>
+
+<p class="mt"><strong>8. Pembatasan Tanggung Jawab</strong><br/>
+Marlinda tidak bertanggung jawab atas kehilangan data, kerusakan, atau kerugian yang timbul akibat penggunaan aplikasi yang tidak sesuai dengan syarat dan ketentuan berlaku.</p>
+
+<p><strong>9. Perubahan Layanan dan Syarat</strong></p>
+<ul>
+  <li>Marlinda dapat memperbarui fitur, layanan, atau syarat ini kapan saja.</li>
+  <li>Perubahan akan diumumkan dalam aplikasi. Penggunaan berkelanjutan berarti setuju pada perubahan tersebut.</li>
+</ul>
+
+<p class="mt"><strong>10. Pengakhiran Layanan</strong></p>
+<ul>
+  <li>Pengguna dapat berhenti menggunakan aplikasi kapan saja.</li>
+  <li>Marlinda dapat membatasi akses jika terdapat pelanggaran syarat.</li>
+</ul>
+
+<p class="mt"><strong>11. Hukum yang Berlaku</strong><br/>
+Syarat ini diatur oleh hukum Republik Indonesia.</p>
+
+<p class="mt"><strong>12. Kontak</strong><br/>
+Untuk pertanyaan atau dukungan, hubungi: <a href="tel:081119911911">081119911911</a>. </p>
+
+<p><strong>Dengan menggunakan Marlinda, Anda menyetujui seluruh ketentuan di atas.</strong></p>
+""",
                       style: {
                         "p": Style(fontSize: FontSize(12)),
                         "ul": Style(
@@ -150,6 +182,17 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
                           fontSize: FontSize(12),
                           margin: Margins.only(bottom: 4),
                         ),
+                        "p.mt": Style(
+                          padding: HtmlPaddings.only(top: 6),
+                          fontSize: FontSize(12),
+                        ),
+                      },
+                      onLinkTap: (url, attributes, element) async {
+                        if (url == null) return;
+                        final uri = Uri.parse(url);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
                       },
                     ),
                   ),

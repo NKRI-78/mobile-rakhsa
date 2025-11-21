@@ -158,23 +158,23 @@ class RegisterPageState extends State<RegisterPage> {
           await StorageHelper.loadlocalSession();
           if (c.mounted) DashboardRoute(fromRegister: true).go(c);
         },
-        onError: (eCode, code, message) async {
+        onError: (message, errorCode) async {
           _phoneFNode.unfocus();
           _passFNode.unfocus();
           _confirmPassFNode.unfocus();
 
-          final userAlreadyExists = eCode == "User already exist";
+          final userAlreadyExists = errorCode == "User already exist";
           AppDialog.error(
             c: c,
             title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
-            message: message,
-            actions: [
+            message: message ?? "-",
+            buildActions: (dc) => [
               if (userAlreadyExists) ...[
                 DialogActionButton(
                   label: "Masuk",
                   primary: true,
                   onTap: () async {
-                    c.pop();
+                    dc.pop();
                     await Future.delayed(Duration(milliseconds: 230));
                     if (mounted) LoginRoute().go(context);
                   },

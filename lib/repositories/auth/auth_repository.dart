@@ -1,5 +1,5 @@
 import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 
 class AuthRepository {
@@ -14,23 +14,15 @@ class AuthRepository {
         data: {"value": phone, "password": password},
       );
       return UserSession.fromJson(res.data);
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       final message = e.message == "User not found"
           ? "Anda belum memiliki akun Marlinda. Silakan daftar terlebih dahulu untuk melanjutkan."
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;
-      throw ClientException(
-        errorCode: e.message,
-        code: e.code,
-        message: message,
-      );
+      throw NetworkException(message: message, errorCode: e.message);
     } on DataParsingException catch (e) {
-      throw ClientException(
-        code: e.code,
-        message: e.message,
-        errorCode: e.errorCode,
-      );
+      throw NetworkException(message: e.message, errorCode: e.errorCode);
     }
   }
 
@@ -52,21 +44,13 @@ class AuthRepository {
         },
       );
       return UserSession.fromJson(res.data);
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       final message = e.message == "User already exist"
           ? "Pengguna sudah terdaftar. Silakan masuk untuk melanjutkan."
           : e.message;
-      throw ClientException(
-        errorCode: e.message,
-        code: e.code,
-        message: message,
-      );
+      throw NetworkException(message: message, errorCode: e.message);
     } on DataParsingException catch (e) {
-      throw ClientException(
-        code: e.code,
-        message: e.message,
-        errorCode: e.errorCode,
-      );
+      throw NetworkException(message: e.message, errorCode: e.errorCode);
     }
   }
 
@@ -76,21 +60,13 @@ class AuthRepository {
         endpoint: '/auth/forgot-password',
         data: {"phone": phone, "new_password": newPassword},
       );
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       final message = e.message == "User not found"
-          ? "Tidak ada akun yang terdaftar untuk nomor ini. Cek kembali nomor anda atau Registrasi ulang dengan nomor yang baru."
+          ? "Tidak ada akun yang terdaftar untuk nomor $phone. Cek kembali nomor anda atau Registrasi ulang dengan nomor yang baru."
           : e.message;
-      throw ClientException(
-        errorCode: e.message,
-        code: e.code,
-        message: message,
-      );
+      throw NetworkException(message: message, errorCode: e.message);
     } on DataParsingException catch (e) {
-      throw ClientException(
-        code: e.code,
-        message: e.message,
-        errorCode: e.errorCode,
-      );
+      throw NetworkException(message: e.message, errorCode: e.errorCode);
     }
   }
 

@@ -3,8 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/client/errors/code.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 
@@ -107,11 +106,15 @@ class DioClient {
     return dio;
   }
 
-  Future<bool> get _isConnected async {
-    final connectivity = await _connectivity.checkConnectivity();
-    return connectivity.contains(ConnectivityResult.mobile) ||
-        connectivity.contains(ConnectivityResult.wifi) ||
-        connectivity.contains(ConnectivityResult.vpn);
+  Future<bool> get hasInternet {
+    return _connectivity
+        .checkConnectivity()
+        .then((conns) {
+          return conns.contains(ConnectivityResult.mobile) ||
+              conns.contains(ConnectivityResult.wifi) ||
+              conns.contains(ConnectivityResult.vpn);
+        })
+        .onError((e, st) => false);
   }
 
   Future<ResponseDto<T>> get<T>({
@@ -123,7 +126,7 @@ class DioClient {
     ReceivedProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (!await _isConnected) throw ConnectivityException();
+      if (!await hasInternet) throw NetworkException.noInternetConnection();
       final res = await _dio.get(
         endpoint,
         data: data,
@@ -134,8 +137,7 @@ class DioClient {
       );
       return ResponseDto.fromJson(res.data);
     } catch (e) {
-      _handleError(e);
-      rethrow;
+      throw _errorMapper(e);
     }
   }
 
@@ -149,7 +151,7 @@ class DioClient {
     ReceivedProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (!await _isConnected) throw ConnectivityException();
+      if (!await hasInternet) throw NetworkException.noInternetConnection();
       final res = await _dio.post(
         endpoint,
         data: data,
@@ -161,8 +163,7 @@ class DioClient {
       );
       return ResponseDto.fromJson(res.data);
     } catch (e) {
-      _handleError(e);
-      rethrow;
+      throw _errorMapper(e);
     }
   }
 
@@ -176,7 +177,7 @@ class DioClient {
     ReceivedProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (!await _isConnected) throw ConnectivityException();
+      if (!await hasInternet) throw NetworkException.noInternetConnection();
       return _dio.put(
         endpoint,
         data: data,
@@ -187,8 +188,7 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
     } catch (e) {
-      _handleError(e);
-      rethrow;
+      throw _errorMapper(e);
     }
   }
 
@@ -205,7 +205,7 @@ class DioClient {
     Options? options,
   }) async {
     try {
-      if (!await _isConnected) throw ConnectivityException();
+      if (!await hasInternet) throw NetworkException.noInternetConnection();
       final response = await _dio.download(
         url,
         savePath,
@@ -220,8 +220,7 @@ class DioClient {
       );
       return response;
     } catch (e) {
-      _handleError(e);
-      rethrow;
+      throw _errorMapper(e);
     }
   }
 
@@ -233,7 +232,7 @@ class DioClient {
     Options? options,
   }) async {
     try {
-      if (!await _isConnected) throw ConnectivityException();
+      if (!await hasInternet) throw NetworkException.noInternetConnection();
       return _dio.delete(
         endpoint,
         cancelToken: cancelToken,
@@ -242,58 +241,75 @@ class DioClient {
         queryParameters: queryParameters,
       );
     } catch (e) {
-      _handleError(e);
-      rethrow;
+      throw _errorMapper(e);
     }
   }
 
-  void _handleError(dynamic error) {
+  NetworkException _errorMapper(Object error) {
     if (error is DioException) {
+      final statusCode = error.response?.statusCode ?? 400;
       switch (error.type) {
         case DioExceptionType.connectionTimeout:
-          throw ClientException(
-            code: ErrorCode.connectionTimeout.code,
-            message: ErrorCode.connectionTimeout.message(),
+          return NetworkException(
+            errorType: NetworkError.connectionTimeout,
+            message: 'Koneksi terlalu lama. Silakan coba lagi.',
+            original: error,
+            statusCode: statusCode,
           );
         case DioExceptionType.receiveTimeout:
-          throw ClientException(
-            code: ErrorCode.receiveTimeout.code,
-            message: ErrorCode.receiveTimeout.message(),
+          return NetworkException(
+            errorType: NetworkError.receiveTimeout,
+            message: 'Server membutuhkan waktu terlalu lama untuk merespons.',
+            original: error,
+            statusCode: statusCode,
           );
         case DioExceptionType.sendTimeout:
-          throw ClientException(
-            code: ErrorCode.sendTimeout.code,
-            message: ErrorCode.sendTimeout.message(),
-          );
-        case DioExceptionType.badResponse:
-          throw ClientException(
-            code: error.response?.statusCode ?? 400,
-            message: error.response?.data['message'] ?? "-",
+          return NetworkException(
+            errorType: NetworkError.sendTimeout,
+            message:
+                'Pengiriman data ke server melebihi batas waktu. Coba ulangi.',
+            original: error,
+            statusCode: statusCode,
           );
         case DioExceptionType.cancel:
-          throw ClientException(
-            code: ErrorCode.cancel.code,
-            message: ErrorCode.cancel.message(),
+          return NetworkException(
+            errorType: NetworkError.cancel,
+            message: 'Permintaan dibatalkan. Silakan coba kembali.',
+            original: error,
+            statusCode: statusCode,
           );
         case DioExceptionType.connectionError:
-          throw ClientException(
-            code: ErrorCode.connectionError.code,
-            message: ErrorCode.connectionError.message(),
+          return NetworkException(
+            errorType: NetworkError.connectionError,
+            message:
+                'Server tidak dapat dijangkau. Periksa koneksi Anda lalu coba lagi.',
+            original: error,
+            statusCode: statusCode,
+          );
+        case DioExceptionType.badResponse:
+          final body = error.response?.data;
+          final msg = _extractMessageFromBody(body) ?? error.message;
+          return NetworkException(
+            errorType: NetworkError.badResponse,
+            statusCode: statusCode,
+            body: body,
+            message: msg,
+            original: error,
           );
         default:
-          throw ClientException(
-            code: ErrorCode.unexpectedClientError.code,
-            message: ErrorCode.unexpectedClientError.message(),
-          );
+          return NetworkException.unknown(error, statusCode);
       }
-    } else if (error is ConnectivityException) {
-      throw ClientException(
-        code: ErrorCode.noInternetConnection.code,
-        errorCode: error.errorCode,
-        message: error.message,
-      );
     } else {
-      throw ClientException.unknown(other: error.toString());
+      return NetworkException.unknown(error);
     }
+  }
+
+  String? _extractMessageFromBody(dynamic body) {
+    try {
+      if (body is Map && body['message'] != null) {
+        return body['message'].toString();
+      }
+    } catch (_) {}
+    return null;
   }
 }

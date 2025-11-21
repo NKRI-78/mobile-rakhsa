@@ -116,20 +116,9 @@ class WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (TermsAndConditionsDialog.hasLaunchBefore) return;
-      _showTermsAndConditionDialog();
-    });
-  }
-
   Future<void> _showTermsAndConditionDialog() async {
-    await Future.delayed(Duration(milliseconds: 200));
     if (!mounted) return;
-    bool? agree = await TermsAndConditionsDialog.launch(context, false);
+    bool? agree = await TermsAndConditionsDialog.launch(context, true);
     if (mounted && agree != null && agree) {
       await Future.delayed(Duration(milliseconds: 300));
       // ignore: use_build_context_synchronously
@@ -202,7 +191,13 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // login button
                   ElevatedButton(
-                    onPressed: () => LoginRoute().go(context),
+                    onPressed: () async {
+                      if (TermsAndConditionsDialog.hasLaunchBefore) {
+                        LoginRoute().go(context);
+                      } else {
+                        await _showTermsAndConditionDialog();
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
                       backgroundColor: primaryColor,
@@ -250,7 +245,13 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // register button
                   OutlinedButton(
-                    onPressed: () => RegisterRoute().go(context),
+                    onPressed: () async {
+                      if (TermsAndConditionsDialog.hasLaunchBefore) {
+                        RegisterRoute().go(context);
+                      } else {
+                        await _showTermsAndConditionDialog();
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: blackColor,
                       backgroundColor: whiteColor,

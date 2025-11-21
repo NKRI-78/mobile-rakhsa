@@ -10,6 +10,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -70,7 +71,8 @@ class DashboardScreenState extends State<DashboardScreen> {
     socketIoService = context.read<SocketIoService>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initAndShowWelcomeDialog();
+      log("from register? ${widget.fromRegister}", label: "DASHBOARD_PAGE");
+      if (widget.fromRegister) _showWelcomeDialog();
     });
 
     Future.delayed(Duration(seconds: 1)).then((value) {
@@ -125,11 +127,11 @@ class DashboardScreenState extends State<DashboardScreen> {
             title: "GPS Tidak Aktif",
             message:
                 "Mohon aktifkan GPS agar aplikasi Marlinda dapat mendeteksi lokasi Anda dengan akurat dan memungkinkan Anda menggunakan layanan SOS.",
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Aktifkan GPS",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -152,11 +154,11 @@ class DashboardScreenState extends State<DashboardScreen> {
             title: "Permintaan Izin Lokasi",
             message:
                 "Aplikasi memerlukan akses lokasi agar dapat mengirim SOS dengan akurat saat keadaan darurat. Mohon aktifkan izin lokasi untuk melanjutkan.",
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Minta Izin",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -178,11 +180,11 @@ class DashboardScreenState extends State<DashboardScreen> {
 Izin lokasi saat ini ditolak secara permanen.
 Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, lalu izinkan akses lokasi agar fitur SOS dapat berfungsi dengan benar.
 """,
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Buka Pengaturan",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -280,30 +282,28 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
     });
   }
 
-  void _initAndShowWelcomeDialog() async {
-    if (widget.fromRegister) {
-      await Future.delayed(Duration(seconds: 2));
-      if (mounted) {
-        await AppDialog.show(
-          c: context,
-          content: DialogContent(
-            assetIcon: AssetSource.iconWelcomeDialog,
-            title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
-            message: """
+  void _showWelcomeDialog() async {
+    await Future.delayed(Duration(seconds: 1));
+    if (mounted) {
+      await AppDialog.show(
+        c: context,
+        content: DialogContent(
+          assetIcon: AssetSource.iconWelcomeDialog,
+          title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
+          message: """
 Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.
 Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!
 """,
-            style: DialogStyle(assetIconSize: 175),
-            actions: [
-              DialogActionButton(
-                label: "Oke",
-                primary: true,
-                onTap: () => context.pop(true),
-              ),
-            ],
-          ),
-        );
-      }
+          style: DialogStyle(assetIconSize: 175),
+          buildActions: (dc) => [
+            DialogActionButton(
+              label: "Oke",
+              primary: true,
+              onTap: () => dc.pop(true),
+            ),
+          ],
+        ),
+      );
     }
   }
 

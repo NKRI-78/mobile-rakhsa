@@ -1,26 +1,27 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
+import 'package:rakhsa/service/sos/end_sos_dialog.dart';
+import 'package:rakhsa/widgets/avatar.dart';
+import 'package:uuid/uuid.dart' as uuid;
+
+import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
-import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/router/route_trees.dart';
-import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class ChatRoomParams {
   final String sosId;
@@ -361,7 +362,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: CustomButton(
                                   onTap: () async {
-                                    AppDialog.showEndSosDialog(
+                                    await EndSosDialog.launch(
                                       sosId: widget.param.sosId,
                                       chatId: "-",
                                       recipientId: "-",

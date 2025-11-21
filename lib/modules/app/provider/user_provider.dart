@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
@@ -25,15 +25,6 @@ class UserProvider with ChangeNotifier {
 
   UserSession? get session => _session;
 
-  Future<void> loadlocalSession() async {
-    if (_session != null) return;
-    final loaded = await StorageHelper.getUserSession();
-    if (loaded != null) {
-      _session = loaded;
-      notifyListeners();
-    }
-  }
-
   Future<User?> getUser({bool enableCache = false}) async {
     _getUserState = RequestState.loading;
     notifyListeners();
@@ -46,7 +37,7 @@ class UserProvider with ChangeNotifier {
       return localUser;
     } else {
       try {
-        final uid = await StorageHelper.getUserSession().then((v) {
+        final uid = await StorageHelper.loadlocalSession().then((v) {
           return v?.user.id ?? "-";
         });
         final remoteUser = await _repository.getRemoteUser(uid);
@@ -54,7 +45,7 @@ class UserProvider with ChangeNotifier {
         _getUserState = RequestState.success;
         notifyListeners();
         return remoteUser;
-      } on ClientException catch (e) {
+      } on NetworkException catch (e) {
         _errMessage = e.message;
         _getUserState = RequestState.error;
         notifyListeners();
