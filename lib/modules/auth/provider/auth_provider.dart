@@ -4,7 +4,7 @@ import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
@@ -37,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String password,
     VoidCallback? onSuccess,
-    Function(String? errorCode, int code, String message)? onError,
+    Function(String? message, String? errorCode)? onError,
   }) async {
     _loginState = RequestState.loading;
     notifyListeners();
@@ -50,11 +50,11 @@ class AuthProvider extends ChangeNotifier {
       _loginState = RequestState.success;
       notifyListeners();
       onSuccess?.call();
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       _loginState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.errorCode, e.code, e.message);
+      onError?.call(e.message, e.errorCode);
     }
   }
 
@@ -64,7 +64,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String password,
     VoidCallback? onSuccess,
-    Function(String? errorCode, int code, String message)? onError,
+    Function(String? message, String? errorCode)? onError,
   }) async {
     _registerState = RequestState.loading;
     notifyListeners();
@@ -77,11 +77,11 @@ class AuthProvider extends ChangeNotifier {
       _registerState = RequestState.success;
       notifyListeners();
       onSuccess?.call();
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       _registerState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.errorCode, e.code, e.message);
+      onError?.call(e.message, e.errorCode);
     }
   }
 
@@ -90,7 +90,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String newPassword,
     VoidCallback? onSuccess,
-    Function(String? errorCode, int code, String message)? onError,
+    Function(String? message, String? errorCode)? onError,
   }) async {
     _forgotPassState = RequestState.loading;
     notifyListeners();
@@ -101,11 +101,11 @@ class AuthProvider extends ChangeNotifier {
       _forgotPassState = RequestState.success;
       notifyListeners();
       onSuccess?.call();
-    } on ClientException catch (e) {
+    } on NetworkException catch (e) {
       _forgotPassState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.errorCode, e.code, e.message);
+      onError?.call(e.message, e.errorCode);
     }
   }
 

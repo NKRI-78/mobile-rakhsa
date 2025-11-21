@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rakhsa/misc/client/errors/code.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
@@ -67,10 +66,7 @@ class LocationProvider extends ChangeNotifier {
       final isGPSEnabled = await Geolocator.isLocationServiceEnabled();
       log("hasGPS? $isGPSEnabled", label: "LOCATION_PROVIDER");
       if (!isGPSEnabled) {
-        throw LocationException(
-          errCode: LocationErrorCode.gpsDisabled.errCode,
-          message: LocationErrorCode.gpsDisabled.message,
-        );
+        throw LocationException(LocationErrorCode.gpsDisabled);
       }
 
       final hasPermission = await Geolocator.checkPermission()
@@ -81,10 +77,7 @@ class LocationProvider extends ChangeNotifier {
           .onError((e, st) => false);
       log("hasPermission? $hasPermission", label: "LOCATION_PROVIDER");
       if (!hasPermission) {
-        throw LocationException(
-          errCode: LocationErrorCode.deniedPermission.errCode,
-          message: LocationErrorCode.deniedPermission.message,
-        );
+        throw LocationException(LocationErrorCode.deniedPermission);
       }
 
       final newLocation =
@@ -122,10 +115,10 @@ class LocationProvider extends ChangeNotifier {
 
       return newLocation;
     } on LocationException catch (e) {
-      _errMessage = e.message;
+      _errMessage = e.error.getMessage();
       _getLocationState = RequestState.error;
       notifyListeners();
-      log("error LocationException = ${e.message}", label: "LOCATION_PROVIDER");
+      log("error LocationException = $_errMessage", label: "LOCATION_PROVIDER");
       return null;
     } catch (e) {
       final msg = "Terjadi kesahalan yang tidak diketahui, ${e.toString()}";

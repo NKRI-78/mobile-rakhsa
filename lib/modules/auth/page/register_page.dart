@@ -176,18 +176,16 @@ class RegisterScreenState extends State<RegisterScreen> {
             );
           }
         },
-        onError: (eCode, code, message) async {
+        onError: (message, errorCode) async {
           _phoneFNode.unfocus();
           _passFNode.unfocus();
           _confirmPassFNode.unfocus();
 
-          final userAlreadyExists = eCode == "User already exist";
+          final userAlreadyExists = errorCode == "User already exist";
           AppDialog.error(
             c: c,
-            title: eCode == "User already exist"
-                ? "Akun Sudah Terdaftar"
-                : null,
-            message: message,
+            title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
+            message: message ?? "-",
             actions: [
               if (userAlreadyExists) ...[
                 DialogActionButton(

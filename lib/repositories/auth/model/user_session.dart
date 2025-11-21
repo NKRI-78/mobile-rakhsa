@@ -1,8 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:rakhsa/misc/client/errors/code.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 
 UserSession userSessionFromJson(String str) =>
     UserSession.fromJson(json.decode(str));
@@ -39,12 +38,8 @@ class UserSession {
         refreshToken: json["refresh_token"],
         user: UserDataSession.fromJson(json["user"]),
       );
-    } catch (e, st) {
-      throw DataParsingException(
-        ErrorCode.errorDataParsing.message("UserSession"),
-        e,
-        st,
-      );
+    } catch (e) {
+      throw DataParsingException(error: e);
     }
   }
 
@@ -107,12 +102,8 @@ class UserDataSession {
         access: json["access"] ?? "-",
         enabled: json["enabled"],
       );
-    } catch (e, st) {
-      throw DataParsingException(
-        ErrorCode.errorDataParsing.message("UserDataSession"),
-        e,
-        st,
-      );
+    } catch (e) {
+      throw DataParsingException(error: e);
     }
   }
 

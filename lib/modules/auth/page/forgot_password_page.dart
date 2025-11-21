@@ -138,7 +138,7 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
             if (c.mounted) c.pop(true);
           }
         },
-        onError: (errorCode, code, message) async {
+        onError: (message, errorCode) async {
           _newPassFNode.unfocus();
           final userNotFound = errorCode == "User not found";
           await AppDialog.error(
@@ -146,7 +146,7 @@ class _ForgotPassworScreenState extends State<ForgotPassworScreen> {
             title: userNotFound
                 ? "Akun Belum Terdaftar"
                 : "Gagal Mengganti Password",
-            message: message,
+            message: message ?? "-",
             buildActions: (c) {
               return [
                 DialogActionButton(

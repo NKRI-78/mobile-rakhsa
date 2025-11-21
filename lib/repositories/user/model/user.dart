@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:rakhsa/misc/client/errors/code.dart';
-import 'package:rakhsa/misc/client/errors/exceptions.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -140,12 +139,8 @@ class User {
         doc: json["doc"] == null ? null : Doc.fromJson(json["doc"]),
         sos: json["sos"] == null ? null : Sos.fromJson(json["sos"]),
       );
-    } catch (e, st) {
-      throw DataParsingException(
-        ErrorCode.errorDataParsing.message("User"),
-        e,
-        st,
-      );
+    } catch (e) {
+      throw DataParsingException(error: e);
     }
   }
 
@@ -189,12 +184,8 @@ class Doc {
   factory Doc.fromJson(Map<String, dynamic> json) {
     try {
       return Doc(visa: json["visa"], passport: json["passport"]);
-    } catch (e, st) {
-      throw DataParsingException(
-        ErrorCode.errorDataParsing.message("Doc"),
-        e,
-        st,
-      );
+    } catch (e) {
+      throw DataParsingException(error: e);
     }
   }
 
@@ -230,7 +221,7 @@ class Sos {
         running: json["running"],
       );
     } catch (e) {
-      throw ErrorCode.errorDataParsing.message("Sos");
+      throw DataParsingException(error: e);
     }
   }
 
