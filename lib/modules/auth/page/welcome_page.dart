@@ -120,7 +120,7 @@ class WelcomePageState extends State<WelcomePage> {
 
   Future<void> _showTermsAndConditionDialog() async {
     if (!mounted) return;
-    bool? agree = await TermsAndConditionsDialog.launch(context, false);
+    bool? agree = await TermsAndConditionsDialog.launch(context, true);
     if (mounted && agree != null && agree) {
       await Future.delayed(Duration(milliseconds: 300));
       // ignore: use_build_context_synchronously

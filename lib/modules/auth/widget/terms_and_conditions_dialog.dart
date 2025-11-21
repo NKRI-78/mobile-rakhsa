@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/service/storage/storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TermsAndConditionsDialog extends StatefulWidget {
   const TermsAndConditionsDialog._(this.canPop);
@@ -159,6 +160,9 @@ Marlinda tidak bertanggung jawab atas kehilangan data, kerusakan, atau kerugian 
 <p class="mt"><strong>11. Hukum yang Berlaku</strong><br/>
 Syarat ini diatur oleh hukum Republik Indonesia.</p>
 
+<p class="mt"><strong>12. Kontak</strong><br/>
+Untuk pertanyaan atau dukungan, hubungi: <a href="tel:081119911911">081119911911</a>. </p>
+
 <p><strong>Dengan menggunakan Marlinda, Anda menyetujui seluruh ketentuan di atas.</strong></p>
 """,
                       style: {
@@ -181,6 +185,13 @@ Syarat ini diatur oleh hukum Republik Indonesia.</p>
                           padding: HtmlPaddings.only(top: 6),
                           fontSize: FontSize(12),
                         ),
+                      },
+                      onLinkTap: (url, attributes, element) async {
+                        if (url == null) return;
+                        final uri = Uri.parse(url);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
                       },
                     ),
                   ),
