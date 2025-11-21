@@ -126,11 +126,11 @@ class DashboardScreenState extends State<DashboardScreen> {
             title: "GPS Tidak Aktif",
             message:
                 "Mohon aktifkan GPS agar aplikasi Marlinda dapat mendeteksi lokasi Anda dengan akurat dan memungkinkan Anda menggunakan layanan SOS.",
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Aktifkan GPS",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -153,11 +153,11 @@ class DashboardScreenState extends State<DashboardScreen> {
             title: "Permintaan Izin Lokasi",
             message:
                 "Aplikasi memerlukan akses lokasi agar dapat mengirim SOS dengan akurat saat keadaan darurat. Mohon aktifkan izin lokasi untuk melanjutkan.",
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Minta Izin",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -179,11 +179,11 @@ class DashboardScreenState extends State<DashboardScreen> {
 Izin lokasi saat ini ditolak secara permanen.
 Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, lalu izinkan akses lokasi agar fitur SOS dapat berfungsi dengan benar.
 """,
-            actions: [
+            buildActions: (dc) => [
               DialogActionButton(
                 label: "Buka Pengaturan",
                 primary: true,
-                onTap: () => context.pop(true),
+                onTap: () => dc.pop(true),
               ),
             ],
           ),
@@ -294,11 +294,11 @@ Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama
 Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!
 """,
           style: DialogStyle(assetIconSize: 175),
-          actions: [
+          buildActions: (dc) => [
             DialogActionButton(
               label: "Oke",
               primary: true,
-              onTap: () => context.pop(true),
+              onTap: () => dc.pop(true),
             ),
           ],
         ),

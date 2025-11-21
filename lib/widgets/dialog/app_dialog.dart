@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
-import 'package:rakhsa/service/notification/notification_manager.dart';
-import 'package:rakhsa/routes/nav_key.dart';
-import 'package:rakhsa/routes/routes_navigation.dart';
-import 'package:rakhsa/service/socket/socketio.dart';
 
 export 'package:fluttertoast/fluttertoast.dart'
     show Fluttertoast, ToastGravity, Toast;
@@ -25,10 +17,11 @@ class AppDialog {
 
   static Future<T?> show<T extends Object?>({
     required BuildContext c,
-    required DialogContent content,
+    DialogContent? content,
     bool canPop = true,
     bool dismissible = true,
     bool withAnimation = true,
+    Widget Function(BuildContext dc)? customDialogBuilder,
   }) {
     if (withAnimation) {
       return showGeneralDialog(
@@ -52,14 +45,23 @@ class AppDialog {
             ),
           );
         },
-        pageBuilder: (_, _, _) =>
-            PopScope(canPop: canPop, child: DialogCard(content)),
+        pageBuilder: (context, _, _) {
+          return PopScope(
+            canPop: canPop,
+            child: customDialogBuilder?.call(context) ?? DialogCard(content),
+          );
+        },
       );
     }
     return showDialog(
       context: c,
       barrierDismissible: dismissible,
-      builder: (_) => PopScope(canPop: canPop, child: DialogCard(content)),
+      builder: (context) {
+        return PopScope(
+          canPop: canPop,
+          child: customDialogBuilder?.call(context) ?? DialogCard(content),
+        );
+      },
     );
   }
 
@@ -71,7 +73,6 @@ class AppDialog {
     bool dismissible = true,
     bool canPop = true,
     List<DialogActionButton> Function(BuildContext c)? buildActions,
-    List<DialogActionButton> actions = const <DialogActionButton>[],
   }) {
     return show(
       c: c,
@@ -81,7 +82,6 @@ class AppDialog {
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
-        actions: actions,
         buildActions: buildActions,
       ),
     );
@@ -132,63 +132,5 @@ class AppDialog {
       _entry?.remove();
     } catch (_) {}
     _entry = null;
-  }
-
-  static Future<T?> showEndSosDialog<T extends Object?>({
-    required String sosId,
-    required String chatId,
-    required String recipientId,
-    String? title,
-    bool fromHome = false,
-  }) {
-    return show(
-      c: navigatorKey.currentContext!,
-      content: DialogContent(
-        assetIcon: "assets/images/ic-alert.png",
-        title: title ?? "Akhiri Sesi Bantuan",
-        message: "Apakah kasus Anda sebelumnya telah ditangani?",
-        buildActions: (c) {
-          return [
-            DialogActionButton(
-              label: "Belum",
-              onTap: () {
-                c.pop();
-                if (fromHome) {
-                  Future.delayed(Duration(milliseconds: 300), () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChatRoomPage(
-                            sosId: sosId,
-                            chatId: chatId,
-                            status: "NONE",
-                            recipientId: recipientId,
-                            autoGreetings: false,
-                          );
-                        },
-                      ),
-                    );
-                  });
-                }
-              },
-            ),
-            DialogActionButton(
-              label: "Sudah",
-              primary: true,
-              onTap: () async {
-                c.read<SosRatingNotifier>().sosRating(sosId: sosId);
-                c.read<SocketIoService>().userResolvedSos(sosId: sosId);
-                c.pop();
-                if (!fromHome) {
-                  Navigator.pushNamed(c, RoutesNavigation.dashboard);
-                }
-                await NotificationManager().dismissAllNotification();
-              },
-            ),
-          ];
-        },
-      ),
-    );
   }
 }

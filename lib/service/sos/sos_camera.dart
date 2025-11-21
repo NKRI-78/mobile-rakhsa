@@ -134,11 +134,8 @@ class CameraPageState extends State<CameraPage> {
                     title: "Koneksi Internet Lemah",
                     message:
                         "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
-                    actions: [
-                      DialogActionButton(
-                        label: "Mengerti",
-                        onTap: () => context.pop(),
-                      ),
+                    buildActions: (dc) => [
+                      DialogActionButton(label: "Mengerti", onTap: dc.pop),
                     ],
                   );
                 }

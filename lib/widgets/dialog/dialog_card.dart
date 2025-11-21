@@ -7,15 +7,15 @@ import 'dialog.dart';
 class DialogCard extends StatelessWidget {
   DialogCard(this.content, {super.key})
     : assert(
-        content.title == null || content.titleAsync == null,
+        content?.title == null || content?.titleAsync == null,
         "AppDialog: Ga boleh mengisi title & titleAsync secara bersamaan",
       ),
       assert(
-        content.message == null || content.messageAsync == null,
+        content?.message == null || content?.messageAsync == null,
         "AppDialog: Ga boleh mengisi message & messageAsync secara bersamaan",
       );
 
-  final DialogContent content;
+  final DialogContent? content;
 
   final _defaultIconSize = 100.0;
   final _defaultBorderRadius = 16.0;
@@ -31,28 +31,25 @@ class DialogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasIcon = content.assetIcon != null;
+    final hasIcon = content?.assetIcon != null;
 
-    final padding = content.style?.contentPadding ?? _defaultContentPadding;
-    final iconSize = content.style?.assetIconSize ?? _defaultIconSize;
+    final padding = content?.style?.contentPadding ?? _defaultContentPadding;
+    final iconSize = content?.style?.assetIconSize ?? _defaultIconSize;
     final topMargin = hasIcon ? (iconSize / 2) : 0.0;
     final topPadding = hasIcon ? ((iconSize / 2) + padding) : padding;
 
     final backgroundColor =
-        content.style?.backgroundColor ?? _defaultBackgroundColor;
+        content?.style?.backgroundColor ?? _defaultBackgroundColor;
     final backgroundIconColor =
-        content.style?.backgroundIconColor ?? _defaultBackgroundIconColor;
-    final borderRadius = content.style?.borderRadius ?? _defaultBorderRadius;
-    final titleStyle = content.style?.titleStyle ?? _defaultTitleStyle;
-    final messageStyle = content.style?.messageStyle ?? _defaultMessageStyle;
+        content?.style?.backgroundIconColor ?? _defaultBackgroundIconColor;
+    final borderRadius = content?.style?.borderRadius ?? _defaultBorderRadius;
+    final titleStyle = content?.style?.titleStyle ?? _defaultTitleStyle;
+    final messageStyle = content?.style?.messageStyle ?? _defaultMessageStyle;
 
-    final actualActions =
-        content.buildActions?.call(context) ?? content.actions;
+    final actions = content?.buildActions?.call(context) ?? [];
     var filteredActions = <DialogActionButton>[];
-    if (actualActions.isNotEmpty) {
-      filteredActions = actualActions.length > 2
-          ? actualActions.sublist(0, 2)
-          : actualActions;
+    if (actions.isNotEmpty) {
+      filteredActions = actions.length > 2 ? actions.sublist(0, 2) : actions;
     }
 
     return Dialog(
@@ -71,11 +68,11 @@ class DialogCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (content.title != null)
+                if (content?.title != null)
                   Padding(
                     padding: EdgeInsets.only(bottom: padding),
                     child: Text(
-                      content.title!,
+                      content!.title!,
                       maxLines: 2,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
@@ -83,13 +80,13 @@ class DialogCard extends StatelessWidget {
                     ),
                   ),
 
-                if (content.titleAsync != null)
+                if (content?.titleAsync != null)
                   Padding(
                     padding: EdgeInsets.only(bottom: padding),
                     child: _renderAsyncTitle(titleStyle),
                   ),
 
-                if (content.message == null && content.messageAsync == null)
+                if (content?.message == null && content?.messageAsync == null)
                   Text(
                     "Tulis message diparameter message atau messageAsync",
                     maxLines: 8,
@@ -98,16 +95,16 @@ class DialogCard extends StatelessWidget {
                     style: messageStyle,
                   ),
 
-                if (content.message != null)
+                if (content?.message != null)
                   Text(
-                    content.message!,
+                    content!.message!,
                     maxLines: 8,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     style: messageStyle,
                   ),
 
-                if (content.messageAsync != null)
+                if (content?.messageAsync != null)
                   _renderAsyncMessage(messageStyle),
 
                 if (filteredActions.isNotEmpty)
@@ -118,7 +115,7 @@ class DialogCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: filteredActions.map((button) {
                         final expand =
-                            (content.style?.enableExpandPrimaryActionButton ??
+                            (content?.style?.enableExpandPrimaryActionButton ??
                                 false) &&
                             button.primary;
                         return Flexible(
@@ -135,13 +132,13 @@ class DialogCard extends StatelessWidget {
           if (hasIcon)
             Container(
               decoration: BoxDecoration(
-                color: (content.style?.enableBackgroundIcon ?? false)
+                color: (content?.style?.enableBackgroundIcon ?? false)
                     ? backgroundIconColor
                     : Colors.transparent,
                 shape: BoxShape.circle,
               ),
               child: Image.asset(
-                content.assetIcon!,
+                content!.assetIcon!,
                 width: iconSize,
                 height: iconSize,
               ),
@@ -153,7 +150,7 @@ class DialogCard extends StatelessWidget {
 
   Widget _renderAsyncTitle(TextStyle style) {
     return FutureBuilder(
-      future: content.titleAsync,
+      future: content?.titleAsync,
       builder: (context, s) {
         if (s.connectionState == ConnectionState.waiting) {
           return _renderLoadingSkeleton(height: 16);
@@ -174,7 +171,7 @@ class DialogCard extends StatelessWidget {
 
   Widget _renderAsyncMessage(TextStyle style) {
     return FutureBuilder(
-      future: content.messageAsync,
+      future: content?.messageAsync,
       builder: (context, s) {
         if (s.connectionState == ConnectionState.waiting) {
           return Column(

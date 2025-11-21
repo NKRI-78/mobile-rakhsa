@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
+import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/service/sos/sos_camera.dart';
 
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -195,7 +196,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   bool _checkIfSessionIsRunning() {
     final isActive = widget.param.profile?.sos?.running ?? false;
     if (isActive) {
-      AppDialog.showEndSosDialog(
+      EndSosDialog.launch(
         title: "Sesi Bantuan Sedang Berlangsung",
         sosId: widget.param.profile?.sos?.id ?? "-",
         chatId: widget.param.profile?.sos?.chatId ?? "-",

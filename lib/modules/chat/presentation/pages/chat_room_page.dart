@@ -5,8 +5,8 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
+import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/widgets/avatar.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -342,7 +342,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                 padding: EdgeInsets.only(bottom: 10),
                                 child: CustomButton(
                                   onTap: () async {
-                                    AppDialog.showEndSosDialog(
+                                    await EndSosDialog.launch(
                                       sosId: widget.sosId,
                                       chatId: "-",
                                       recipientId: "-",

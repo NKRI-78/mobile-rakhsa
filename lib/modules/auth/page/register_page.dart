@@ -186,13 +186,13 @@ class RegisterScreenState extends State<RegisterScreen> {
             c: c,
             title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
             message: message ?? "-",
-            actions: [
+            buildActions: (dc) => [
               if (userAlreadyExists) ...[
                 DialogActionButton(
                   label: "Masuk",
                   primary: true,
                   onTap: () async {
-                    c.pop();
+                    dc.pop();
                     await Future.delayed(Duration(milliseconds: 230));
                     if (mounted) {
                       context.pushNamed(RoutesNavigation.login);
