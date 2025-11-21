@@ -1,4 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 import 'package:intl/intl.dart';
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 
@@ -41,6 +46,16 @@ extension StringExtensions on String {
         })
         .join(' ');
   }
+}
+
+extension FileExtension on File {
+  String get filename => p.basename(path);
+
+  String get filenameWithoutExtension => p.basenameWithoutExtension(path);
+
+  String get extension => p.extension(path);
+
+  String get dirname => p.dirname(path);
 }
 
 extension PlacemarkExtension on Placemark {

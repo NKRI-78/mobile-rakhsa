@@ -16,7 +16,7 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notif
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
+import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/kbri_id_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/kbri_name_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/passport_notifier.dart';
