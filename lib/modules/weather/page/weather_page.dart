@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/weather_notifier.dart';
+import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 
 class WeatherPageParams {
   final String area;

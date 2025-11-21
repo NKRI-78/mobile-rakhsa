@@ -10,6 +10,8 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
+import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
@@ -18,7 +20,7 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/home.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/home_page.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/service/location/location_service.dart';
@@ -224,7 +226,7 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
   }
 
   Future<bool> _shouldSendLatestLocation({
-    Duration sendInterval = const Duration(hours: 12),
+    Duration sendInterval = const Duration(hours: 20),
   }) async {
     final prefs = StorageHelper.sharedPreferences;
     final key = "dashboard_latest_location_cache_key";
@@ -268,11 +270,11 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
   void initBanners() {
     banners.clear();
 
-    banners.add(WeatherContent());
+    banners.add(WeatherCard());
 
     Future.delayed(const Duration(seconds: 1), () async {
       for (var banner in dashboardNotifier.banners) {
-        banners.add(ImgBanner(banner.link, banner.imageUrl));
+        banners.add(ImageBanner(banner.link, banner.imageUrl));
       }
       if (mounted) setState(() {});
     });
@@ -328,6 +330,7 @@ Dengan mengizinkan akses lokasi Selalu, aplikasi dapat lebih responsif saat Anda
           style: DialogStyle(assetIconSize: 175),
           buildActions: (c) {
             return [
+              DialogActionButton(label: "Ingatkan nanti", onTap: c.pop),
               DialogActionButton(
                 label: "Aktifkan",
                 primary: true,

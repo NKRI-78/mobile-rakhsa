@@ -1,6 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 import 'package:intl/intl.dart';
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 
@@ -17,24 +20,6 @@ extension NumExtension on num {
   Widget get spaceX => SizedBox(width: toDouble());
 }
 
-extension FileExtension on File {
-  String get filename => path.split('/').last;
-
-  String get filenameWithoutExtension {
-    final name = filename;
-    final lastDotIndex = name.lastIndexOf('.');
-    if (lastDotIndex == -1) return name;
-    return name.substring(0, lastDotIndex);
-  }
-
-  String get extension {
-    final name = filename;
-    final lastDotIndex = name.lastIndexOf('.');
-    if (lastDotIndex == -1) return '';
-    return name.substring(lastDotIndex);
-  }
-}
-
 extension DateTimeExtension on DateTime {
   String format(String pattern) => DateFormat(pattern).format(toLocal());
 }
@@ -49,6 +34,16 @@ extension StringExtensions on String {
         })
         .join(' ');
   }
+}
+
+extension FileExtension on File {
+  String get filename => p.basename(path);
+
+  String get filenameWithoutExtension => p.basenameWithoutExtension(path);
+
+  String get extension => p.extension(path);
+
+  String get dirname => p.dirname(path);
 }
 
 extension PlacemarkExtension on Placemark {

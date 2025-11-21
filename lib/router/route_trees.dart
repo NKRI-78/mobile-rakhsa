@@ -6,8 +6,7 @@ import 'package:rakhsa/modules/auth/page/register_page.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/notification_page.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard.dart';
-import 'package:rakhsa/modules/dashboard/presentation/pages/weather_page.dart';
+import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:rakhsa/modules/information/presentation/pages/kbri.dart';
 import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum.dart';
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/index.dart';
@@ -16,6 +15,7 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
+import 'package:rakhsa/modules/weather/page/weather_page.dart';
 
 part 'route_trees.g.dart';
 

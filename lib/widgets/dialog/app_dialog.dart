@@ -21,6 +21,8 @@ class AppDialog {
   static OverlayEntry? _entry;
   static bool get isShowing => _entry != null;
 
+  static Duration get animDuration => Duration(milliseconds: 250);
+
   static Future<T?> show<T extends Object?>({
     required BuildContext c,
     required DialogContent content,
@@ -32,6 +34,7 @@ class AppDialog {
       return showGeneralDialog(
         context: c,
         barrierDismissible: dismissible,
+        transitionDuration: animDuration,
         barrierLabel: dismissible ? "" : null,
         transitionBuilder: (ctx, anim, _, child) {
           final curved = CurvedAnimation(
