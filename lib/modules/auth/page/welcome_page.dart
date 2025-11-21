@@ -118,18 +118,7 @@ class WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (TermsAndConditionsDialog.hasLaunchBefore) return;
-      _showTermsAndConditionDialog();
-    });
-  }
-
   Future<void> _showTermsAndConditionDialog() async {
-    await Future.delayed(Duration(milliseconds: 200));
     if (!mounted) return;
     bool? agree = await TermsAndConditionsDialog.launch(context, false);
     if (mounted && agree != null && agree) {
@@ -204,8 +193,13 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // login button
                   ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, RoutesNavigation.login),
+                    onPressed: () async {
+                      if (TermsAndConditionsDialog.hasLaunchBefore) {
+                        Navigator.pushNamed(context, RoutesNavigation.login);
+                      } else {
+                        await _showTermsAndConditionDialog();
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
                       backgroundColor: primaryColor,
@@ -253,8 +247,13 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // register button
                   OutlinedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, RoutesNavigation.register),
+                    onPressed: () async {
+                      if (TermsAndConditionsDialog.hasLaunchBefore) {
+                        Navigator.pushNamed(context, RoutesNavigation.register);
+                      } else {
+                        await _showTermsAndConditionDialog();
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: blackColor,
                       backgroundColor: whiteColor,
