@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/service/app/app_metadata.dart';
 
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/build_config.dart';
@@ -54,6 +55,8 @@ Future<void> main() async {
   await NotificationManager().initializeLocalNotification();
 
   await SosCoordinator().initAndRestore();
+
+  await AppMetadata().initialize();
 
   HttpOverrides.global = HttpOverridesConfig();
 
