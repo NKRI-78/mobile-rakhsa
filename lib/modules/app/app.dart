@@ -38,17 +38,19 @@ class AppState extends State<App> {
       routerConfig: router,
       scaffoldMessengerKey: scaffoldKey,
       debugShowCheckedModeBanner: false,
-      builder: BuildConfig.isStag
-          ? (_, child) => AppUpgradeAlert(
-              upgrader: _upgrader,
-              navigatorKey: router.routerDelegate.navigatorKey,
-              child: Banner(
-                message: "Staging",
-                location: BannerLocation.topEnd,
-                child: child,
-              ),
-            )
-          : null,
+      builder: (context, child) {
+        return AppUpgradeAlert(
+          upgrader: _upgrader,
+          navigatorKey: router.routerDelegate.navigatorKey,
+          child: BuildConfig.isStag
+              ? Banner(
+                  message: "STAGING",
+                  location: BannerLocation.topEnd,
+                  child: child,
+                )
+              : child,
+        );
+      },
     );
   }
 }
