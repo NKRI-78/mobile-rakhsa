@@ -21,11 +21,14 @@ class AppMetadata {
     );
   }
 
-  Future<DateTime?> getInstallDate() async {
+  Future<DateTime?> getInstallDate({bool utc = true}) async {
     await initialize();
     final raw = _prefs.getString(_keyInstallDate);
     if (raw == null) return null;
-    return DateTime.parse(raw).toUtc();
+
+    final parsed = DateTime.parse(raw);
+
+    return utc ? parsed.toUtc() : parsed.toLocal();
   }
 
   Future<Duration?> getAppAge() async {
