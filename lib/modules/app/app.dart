@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/router.dart';
@@ -28,18 +30,23 @@ class AppState extends State<App> {
     await NotificationManager().setForegroundMessageActionListeners();
   }
 
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
       scaffoldMessengerKey: scaffoldKey,
-      theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       builder: BuildConfig.isStag
-          ? (_, child) => Banner(
-              message: "Staging",
-              location: BannerLocation.topEnd,
-              child: child,
+          ? (_, child) => AppUpgradeAlert(
+              upgrader: _upgrader,
+              navigatorKey: router.routerDelegate.navigatorKey,
+              child: Banner(
+                message: "Staging",
+                location: BannerLocation.topEnd,
+                child: child,
+              ),
             )
           : null,
     );
