@@ -3,10 +3,12 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
+import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/routes/nav_key.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/service/storage/storage.dart';
+import 'package:upgrader/upgrader.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -30,19 +32,23 @@ class AppState extends State<App> {
     await NotificationManager().setForegroundMessageActionListeners();
   }
 
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
-      theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RoutesNavigation.onGenerateRoute,
-      home: _showOnBoarding
-          ? OnBoardingPage()
-          : _userIsLoggedIn
-          ? DashboardScreen()
-          : WelcomePage(),
+      home: AppUpgradeAlert(
+        upgrader: _upgrader,
+        child: _showOnBoarding
+            ? OnBoardingPage()
+            : _userIsLoggedIn
+            ? DashboardScreen()
+            : WelcomePage(),
+      ),
       builder: BuildConfig.isStag
           ? (_, child) => Banner(
               message: "Staging",

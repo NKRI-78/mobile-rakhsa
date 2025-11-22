@@ -9,6 +9,7 @@ class DialogContent {
   final String? message;
   final Future<String>? messageAsync;
   final DialogStyle? style;
+  final Axis? actionButtonDirection;
   final List<DialogActionButton> Function(BuildContext c)? buildActions;
 
   DialogContent({
@@ -18,13 +19,13 @@ class DialogContent {
     this.titleAsync,
     this.messageAsync,
     this.style,
+    this.actionButtonDirection,
     this.buildActions,
   });
 }
 
 class DialogStyle {
   final double? assetIconSize;
-  final bool enableBackgroundIcon;
   final bool enableExpandPrimaryActionButton;
   final Color? backgroundIconColor;
   final TextStyle? titleStyle;
@@ -41,7 +42,6 @@ class DialogStyle {
     this.assetIconSize,
     this.contentPadding,
     this.backgroundIconColor,
-    this.enableBackgroundIcon = false,
     this.enableExpandPrimaryActionButton = false,
   });
 }

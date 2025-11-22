@@ -66,9 +66,6 @@ dependencies:
   # L
   location: ^8.0.1
 
-  # N
-  new_version_plus: ^0.1.1
-
   # S
   socket_io_client: ^3.1.2
   shared_preferences: ^2.5.3
@@ -81,6 +78,7 @@ dependencies:
 
   # U
   uuid: ^4.5.1
+  upgrader: ^12.3.0
   url_launcher: ^6.3.2
 
   # S
@@ -105,7 +103,6 @@ flutter:
     - assets/images/
     - assets/images/icons/
     - assets/images/weather/
-    - assets/images/update/
 
     # env
     - assets/env/.env.stag

@@ -20,8 +20,8 @@ class DialogCard extends StatelessWidget {
   final _defaultIconSize = 100.0;
   final _defaultBorderRadius = 16.0;
   final _defaultContentPadding = 16.0;
-  final _defaultBackgroundIconColor = blackColor;
   final _defaultBackgroundColor = whiteColor;
+  final _defaultActionButtonDirection = Axis.horizontal;
   final _defaultTitleStyle = TextStyle(
     color: blackColor,
     fontSize: fontSizeOverLarge,
@@ -40,16 +40,16 @@ class DialogCard extends StatelessWidget {
 
     final backgroundColor =
         content?.style?.backgroundColor ?? _defaultBackgroundColor;
-    final backgroundIconColor =
-        content?.style?.backgroundIconColor ?? _defaultBackgroundIconColor;
     final borderRadius = content?.style?.borderRadius ?? _defaultBorderRadius;
     final titleStyle = content?.style?.titleStyle ?? _defaultTitleStyle;
     final messageStyle = content?.style?.messageStyle ?? _defaultMessageStyle;
 
+    final actionDirections =
+        content?.actionButtonDirection ?? _defaultActionButtonDirection;
     final actions = content?.buildActions?.call(context) ?? [];
     var filteredActions = <DialogActionButton>[];
     if (actions.isNotEmpty) {
-      filteredActions = actions.length > 2 ? actions.sublist(0, 2) : actions;
+      filteredActions = (actions.length > 2 ? actions.sublist(0, 2) : actions);
     }
 
     return Dialog(
@@ -110,20 +110,29 @@ class DialogCard extends StatelessWidget {
                 if (filteredActions.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.only(top: (padding + 4)),
-                    child: Row(
-                      spacing: 8,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: filteredActions.map((button) {
-                        final expand =
-                            (content?.style?.enableExpandPrimaryActionButton ??
-                                false) &&
-                            button.primary;
-                        return Flexible(
-                          fit: expand ? FlexFit.tight : FlexFit.loose,
-                          child: button,
-                        );
-                      }).toList(),
-                    ),
+                    child: actionDirections == Axis.vertical
+                        ? Column(
+                            spacing: 2,
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: filteredActions.reversed.toList(),
+                          )
+                        : Row(
+                            spacing: 6,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: filteredActions.map((button) {
+                              final expand =
+                                  (content
+                                          ?.style
+                                          ?.enableExpandPrimaryActionButton ??
+                                      false) &&
+                                  button.primary;
+                              return Flexible(
+                                fit: expand ? FlexFit.tight : FlexFit.loose,
+                                child: button,
+                              );
+                            }).toList(),
+                          ),
                   ),
               ],
             ),
@@ -132,9 +141,8 @@ class DialogCard extends StatelessWidget {
           if (hasIcon)
             Container(
               decoration: BoxDecoration(
-                color: (content?.style?.enableBackgroundIcon ?? false)
-                    ? backgroundIconColor
-                    : Colors.transparent,
+                color:
+                    content?.style?.backgroundIconColor ?? Colors.transparent,
                 shape: BoxShape.circle,
               ),
               child: Image.asset(
