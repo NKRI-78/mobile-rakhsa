@@ -7,10 +7,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/dashboard/presentation/widgets/enable_location_always_dialog.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -33,16 +32,16 @@ import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key, this.fromRegister = false});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key, this.fromRegister = false});
 
   final bool fromRegister;
 
   @override
-  State<DashboardScreen> createState() => DashboardScreenState();
+  State<DashboardPage> createState() => DashboardPageState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> {
+class DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _pageNotifyController = ValueNotifier<int>(0);
@@ -71,7 +70,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     socketIoService = context.read<SocketIoService>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      log("from register? ${widget.fromRegister}", label: "DASHBOARD_PAGE");
       if (widget.fromRegister) _showWelcomeDialog();
     });
 
@@ -81,7 +79,10 @@ class DashboardScreenState extends State<DashboardScreen> {
 
     Future.microtask(() => getData());
 
-    _sendLatestLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      EnableLocationAlwaysDialog.checkOrLaunch(context);
+      _sendLatestLocation();
+    });
   }
 
   @override
@@ -259,9 +260,7 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
 
   void _sendLatestLocation() async {
     if (widget.fromRegister) return;
-    final shouldSend = await _shouldSendLatestLocation();
-    if (shouldSend) {
-      if (Platform.isAndroid) await _showLocationAlwaysDialog();
+    if (await _shouldSendLatestLocation()) {
       await sendLatestLocation(
         "User open the App",
         otherSource: locationProvider.location,
@@ -302,46 +301,6 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
               onTap: () => dc.pop(true),
             ),
           ],
-        ),
-      );
-    }
-  }
-
-  Future<void> _showLocationAlwaysDialog() async {
-    final bgLocation = Permission.locationAlways;
-    final hasPermission = await bgLocation.status
-        .then((p) {
-          return p == PermissionStatus.granted || p == PermissionStatus.limited;
-        })
-        .onError((e, st) => false);
-    if (hasPermission) return;
-
-    await Future.delayed(Duration(seconds: 2));
-    if (mounted) {
-      await AppDialog.show(
-        c: context,
-        canPop: false,
-        content: DialogContent(
-          assetIcon: "assets/images/icons/location.png",
-          title: "Tingkatkan Keandalan Fitur Keselamatan",
-          message: """
-Dengan mengizinkan akses lokasi Selalu, aplikasi dapat lebih responsif saat Anda membutuhkan fitur SOS. Izin ini sepenuhnya opsional—namun akan sangat membantu agar sistem dapat bekerja lebih optimal.
-""",
-          style: DialogStyle(assetIconSize: 175),
-          buildActions: (c) {
-            return [
-              DialogActionButton(label: "Ingatkan nanti", onTap: c.pop),
-              DialogActionButton(
-                label: "Aktifkan",
-                primary: true,
-                onTap: () async {
-                  c.pop();
-                  await Future.delayed(Duration(milliseconds: 300));
-                  await bgLocation.request();
-                },
-              ),
-            ];
-          },
         ),
       );
     }
@@ -394,7 +353,6 @@ Dengan mengizinkan akses lokasi Selalu, aplikasi dapat lebih responsif saat Anda
 
         // BOTTOM NAV BAR
         bottomNavigationBar: SafeArea(
-          bottom: Platform.isIOS ? false : true,
           child: Theme(
             data: Platform.isIOS
                 ? Theme.of(context).copyWith(

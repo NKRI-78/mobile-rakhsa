@@ -21,8 +21,7 @@ class AppMetadata {
     );
   }
 
-  Future<DateTime?> getInstallDate({bool utc = true}) async {
-    await initialize();
+  DateTime? getInstallDate({bool utc = true}) {
     final raw = _prefs.getString(_keyInstallDate);
     if (raw == null) return null;
 
@@ -31,8 +30,8 @@ class AppMetadata {
     return utc ? parsed.toUtc() : parsed.toLocal();
   }
 
-  Future<Duration?> getAppAge() async {
-    final installDate = await getInstallDate();
+  Duration? getAppAge() {
+    final installDate = getInstallDate();
     if (installDate == null) return null;
     return DateTime.now().toUtc().difference(installDate);
   }

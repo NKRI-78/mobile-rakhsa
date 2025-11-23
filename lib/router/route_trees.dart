@@ -99,7 +99,7 @@ class DashboardRoute extends GoRouteData with $DashboardRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return DashboardScreen(fromRegister: fromRegister);
+    return DashboardPage(fromRegister: fromRegister);
   }
 }
 

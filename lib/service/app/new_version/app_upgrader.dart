@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:upgrader/upgrader.dart';
@@ -23,8 +25,9 @@ class AppUpgradeAlertState extends UpgradeAlertState {
   }) {
     AppDialog.show(
       c: widget.navigatorKey?.currentState?.overlay?.context ?? context,
-      canPop: false,
-      dismissible: false,
+      // kalau diproduction gaboleh pop
+      canPop: BuildConfig.isStag,
+      dismissible: BuildConfig.isStag,
       content: DialogContent(
         assetIcon: AssetSource.iconWelcomeDialog,
         title: "Pembaruan Tersedia",
@@ -41,7 +44,17 @@ class AppUpgradeAlertState extends UpgradeAlertState {
             DialogActionButton(
               label: "Perbarui sekarang",
               primary: true,
-              onTap: () => onUserUpdated(c, !widget.upgrader.blocked()),
+              onTap: () {
+                if (BuildConfig.isProd) {
+                  // ini cuma bisa dimode production karena ..
+                  onUserUpdated(c, !widget.upgrader.blocked());
+                } else {
+                  // kalau dimode staging ada applicationSuffix -stag
+                  // yang bikin onUserUpdate jadi ga berfungsi / error
+                  // karena applicationSuffix ga match sama yang ada di playstore
+                  c.pop(false);
+                }
+              },
             ),
           ];
         },
