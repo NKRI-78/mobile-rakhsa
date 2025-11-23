@@ -46,7 +46,7 @@ class AppState extends State<App> {
         child: _showOnBoarding
             ? OnBoardingPage()
             : _userIsLoggedIn
-            ? DashboardScreen()
+            ? DashboardPage()
             : WelcomePage(),
       ),
       builder: BuildConfig.isStag

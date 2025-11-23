@@ -169,10 +169,11 @@ class RegisterScreenState extends State<RegisterScreen> {
         onSuccess: () async {
           await StorageHelper.loadlocalSession();
           if (c.mounted) {
-            c.pushNamedAndRemoveUntil(
+            Navigator.pushNamedAndRemoveUntil(
+              c,
               RoutesNavigation.dashboard,
               (route) => false,
-              arguments: {"from_register": true},
+              arguments: true,
             );
           }
         },

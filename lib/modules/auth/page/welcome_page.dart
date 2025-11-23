@@ -13,9 +13,7 @@ import 'package:rakhsa/widgets/components/modal/modal.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({super.key, this.fromLogout = false});
-
-  final bool fromLogout;
+  const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => WelcomePageState();

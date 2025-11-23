@@ -31,22 +31,18 @@ class RoutesNavigation {
   static const information = '/information';
   static const news = '/news';
   static const newsDetail = '/news-detail';
-  static const deviceNotSupport = '/device-not-support';
 
   static const itinerary = '/itinerary';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case dashboard:
-        final args = settings.arguments as Map<String, dynamic>?;
+        final fromRegister = (settings.arguments as bool?) ?? false;
         return MaterialPageRoute(
-          builder: (_) =>
-              DashboardScreen(fromRegister: args?['from_register'] ?? false),
+          builder: (_) => DashboardPage(fromRegister: fromRegister),
         );
       case onBoarding:
         return MaterialPageRoute(builder: (_) => const OnBoardingPage());
-      case deviceNotSupport:
-        return MaterialPageRoute(builder: (_) => const DashboardScreen());
       case register:
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case information:

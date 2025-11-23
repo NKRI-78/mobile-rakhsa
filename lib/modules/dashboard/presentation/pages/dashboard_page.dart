@@ -8,7 +8,6 @@ import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/enable_location_always_dialog.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
@@ -32,16 +31,16 @@ import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key, this.fromRegister = false});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key, this.fromRegister = false});
 
   final bool fromRegister;
 
   @override
-  State<DashboardScreen> createState() => DashboardScreenState();
+  State<DashboardPage> createState() => DashboardPageState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> {
+class DashboardPageState extends State<DashboardPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _pageNotifyController = ValueNotifier<int>(0);
@@ -69,12 +68,8 @@ class DashboardScreenState extends State<DashboardScreen> {
     locationProvider = context.read<LocationProvider>();
     socketIoService = context.read<SocketIoService>();
 
-    log("fromRegister? ${widget.fromRegister}", label: "DASHBOARD_PAGE");
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.fromRegister) {
-        log("harusnya show welcome dialog", label: "DASHBOARD_PAGE");
-        _showWelcomeDialog();
-      }
+      if (widget.fromRegister) _showWelcomeDialog();
     });
 
     Future.delayed(Duration(seconds: 1)).then((value) {
@@ -84,9 +79,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     Future.microtask(() => getData());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Platform.isAndroid) {
-        EnableLocationAlwaysDialog.checkOrLaunch(context);
-      }
+      EnableLocationAlwaysDialog.checkOrLaunch(context);
       _sendLatestLocation();
     });
   }
@@ -289,7 +282,6 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
 
   void _showWelcomeDialog() async {
     await Future.delayed(Duration(seconds: 1));
-    log("isContextMounted? $mounted", label: "DASHBOARD_PAGE");
     if (mounted) {
       await AppDialog.show(
         c: context,
@@ -360,7 +352,6 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
 
         // BOTTOM NAV BAR
         bottomNavigationBar: SafeArea(
-          bottom: Platform.isIOS ? false : true,
           child: Theme(
             data: Platform.isIOS
                 ? Theme.of(context).copyWith(
