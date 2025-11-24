@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,6 @@ import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
 class NearMePage extends StatefulWidget {
@@ -29,14 +29,14 @@ class NearMePage extends StatefulWidget {
 }
 
 class NearMePageState extends State<NearMePage> {
-  late UserProvider profileNotifier;
+  late LocationProvider locationProvider;
   late GetNearbyPlacenNotifier getNearbyPlaceReligionNotifier;
   Set<Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    profileNotifier = context.read<UserProvider>();
+    locationProvider = context.read<LocationProvider>();
     getNearbyPlaceReligionNotifier = context.read<GetNearbyPlacenNotifier>();
 
     Future.microtask(() async {
@@ -59,21 +59,21 @@ class NearMePageState extends State<NearMePage> {
 
   Future<void> getData() async {
     if (!mounted) return;
-    await profileNotifier.getUser(enableCache: true);
+    await locationProvider.getCurrentLocation();
 
     if (!mounted) return;
     await getNearbyPlaceReligionNotifier.getNearme(
       type: widget.type,
-      currentLat: double.parse(profileNotifier.user?.lat ?? "0"),
-      currentLng: double.parse(profileNotifier.user?.lng ?? "0"),
+      currentLat: locationProvider.location?.coord.lat ?? 0.0,
+      currentLng: locationProvider.location?.coord.lng ?? 0.0,
     );
   }
 
   void addUserRangePolyline() {
     if (!mounted) return;
 
-    final userLat = double.parse(profileNotifier.user?.lat ?? "0");
-    final userLng = double.parse(profileNotifier.user?.lng ?? "0");
+    final userLat = locationProvider.location?.coord.lat ?? 0.0;
+    final userLng = locationProvider.location?.coord.lng ?? 0.0;
 
     Set<Polyline> newPolylines = {};
 
@@ -182,8 +182,8 @@ class NearMePageState extends State<NearMePage> {
               );
             }
 
-            double userLat = double.parse(profileNotifier.user?.lat ?? "0");
-            double userLng = double.parse(profileNotifier.user?.lng ?? "0");
+            double userLat = locationProvider.location?.coord.lat ?? 0.0;
+            double userLng = locationProvider.location?.coord.lng ?? 0.0;
 
             // Find nearest place based on user location
             Map<String, dynamic>? nearestPlace;

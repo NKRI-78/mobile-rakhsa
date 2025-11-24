@@ -66,7 +66,7 @@ class LocationProvider extends ChangeNotifier {
       final isGPSEnabled = await Geolocator.isLocationServiceEnabled();
       log("hasGPS? $isGPSEnabled", label: "LOCATION_PROVIDER");
       if (!isGPSEnabled) {
-        throw LocationException(LocationErrorCode.gpsDisabled);
+        throw LocationException(LocationError.gpsDisabled);
       }
 
       final hasPermission = await Geolocator.checkPermission()
@@ -77,7 +77,7 @@ class LocationProvider extends ChangeNotifier {
           .onError((e, st) => false);
       log("hasPermission? $hasPermission", label: "LOCATION_PROVIDER");
       if (!hasPermission) {
-        throw LocationException(LocationErrorCode.deniedPermission);
+        throw LocationException(LocationError.deniedPermission);
       }
 
       final newLocation =
