@@ -58,13 +58,13 @@ class NearMePageState extends State<NearMePage> {
 
   Future<void> getData() async {
     if (!mounted) return;
-    await profileNotifier.getUser();
+    await profileNotifier.getUser(enableCache: true);
 
     if (!mounted) return;
     await getNearbyPlaceReligionNotifier.getNearme(
       type: widget.type,
-      currentLat: double.parse(profileNotifier.user?.lat ?? "0"),
-      currentLng: double.parse(profileNotifier.user?.lng ?? "0"),
+      currentLat: double.parse(profileNotifier.user?.lat ?? "0.0"),
+      currentLng: double.parse(profileNotifier.user?.lng ?? "0.0"),
     );
   }
 
