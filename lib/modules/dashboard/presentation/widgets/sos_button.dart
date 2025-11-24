@@ -195,6 +195,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
         sosId: widget.param.profile?.sos?.id ?? "-",
         chatId: widget.param.profile?.sos?.chatId ?? "-",
         recipientId: widget.param.profile?.sos?.recipientId ?? "-",
+        fromHome: true,
       );
     }
     return isActive;
