@@ -73,7 +73,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
       ),
       body: Consumer<InformationProvider>(
         builder: (context, n, child) {
-          if (n.isGetPassportState(RequestState.loading)) {
+          if (n.isGetPassport(RequestState.loading)) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
@@ -82,7 +82,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
               ),
             );
           }
-          if (n.isGetPassportState(RequestState.error)) {
+          if (n.isGetPassport(RequestState.error)) {
             return Center(
               child: Text(
                 n.errorMessage ?? "-",

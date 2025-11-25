@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
@@ -17,7 +18,6 @@ import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
-import 'package:rakhsa/widgets/components/textinput/textfield.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class LoginPage extends StatelessWidget {
