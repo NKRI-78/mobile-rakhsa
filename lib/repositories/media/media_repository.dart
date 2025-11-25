@@ -1,36 +1,51 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/misc/client/response/response_dto.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/repositories/media/model/media.dart';
 
-class MediaRepo {
-  Response? response;
-  final Dio dio;
+class MediaRepository {
+  MediaRepository(this._client);
 
-  MediaRepo({required this.dio});
+  final DioClient _client;
 
-  Future<Response> postMedia(File file) async {
+  Dio get _mediaClient => _client.createNewInstance(
+    baseUrl: dotenv.env['API_MEDIA_BASE_URL'] ?? "",
+    sendTimeout: Duration(minutes: 6),
+  );
+
+  Future<Media> sendSosRecordVideo({
+    required File video,
+    required void Function(int count, int total) onSendProgress,
+  }) async {
     try {
-      FormData formData = FormData.fromMap({
-        "folder": "images",
-        "subfolder": "raksha",
+      if (!await _client.hasInternet) {
+        throw NetworkException.noInternetConnection();
+      }
+
+      final formData = FormData.fromMap({
+        "folder": "videos",
+        "subfolder": "broadcast-raksha",
         "media": await MultipartFile.fromFile(
-          file.path,
-          filename: file.filename,
+          video.path,
+          filename: video.filename,
         ),
       });
-      Response res = await dio.post(
-        "${dotenv.env['API_MEDIA_BASE_URL'] ?? "-"}/media/upload",
+      final res = await _mediaClient.post(
+        "/media/upload",
         data: formData,
+        onSendProgress: onSendProgress,
       );
-      response = res;
-    } on DioException catch (e) {
-      debugPrint(e.response!.data.toString());
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      final dto = ResponseDto.fromJson(res.data);
+      return Media.fromJson(dto.data);
+    } on DataParsingException catch (e) {
+      throw NetworkException(message: e.message, errorCode: e.errorCode);
+    } catch (e) {
+      throw _client.errorMapper(e);
     }
-    return response!;
   }
 }

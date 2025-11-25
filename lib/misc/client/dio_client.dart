@@ -114,7 +114,7 @@ class DioClient {
               conns.contains(ConnectivityResult.wifi) ||
               conns.contains(ConnectivityResult.vpn);
         })
-        .onError((e, st) => false);
+        .catchError((e, st) => false);
   }
 
   Future<ResponseDto<T>> get<T>({
@@ -137,7 +137,7 @@ class DioClient {
       );
       return ResponseDto.fromJson(res.data);
     } catch (e) {
-      throw _errorMapper(e);
+      throw errorMapper(e);
     }
   }
 
@@ -163,7 +163,7 @@ class DioClient {
       );
       return ResponseDto.fromJson(res.data);
     } catch (e) {
-      throw _errorMapper(e);
+      throw errorMapper(e);
     }
   }
 
@@ -188,7 +188,7 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
     } catch (e) {
-      throw _errorMapper(e);
+      throw errorMapper(e);
     }
   }
 
@@ -220,7 +220,7 @@ class DioClient {
       );
       return response;
     } catch (e) {
-      throw _errorMapper(e);
+      throw errorMapper(e);
     }
   }
 
@@ -241,11 +241,11 @@ class DioClient {
         queryParameters: queryParameters,
       );
     } catch (e) {
-      throw _errorMapper(e);
+      throw errorMapper(e);
     }
   }
 
-  NetworkException _errorMapper(Object error) {
+  NetworkException errorMapper(Object error) {
     if (error is DioException) {
       final statusCode = error.response?.statusCode ?? 400;
       switch (error.type) {

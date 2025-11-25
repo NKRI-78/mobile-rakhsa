@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
+import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/repositories/information/information_repository.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
@@ -28,24 +29,19 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notif
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/modules/media/data/datasources/media_remote_datasource.dart';
 
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_news.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_chats.dart';
 import 'package:rakhsa/modules/chat/domain/usecases/get_messages.dart';
-import 'package:rakhsa/modules/media/domain/usecases/upload_media.dart';
 
 import 'package:rakhsa/modules/dashboard/domain/repository/dashboard_repository.dart';
-import 'package:rakhsa/modules/media/domain/repository/media_repository.dart';
 
 import 'package:rakhsa/modules/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:rakhsa/modules/chat/data/repositories/chat_repository_impl.dart';
-import 'package:rakhsa/modules/media/data/repositories/media_repository_impl.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
-import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 
 import 'package:rakhsa/modules/chat/domain/repository/chat_repository.dart';
@@ -87,9 +83,6 @@ void init() {
   locator.registerLazySingleton<DashboardRemoteDataSource>(
     () => DashboardRemoteDataSourceImpl(client: locator()),
   );
-  locator.registerLazySingleton<MediaRemoteDatasource>(
-    () => MediaRemoteDataSourceImpl(client: locator()),
-  );
   locator.registerLazySingleton<ChatRemoteDataSource>(
     () => ChatRemoteDataSourceImpl(client: locator()),
   );
@@ -98,16 +91,15 @@ void init() {
   locator.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<MediaRepository>(
-    () => MediaRepositoryImpl(remoteDataSource: locator()),
-  );
   locator.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(remoteDataSource: locator()),
   );
   locator.registerLazySingleton<NearmeRepository>(
     () => NearmeRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<MediaRepo>(() => MediaRepo(dio: locator()));
+  locator.registerLazySingleton<MediaRepository>(
+    () => MediaRepository(locator()),
+  );
   locator.registerLazySingleton<InformationRepository>(
     () => InformationRepository(client: locator()),
   );
@@ -118,7 +110,6 @@ void init() {
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
   locator.registerLazySingleton(() => GetBannerUseCase(locator()));
   locator.registerLazySingleton(() => DetailNewsUseCase(locator()));
-  locator.registerLazySingleton(() => UploadMediaUseCase(locator()));
   locator.registerLazySingleton(() => UpdateAddressUseCase(locator()));
   locator.registerLazySingleton(() => TrackUserUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
@@ -140,8 +131,8 @@ void init() {
     () => UserProvider(repository: locator<UserRepository>()),
   );
   locator.registerFactory(() => InformationProvider(repository: locator()));
+  locator.registerFactory(() => SosProvider(locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));
-  locator.registerFactory(() => UploadMediaNotifier(useCase: locator()));
   locator.registerFactory(() => UpdateAddressNotifier(useCase: locator()));
   locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
   locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));

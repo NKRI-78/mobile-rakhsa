@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
-import 'package:rakhsa/service/sos/sos_camera.dart';
+import 'package:rakhsa/modules/sos/pages/sos_camera.dart';
 
 import 'package:rakhsa/misc/helpers/extensions.dart';
 

@@ -10,13 +10,13 @@ import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 import 'package:rakhsa/widgets/dialog/dialog_action_button.dart';
@@ -46,7 +46,7 @@ class CameraPageState extends State<CameraPage> {
   Timer? _timer;
 
   late SocketIoService socketIoService;
-  late UploadMediaNotifier uploadMediaNotifier;
+  late SosProvider sosProvider;
 
   bool loading = false;
 
@@ -112,7 +112,6 @@ class CameraPageState extends State<CameraPage> {
       final video = await controller!.stopVideoRecording();
       File file = File(video.path);
 
-      // Mark loading early
       setState(() {
         stop = true;
         loading = true;
@@ -120,56 +119,44 @@ class CameraPageState extends State<CameraPage> {
       });
 
       // Start upload in a separate future, with timeout
-      uploadMediaNotifier
-          .send(file: file, folderName: "videos")
-          .timeout(
-            const Duration(seconds: 300),
-            onTimeout: () {
-              setState(() => loading = false);
-              Future.delayed(Duration(milliseconds: 200)).then((_) {
-                if (mounted) {
-                  AppDialog.error(
-                    canPop: false,
-                    c: context,
-                    title: "Koneksi Internet Lemah",
-                    message:
-                        "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
-                    buildActions: (dc) => [
-                      DialogActionButton(label: "Mengerti", onTap: dc.pop),
-                    ],
-                  );
-                }
-              });
-            },
-          )
-          .then((_) {
-            // Handle after upload success
-            if (uploadMediaNotifier.entity != null) {
-              final media = uploadMediaNotifier.entity!.path;
-              final ext = media.split('/').last.split('.').last;
-
-              socketIoService.sos(
-                location: widget.location,
-                country: widget.country,
-                media: media,
-                ext: ext,
-                lat: widget.lat,
-                lng: widget.lng,
+      await sosProvider.sendSos(
+        file,
+        onTimeout: () {
+          setState(() => loading = false);
+          Future.delayed(Duration(milliseconds: 200)).then((_) {
+            if (mounted) {
+              AppDialog.error(
+                canPop: false,
+                c: context,
+                title: "Koneksi Internet Lemah",
+                message:
+                    "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
+                buildActions: (dc) => [
+                  DialogActionButton(label: "Mengerti", onTap: dc.pop),
+                ],
               );
-
-              if (mounted) {
-                Navigator.pop(context, "start");
-              }
             }
-          })
-          .catchError((e) {
-            debugPrint('Upload failed: $e');
-          })
-          .whenComplete(() {
-            if (mounted) setState(() => loading = false);
           });
+        },
+      );
+
+      if (mounted) setState(() => loading = false);
+      if (sosProvider.sosVideo != null) {
+        final media = sosProvider.sosVideo!.path;
+        final ext = media.split('/').last.split('.').last;
+
+        socketIoService.sos(
+          location: widget.location,
+          country: widget.country,
+          media: media,
+          ext: ext,
+          lat: widget.lat,
+          lng: widget.lng,
+        );
+
+        if (mounted) Navigator.pop(context, "start");
+      }
     } catch (e) {
-      debugPrint('Error stopping video recording: $e');
       if (mounted) setState(() => loading = false);
     }
   }
@@ -179,7 +166,7 @@ class CameraPageState extends State<CameraPage> {
     super.initState();
 
     socketIoService = context.read<SocketIoService>();
-    uploadMediaNotifier = context.read<UploadMediaNotifier>();
+    sosProvider = context.read<SosProvider>();
 
     initializeCamera();
   }
@@ -252,7 +239,7 @@ class CameraPageState extends State<CameraPage> {
                     child: Container(
                       color: Colors.black87,
                       child: Center(
-                        child: Consumer<UploadMediaNotifier>(
+                        child: Consumer<SosProvider>(
                           builder: (context, notifier, child) {
                             final uploadPercent = notifier.uploadPercent;
                             final percent = uploadPercent.toStringAsFixed(0);

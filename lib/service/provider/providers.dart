@@ -14,9 +14,9 @@ import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifi
 import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
+import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
-import 'package:rakhsa/modules/media/presentation/provider/upload_media_notifier.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
 
 import 'package:rakhsa/injection.dart' as di;
@@ -36,9 +36,9 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<GetMessagesNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InformationProvider>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateAddressNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<UploadMediaNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<SosProvider>()),
   ChangeNotifierProxyProvider<LocationProvider, WeatherNotifier>(
     create: (_) => WeatherNotifier(),
     update: (_, locationProvider, weatherNotifier) {
