@@ -8,12 +8,12 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-import 'package:rakhsa/modules/information/presentation/provider/kbri_id_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
 class KbriPage extends StatefulWidget {
   final int stateId;
@@ -25,18 +25,18 @@ class KbriPage extends StatefulWidget {
 }
 
 class KbriPageState extends State<KbriPage> {
-  late KbriIdNotifier kbriNotifier;
+  late InformationProvider informationProvider;
 
   Future<void> getData() async {
     if (!mounted) return;
-    kbriNotifier.infoKbri(stateId: widget.stateId.toString());
+    informationProvider.getKBRIByCountryId(widget.stateId.toString());
   }
 
   @override
   void initState() {
     super.initState();
 
-    kbriNotifier = context.read<KbriIdNotifier>();
+    informationProvider = context.read<InformationProvider>();
 
     Future.microtask(() => getData());
   }
@@ -56,8 +56,8 @@ class KbriPageState extends State<KbriPage> {
             getData();
           });
         },
-        child: Consumer<KbriIdNotifier>(
-          builder: (BuildContext context, KbriIdNotifier notifier, Widget? child) {
+        child: Consumer<InformationProvider>(
+          builder: (context, n, child) {
             return CustomScrollView(
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics(),
@@ -71,7 +71,7 @@ class KbriPageState extends State<KbriPage> {
                   ),
                 ),
 
-                if (notifier.state == ProviderState.loading)
+                if (n.isGetKbriByCountryIdState(RequestState.loading))
                   const SliverFillRemaining(
                     child: Center(
                       child: SizedBox(
@@ -82,7 +82,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (notifier.state == ProviderState.error)
+                if (n.isGetKbriByCountryIdState(RequestState.error))
                   SliverFillRemaining(
                     child: Center(
                       child: Text(
@@ -95,13 +95,13 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (notifier.state == ProviderState.loaded)
+                if (n.isGetKbriByCountryIdState(RequestState.success))
                   SliverToBoxAdapter(
                     child: Container(
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.only(left: 8.0, right: 8.0),
                       child: Text(
-                        "Data Pencarian KBRI Negara ${notifier.entity.data?.stateName.toString()}",
+                        "Data Pencarian KBRI Negara ${n.kbriCountry?.stateName.toString()}",
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeOverLarge,
                           fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (notifier.state == ProviderState.loaded)
+                if (n.isGetKbriByCountryIdState(RequestState.success))
                   SliverList(
                     delegate: SliverChildListDelegate([
                       Container(
@@ -122,7 +122,7 @@ class KbriPageState extends State<KbriPage> {
                           bottom: 8.0,
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: notifier.entity.data?.img.toString() ?? "-",
+                          imageUrl: n.kbriCountry?.img.toString() ?? "-",
                           imageBuilder:
                               (
                                 BuildContext context,
@@ -147,7 +147,7 @@ class KbriPageState extends State<KbriPage> {
                                     ),
                                     alignment: Alignment.bottomLeft,
                                     child: Text(
-                                      "Kbri ${notifier.entity.data?.title.toString()}",
+                                      "Kbri ${n.kbriCountry?.title.toString()}",
                                       style: robotoRegular.copyWith(
                                         color: ColorResources.white,
                                         fontSize: Dimensions.fontSizeOverLarge,
@@ -179,7 +179,7 @@ class KbriPageState extends State<KbriPage> {
                                 ),
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                  "Kbri ${notifier.entity.data?.title.toString()}",
+                                  "Kbri ${n.kbriCountry?.title.toString()}",
                                   style: robotoRegular.copyWith(
                                     color: ColorResources.white,
                                     fontSize: Dimensions.fontSizeOverLarge,
@@ -212,7 +212,7 @@ class KbriPageState extends State<KbriPage> {
                                     ),
                                     alignment: Alignment.bottomLeft,
                                     child: Text(
-                                      "Kbri ${notifier.entity.data?.title.toString()}",
+                                      "Kbri ${n.kbriCountry?.title.toString()}",
                                       style: robotoRegular.copyWith(
                                         color: ColorResources.white,
                                         fontSize: Dimensions.fontSizeOverLarge,
@@ -228,7 +228,7 @@ class KbriPageState extends State<KbriPage> {
                       Container(
                         margin: const EdgeInsets.all(16.0),
                         child: HtmlWidget(
-                          notifier.entity.data?.description.toString() ?? "-",
+                          n.kbriCountry?.description.toString() ?? "-",
                           customStylesBuilder: (el) {
                             return null;
                           },
@@ -251,7 +251,7 @@ class KbriPageState extends State<KbriPage> {
                           bottom: 4.0,
                         ),
                         child: Text(
-                          notifier.entity.data?.address.toString() ?? "-",
+                          n.kbriCountry?.address.toString() ?? "-",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
                             fontWeight: FontWeight.bold,
@@ -280,19 +280,19 @@ class KbriPageState extends State<KbriPage> {
                           myLocationEnabled: false,
                           initialCameraPosition: CameraPosition(
                             target: LatLng(
-                              double.parse(notifier.entity.data!.lat),
-                              double.parse(notifier.entity.data!.lng),
+                              double.parse(n.kbriCountry?.lat ?? "0.0"),
+                              double.parse(n.kbriCountry?.lng ?? "0.0"),
                             ),
                             zoom: 15.0,
                           ),
                           markers: <Marker>{
                             Marker(
                               markerId: MarkerId(
-                                notifier.entity.data?.title.toString() ?? "-",
+                                n.kbriCountry?.title.toString() ?? "-",
                               ),
                               position: LatLng(
-                                double.parse(notifier.entity.data!.lat),
-                                double.parse(notifier.entity.data!.lng),
+                                double.parse(n.kbriCountry?.lat ?? "0.0"),
+                                double.parse(n.kbriCountry?.lng ?? "0.0"),
                               ),
                             ),
                           },

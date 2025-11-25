@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
-
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-
-import 'package:rakhsa/modules/information/presentation/provider/visa_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
 class TataCaraPage extends StatefulWidget {
   final String stateId;
@@ -22,25 +20,20 @@ class TataCaraPage extends StatefulWidget {
 }
 
 class TataCaraPageState extends State<TataCaraPage> {
-  late VisaNotifier visaNotifier;
+  late InformationProvider informationProvider;
 
   Future<void> getData() async {
     if (!mounted) return;
-    visaNotifier.infoVisa(stateId: widget.stateId);
+    informationProvider.getVisaInfo(widget.stateId);
   }
 
   @override
   void initState() {
     super.initState();
 
-    visaNotifier = context.read<VisaNotifier>();
+    informationProvider = context.read<InformationProvider>();
 
     Future.microtask(() => getData());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -72,9 +65,9 @@ class TataCaraPageState extends State<TataCaraPage> {
           ),
         ),
       ),
-      body: Consumer<VisaNotifier>(
-        builder: (BuildContext context, VisaNotifier notifier, Widget? child) {
-          if (visaNotifier.state == ProviderState.loading) {
+      body: Consumer<InformationProvider>(
+        builder: (context, n, child) {
+          if (n.isGetVisaState(RequestState.loading)) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
@@ -83,10 +76,10 @@ class TataCaraPageState extends State<TataCaraPage> {
               ),
             );
           }
-          if (visaNotifier.state == ProviderState.error) {
+          if (n.isGetVisaState(RequestState.error)) {
             return Center(
               child: Text(
-                visaNotifier.message,
+                n.errorMessage ?? "-",
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   color: ColorResources.black,
@@ -104,7 +97,7 @@ class TataCaraPageState extends State<TataCaraPage> {
             ),
             children: [
               Text(
-                visaNotifier.entity.data?.content.toString() ?? "-",
+                n.visaData ?? "-",
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   color: ColorResources.black,

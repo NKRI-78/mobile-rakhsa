@@ -10,7 +10,7 @@ class UserRepository {
 
   final DioClient _client;
 
-  static String cacheKey = "user_data";
+  static String cacheKey = "user_data_cache_key";
 
   Future<User> getRemoteUser(String uid, {bool persists = true}) async {
     try {

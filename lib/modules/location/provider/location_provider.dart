@@ -24,6 +24,17 @@ class LocationProvider extends ChangeNotifier {
   final prefs = StorageHelper.sharedPreferences;
   final _revalidateCacheKey = "location_revalidate_cache_key";
 
+  LocationSettings getLocationSettings({
+    LocationAccuracy accuracy = LocationAccuracy.best,
+    Duration timeLimit = const Duration(seconds: 5),
+  }) {
+    if (Platform.isIOS) {
+      return AppleSettings(accuracy: accuracy, timeLimit: timeLimit);
+    } else {
+      return AndroidSettings(accuracy: accuracy, timeLimit: timeLimit);
+    }
+  }
+
   Future<LocationData?> getCurrentLocation({
     bool enableCache = true,
     Duration cacheAge = const Duration(minutes: 30),
@@ -32,7 +43,6 @@ class LocationProvider extends ChangeNotifier {
       "loading getCurrentLocation... | enableCache? $enableCache",
       label: "LOCATION_PROVIDER",
     );
-    _errMessage = null;
     _getLocationState = RequestState.loading;
     notifyListeners();
 
@@ -40,18 +50,15 @@ class LocationProvider extends ChangeNotifier {
       // init last update revalidate date time
       // pas aplikasi pertama kali dibuka
       if (!prefs.containsKey(_revalidateCacheKey)) {
-        await prefs.setInt(
-          _revalidateCacheKey,
-          DateTime.now().millisecondsSinceEpoch,
-        );
+        await _initCacheTimeOnFirstRun();
       }
-      final needRefresh = await shouldRevalidateLocationCache(maxAge: cacheAge);
+
+      final needRefresh = await _shouldRevalidateLocationCache(cacheAge);
       log(
         "enableCache && hasLocationData? ${enableCache && _locationData != null} | needRefresh? $needRefresh",
         label: "LOCATION_PROVIDER",
       );
       if (!needRefresh) {
-        _errMessage = null;
         _getLocationState = RequestState.success;
         notifyListeners();
         log(
@@ -105,7 +112,6 @@ class LocationProvider extends ChangeNotifier {
 
       // set state
       _locationData = newLocation.copyWith(placemark: newPlacemark);
-      _errMessage = null;
       _getLocationState = RequestState.success;
       notifyListeners();
       log(
@@ -130,9 +136,14 @@ class LocationProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> shouldRevalidateLocationCache({
-    Duration maxAge = const Duration(minutes: 30),
-  }) async {
+  Future<void> _initCacheTimeOnFirstRun() async {
+    await prefs.setInt(
+      _revalidateCacheKey,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  Future<bool> _shouldRevalidateLocationCache(Duration maxAge) async {
     final lastUpdatedMs = prefs.getInt(_revalidateCacheKey);
 
     final nowMs = DateTime.now().millisecondsSinceEpoch;
@@ -152,16 +163,5 @@ class LocationProvider extends ChangeNotifier {
     }
 
     return shouldRevalidate;
-  }
-
-  LocationSettings getLocationSettings({
-    LocationAccuracy accuracy = LocationAccuracy.best,
-    Duration timeLimit = const Duration(seconds: 5),
-  }) {
-    if (Platform.isIOS) {
-      return AppleSettings(accuracy: accuracy, timeLimit: timeLimit);
-    } else {
-      return AndroidSettings(accuracy: accuracy, timeLimit: timeLimit);
-    }
   }
 }

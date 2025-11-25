@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
-
-import 'package:rakhsa/modules/information/presentation/provider/passport_notifier.dart';
+import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
 class PassportInfoPage extends StatefulWidget {
   final String stateId;
@@ -21,18 +20,18 @@ class PassportInfoPage extends StatefulWidget {
 }
 
 class PassportInfoPageState extends State<PassportInfoPage> {
-  late PassportNotifier passportNotifier;
+  late InformationProvider informationProvider;
 
   Future<void> getData() async {
     if (!mounted) return;
-    passportNotifier.infoPassport(stateId: widget.stateId.toString());
+    informationProvider.getPassportInfo(widget.stateId.toString());
   }
 
   @override
   void initState() {
     super.initState();
 
-    passportNotifier = context.read<PassportNotifier>();
+    informationProvider = context.read<InformationProvider>();
 
     Future.microtask(() => getData());
   }
@@ -71,48 +70,47 @@ class PassportInfoPageState extends State<PassportInfoPage> {
           ),
         ),
       ),
-      body: Consumer<PassportNotifier>(
-        builder:
-            (BuildContext context, PassportNotifier notifier, Widget? child) {
-              if (notifier.state == ProviderState.loading) {
-                return const Center(
-                  child: SizedBox(
-                    width: 16.0,
-                    height: 16.0,
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              if (notifier.state == ProviderState.error) {
-                return Center(
-                  child: Text(
-                    notifier.message,
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.black,
-                    ),
-                  ),
-                );
-              }
-              return ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(
-                  top: 12.0,
-                  bottom: 12.0,
-                  left: 16.0,
-                  right: 16.0,
+      body: Consumer<InformationProvider>(
+        builder: (context, n, child) {
+          if (n.isGetPassportState(RequestState.loading)) {
+            return const Center(
+              child: SizedBox(
+                width: 16.0,
+                height: 16.0,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (n.isGetPassportState(RequestState.error)) {
+            return Center(
+              child: Text(
+                n.errorMessage ?? "-",
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black,
                 ),
-                children: [
-                  Text(
-                    passportNotifier.entity.data?.content.toString() ?? "-",
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.black,
-                    ),
-                  ),
-                ],
-              );
-            },
+              ),
+            );
+          }
+          return ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(
+              top: 12.0,
+              bottom: 12.0,
+              left: 16.0,
+              right: 16.0,
+            ),
+            children: [
+              Text(
+                n.passportData ?? "-",
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
