@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
@@ -18,6 +22,8 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   late GoRouter router;
 
+  StreamSubscription<Uri>? _linkSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +31,30 @@ class AppState extends State<App> {
     _initializeService();
   }
 
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _linkSubscription = AppLinks().uriLinkStream.listen((uri) {
+      final referralCode = uri.queryParameters['telkom_trx'];
+      final userIsLoggedIn = locator<AuthProvider>().userIsLoggedIn();
+      log(
+        'onAppLink: $uri | userIsLoggedIn? $userIsLoggedIn',
+        label: "APP_LINKS",
+      );
+
+      if (referralCode != null) {
+        if (userIsLoggedIn) {
+        } else {}
+      }
+    });
+  }
+
   void _initializeService() async {
+    await _initDeepLinks();
     await NotificationManager().initializeFcmHandlers();
     await NotificationManager().setForegroundMessageActionListeners();
   }

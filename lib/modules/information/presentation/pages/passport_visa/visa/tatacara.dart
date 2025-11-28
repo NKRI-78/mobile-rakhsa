@@ -67,7 +67,7 @@ class TataCaraPageState extends State<TataCaraPage> {
       ),
       body: Consumer<InformationProvider>(
         builder: (context, n, child) {
-          if (n.isGetVisaState(RequestState.loading)) {
+          if (n.isGetVisa(RequestState.loading)) {
             return const Center(
               child: SizedBox(
                 width: 16.0,
@@ -76,7 +76,7 @@ class TataCaraPageState extends State<TataCaraPage> {
               ),
             );
           }
-          if (n.isGetVisaState(RequestState.error)) {
+          if (n.isGetVisa(RequestState.error)) {
             return Center(
               child: Text(
                 n.errorMessage ?? "-",

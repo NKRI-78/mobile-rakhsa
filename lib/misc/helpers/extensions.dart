@@ -13,6 +13,7 @@ extension ContextExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
   double get bottom => mediaQuery.padding.bottom;
+  double getScreenHeight([double from = 1.0]) => mediaQuery.size.height * from;
 }
 
 extension NumExtension on num {

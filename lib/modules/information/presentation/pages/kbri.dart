@@ -71,7 +71,7 @@ class KbriPageState extends State<KbriPage> {
                   ),
                 ),
 
-                if (n.isGetKbriByCountryIdState(RequestState.loading))
+                if (n.isGetKbriByCountryId(RequestState.loading))
                   const SliverFillRemaining(
                     child: Center(
                       child: SizedBox(
@@ -82,7 +82,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (n.isGetKbriByCountryIdState(RequestState.error))
+                if (n.isGetKbriByCountryId(RequestState.error))
                   SliverFillRemaining(
                     child: Center(
                       child: Text(
@@ -95,7 +95,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (n.isGetKbriByCountryIdState(RequestState.success))
+                if (n.isGetKbriByCountryId(RequestState.success))
                   SliverToBoxAdapter(
                     child: Container(
                       padding: const EdgeInsets.all(8.0),
@@ -111,7 +111,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (n.isGetKbriByCountryIdState(RequestState.success))
+                if (n.isGetKbriByCountryId(RequestState.success))
                   SliverList(
                     delegate: SliverChildListDelegate([
                       Container(

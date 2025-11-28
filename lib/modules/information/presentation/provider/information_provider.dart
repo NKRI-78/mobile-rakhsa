@@ -31,21 +31,20 @@ class InformationProvider extends ChangeNotifier {
   // condition state
 
   var _fetchCountryState = RequestState.idle;
-  bool isFetchCountryState(RequestState state) => _fetchCountryState == state;
+  bool isFetchCountry(RequestState state) => _fetchCountryState == state;
 
   var _getCurrentKbriState = RequestState.idle;
-  bool isGetCurrentKbriState(RequestState state) =>
-      _getCurrentKbriState == state;
+  bool isGetCurrentKbri(RequestState state) => _getCurrentKbriState == state;
 
   var _getKbriByCountryIdState = RequestState.idle;
-  bool isGetKbriByCountryIdState(RequestState state) =>
+  bool isGetKbriByCountryId(RequestState state) =>
       _getKbriByCountryIdState == state;
 
   var _getPassportState = RequestState.idle;
-  bool isGetPassportState(RequestState state) => _getPassportState == state;
+  bool isGetPassport(RequestState state) => _getPassportState == state;
 
   var _getVisaState = RequestState.idle;
-  bool isGetVisaState(RequestState state) => _getVisaState == state;
+  bool isGetVisa(RequestState state) => _getVisaState == state;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;

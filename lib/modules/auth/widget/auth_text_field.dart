@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/widgets/components/textinput/textfield.dart';
+import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 
 class AuthTextField extends StatefulWidget {
   const AuthTextField({

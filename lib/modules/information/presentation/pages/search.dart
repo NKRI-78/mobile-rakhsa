@@ -83,21 +83,21 @@ class SearchPageState extends State<SearchPage> {
                     ),
                   ),
 
-                  if (n.isGetCurrentKbriState(RequestState.loading))
+                  if (n.isGetCurrentKbri(RequestState.loading))
                     SliverFillRemaining(
                       child: Center(
                         child: SpinKitChasingDots(color: primaryColor),
                       ),
                     ),
 
-                  if (n.isGetCurrentKbriState(RequestState.error))
+                  if (n.isGetCurrentKbri(RequestState.error))
                     SliverFillRemaining(
                       child: Center(
                         child: SpinKitChasingDots(color: primaryColor),
                       ),
                     ),
 
-                  if (n.isGetCurrentKbriState(RequestState.success))
+                  if (n.isGetCurrentKbri(RequestState.success))
                     SliverToBoxAdapter(
                       child: Container(
                         margin: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -306,7 +306,7 @@ class SearchPageState extends State<SearchPage> {
                     ),
                   ),
 
-                  if (n.isFetchCountryState(RequestState.success))
+                  if (n.isFetchCountry(RequestState.success))
                     SliverList.builder(
                       itemCount: n.countries.length,
                       itemBuilder: (BuildContext context, int i) {
@@ -417,7 +417,7 @@ class SearchPageState extends State<SearchPage> {
                     ),
                   ),
 
-                  if (n.isFetchCountryState(RequestState.loading))
+                  if (n.isFetchCountry(RequestState.loading))
                     const SliverFillRemaining(
                       child: Center(
                         child: SizedBox(

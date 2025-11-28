@@ -37,7 +37,7 @@ class LocationProvider extends ChangeNotifier {
 
   Future<LocationData?> getCurrentLocation({
     bool enableCache = true,
-    Duration cacheAge = const Duration(minutes: 30),
+    Duration cacheAge = const Duration(minutes: 7),
   }) async {
     log(
       "loading getCurrentLocation... | enableCache? $enableCache",

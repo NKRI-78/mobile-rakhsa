@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/router/router.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart';
@@ -54,14 +55,8 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage m) async {
 
   d.log("notifikasi dari background = $data", label: "NOTIFICATION_MANAGER");
 
-  if (type != null && type.isNotEmpty) {
-    if (type == NotificationType.fetchLatestLocation) {
-      await sendLatestLocation("FCM in Background");
-    }
-
-    if (type == NotificationType.confirmSos) {
-      await SosCoordinator.markPendingStopFromBackground();
-    }
+  if (type == NotificationType.confirmSos) {
+    await SosCoordinator.markPendingStopFromBackground();
   }
 }
 
@@ -165,7 +160,12 @@ class NotificationManager {
         }
 
         if (type == NotificationType.fetchLatestLocation) {
-          await sendLatestLocation("FCM in Foreground");
+          await sendLatestLocation(
+            "Notification on Foreground",
+            otherSource: navigatorKey.currentContext
+                ?.read<LocationProvider>()
+                .location,
+          );
         }
 
         await showNotification(
@@ -230,12 +230,26 @@ class NotificationManager {
     );
   }
 
-  Future<void> dismissAllNotification() {
+  Future<void> dismissAllNotification() async {
     d.log("cancel semua notif", label: "NOTIFICATION_MANAGER");
-    return AwesomeNotifications().dismissAllNotifications();
+    final delivered = await AwesomeNotifications().listScheduledNotifications();
+
+    for (final n in delivered) {
+      final payloadType = n.content?.payload?['type'];
+
+      if (payloadType == 'chat') {
+        final id = n.content?.id;
+        if (id != null) {
+          await AwesomeNotifications().cancel(id);
+        }
+      }
+    }
   }
 
-  Future<void> handleNotificationOnTap(Map<String, dynamic>? data) async {
+  Future<void> handleNotificationOnTap(
+    Map<String, dynamic>? data, {
+    bool fromForeground = false,
+  }) async {
     String type = data?['type'] ?? "undefined type";
     final c = navigatorKey.currentContext!;
 
@@ -259,6 +273,9 @@ class NotificationManager {
         break;
       case NotificationType.chat:
         _handleChatOnTap(c, data);
+        break;
+      case NotificationType.fetchLatestLocation:
+        _handleFetchLatestLocationOnTap(c, fromForeground);
         break;
       default:
         d.log(
@@ -341,6 +358,16 @@ class NotificationManager {
       ),
     ).go(c);
   }
+
+  void _handleFetchLatestLocationOnTap(
+    BuildContext c,
+    bool fromForeground,
+  ) async {
+    // kalau dari foreground biarkan trigger sendLatestLocation ada di FirebaseMessaging.onMessage.listen
+    if (fromForeground) return;
+    // yang ini untuk on tap dari background aja
+    await sendLatestLocation("User open the App");
+  }
 }
 
 //* ===== NOTIFICATION FOREGROUND ON TAP HANDLER =====
@@ -368,6 +395,9 @@ class NotificationActionController {
       "notifikasi di tap dari NotificationActionController.onActionReceivedMethod() | payload = ${r.payload ?? "-"}",
       label: "NOTIFICATION_MANAGER",
     );
-    await NotificationManager().handleNotificationOnTap(r.payload);
+    await NotificationManager().handleNotificationOnTap(
+      r.payload,
+      fromForeground: true,
+    );
   }
 }
