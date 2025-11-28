@@ -71,7 +71,7 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
         ),
         child: Container(
           padding: EdgeInsets.all(16),
-          height: context.mediaQuery.size.height * 0.7,
+          height: context.getScreenHeight(0.7),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,8 +94,6 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
                     physics: BouncingScrollPhysics(),
                     child: Html(
                       data: """
-<p><strong>Terakhir diperbarui: 21 November 2025</strong></p>
-
 <p>Selamat datang di Marlinda. Dengan menggunakan aplikasi ini, Anda setuju untuk terikat dengan Syarat dan Ketentuan berikut. Harap baca dengan saksama sebelum menggunakan layanan.</p>
 
 <p><strong>1. Definisi</strong></p>

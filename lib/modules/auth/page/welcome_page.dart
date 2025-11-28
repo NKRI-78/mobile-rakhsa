@@ -1,141 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/modules/auth/widget/terms_and_conditions_dialog.dart';
 import 'package:rakhsa/routes/routes_navigation.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/service/permission/permission_manager.dart';
 
-import 'package:rakhsa/widgets/components/modal/modal.dart';
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
   @override
-  State<WelcomePage> createState() => WelcomePageState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class WelcomePageState extends State<WelcomePage> {
-  bool isDialogShowing = false;
+class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
+  bool _openedSettings = false;
+  bool _hasPermissionDialogLaunchBefore = false;
 
-  Future<void> requestAllPermissions() async {
-    if (isDialogShowing) return; // Prevent re-entry
-    isDialogShowing = true;
-
-    debugPrint("=== REQUESTING PERMISSIONS ===");
-
-    if (await requestPermission(
-      Permission.location,
-      "location",
-      "location.png",
-    )) {
-      return;
-    }
-
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      await showDialog(
-        "Perizinan akses device lokasi dibutuhkan, silahkan aktifkan terlebih dahulu",
-        "GPS",
-        "location.png",
-      );
-      isDialogShowing = false;
-      return;
-    }
-
-    if (await requestPermission(
-      Permission.notification,
-      "notification",
-      "notification.png",
-    )) {
-      return;
-    }
-    if (await requestPermission(
-      Permission.microphone,
-      "microphone",
-      "microphone.png",
-    )) {
-      return;
-    }
-    if (await requestPermission(Permission.camera, "camera", "camera.png")) {
-      return;
-    }
-
-    debugPrint("ALL PERMISSIONS GRANTED");
-    isDialogShowing = false;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && PermissionManager().hasTaskExecutionBefore) {
+        _handlePermission();
+      }
+    });
   }
 
-  Future<bool> requestPermission(
-    Permission permission,
-    String type,
-    String img,
-  ) async {
-    var status = await permission.request();
-
-    if (type == "notification") {
-      if (status == PermissionStatus.denied ||
-          status == PermissionStatus.permanentlyDenied) {
-        await showDialog(
-          "Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type,
-          img,
-        );
-        isDialogShowing = false;
-        return true;
-      }
-    } else {
-      if (status == PermissionStatus.permanentlyDenied) {
-        await showDialog(
-          "Perizinan akses $type dibutuhkan, silahkan aktifkan terlebih dahulu",
-          type,
-          img,
-        );
-        isDialogShowing = false;
-        return true;
-      }
-
-      if (status != PermissionStatus.granted) {
-        debugPrint("Permission $type denied, stopping process.");
-        isDialogShowing = false;
-        return true;
-      }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      if (!_openedSettings) return;
+      if (_hasPermissionDialogLaunchBefore) return;
+      _openedSettings = false;
+      _hasPermissionDialogLaunchBefore = true;
+      await _handlePermission();
     }
-
-    return false;
   }
 
-  Future<void> showDialog(String message, String type, String img) async {
-    if (!isDialogShowing) return;
-    await GeneralModal.dialogRequestPermission(
-      msg: message,
-      type: type,
-      img: img,
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> _handlePermission() async {
+    await PermissionManager().requestAllPermissionsWithHandler(
+      parentContext: context,
+      onRequestPermanentlyDenied: () {
+        _openedSettings = true;
+        _hasPermissionDialogLaunchBefore = false;
+      },
     );
   }
 
-  Future<void> _showTermsAndConditionDialog() async {
-    if (!mounted) return;
-    bool? agree = await TermsAndConditionsDialog.launch(context, true);
-    if (mounted && agree != null && agree) {
+  Future<void> _showTermsAndConditionDialog(BuildContext c) async {
+    if (!c.mounted) return;
+    bool? agree = await TermsAndConditionsDialog.launch(c, true);
+    if (c.mounted && agree != null && agree) {
       await Future.delayed(Duration(milliseconds: 300));
-      // ignore: use_build_context_synchronously
-      AppDialog.showLoading(context);
-      await Future.delayed(Duration(milliseconds: 600));
+      if (c.mounted) AppDialog.showLoading(c);
+      await Future.delayed(Duration(milliseconds: 500));
       AppDialog.dismissLoading();
-      await _requestAllPermissions();
+      if (c.mounted) await _handlePermission();
     }
   }
 
-  Future<Map<Permission, PermissionStatus>> _requestAllPermissions() {
-    return [
-      Permission.camera,
-      Permission.microphone,
-      Permission.notification,
-      Permission.location,
-    ].request();
+  Future<void> _handleRouteButton(BuildContext c, String route) async {
+    if (TermsAndConditionsDialog.hasLaunchBefore) {
+      await PermissionManager().resetTaskExecutionFlag();
+      if (c.mounted) Navigator.pushNamed(c, route);
+    } else {
+      await _showTermsAndConditionDialog(c);
+    }
   }
 
   @override
@@ -191,13 +134,8 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // login button
                   ElevatedButton(
-                    onPressed: () async {
-                      if (TermsAndConditionsDialog.hasLaunchBefore) {
-                        Navigator.pushNamed(context, RoutesNavigation.login);
-                      } else {
-                        await _showTermsAndConditionDialog();
-                      }
-                    },
+                    onPressed: () async =>
+                        _handleRouteButton(context, RoutesNavigation.login),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: whiteColor,
                       backgroundColor: primaryColor,
@@ -245,13 +183,10 @@ class WelcomePageState extends State<WelcomePage> {
 
                   // register button
                   OutlinedButton(
-                    onPressed: () async {
-                      if (TermsAndConditionsDialog.hasLaunchBefore) {
-                        Navigator.pushNamed(context, RoutesNavigation.register);
-                      } else {
-                        await _showTermsAndConditionDialog();
-                      }
-                    },
+                    onPressed: () async => await _handleRouteButton(
+                      context,
+                      RoutesNavigation.register,
+                    ),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: blackColor,
                       backgroundColor: whiteColor,

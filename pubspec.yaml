@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
   # A
+  app_links: ^6.4.1
   awesome_notifications: ^0.10.1
 
   # B

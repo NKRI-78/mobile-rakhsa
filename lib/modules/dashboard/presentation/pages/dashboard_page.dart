@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/modules/dashboard/presentation/widgets/enable_location_always_dialog.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -24,6 +25,7 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
+import 'package:rakhsa/service/permission/permission_manager.dart';
 
 import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
 
@@ -40,7 +42,8 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => DashboardPageState();
 }
 
-class DashboardPageState extends State<DashboardPage> {
+class DashboardPageState extends State<DashboardPage>
+    with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _pageNotifyController = ValueNotifier<int>(0);
@@ -79,7 +82,6 @@ class DashboardPageState extends State<DashboardPage> {
     Future.microtask(() => getData());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      EnableLocationAlwaysDialog.checkOrLaunch(context);
       _sendLatestLocation();
     });
   }
@@ -117,6 +119,11 @@ class DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> getCurrentLocation() async {
+    await PermissionManager().requestAllPermissionsWithHandler(
+      parentContext: context,
+      customPermission: [Permission.location],
+    );
+
     final gpsEnabled = await Geolocator.isLocationServiceEnabled();
     if (!gpsEnabled) {
       if (mounted) {
@@ -143,87 +150,32 @@ class DashboardPageState extends State<DashboardPage> {
       return;
     }
 
-    // check location permission
-    LocationPermission lp = await Geolocator.checkPermission();
-    if (lp == LocationPermission.denied) {
-      if (mounted) {
-        bool? request = await AppDialog.show(
-          c: context,
-          content: DialogContent(
-            assetIcon: "assets/images/icons/current-location.png",
-            title: "Permintaan Izin Lokasi",
-            message:
-                "Aplikasi memerlukan akses lokasi agar dapat mengirim SOS dengan akurat saat keadaan darurat. Mohon aktifkan izin lokasi untuk melanjutkan.",
-            buildActions: (dc) => [
-              DialogActionButton(
-                label: "Minta Izin",
-                primary: true,
-                onTap: () => dc.pop(true),
-              ),
-            ],
-          ),
+    await locationProvider.getCurrentLocation();
+
+    final newLocation = locationProvider.location;
+
+    if (newLocation != null) {
+      final placemark = newLocation.placemark;
+      final coord = newLocation.coord;
+
+      Future.delayed(Duration.zero, () async {
+        await updateAddressNotifier.updateAddress(
+          address: placemark?.getAddress() ?? "-",
+          state: placemark?.country ?? "-",
+          lat: coord.lat,
+          lng: coord.lng,
         );
-        if (request != null && request) {
-          lp = await Geolocator.requestPermission();
-        }
-      }
-    }
 
-    if (lp == LocationPermission.deniedForever) {
-      if (mounted) {
-        bool? openSettings = await AppDialog.show(
-          c: context,
-          content: DialogContent(
-            assetIcon: "assets/images/icons/current-location.png",
-            title: "Akses Lokasi Dinonaktifkan",
-            message: """
-Izin lokasi saat ini ditolak secara permanen.
-Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, lalu izinkan akses lokasi agar fitur SOS dapat berfungsi dengan benar.
-""",
-            buildActions: (dc) => [
-              DialogActionButton(
-                label: "Buka Pengaturan",
-                primary: true,
-                onTap: () => dc.pop(true),
-              ),
-            ],
-          ),
+        StorageHelper.saveUserNationality(
+          nationality: placemark?.country ?? "-",
         );
-        if (openSettings != null && openSettings) {
-          await Geolocator.openAppSettings();
-        }
-      }
-    }
 
-    if (lp == LocationPermission.always ||
-        lp == LocationPermission.whileInUse) {
-      await locationProvider.getCurrentLocation();
-
-      final newLocation = locationProvider.location;
-
-      if (newLocation != null) {
-        final placemark = newLocation.placemark;
-        final coord = newLocation.coord;
-
-        Future.delayed(Duration.zero, () async {
-          await updateAddressNotifier.updateAddress(
-            address: placemark?.getAddress() ?? "-",
-            state: placemark?.country ?? "-",
-            lat: coord.lat,
-            lng: coord.lng,
-          );
-
-          StorageHelper.saveUserNationality(
-            nationality: placemark?.country ?? "-",
-          );
-
-          await dashboardNotifier.getEws(
-            lat: coord.lat,
-            lng: coord.lng,
-            state: placemark?.country ?? "-",
-          );
-        });
-      }
+        await dashboardNotifier.getEws(
+          lat: coord.lat,
+          lng: coord.lng,
+          state: placemark?.country ?? "-",
+        );
+      });
     }
   }
 
@@ -270,7 +222,9 @@ Untuk mengaktifkannya kembali, buka Pengaturan Sistem Aplikasi > Izin > Lokasi, 
   void initBanners() {
     banners.clear();
 
-    banners.add(WeatherCard());
+    if (locationProvider.isGetLocationState(RequestState.success)) {
+      banners.add(WeatherCard());
+    }
 
     Future.delayed(const Duration(seconds: 1), () async {
       for (var banner in dashboardNotifier.banners) {

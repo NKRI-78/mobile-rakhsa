@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
@@ -21,13 +25,28 @@ class AppState extends State<App> {
   final _showOnBoarding = !StorageHelper.containsKey("on_boarding_key");
   final _userIsLoggedIn = StorageHelper.isLoggedIn();
 
+  StreamSubscription<Uri>? _linkSubscription;
+
   @override
   void initState() {
     super.initState();
     _initializeService();
   }
 
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initDeepLinks() {
+    _linkSubscription = AppLinks().uriLinkStream.listen((uri) {
+      log('onAppLink: $uri', label: "APP_LINKS");
+    });
+  }
+
   void _initializeService() async {
+    _initDeepLinks();
     await NotificationManager().initializeFcmHandlers();
     await NotificationManager().setForegroundMessageActionListeners();
   }
