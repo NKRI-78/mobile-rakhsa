@@ -55,6 +55,9 @@ class DashboardPageState extends State<DashboardPage>
   late LocationProvider locationProvider;
   late UpdateAddressNotifier updateAddressNotifier;
 
+  bool _openedSettings = false;
+  bool _hasPermissionDialogLaunchBefore = false;
+
   List<Widget> banners = [];
 
   DateTime? lastTap;
@@ -62,6 +65,8 @@ class DashboardPageState extends State<DashboardPage>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     VibrationManager.instance.init();
 
@@ -87,7 +92,27 @@ class DashboardPageState extends State<DashboardPage>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      if (!_openedSettings) return;
+      if (_hasPermissionDialogLaunchBefore) return;
+      _openedSettings = false;
+      _hasPermissionDialogLaunchBefore = true;
+      await PermissionManager().requestAllPermissionsWithHandler(
+        parentContext: context,
+        customPermission: [Permission.location],
+        onRequestPermanentlyDenied: () {
+          _openedSettings = true;
+          _hasPermissionDialogLaunchBefore = false;
+        },
+      );
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pageNotifyController.dispose();
     _pageController.dispose();
 
@@ -122,6 +147,10 @@ class DashboardPageState extends State<DashboardPage>
     await PermissionManager().requestAllPermissionsWithHandler(
       parentContext: context,
       customPermission: [Permission.location],
+      onRequestPermanentlyDenied: () {
+        _openedSettings = true;
+        _hasPermissionDialogLaunchBefore = false;
+      },
     );
 
     final gpsEnabled = await Geolocator.isLocationServiceEnabled();
