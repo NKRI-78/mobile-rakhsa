@@ -10,9 +10,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
+import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
@@ -55,7 +57,7 @@ class DashboardPageState extends State<DashboardPage>
   late SocketIoService socketIoService;
   late UserProvider profileNotifier;
   late LocationProvider locationProvider;
-  // late ReferralProvider referralProvider;
+  late ReferralProvider referralProvider;
   late AuthProvider authProvider;
   late UpdateAddressNotifier updateAddressNotifier;
 
@@ -80,7 +82,7 @@ class DashboardPageState extends State<DashboardPage>
     locationProvider = context.read<LocationProvider>();
     socketIoService = context.read<SocketIoService>();
     authProvider = context.read<AuthProvider>();
-    // referralProvider = context.read<ReferralProvider>();
+    referralProvider = context.read<ReferralProvider>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.fromRegister) _showWelcomeDialog();
@@ -129,38 +131,39 @@ class DashboardPageState extends State<DashboardPage>
     await StorageHelper.loadlocalSession();
 
     if (!mounted) return;
-    //TODO: jangan lupa aktivin hasActivateRoaming
-    // if (!referralProvider.haActivesRoaming) {
-    //   AppDialog.error(
-    //     c: context,
-    //     canPop: false,
-    //     title: "Masa Paket Roaming Telah Habis",
-    //     message:
-    //         "Masa paket roaming Anda telah berakhir. Layanan Marlinda tidak dapat digunakan sampai Anda membeli paket roaming baru.",
-    //     buildActions: (c) {
-    //       return [
-    //         DialogActionButton(
-    //           label: "Keluar",
-    //           onTap: () async {
-    //             c.pop();
-    //             AppDialog.showLoading(context);
-
-    //             await authProvider.logout(context);
-
-    //             AppDialog.dismissLoading();
-
-    //             if (!mounted) return;
-    //             WelcomeRoute().go(context);
-    //           },
-    //         ),
-    //       ];
-    //     },
-    //   );
-    //   return;
-    // }
-
-    if (!mounted) return;
     await profileNotifier.getUser();
+
+    final package = await profileNotifier.getRoamingPackage();
+    if (!mounted) return;
+    if (!referralProvider.roamingIsActive(package)) {
+      AppDialog.error(
+        c: context,
+        canPop: false,
+        title: "Masa Paket Roaming Telah Habis",
+        message:
+            "Masa paket roaming Anda telah berakhir. Layanan Marlinda tidak dapat digunakan sampai Anda membeli paket roaming baru.",
+        buildActions: (c) {
+          return [
+            DialogActionButton(
+              label: "Keluar",
+              primary: true,
+              onTap: () async {
+                c.pop();
+                AppDialog.showLoading(context);
+
+                await authProvider.logout(context);
+
+                AppDialog.dismissLoading();
+
+                if (!mounted) return;
+                WelcomeRoute().go(context);
+              },
+            ),
+          ];
+        },
+      );
+      return;
+    }
 
     if (!mounted) return;
     await NotificationManager().initializeFcmToken();

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/repositories/referral/model/referral.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 
@@ -15,6 +16,11 @@ class ReferralProvider extends ChangeNotifier {
   ReferralState get state => _state;
 
   bool get hasReferralCode => _repository.hasReferralCode();
+
+  bool roamingIsActive([ReferralPackage? package]) {
+    if (package == null) return false;
+    return DateTime.now().isBefore(package.endAt);
+  }
 
   Future<void> activateReferralCode(
     String uid, [

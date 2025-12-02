@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/repositories/referral/model/referral.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 
@@ -24,6 +25,25 @@ class UserProvider with ChangeNotifier {
   RequestState get getUserState => _getUserState;
 
   UserSession? get session => _session;
+
+  Future<ReferralPackage?> getRoamingPackage() async {
+    if (_user != null) {
+      final packages = _user?.package ?? [];
+      if (packages.isEmpty) return null;
+      return packages.first;
+    }
+
+    try {
+      final remoteUser = await getUser();
+      final user = remoteUser ?? _user;
+      if (user == null) return null;
+      final packages = user.package;
+      if (packages.isEmpty) return null;
+      return packages.first;
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<User?> getUser({bool enableCache = false}) async {
     _getUserState = RequestState.loading;
