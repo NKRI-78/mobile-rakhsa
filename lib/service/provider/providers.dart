@@ -1,6 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';

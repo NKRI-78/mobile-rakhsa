@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';

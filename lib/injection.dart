@@ -3,7 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/repositories/information/information_repository.dart';

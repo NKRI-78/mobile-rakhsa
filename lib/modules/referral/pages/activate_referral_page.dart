@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/referral/widget/referral_info_container.dart';
 import 'package:rakhsa/modules/referral/widget/tutorial_get_referral_code.dart';
 import 'package:rakhsa/router/route_trees.dart';

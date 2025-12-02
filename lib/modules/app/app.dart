@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:upgrader/upgrader.dart';

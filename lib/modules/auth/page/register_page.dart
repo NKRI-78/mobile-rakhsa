@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 import 'package:rakhsa/service/storage/storage.dart';
