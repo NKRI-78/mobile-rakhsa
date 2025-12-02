@@ -10,7 +10,6 @@ import 'package:rakhsa/modules/information/presentation/pages/passport_visa/pass
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/visa/visa.dart';
 import 'package:rakhsa/modules/information/presentation/pages/widgets/list_card.dart';
 
-//TODO: halaman harus diaudit apakah masi kepake atau engga
 class PassportVisaIndexPage extends StatelessWidget {
   final int stateId;
 

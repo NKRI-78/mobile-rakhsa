@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
+import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
@@ -22,35 +24,25 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   late GoRouter router;
 
-  StreamSubscription<Uri>? _linkSubscription;
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+
+  StreamSubscription<Uri>? _linkSubs;
 
   @override
   void initState() {
     super.initState();
-    router = AppRouter().generateRoute(locator<AuthProvider>());
+    router = AppRouter().generateRoute(
+      locator<AuthProvider>(),
+      locator<ReferralProvider>(),
+    );
     _initializeService();
   }
 
   @override
   void dispose() {
-    _linkSubscription?.cancel();
+    _linkSubs?.cancel();
+    _linkSubs = null;
     super.dispose();
-  }
-
-  Future<void> _initDeepLinks() async {
-    _linkSubscription = AppLinks().uriLinkStream.listen((uri) {
-      final referralCode = uri.queryParameters['telkom_trx'];
-      final userIsLoggedIn = locator<AuthProvider>().userIsLoggedIn();
-      log(
-        'onAppLink: $uri | userIsLoggedIn? $userIsLoggedIn',
-        label: "APP_LINKS",
-      );
-
-      if (referralCode != null) {
-        if (userIsLoggedIn) {
-        } else {}
-      }
-    });
   }
 
   void _initializeService() async {
@@ -59,7 +51,17 @@ class AppState extends State<App> {
     await NotificationManager().setForegroundMessageActionListeners();
   }
 
-  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+  Future<void> _initDeepLinks() async {
+    _linkSubs?.cancel();
+    _linkSubs = AppLinks().uriLinkStream.listen((uri) async {
+      log('onAppLink: $uri', label: "APP_LINKS");
+      final referralCode = uri.queryParameters['telkom_trx'];
+      log('referralCode: $referralCode', label: "REFERRAL_CODE");
+      if (referralCode != null) {
+        await locator<ReferralRepository>().saveReferralCode(referralCode);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

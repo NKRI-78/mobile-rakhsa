@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart' as location;
@@ -11,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/service/device/vibration_manager.dart';
@@ -33,6 +33,7 @@ import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key, this.fromRegister = false});
@@ -54,6 +55,8 @@ class DashboardPageState extends State<DashboardPage>
   late SocketIoService socketIoService;
   late UserProvider profileNotifier;
   late LocationProvider locationProvider;
+  // late ReferralProvider referralProvider;
+  late AuthProvider authProvider;
   late UpdateAddressNotifier updateAddressNotifier;
 
   bool _openedSettings = false;
@@ -76,6 +79,8 @@ class DashboardPageState extends State<DashboardPage>
     dashboardNotifier = context.read<DashboardNotifier>();
     locationProvider = context.read<LocationProvider>();
     socketIoService = context.read<SocketIoService>();
+    authProvider = context.read<AuthProvider>();
+    // referralProvider = context.read<ReferralProvider>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.fromRegister) _showWelcomeDialog();
@@ -122,6 +127,37 @@ class DashboardPageState extends State<DashboardPage>
 
   Future<void> getData() async {
     await StorageHelper.loadlocalSession();
+
+    if (!mounted) return;
+    //TODO: jangan lupa aktivin hasActivateRoaming
+    // if (!referralProvider.haActivesRoaming) {
+    //   AppDialog.error(
+    //     c: context,
+    //     canPop: false,
+    //     title: "Masa Paket Roaming Telah Habis",
+    //     message:
+    //         "Masa paket roaming Anda telah berakhir. Layanan Marlinda tidak dapat digunakan sampai Anda membeli paket roaming baru.",
+    //     buildActions: (c) {
+    //       return [
+    //         DialogActionButton(
+    //           label: "Keluar",
+    //           onTap: () async {
+    //             c.pop();
+    //             AppDialog.showLoading(context);
+
+    //             await authProvider.logout(context);
+
+    //             AppDialog.dismissLoading();
+
+    //             if (!mounted) return;
+    //             WelcomeRoute().go(context);
+    //           },
+    //         ),
+    //       ];
+    //     },
+    //   );
+    //   return;
+    // }
 
     if (!mounted) return;
     await profileNotifier.getUser();
@@ -291,97 +327,99 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
+    return StatusBarStyle.dark(
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
 
-        if (lastTap == null) {
-          lastTap = DateTime.now();
-          AppDialog.showToast("Tekan sekali lagi untuk keluar");
-        } else {
-          if (DateTime.now().difference(lastTap!) < Duration(seconds: 2)) {
-            SystemNavigator.pop();
-          } else {
+          if (lastTap == null) {
             lastTap = DateTime.now();
             AppDialog.showToast("Tekan sekali lagi untuk keluar");
+          } else {
+            if (DateTime.now().difference(lastTap!) < Duration(seconds: 2)) {
+              SystemNavigator.pop();
+            } else {
+              lastTap = DateTime.now();
+              AppDialog.showToast("Tekan sekali lagi untuk keluar");
+            }
           }
-        }
-      },
-      child: Scaffold(
-        key: _scaffoldKey,
+        },
+        child: Scaffold(
+          key: _scaffoldKey,
 
-        // PROFIlE DRAWER
-        endDrawer: SafeArea(child: HomeDrawer()),
+          // PROFIlE DRAWER
+          endDrawer: SafeArea(child: HomeDrawer()),
 
-        // HOME PAGE
-        body: ValueListenableBuilder(
-          valueListenable: _pageNotifyController,
-          builder: (context, currentPageIndex, child) {
-            return PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                HomePage(
-                  globalKey: _scaffoldKey,
-                  onRefresh: () => getData(),
-                  banners: banners,
+          // HOME PAGE
+          body: ValueListenableBuilder(
+            valueListenable: _pageNotifyController,
+            builder: (context, currentPageIndex, child) {
+              return PageView(
+                controller: _pageController,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  HomePage(
+                    globalKey: _scaffoldKey,
+                    onRefresh: () => getData(),
+                    banners: banners,
+                  ),
+                  InformationListPage(),
+                  NearMeListTypePage(),
+                ],
+              );
+            },
+          ),
+
+          // BOTTOM NAV BAR
+          bottomNavigationBar: SafeArea(
+            child: Theme(
+              data: Platform.isIOS
+                  ? Theme.of(context).copyWith(
+                      splashFactory: InkSparkle.splashFactory,
+                      splashColor: primaryColor.withValues(alpha: 0.5),
+                      highlightColor: Colors.transparent,
+                    )
+                  : Theme.of(context),
+              child: ClipRRect(
+                borderRadius: BorderRadiusGeometry.vertical(
+                  top: Radius.circular(Platform.isIOS ? 16 : 24),
                 ),
-                InformationListPage(),
-                NearMeListTypePage(),
-              ],
-            );
-          },
-        ),
-
-        // BOTTOM NAV BAR
-        bottomNavigationBar: SafeArea(
-          child: Theme(
-            data: Platform.isIOS
-                ? Theme.of(context).copyWith(
-                    splashFactory: InkSparkle.splashFactory,
-                    splashColor: primaryColor.withValues(alpha: 0.5),
-                    highlightColor: Colors.transparent,
-                  )
-                : Theme.of(context),
-            child: ClipRRect(
-              borderRadius: BorderRadiusGeometry.vertical(
-                top: Radius.circular(Platform.isIOS ? 16 : 24),
-              ),
-              child: ValueListenableBuilder(
-                valueListenable: _pageNotifyController,
-                builder: (context, currentPage, child) {
-                  return BottomNavigationBar(
-                    currentIndex: currentPage,
-                    onTap: _onPageChanged,
-                    selectedFontSize: 14,
-                    unselectedFontSize: 14,
-                    backgroundColor: primaryColor,
-                    selectedItemColor: whiteColor,
-                    type: BottomNavigationBarType.fixed,
-                    unselectedItemColor: whiteColor.withValues(alpha: 0.7),
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(IconsaxPlusLinear.home_1),
-                        activeIcon: Icon(IconsaxPlusBold.home_1),
-                        label: "Home",
-                        tooltip: "Home",
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(IconsaxPlusLinear.document),
-                        activeIcon: Icon(IconsaxPlusBold.document),
-                        label: "Information",
-                        tooltip: "Information",
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(IconsaxPlusLinear.location),
-                        activeIcon: Icon(IconsaxPlusBold.location),
-                        label: "Near Me",
-                        tooltip: "Near Me",
-                      ),
-                    ],
-                  );
-                },
+                child: ValueListenableBuilder(
+                  valueListenable: _pageNotifyController,
+                  builder: (context, currentPage, child) {
+                    return BottomNavigationBar(
+                      currentIndex: currentPage,
+                      onTap: _onPageChanged,
+                      selectedFontSize: 14,
+                      unselectedFontSize: 14,
+                      backgroundColor: primaryColor,
+                      selectedItemColor: whiteColor,
+                      type: BottomNavigationBarType.fixed,
+                      unselectedItemColor: whiteColor.withValues(alpha: 0.7),
+                      items: [
+                        BottomNavigationBarItem(
+                          icon: Icon(IconsaxPlusLinear.home_1),
+                          activeIcon: Icon(IconsaxPlusBold.home_1),
+                          label: "Home",
+                          tooltip: "Home",
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(IconsaxPlusLinear.document),
+                          activeIcon: Icon(IconsaxPlusBold.document),
+                          label: "Information",
+                          tooltip: "Information",
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(IconsaxPlusLinear.location),
+                          activeIcon: Icon(IconsaxPlusBold.location),
+                          label: "Near Me",
+                          tooltip: "Near Me",
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),

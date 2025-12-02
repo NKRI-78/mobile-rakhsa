@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/repositories/referral/model/referral.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -31,6 +32,11 @@ class User {
   final String? lng;
   final Doc? doc;
   final Sos? sos;
+  final String? keyword;
+  final String? serviceId;
+  final String? expiresAt;
+  final bool hasRoamingPackage;
+  final List<ReferralPackage> package;
 
   User({
     this.id,
@@ -57,6 +63,11 @@ class User {
     this.lng,
     this.doc,
     this.sos,
+    this.keyword,
+    this.serviceId,
+    this.expiresAt,
+    this.hasRoamingPackage = false,
+    this.package = const <ReferralPackage>[],
   });
 
   User copyWith({
@@ -84,6 +95,11 @@ class User {
     String? lng,
     Doc? doc,
     Sos? sos,
+    String? keyword,
+    String? serviceId,
+    String? expiresAt,
+    bool? hasRoamingPackage,
+    List<ReferralPackage>? package,
   }) => User(
     id: id ?? this.id,
     username: username ?? this.username,
@@ -109,6 +125,11 @@ class User {
     lng: lng ?? this.lng,
     doc: doc ?? this.doc,
     sos: sos ?? this.sos,
+    keyword: keyword ?? this.keyword,
+    serviceId: serviceId ?? this.serviceId,
+    expiresAt: expiresAt ?? this.expiresAt,
+    hasRoamingPackage: hasRoamingPackage ?? this.hasRoamingPackage,
+    package: package ?? this.package,
   );
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -138,6 +159,15 @@ class User {
         lng: json["lng"],
         doc: json["doc"] == null ? null : Doc.fromJson(json["doc"]),
         sos: json["sos"] == null ? null : Sos.fromJson(json["sos"]),
+        keyword: json['keyword'],
+        serviceId: json['service_id'],
+        expiresAt: json['expires_at'],
+        hasRoamingPackage: json['has_roaming_package'],
+        package:
+            (json['package'] as List<dynamic>?)
+                ?.map((e) => ReferralPackage.fromJson(e))
+                .toList() ??
+            [],
       );
     } catch (e) {
       throw DataParsingException(error: e);
@@ -169,6 +199,11 @@ class User {
     "lng": lng,
     "doc": doc?.toJson(),
     "sos": sos?.toJson(),
+    "keyword": keyword,
+    "service_id": serviceId,
+    "expires_at": expiresAt,
+    "has_roaming_package": hasRoamingPackage,
+    "package": package.map((e) => e.toJson()).toList(),
   };
 }
 

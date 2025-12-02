@@ -2,7 +2,7 @@ name: rakhsa
 description: "Rakhsa"
 publish_to: "none"
 
-version: 2.0.0+19
+version: 2.1.0+20
 
 environment:
   sdk: ^3.9.2
@@ -66,6 +66,7 @@ dependencies:
   image_picker: ^1.2.0
 
   # L
+  lottie: ^3.3.2
   location: ^8.0.1
 
   # S
@@ -107,6 +108,8 @@ flutter:
     - assets/images/
     - assets/images/icons/
     - assets/images/weather/
+
+    - assets/animations/
 
     # env
     - assets/env/.env.stag

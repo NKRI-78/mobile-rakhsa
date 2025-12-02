@@ -12,11 +12,25 @@ import 'package:rakhsa/repositories/location/model/location_data.dart';
 export 'package:rakhsa/repositories/location/model/location_data.dart';
 
 class LocationProvider extends ChangeNotifier {
+  final List<String> allowedCountries;
+
+  LocationProvider({this.allowedCountries = const <String>["SG"]});
+
   LocationData? _locationData;
   LocationData? get location => _locationData;
 
+  String? get iSOCountryCode => _locationData?.placemark?.isoCountryCode;
+
+  bool get isCountryAllowed {
+    if (iSOCountryCode == null) return false;
+    return allowedCountries.contains(iSOCountryCode);
+  }
+
   RequestState _getLocationState = RequestState.idle;
   bool isGetLocationState(RequestState state) => _getLocationState == state;
+
+  bool _isLocationCacheActive = false;
+  bool get isLocationCacheActive => _isLocationCacheActive;
 
   String? _errMessage;
   String? get errGetCurrentLocation => _errMessage;
@@ -26,7 +40,7 @@ class LocationProvider extends ChangeNotifier {
 
   LocationSettings getLocationSettings({
     LocationAccuracy accuracy = LocationAccuracy.best,
-    Duration timeLimit = const Duration(seconds: 5),
+    Duration timeLimit = const Duration(seconds: 10),
   }) {
     if (Platform.isIOS) {
       return AppleSettings(accuracy: accuracy, timeLimit: timeLimit);
@@ -37,8 +51,12 @@ class LocationProvider extends ChangeNotifier {
 
   Future<LocationData?> getCurrentLocation({
     bool enableCache = true,
-    Duration cacheAge = const Duration(minutes: 7),
+    Duration cacheAge = const Duration(seconds: 3),
   }) async {
+    final activeDuration = _checkCacheAgeIsActive(cacheAge);
+    _isLocationCacheActive = activeDuration;
+    notifyListeners();
+
     log(
       "loading getCurrentLocation... | enableCache? $enableCache",
       label: "LOCATION_PROVIDER",
@@ -141,6 +159,10 @@ class LocationProvider extends ChangeNotifier {
       _revalidateCacheKey,
       DateTime.now().millisecondsSinceEpoch,
     );
+  }
+
+  bool _checkCacheAgeIsActive(Duration cacheAge) {
+    return cacheAge == Duration.zero;
   }
 
   Future<bool> _shouldRevalidateLocationCache(Duration maxAge) async {

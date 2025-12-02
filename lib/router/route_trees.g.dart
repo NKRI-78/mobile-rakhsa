@@ -9,6 +9,8 @@ part of 'route_trees.dart';
 List<RouteBase> get $appRoutes => [
   $onBoardingRoute,
   $welcomeRoute,
+  $noReferralCodeRoute,
+  $activateReferralRoute,
   $dashboardRoute,
 ];
 
@@ -117,6 +119,63 @@ mixin $ForgotPasswordRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/welcome/forgot-password');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $noReferralCodeRoute => GoRouteData.$route(
+  path: '/required-referral-code',
+  factory: $NoReferralCodeRoute._fromState,
+);
+
+mixin $NoReferralCodeRoute on GoRouteData {
+  static NoReferralCodeRoute _fromState(GoRouterState state) =>
+      const NoReferralCodeRoute();
+
+  @override
+  String get location => GoRouteData.$location('/required-referral-code');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $activateReferralRoute => GoRouteData.$route(
+  path: '/activate-referral-code',
+  factory: $ActivateReferralRoute._fromState,
+);
+
+mixin $ActivateReferralRoute on GoRouteData {
+  static ActivateReferralRoute _fromState(GoRouterState state) =>
+      ActivateReferralRoute(uid: state.uri.queryParameters['uid'] ?? "");
+
+  ActivateReferralRoute get _self => this as ActivateReferralRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/activate-referral-code',
+    queryParams: {if (_self.uid != "") 'uid': _self.uid},
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

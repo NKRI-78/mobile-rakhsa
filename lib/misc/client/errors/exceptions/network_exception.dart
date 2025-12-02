@@ -4,6 +4,7 @@ class NetworkException implements Exception {
   final NetworkError? errorType;
   final int? statusCode;
   final String? errorCode;
+  final String? title;
   final String? message;
   final dynamic body;
   final Object? original;
@@ -12,6 +13,7 @@ class NetworkException implements Exception {
     this.errorType,
     this.statusCode,
     this.errorCode,
+    this.title,
     this.message,
     this.body,
     this.original,
@@ -22,6 +24,7 @@ class NetworkException implements Exception {
     int statusCode = 0,
   ]) => NetworkException(
     errorType: NetworkError.unknown,
+    title: "Kesalahan Tak Dikenal",
     message:
         'Maaf, terjadi kendala yang belum dapat kami identifikasi. Silakan coba kembali beberapa saat lagi.',
     original: orig,
@@ -30,6 +33,7 @@ class NetworkException implements Exception {
   );
 
   factory NetworkException.noInternetConnection() => NetworkException(
+    title: "Tidak Ada Koneksi Internet",
     errorType: NetworkError.noInternetConnection,
     errorCode: NetworkError.noInternetConnection.errorCode,
     message: 'Tidak ada koneksi internet. Mohon periksa jaringan Anda.',

@@ -63,7 +63,7 @@ class AuthProvider extends ChangeNotifier {
     required String fullname,
     required String phone,
     required String password,
-    VoidCallback? onSuccess,
+    Function(String uid)? onSuccess,
     Function(String? message, String? errorCode)? onError,
   }) async {
     _registerState = RequestState.loading;
@@ -76,7 +76,7 @@ class AuthProvider extends ChangeNotifier {
 
       _registerState = RequestState.success;
       notifyListeners();
-      onSuccess?.call();
+      onSuccess?.call(newSession.user.id);
     } on NetworkException catch (e) {
       _registerState = RequestState.error;
       _errorMessage = e.message;

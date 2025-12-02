@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
 import 'package:rakhsa/service/storage/storage.dart';
@@ -18,6 +19,7 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -148,48 +150,58 @@ class RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  void _onRegisterUser(BuildContext c) async {
+  void _onRegisterUser(BuildContext c, ReferralProvider r) async {
     if (_formKey.currentState!.validate()) {
-      await c.read<AuthProvider>().register(
-        fullname: _fullNameController.text,
-        phone: PhoneNumberFormatter.unmask(_phoneController.text),
-        password: _passController.text,
-        onSuccess: () async {
-          await StorageHelper.loadlocalSession();
-          if (c.mounted) DashboardRoute(fromRegister: true).go(c);
-        },
-        onError: (message, errorCode) async {
-          _phoneFNode.unfocus();
-          _passFNode.unfocus();
-          _confirmPassFNode.unfocus();
+      if (r.hasReferralCode) {
+        await c.read<AuthProvider>().register(
+          fullname: _fullNameController.text,
+          phone: PhoneNumberFormatter.unmask(_phoneController.text),
+          password: _passController.text,
+          onSuccess: (uid) async {
+            log("user id dari _onRegisterUser di halaman register $uid");
+            await StorageHelper.getUserSession();
+            if (c.mounted) {
+              ActivateReferralRoute(uid: uid).push(c);
+            }
+          },
+          onError: (message, errorCode) async {
+            _phoneFNode.unfocus();
+            _passFNode.unfocus();
+            _confirmPassFNode.unfocus();
 
-          final userAlreadyExists = errorCode == "User already exist";
-          AppDialog.error(
-            c: c,
-            title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
-            message: message ?? "-",
-            buildActions: (dc) => [
-              if (userAlreadyExists) ...[
-                DialogActionButton(
-                  label: "Masuk",
-                  primary: true,
-                  onTap: () async {
-                    dc.pop();
-                    await Future.delayed(Duration(milliseconds: 230));
-                    if (mounted) LoginRoute().go(context);
-                  },
-                ),
-              ] else ...[
-                DialogActionButton(
-                  label: "Cek Kembali",
-                  primary: true,
-                  onTap: c.pop,
-                ),
+            final userAlreadyExists = errorCode == "User already exist";
+            AppDialog.error(
+              c: c,
+              title: userAlreadyExists ? "Akun Sudah Terdaftar" : null,
+              message: message ?? "-",
+              buildActions: (dc) => [
+                if (userAlreadyExists) ...[
+                  DialogActionButton(
+                    label: "Masuk",
+                    primary: true,
+                    onTap: () async {
+                      dc.pop();
+                      await Future.delayed(Duration(milliseconds: 230));
+                      if (mounted) LoginRoute().go(context);
+                    },
+                  ),
+                ] else ...[
+                  DialogActionButton(
+                    label: "Cek Kembali",
+                    primary: true,
+                    onTap: c.pop,
+                  ),
+                ],
               ],
-            ],
-          );
-        },
-      );
+            );
+          },
+        );
+      } else {
+        AppDialog.showLoading(context);
+        await Future.delayed(Duration(milliseconds: 800));
+        AppDialog.dismissLoading();
+        if (mounted) NoReferralCodeRoute().push(context);
+      }
     } else {
       final fullnameErr = _errFields[AuthField.fullname];
       final phoneErr = _errFields[AuthField.phone];
@@ -216,160 +228,154 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: primaryColor,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 300,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(loginOrnament),
+    return StatusBarStyle.light(
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          backgroundColor: primaryColor,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 300,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage(loginOrnament),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              Positioned.fill(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      50.spaceY,
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        50.spaceY,
 
-                      Row(
-                        spacing: 4,
-                        children: [
-                          IconButton(
-                            onPressed: () => context.pop(),
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                          ),
-                          Text(
-                            "Register",
-                            style: TextStyle(
-                              fontSize: fontSizeTitle,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      24.spaceY,
-
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          // spacing: 16,Au
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                        Row(
+                          spacing: 4,
                           children: [
-                            AuthTextField(
-                              label: "Nama Lengkap",
-                              hintText: "Masukan nama lengkap Anda",
-                              controller: _fullNameController,
-                              fullname: true,
-                              onFieldSubmitted: (_) =>
-                                  _phoneFNode.requestFocus(),
-                              validator: _onValidateFullname,
-                            ),
-
-                            16.spaceY,
-
-                            AuthTextField(
-                              phone: true,
-                              label: "Nomor Telepon",
-                              hintText: "08** **** ****",
-                              controller: _phoneController,
-                              focusNode: _phoneFNode,
-                              onFieldSubmitted: (_) =>
-                                  _passFNode.requestFocus(),
-                              validator: _onValidatePhoneNumber,
-                            ),
-                            6.spaceY,
-                            Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Text(
-                                "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: Dimensions.fontSizeExtraSmall,
-                                ),
+                            IconButton(
+                              onPressed: () => context.pop(),
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                                size: 28,
                               ),
                             ),
-
-                            16.spaceY,
-
-                            AuthTextField(
-                              password: true,
-                              label: "Password",
-                              hintText: "******",
-                              controller: _passController,
-                              focusNode: _passFNode,
-                              onFieldSubmitted: (_) =>
-                                  _confirmPassFNode.requestFocus(),
-                              validator: _onValidatePassword,
+                            Text(
+                              "Register",
+                              style: TextStyle(
+                                fontSize: fontSizeTitle,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-
-                            16.spaceY,
-
-                            AuthTextField(
-                              password: true,
-                              label: "Konfirmasi Password",
-                              hintText: "Ketik ulang password",
-                              controller: _confirmPassController,
-                              focusNode: _confirmPassFNode,
-                              onFieldSubmitted: (_) => context.unfocus(),
-                              validator: _onValidateConfirmPassword,
-                            ),
-
-                            24.spaceY,
-
-                            Consumer<AuthProvider>(
-                              builder: (context, state, child) {
-                                return CustomButton(
-                                  isLoading: state.registerLoading,
-                                  isBorder: false,
-                                  isBorderRadius: true,
-                                  sizeBorderRadius: 100,
-                                  isBoxShadow: false,
-                                  btnColor: ColorResources.white,
-                                  btnTxt: "Register",
-                                  loadingColor: primaryColor,
-                                  btnTextColor: ColorResources.black,
-                                  onTap: () => _onRegisterUser(context),
-                                );
-                              },
-                            ),
-                            20.spaceY,
                           ],
                         ),
-                      ),
-                    ],
+
+                        24.spaceY,
+
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              AuthTextField(
+                                label: "Nama Lengkap",
+                                hintText: "Masukan nama lengkap Anda",
+                                controller: _fullNameController,
+                                fullname: true,
+                                onFieldSubmitted: (_) =>
+                                    _phoneFNode.requestFocus(),
+                                validator: _onValidateFullname,
+                              ),
+
+                              16.spaceY,
+
+                              AuthTextField(
+                                phone: true,
+                                label: "Nomor Telepon",
+                                hintText: "08** **** ****",
+                                controller: _phoneController,
+                                focusNode: _phoneFNode,
+                                onFieldSubmitted: (_) =>
+                                    _passFNode.requestFocus(),
+                                validator: _onValidatePhoneNumber,
+                              ),
+                              6.spaceY,
+                              Padding(
+                                padding: EdgeInsets.only(left: 8),
+                                child: Text(
+                                  "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                  ),
+                                ),
+                              ),
+
+                              16.spaceY,
+
+                              AuthTextField(
+                                password: true,
+                                label: "Password",
+                                hintText: "******",
+                                controller: _passController,
+                                focusNode: _passFNode,
+                                onFieldSubmitted: (_) =>
+                                    _confirmPassFNode.requestFocus(),
+                                validator: _onValidatePassword,
+                              ),
+
+                              16.spaceY,
+
+                              AuthTextField(
+                                password: true,
+                                label: "Konfirmasi Password",
+                                hintText: "Ketik ulang password",
+                                controller: _confirmPassController,
+                                focusNode: _confirmPassFNode,
+                                onFieldSubmitted: (_) => context.unfocus(),
+                                validator: _onValidateConfirmPassword,
+                              ),
+
+                              24.spaceY,
+
+                              Consumer2<AuthProvider, ReferralProvider>(
+                                builder: (context, a, r, child) {
+                                  return CustomButton(
+                                    isLoading: a.registerLoading,
+                                    isBorder: false,
+                                    isBorderRadius: true,
+                                    sizeBorderRadius: 100,
+                                    isBoxShadow: false,
+                                    btnColor: ColorResources.white,
+                                    btnTxt: "Register",
+                                    loadingColor: primaryColor,
+                                    btnTextColor: ColorResources.black,
+                                    onTap: () => _onRegisterUser(context, r),
+                                  );
+                                },
+                              ),
+                              20.spaceY,
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

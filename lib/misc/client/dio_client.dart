@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/client/errors/errors.dart';
@@ -36,7 +35,7 @@ class DioClient {
         error: true,
         compact: true,
         maxWidth: 90,
-        enabled: kDebugMode,
+        enabled: true,
       ),
     );
     _dio.interceptors.add(
@@ -98,7 +97,7 @@ class DioClient {
           error: true,
           compact: true,
           maxWidth: 90,
-          enabled: kDebugMode,
+          enabled: true,
         ),
       );
     }
@@ -288,7 +287,9 @@ class DioClient {
           );
         case DioExceptionType.badResponse:
           final body = error.response?.data;
-          final msg = _extractMessageFromBody(body) ?? error.message;
+          final msg =
+              _extractMessageFromBody(body) ??
+              "Saat ini sistem tidak dapat terhubung dengan server. Coba beberapa saat lagi. Jika masalah terus berlanjut, pastikan koneksi internet stabil atau coba tutup dan buka kembali aplikasi.";
           return NetworkException(
             errorType: NetworkError.badResponse,
             statusCode: statusCode,

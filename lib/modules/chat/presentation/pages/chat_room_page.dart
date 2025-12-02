@@ -319,6 +319,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                   time: item.sentTime,
                                   isMe: item.user.isMe!,
                                   isRead: item.isRead,
+                                  username: item.user.name ?? "-",
                                 );
                               },
                             ),

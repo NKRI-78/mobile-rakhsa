@@ -109,9 +109,8 @@ class CameraPageState extends State<CameraPage> {
     if (controller == null || !isRecording) return;
 
     try {
-      // Stop recording immediately
       final video = await controller!.stopVideoRecording();
-      File file = File(video.path);
+      final mp4Video = await convertTempToMp4(video);
 
       setState(() {
         stop = true;
@@ -121,7 +120,7 @@ class CameraPageState extends State<CameraPage> {
 
       // Start upload in a separate future, with timeout
       await sosProvider.sendSos(
-        file,
+        mp4Video,
         onTimeout: () {
           setState(() => loading = false);
           Future.delayed(Duration(milliseconds: 200)).then((_) {
@@ -160,6 +159,18 @@ class CameraPageState extends State<CameraPage> {
     } catch (e) {
       if (mounted) setState(() => loading = false);
     }
+  }
+
+  Future<File> convertTempToMp4(XFile xfile) async {
+    final tempFile = File(xfile.path);
+
+    final newFile = await tempFile.copy(
+      '${tempFile.dirname}/${tempFile.filenameWithoutExtension}.mp4',
+    );
+
+    await tempFile.delete();
+
+    return newFile;
   }
 
   @override

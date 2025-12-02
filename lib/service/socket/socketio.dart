@@ -236,6 +236,7 @@ class SocketIoService with ChangeNotifier {
         "recipient": recipientId,
         "text": message,
         "created_at": createdAt,
+        "commandcenter_user_id": "4f9cf82c-4892-42gc-2f77-7cdatyca124t",
       };
       socket?.emit("message", payload);
     }

@@ -5,7 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:intl/intl.dart';
-import 'package:rakhsa/repositories/location/model/location_data.dart';
+
+export 'location_extension.dart';
 
 extension ContextExtension on BuildContext {
   void unfocus({UnfocusDisposition disposition = UnfocusDisposition.scope}) =>
@@ -13,6 +14,7 @@ extension ContextExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);
   double get top => mediaQuery.padding.top;
   double get bottom => mediaQuery.padding.bottom;
+  ThemeData get theme => Theme.of(this);
   double getScreenHeight([double from = 1.0]) => mediaQuery.size.height * from;
 }
 
@@ -22,7 +24,7 @@ extension NumExtension on num {
 }
 
 extension DateTimeExtension on DateTime {
-  String format(String pattern) => DateFormat(pattern).format(toLocal());
+  String format(String pattern) => DateFormat(pattern, "id").format(toLocal());
 }
 
 extension StringExtensions on String {
@@ -45,32 +47,4 @@ extension FileExtension on File {
   String get extension => p.extension(path);
 
   String get dirname => p.dirname(path);
-}
-
-extension PlacemarkExtension on Placemark {
-  String getAddress([
-    List<PlacemarkPart> parts = const [
-      PlacemarkPart.administrativeArea,
-      PlacemarkPart.subAdministrativeArea,
-      PlacemarkPart.street,
-      PlacemarkPart.country,
-    ],
-  ]) {
-    final values = <String>[];
-
-    for (final part in parts) {
-      final value = part.getValue(this);
-
-      if (value != null) {
-        final trimmed = value.trim();
-        if (trimmed.isNotEmpty) {
-          values.add(trimmed);
-        }
-      }
-    }
-
-    if (values.isEmpty) return "-";
-
-    return values.join(', ');
-  }
 }

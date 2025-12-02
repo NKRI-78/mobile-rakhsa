@@ -16,7 +16,11 @@ class WeatherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LocationProvider>(
       builder: (context, p, child) {
-        final area = p.location?.placemark?.subAdministrativeArea ?? "-";
+        final plc = p.location?.placemark;
+        final s1 = (plc?.subAdministrativeArea ?? "");
+        final s2 = (plc?.country ?? "");
+        final area = s1.isNotEmpty ? s1 : s2;
+
         return SizedBox(
           height: 190,
           width: double.infinity,

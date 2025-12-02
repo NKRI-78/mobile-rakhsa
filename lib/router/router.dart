@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_invalid_page.dart';
 
@@ -19,13 +20,12 @@ class AppRouter {
     return _instance!;
   }
 
-  GoRouter generateRoute(AuthProvider auth) {
+  GoRouter generateRoute(AuthProvider auth, ReferralProvider referral) {
     return GoRouter(
       routes: $appRoutes,
       navigatorKey: navigatorKey,
       initialLocation: WelcomeRoute().location,
       debugLogDiagnostics: kDebugMode || kProfileMode,
-      // extraCodec: RouteParamDecoder(),
       errorBuilder: (_, s) => RouteInvalidPage(s),
       redirect: (c, s) {
         final currentRoute = s.matchedLocation;
@@ -35,6 +35,10 @@ class AppRouter {
         final goingToLogin = currentRoute == LoginRoute().location;
         final goingToRegister = currentRoute == RegisterRoute().location;
         final goingToDashboard = currentRoute == DashboardRoute().location;
+        final goingToActivateReferral =
+            currentRoute == ActivateReferralRoute().location;
+        final goingToNoReferral =
+            currentRoute == NoReferralCodeRoute().location;
 
         if (auth.showOnBoarding()) {
           if (!goingToOnBoarding) return OnBoardingRoute().location;
@@ -42,10 +46,22 @@ class AppRouter {
         }
 
         if (!auth.userIsLoggedIn()) {
-          if (!goingToWelcome && !goingToLogin && !goingToRegister) {
+          if (goingToNoReferral && !referral.hasReferralCode) {
+            return NoReferralCodeRoute().location;
+          }
+
+          if (!goingToWelcome &&
+              !goingToLogin &&
+              !goingToRegister &&
+              !goingToNoReferral &&
+              !goingToActivateReferral) {
             return WelcomeRoute().location;
           }
           return null;
+        }
+
+        if (goingToActivateReferral && referral.hasReferralCode) {
+          return ActivateReferralRoute().location;
         }
 
         if (goingToWelcome ||

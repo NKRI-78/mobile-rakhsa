@@ -3,9 +3,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/repositories/information/information_repository.dart';
+import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
@@ -75,6 +77,9 @@ void init() {
   locator.registerLazySingleton(
     () => UserRepository(client: locator<DioClient>()),
   );
+  locator.registerLazySingleton<ReferralRepository>(
+    () => ReferralRepository(locator()),
+  );
 
   // REMOTE DATA SOURCE
   locator.registerLazySingleton<NearmeRemoteDataSource>(
@@ -88,6 +93,7 @@ void init() {
   );
 
   // REPOSITORY
+
   locator.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(remoteDataSource: locator()),
   );
@@ -130,6 +136,7 @@ void init() {
   locator.registerFactory(
     () => UserProvider(repository: locator<UserRepository>()),
   );
+  locator.registerFactory(() => ReferralProvider(locator()));
   locator.registerFactory(() => InformationProvider(repository: locator()));
   locator.registerFactory(() => SosProvider(locator()));
   locator.registerFactory(() => SosRatingNotifier(useCase: locator()));

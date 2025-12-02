@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:rakhsa/misc/client/errors/errors.dart';
 
 // {
 //     "status": 200,
@@ -15,12 +16,13 @@ import 'package:equatable/equatable.dart';
 // }
 
 class ResponseDto<T> extends Equatable {
-  final int status;
+  final dynamic status;
   final bool error;
   final String message;
   final int? total;
   final int? perPage;
   final int? prevPage;
+  final String? code;
   final int? nextPage;
   final int? currentPage;
   final String? nextUrl;
@@ -34,6 +36,7 @@ class ResponseDto<T> extends Equatable {
     this.total,
     this.perPage,
     this.prevPage,
+    this.code,
     this.nextPage,
     this.currentPage,
     this.nextUrl,
@@ -50,6 +53,7 @@ class ResponseDto<T> extends Equatable {
       total,
       perPage,
       prevPage,
+      code,
       nextPage,
       currentPage,
       nextUrl,
@@ -59,18 +63,23 @@ class ResponseDto<T> extends Equatable {
   }
 
   factory ResponseDto.fromJson(Map<String, dynamic> map) {
-    return ResponseDto<T>(
-      status: map['status'],
-      error: map['error'],
-      message: map['message'],
-      total: map['total'],
-      perPage: map['per_page'],
-      prevPage: map['prev_page'],
-      nextPage: map['next_page'],
-      currentPage: map['current_page'],
-      nextUrl: map['next_url'],
-      prevUrl: map['prev_url'],
-      data: map['data'],
-    );
+    try {
+      return ResponseDto<T>(
+        status: map['status'],
+        error: map['error'],
+        message: map['message'],
+        total: map['total'],
+        perPage: map['per_page'],
+        prevPage: map['prev_page'],
+        code: map['code'],
+        nextPage: map['next_page'],
+        currentPage: map['current_page'],
+        nextUrl: map['next_url'],
+        prevUrl: map['prev_url'],
+        data: map['data'],
+      );
+    } catch (e) {
+      throw DataParsingException(error: e);
+    }
   }
 }

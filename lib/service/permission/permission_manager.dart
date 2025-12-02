@@ -148,11 +148,6 @@ class PermissionManager {
             await openAppSettings();
           }
 
-          void onClose() async {
-            await completeTaskExecution("onClose");
-            if (context.mounted) context.pop();
-          }
-
           return PopScope(
             canPop: canPopDialog,
             child: Container(
@@ -264,17 +259,6 @@ class PermissionManager {
                         spacing: 16,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextButton(
-                            onPressed: onClose,
-                            style: TextButton.styleFrom(
-                              foregroundColor: primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(8),
-                              ),
-                            ),
-                            child: Text('Tutup'),
-                          ),
-
                           if (permanentlyDenied.isNotEmpty)
                             Expanded(
                               child: FilledButton.icon(

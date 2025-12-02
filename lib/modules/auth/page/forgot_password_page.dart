@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
@@ -14,6 +13,7 @@ import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -171,123 +171,119 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) context.pop(false);
-      },
-      child: GestureDetector(
-        onTap: () => context.unfocus(),
-        child: Scaffold(
-          backgroundColor: primaryColor,
-          body: SafeArea(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 300,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage(AssetSource.loginOrnament),
+    return StatusBarStyle.light(
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) context.pop(false);
+        },
+        child: GestureDetector(
+          onTap: () => context.unfocus(),
+          child: Scaffold(
+            backgroundColor: primaryColor,
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 300,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage(AssetSource.loginOrnament),
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                Positioned.fill(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        50.spaceY,
-                        Row(
-                          spacing: 4,
-                          children: [
-                            IconButton(
-                              onPressed: () => context.pop(),
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                            Text(
-                              "Lupa Password",
-                              style: TextStyle(
-                                fontSize: fontSizeTitle,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        24.spaceY,
-
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                  Positioned.fill(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          50.spaceY,
+                          Row(
+                            spacing: 4,
                             children: [
-                              AuthTextField(
-                                phone: true,
-                                label: "Nomor Telepon",
-                                hintText: "08** **** ****",
-                                controller: _phoneController,
-                                onFieldSubmitted: (_) =>
-                                    _newPassFNode.requestFocus(),
-                                validator: _onValidatePhoneNumber,
+                              IconButton(
+                                onPressed: () => context.pop(),
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
                               ),
-
-                              16.spaceY,
-
-                              AuthTextField(
-                                password: true,
-                                label: "Password Baru",
-                                hintText: "Masukan Password yang baru",
-                                controller: _newPassController,
-                                focusNode: _newPassFNode,
-                                validator: _onValidatePassword,
-                              ),
-
-                              24.spaceY,
-
-                              Consumer<AuthProvider>(
-                                builder: (context, provider, child) {
-                                  return CustomButton(
-                                    isLoading: provider.forgotPassLoading,
-                                    isBorder: false,
-                                    isBorderRadius: true,
-                                    sizeBorderRadius: 100,
-                                    isBoxShadow: false,
-                                    btnTxt: "Ganti Password",
-                                    loadingColor: primaryColor,
-                                    btnColor: ColorResources.white,
-                                    btnTextColor: ColorResources.black,
-                                    onTap: () => _onSubmitNewPassword(context),
-                                  );
-                                },
+                              Text(
+                                "Lupa Password",
+                                style: TextStyle(
+                                  fontSize: fontSizeTitle,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+
+                          24.spaceY,
+
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                AuthTextField(
+                                  phone: true,
+                                  label: "Nomor Telepon",
+                                  hintText: "08** **** ****",
+                                  controller: _phoneController,
+                                  onFieldSubmitted: (_) =>
+                                      _newPassFNode.requestFocus(),
+                                  validator: _onValidatePhoneNumber,
+                                ),
+
+                                16.spaceY,
+
+                                AuthTextField(
+                                  password: true,
+                                  label: "Password Baru",
+                                  hintText: "Masukan Password yang baru",
+                                  controller: _newPassController,
+                                  focusNode: _newPassFNode,
+                                  validator: _onValidatePassword,
+                                ),
+
+                                24.spaceY,
+
+                                Consumer<AuthProvider>(
+                                  builder: (context, provider, child) {
+                                    return CustomButton(
+                                      isLoading: provider.forgotPassLoading,
+                                      isBorder: false,
+                                      isBorderRadius: true,
+                                      sizeBorderRadius: 100,
+                                      isBoxShadow: false,
+                                      btnTxt: "Ganti Password",
+                                      loadingColor: primaryColor,
+                                      btnColor: ColorResources.white,
+                                      btnTextColor: ColorResources.black,
+                                      onTap: () =>
+                                          _onSubmitNewPassword(context),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
@@ -7,55 +6,26 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
-class OnBoardingPage extends StatefulWidget {
+class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({super.key});
 
   @override
-  State<OnBoardingPage> createState() => _OnBoardingPage();
-}
-
-class _OnBoardingPage extends State<OnBoardingPage> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
+    return StatusBarStyle.light(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // bg
+            Positioned.fill(
+              child: Image.asset(AssetSource.bgOnBoarding, fit: BoxFit.fill),
+            ),
 
-      appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.light,
+            // content
+            const _OnBoardingContentView(),
+          ],
         ),
-      ),
-      body: Stack(
-        children: [
-          // bg
-          Positioned.fill(
-            child: Image.asset(AssetSource.bgOnBoarding, fit: BoxFit.fill),
-          ),
-
-          // content
-          const _OnBoardingContentView(),
-        ],
       ),
     );
   }

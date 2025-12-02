@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:rakhsa/modules/app/provider/referral/referral_provider.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -39,6 +40,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<SosProvider>()),
+  ChangeNotifierProvider.value(value: di.locator<ReferralProvider>()),
   ChangeNotifierProxyProvider<LocationProvider, WeatherNotifier>(
     create: (_) => WeatherNotifier(),
     update: (_, locationProvider, weatherNotifier) {

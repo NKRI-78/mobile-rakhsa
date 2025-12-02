@@ -15,6 +15,8 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
+import 'package:rakhsa/modules/referral/pages/activate_referral_page.dart';
+import 'package:rakhsa/modules/referral/pages/no_referral_code_page.dart';
 import 'package:rakhsa/modules/weather/page/weather_page.dart';
 
 part 'route_trees.g.dart';
@@ -44,6 +46,28 @@ class WelcomeRoute extends GoRouteData with $WelcomeRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const WelcomePage();
+}
+
+//* REQUIRED REFERRAL
+@TypedGoRoute<NoReferralCodeRoute>(path: "/required-referral-code")
+class NoReferralCodeRoute extends GoRouteData with $NoReferralCodeRoute {
+  const NoReferralCodeRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const NoReferralCodePage();
+}
+
+//* ACTIVATE REFERRAL
+@TypedGoRoute<ActivateReferralRoute>(path: "/activate-referral-code")
+class ActivateReferralRoute extends GoRouteData with $ActivateReferralRoute {
+  const ActivateReferralRoute({this.uid = "-"});
+
+  final String uid;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      ActivateReferralPage(uid);
 }
 
 //* WELCOME / LOGIN

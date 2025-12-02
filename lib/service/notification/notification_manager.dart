@@ -232,18 +232,8 @@ class NotificationManager {
 
   Future<void> dismissAllNotification() async {
     d.log("cancel semua notif", label: "NOTIFICATION_MANAGER");
-    final delivered = await AwesomeNotifications().listScheduledNotifications();
-
-    for (final n in delivered) {
-      final payloadType = n.content?.payload?['type'];
-
-      if (payloadType == 'chat') {
-        final id = n.content?.id;
-        if (id != null) {
-          await AwesomeNotifications().cancel(id);
-        }
-      }
-    }
+    await AwesomeNotifications().dismissAllNotifications();
+    await AwesomeNotifications().resetGlobalBadge();
   }
 
   Future<void> handleNotificationOnTap(

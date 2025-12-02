@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/modules/sos/pages/sos_camera.dart';
@@ -64,6 +68,8 @@ class SosButtonState extends State<SosButton>
 
   StreamSubscription<SosEvent>? _sosSub;
 
+  late LocationProvider _locationProvider;
+
   // style
   final buttonSize = 180.0; //px
   final buttonColor = Color(0xFFFE1717);
@@ -76,6 +82,8 @@ class SosButtonState extends State<SosButton>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _locationProvider = context.read<LocationProvider>();
+
     _initAnimationController();
 
     _sosSub = SosCoordinator().events.listen((e) {
@@ -201,24 +209,113 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     return isActive;
   }
 
+  OverlayDialogController _showLoadingLocationDialog() {
+    return showOverlayDialog(
+      context,
+      barrierDismissible: false,
+      positioned: (dialog) {
+        return Positioned(
+          top: context.top + kToolbarHeight + 24,
+          right: 38,
+          left: 38,
+          child: dialog,
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.black54,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Text(
+          "Tunggu Sebentar Sedang Memuat Lokasi",
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 12, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _checkIfCurrentCountryIsAllowed() async {
+    final overlayController = _showLoadingLocationDialog();
+    await _locationProvider.getCurrentLocation();
+    overlayController.dismiss();
+
+    final errorGetCurrentLocation = _locationProvider.isGetLocationState(
+      RequestState.error,
+    );
+    if (errorGetCurrentLocation) {
+      if (mounted) {
+        await AppDialog.error(
+          c: context,
+          title: "Gagal Mendapatkan Lokasi",
+          message: _locationProvider.errGetCurrentLocation ?? "-",
+          buildActions: (dc) {
+            return [
+              DialogActionButton(
+                label: "Coba Lagi",
+                primary: true,
+                onTap: dc.pop,
+              ),
+            ];
+          },
+        );
+      }
+    }
+
+    // langsung stop proses selanjutnya karena error get lokasi
+    if (errorGetCurrentLocation) return false;
+
+    final allowedCountry = _locationProvider.isCountryAllowed;
+
+    if (!allowedCountry) {
+      if (mounted) {
+        await AppDialog.error(
+          c: context,
+          title: "Keterbatasan Akses Marlinda",
+          message:
+              "Maaf, Anda saat ini berada di ${_locationProvider.location?.placemark?.country ?? "-"}. Marlinda hanya dapat digunakan di Singapura.",
+          buildActions: (dc) {
+            return [
+              DialogActionButton(
+                label: "Mengerti",
+                primary: true,
+                onTap: dc.pop,
+              ),
+            ];
+          },
+        );
+      }
+    }
+
+    return allowedCountry;
+  }
+
   Future<bool> _handleShouldLongPressStart() async {
     final userLoggedIn = _checkUserIsLoggedIn();
-    final activeRunning = _checkIfSessionIsRunning();
-    final hasSocketConnection = widget.param.hasSocketConnection;
-    final isGettingLocation = widget.param.loadingGmaps;
-    final waitingConfirmSOS = _isCountingDown && _remainingSeconds > 0;
 
-    // handle toast
-    if (!hasSocketConnection) {
-      await AppDialog.showToast("Sedang menghubungkan koneksi ke server");
-    }
-    if (isGettingLocation) {
-      await AppDialog.showToast("Sedang mendapatkan lokasi");
-    }
+    // cek waiting countdown dulu ketika sos sebelumnya masih belum diterima admin
+    final waitingConfirmSOS = _isCountingDown && _remainingSeconds > 0;
     if (waitingConfirmSOS) {
       await AppDialog.showToast(
         "Anda dapat mengirim SOS setelah $_cdInSeconds detik",
       );
+      return false;
+    }
+
+    // kalau negara ga dizinkan langsung return false
+    // biar dia ga menjalankan fungsi dibawahnya
+    final allowedCountry = await _checkIfCurrentCountryIsAllowed();
+    if (!allowedCountry) return false;
+
+    final activeRunning = _checkIfSessionIsRunning();
+    final hasSocketConnection = widget.param.hasSocketConnection;
+
+    // handle toast
+    if (!hasSocketConnection) {
+      await AppDialog.showToast("Sedang menghubungkan koneksi ke server");
     }
 
     // jalankan longpress start ketika
@@ -230,8 +327,9 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     return userLoggedIn &&
         !activeRunning &&
         hasSocketConnection &&
-        !isGettingLocation &&
-        !waitingConfirmSOS;
+        // !isGettingLocation &&
+        !waitingConfirmSOS &&
+        allowedCountry;
   }
 
   Future<bool> _handleShouldLongPressEnd() async {
@@ -246,7 +344,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     return userLoggedIn && hasSocketConnection && !isGettingLocation;
   }
 
-  void _onLongPressStart(LongPressStartDetails _) async {
+  Future<void> _onLongPressStart() async {
     VibrationManager.instance.vibrate(durationInMs: 50);
     final shouldPress = await _handleShouldLongPressStart();
     if (shouldPress) {
@@ -257,7 +355,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     }
   }
 
-  void _onLongPressEnd(LongPressEndDetails _) async {
+  Future<void> _onLongPressEnd() async {
     final shouldPress = await _handleShouldLongPressEnd();
     if (shouldPress) {
       if (_holdPulseTimer?.isActive ?? false) {
@@ -409,40 +507,57 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                 );
               },
             ),
-          GestureDetector(
-            onLongPressStart: _onLongPressStart,
-            onLongPressEnd: _onLongPressEnd,
-            child: Bounce(
-              onTap: () {},
-              child: Container(
-                width: buttonSize,
-                height: buttonSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: widget.param.hasSocketConnection
-                      ? buttonColor
-                      : disabledColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.param.hasSocketConnection
-                          ? buttonColor.withValues(alpha: 0.5)
-                          : disabledColor.withValues(alpha: 0.5),
-                      blurRadius: 10,
-                      spreadRadius: 5,
+
+          Consumer<LocationProvider>(
+            builder: (context, p, child) {
+              final allowedCountry = p.isCountryAllowed;
+              final locationError = p.isGetLocationState(RequestState.error);
+              return GestureDetector(
+                onLongPressStart: (_) async {
+                  await _onLongPressStart();
+                },
+                onLongPressEnd: (_) async {
+                  await _onLongPressEnd();
+                },
+                child: Bounce(
+                  onTap: () {},
+                  child: Container(
+                    width: buttonSize,
+                    height: buttonSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          widget.param.hasSocketConnection ||
+                              !locationError ||
+                              !allowedCountry
+                          ? buttonColor
+                          : disabledColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              widget.param.hasSocketConnection ||
+                                  !locationError ||
+                                  !allowedCountry
+                              ? buttonColor.withValues(alpha: 0.5)
+                              : disabledColor.withValues(alpha: 0.5),
+                          blurRadius: 10,
+                          spreadRadius: 5,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  isWaitingConfirmSOS ? "$_remainingSeconds" : "SOS",
-                  style: robotoRegular.copyWith(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    alignment: Alignment.center,
+                    child: Text(
+                      isWaitingConfirmSOS ? "$_remainingSeconds" : "SOS",
+                      style: robotoRegular.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),

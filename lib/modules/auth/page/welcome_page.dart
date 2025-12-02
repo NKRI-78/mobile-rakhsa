@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/router/route_trees.dart';
@@ -9,6 +8,7 @@ import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/service/permission/permission_manager.dart';
 
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -74,142 +74,139 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
-    return Scaffold(
-      backgroundColor: primaryColor,
-      body: SizedBox(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            // pattern fadding
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Image.asset(AssetSource.loginOrnament),
-            ),
+    return StatusBarStyle.light(
+      child: Scaffold(
+        backgroundColor: primaryColor,
+        body: SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              // pattern fadding
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Image.asset(AssetSource.loginOrnament),
+              ),
 
-            // content
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // logo
-                  Image.asset(
-                    AssetSource.logoMarlinda,
-                    width: 90.0,
-                    fit: BoxFit.scaleDown,
-                  ),
-
-                  // title 'marlinda'
-                  Text(
-                    '\n"Mari Lindungi Diri Anda"\n',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: whiteColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: fontSizeExtraLarge,
+              // content
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // logo
+                    Image.asset(
+                      AssetSource.logoMarlinda,
+                      width: 90.0,
+                      fit: BoxFit.scaleDown,
                     ),
-                  ),
 
-                  const SizedBox(height: 40.0),
-
-                  // login button
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (TermsAndConditionsDialog.hasLaunchBefore) {
-                        await PermissionManager().resetTaskExecutionFlag();
-                        if (context.mounted) LoginRoute().go(context);
-                      } else {
-                        await _showTermsAndConditionDialog(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: whiteColor,
-                      backgroundColor: primaryColor,
-                      side: const BorderSide(color: whiteColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    // title 'marlinda'
+                    Text(
+                      '\n"Mari Lindungi Diri Anda"\n',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: fontSizeExtraLarge,
                       ),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Text('Login'),
-                    ),
-                  ),
 
-                  const SizedBox(height: 24.0),
+                    const SizedBox(height: 40.0),
 
-                  // divider
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Divider(
-                          color: whiteColor.withValues(alpha: 0.5),
+                    // login button
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (TermsAndConditionsDialog.hasLaunchBefore) {
+                          await PermissionManager().resetTaskExecutionFlag();
+                          if (context.mounted) LoginRoute().go(context);
+                        } else {
+                          await _showTermsAndConditionDialog(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: whiteColor,
+                        backgroundColor: primaryColor,
+                        side: const BorderSide(color: whiteColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text(
-                            'Atau',
-                            style: robotoRegular.copyWith(
-                              color: whiteColor.withValues(alpha: 0.5),
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text('Login'),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24.0),
+
+                    // divider
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Divider(
+                            color: whiteColor.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: Text(
+                              'Atau',
+                              style: robotoRegular.copyWith(
+                                color: whiteColor.withValues(alpha: 0.5),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: Divider(
-                          color: whiteColor.withValues(alpha: 0.5),
+                        Flexible(
+                          child: Divider(
+                            color: whiteColor.withValues(alpha: 0.5),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24.0),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
 
-                  // register button
-                  OutlinedButton(
-                    onPressed: () async {
-                      if (TermsAndConditionsDialog.hasLaunchBefore) {
-                        await PermissionManager().resetTaskExecutionFlag();
-                        if (context.mounted) RegisterRoute().go(context);
-                      } else {
-                        await _showTermsAndConditionDialog(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: blackColor,
-                      backgroundColor: whiteColor,
-                      side: const BorderSide(color: whiteColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    // register button
+                    OutlinedButton(
+                      onPressed: () async {
+                        if (TermsAndConditionsDialog.hasLaunchBefore) {
+                          await PermissionManager().resetTaskExecutionFlag();
+                          if (context.mounted) RegisterRoute().go(context);
+                        } else {
+                          await _showTermsAndConditionDialog(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: blackColor,
+                        backgroundColor: whiteColor,
+                        side: const BorderSide(color: whiteColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        'Registrasi',
-                        style: robotoRegular.copyWith(
-                          fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Registrasi',
+                          style: robotoRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
