@@ -126,22 +126,24 @@ class LoginPageState extends State<LoginPage> {
           await StorageHelper.delete("phone_cache");
           if (c.mounted) DashboardRoute().go(c);
         },
-        onError: (message, errorCode) async {
+        onError: (title, message, errorCode) async {
           _phoneFNode.unfocus();
           _passFNode.unfocus();
 
           final userNotFound = errorCode == "User not found";
           final wrongPassword = errorCode == "Credentials invalid";
 
-          final title = userNotFound
-              ? "Akun Belum Terdaftar"
-              : wrongPassword
-              ? "Password Salah"
-              : "Terjadi Kesalahan";
+          final newTitle =
+              title ??
+              (userNotFound
+                  ? "Akun Belum Terdaftar"
+                  : wrongPassword
+                  ? "Password Salah"
+                  : "Terjadi Kesalahan");
 
           await AppDialog.error(
             c: c,
-            title: title,
+            title: newTitle,
             message: message ?? "-",
             buildActions: (c) {
               return [

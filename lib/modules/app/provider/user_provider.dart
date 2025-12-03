@@ -35,9 +35,8 @@ class UserProvider with ChangeNotifier {
 
     try {
       final remoteUser = await getUser();
-      final user = remoteUser ?? _user;
-      if (user == null) return null;
-      final packages = user.package;
+      if (remoteUser == null) return null;
+      final packages = remoteUser.package;
       if (packages.isEmpty) return null;
       return packages.first;
     } catch (_) {

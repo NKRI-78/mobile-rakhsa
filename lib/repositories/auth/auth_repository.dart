@@ -13,14 +13,30 @@ class AuthRepository {
         endpoint: '/auth/login',
         data: {"value": phone, "password": password},
       );
-      return UserSession.fromJson(res.data);
+
+      final session = UserSession.fromJson(res.data);
+
+      if (session.user.isLoggedInOnAnotherDevice) {
+        throw NetworkException(
+          errorCode: "LOGGEDIN_ON_ANOTHER_DEVICE",
+          title: "Login Terdeteksi di Perangkat Lain",
+          message:
+              "Akun ini sedang aktif di perangkat lain. Silakan logout dari perangkat tersebut terlebih dahulu sebelum mencoba login kembali.",
+        );
+      }
+
+      return session;
     } on NetworkException catch (e) {
       final message = e.message == "User not found"
           ? "Anda belum memiliki akun Marlinda. Silakan daftar terlebih dahulu untuk melanjutkan."
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;
-      throw NetworkException(message: message, errorCode: e.message);
+      throw NetworkException(
+        title: e.title,
+        message: message,
+        errorCode: e.message,
+      );
     } on DataParsingException catch (e) {
       throw NetworkException(message: e.message, errorCode: e.errorCode);
     }

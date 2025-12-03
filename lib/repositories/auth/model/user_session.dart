@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 
 UserSession userSessionFromJson(String str) =>
     UserSession.fromJson(json.decode(str));
@@ -62,6 +63,7 @@ class UserDataSession {
   final String role;
   final String? access;
   final bool enabled;
+  final bool isLoggedInOnAnotherDevice;
 
   UserDataSession({
     required this.id,
@@ -70,7 +72,8 @@ class UserDataSession {
     required this.phone,
     required this.role,
     this.access,
-    required this.enabled,
+    this.enabled = false,
+    this.isLoggedInOnAnotherDevice = false,
   });
 
   UserDataSession copyWith({
@@ -81,6 +84,7 @@ class UserDataSession {
     String? role,
     String? access,
     bool? enabled,
+    bool? isLoggedInOnAnotherDevice,
   }) => UserDataSession(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -89,9 +93,12 @@ class UserDataSession {
     role: role ?? this.role,
     access: access ?? this.access,
     enabled: enabled ?? this.enabled,
+    isLoggedInOnAnotherDevice:
+        isLoggedInOnAnotherDevice ?? this.isLoggedInOnAnotherDevice,
   );
 
   factory UserDataSession.fromJson(Map<String, dynamic> json) {
+    log("data parsing UserDataSession.fromJson = $json");
     try {
       return UserDataSession(
         id: json["id"],
@@ -100,7 +107,8 @@ class UserDataSession {
         phone: json["phone"],
         role: json["role"],
         access: json["access"] ?? "-",
-        enabled: json["enabled"],
+        enabled: json["enabled"] ?? false,
+        isLoggedInOnAnotherDevice: json["is_logged_in"] ?? false,
       );
     } catch (e) {
       throw DataParsingException(error: e);
@@ -115,10 +123,11 @@ class UserDataSession {
     "role": role,
     "access": access,
     "enabled": enabled,
+    "is_logged_in": isLoggedInOnAnotherDevice,
   };
 
   @override
   String toString() {
-    return 'UserDataSession(id: $id, name: $name, email: $email, phone: $phone, role: $role, access: $access, enabled: $enabled)';
+    return 'UserDataSession(id: $id, name: $name, email: $email, phone: $phone, role: $role, access: $access, enabled: $enabled, isLoggedInOnAnotherDevice: $isLoggedInOnAnotherDevice)';
   }
 }

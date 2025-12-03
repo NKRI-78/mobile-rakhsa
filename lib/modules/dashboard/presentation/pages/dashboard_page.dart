@@ -8,6 +8,7 @@ import 'package:location/location.dart' as location;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
@@ -133,36 +134,38 @@ class DashboardPageState extends State<DashboardPage>
     if (!mounted) return;
     await profileNotifier.getUser();
 
-    final package = await profileNotifier.getRoamingPackage();
-    if (!mounted) return;
-    if (!referralProvider.roamingIsActive(package)) {
-      AppDialog.error(
-        c: context,
-        canPop: false,
-        title: "Masa Paket Roaming Telah Habis",
-        message:
-            "Masa paket roaming Anda telah berakhir. Layanan Marlinda tidak dapat digunakan sampai Anda membeli paket roaming baru.",
-        buildActions: (c) {
-          return [
-            DialogActionButton(
-              label: "Keluar",
-              primary: true,
-              onTap: () async {
-                c.pop();
-                AppDialog.showLoading(context);
+    if (BuildConfig.isProd) {
+      final package = await profileNotifier.getRoamingPackage();
+      if (!mounted) return;
+      if (!referralProvider.roamingIsActive(package)) {
+        AppDialog.error(
+          c: context,
+          canPop: false,
+          title: "Masa Paket Roaming Telah Habis",
+          message:
+              "Masa paket roaming Anda telah berakhir. Layanan Marlinda tidak dapat digunakan sampai Anda membeli paket roaming baru.",
+          buildActions: (c) {
+            return [
+              DialogActionButton(
+                label: "Keluar",
+                primary: true,
+                onTap: () async {
+                  c.pop();
+                  AppDialog.showLoading(context);
 
-                await authProvider.logout(context);
+                  await authProvider.logout(context);
 
-                AppDialog.dismissLoading();
+                  AppDialog.dismissLoading();
 
-                if (!mounted) return;
-                WelcomeRoute().go(context);
-              },
-            ),
-          ];
-        },
-      );
-      return;
+                  if (!mounted) return;
+                  WelcomeRoute().go(context);
+                },
+              ),
+            ];
+          },
+        );
+        return;
+      }
     }
 
     if (!mounted) return;

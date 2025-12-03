@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bounce/bounce.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
@@ -267,6 +268,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
 
     // langsung stop proses selanjutnya karena error get lokasi
     if (errorGetCurrentLocation) return false;
+    if (BuildConfig.isStag) return true;
 
     final allowedCountry = _locationProvider.isCountryAllowed;
 

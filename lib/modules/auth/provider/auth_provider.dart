@@ -37,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
     required String phone,
     required String password,
     VoidCallback? onSuccess,
-    Function(String? message, String? errorCode)? onError,
+    Function(String? title, String? message, String? errorCode)? onError,
   }) async {
     _loginState = RequestState.loading;
     notifyListeners();
@@ -54,7 +54,7 @@ class AuthProvider extends ChangeNotifier {
       _loginState = RequestState.error;
       _errorMessage = e.message;
       notifyListeners();
-      onError?.call(e.message, e.errorCode);
+      onError?.call(e.title, e.message, e.errorCode);
     }
   }
 
