@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
 
 UserSession userSessionFromJson(String str) =>
     UserSession.fromJson(json.decode(str));
@@ -98,7 +97,6 @@ class UserDataSession {
   );
 
   factory UserDataSession.fromJson(Map<String, dynamic> json) {
-    log("data parsing UserDataSession.fromJson = $json");
     try {
       return UserDataSession(
         id: json["id"],

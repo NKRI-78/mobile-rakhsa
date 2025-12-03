@@ -39,7 +39,10 @@ class AppUpgradeAlertState extends UpgradeAlertState {
           return [
             DialogActionButton(
               label: "Ingatkan nanti",
-              onTap: () => onUserLater(c, true),
+              onTap: () async {
+                await widget.upgrader.saveLastAlerted();
+                if (c.mounted) onUserLater(c, true);
+              },
             ),
             DialogActionButton(
               label: "Perbarui sekarang",

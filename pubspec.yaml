@@ -2,7 +2,7 @@ name: rakhsa
 description: "Rakhsa"
 publish_to: "none"
 
-version: 2.1.0+20
+version: 2.1.1+23
 
 environment:
   sdk: ^3.9.2

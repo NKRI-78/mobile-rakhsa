@@ -16,14 +16,14 @@ class AuthRepository {
 
       final session = UserSession.fromJson(res.data);
 
-      if (session.user.isLoggedInOnAnotherDevice) {
-        throw NetworkException(
-          errorCode: "LOGGEDIN_ON_ANOTHER_DEVICE",
-          title: "Login Terdeteksi di Perangkat Lain",
-          message:
-              "Akun ini sedang aktif di perangkat lain. Silakan logout dari perangkat tersebut terlebih dahulu sebelum mencoba login kembali.",
-        );
-      }
+      // if (session.user.isLoggedInOnAnotherDevice) {
+      //   throw NetworkException(
+      //     errorCode: "LOGGEDIN_ON_ANOTHER_DEVICE",
+      //     title: "Login Terdeteksi di Perangkat Lain",
+      //     message:
+      //         "Akun ini sedang aktif di perangkat lain. Silakan logout dari perangkat tersebut terlebih dahulu sebelum mencoba login kembali.",
+      //   );
+      // }
 
       return session;
     } on NetworkException catch (e) {
