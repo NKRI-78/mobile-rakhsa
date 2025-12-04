@@ -22,6 +22,9 @@ class GetMessagesNotifier with ChangeNotifier {
   final sessionCacheKey = "end_session";
   final endSessionDuration = 5; // dalam hitungan menit
 
+  var _usernames = <String>{};
+  List<String> get usernames => _usernames.toList();
+
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
 
@@ -202,22 +205,15 @@ class GetMessagesNotifier with ChangeNotifier {
       String incomingMessageId = data["id"];
       bool isRead = data["is_read"];
 
-      final msgData = {
-        "msg_id": incomingMessageId,
-        "chat_id": incomingChatId,
-        "is_read": isRead,
-        "user": {
-          "id": data['user']['id'],
-          "isMe": data['user']['is_me'],
-          "avatar": data["user"]["avatar"],
-          "name": data["user"]["name"],
-        },
-        "sentTime": data["sent_time"],
-        "text": data["text"],
-      };
-
       log(
-        "messageData dari appendMessage = $msgData",
+        "messageData dari appendMessage = ${{
+          "msg_id": incomingMessageId,
+          "chat_id": incomingChatId,
+          "is_read": isRead,
+          "user": {"id": data['user']['id'], "isMe": data['user']['is_me'], "avatar": data["user"]["avatar"], "name": data["user"]["name"]},
+          "sentTime": data["sent_time"],
+          "text": data["text"],
+        }}",
         label: "GET_MESSAGE_NOTIFIER",
       );
 
@@ -229,6 +225,13 @@ class GetMessagesNotifier with ChangeNotifier {
         label: "GET_MESSAGE_NOTIFIER",
       );
       if (containIncomingMsgId) return;
+
+      final incomingUsername = data["user"]["name"];
+
+      if (incomingUsername is String) {
+        _usernames = {incomingUsername};
+      }
+
       _messages.insert(
         0,
         MessageData(
@@ -238,7 +241,7 @@ class GetMessagesNotifier with ChangeNotifier {
             id: data["user"]["id"],
             isMe: data["user"]["is_me"],
             avatar: data["user"]["avatar"],
-            name: data["user"]["name"],
+            name: incomingUsername,
           ),
           isRead: isRead,
           sentTime: data["sent_time"],

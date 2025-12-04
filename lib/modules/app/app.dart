@@ -1,13 +1,10 @@
-import 'dart:async';
-
-import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
-import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
+import 'package:rakhsa/service/app/universal_link.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -24,13 +21,15 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   late GoRouter router;
 
-  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+  final uniLink = UniversalLink();
+  final notif = NotificationManager();
 
-  StreamSubscription<Uri>? _linkSubs;
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
 
   @override
   void initState() {
     super.initState();
+    log("initState App dipanggil", label: "UNIVERSAL_LINK");
     router = AppRouter().generateRoute(
       locator<AuthProvider>(),
       locator<ReferralProvider>(),
@@ -40,27 +39,15 @@ class AppState extends State<App> {
 
   @override
   void dispose() {
-    _linkSubs?.cancel();
-    _linkSubs = null;
+    uniLink.dispose();
     super.dispose();
   }
 
   void _initializeService() async {
-    await _initDeepLinks();
-    await NotificationManager().initializeFcmHandlers();
-    await NotificationManager().setForegroundMessageActionListeners();
-  }
-
-  Future<void> _initDeepLinks() async {
-    _linkSubs?.cancel();
-    _linkSubs = AppLinks().uriLinkStream.listen((uri) async {
-      log('onAppLink: $uri', label: "APP_LINKS");
-      final referralCode = uri.queryParameters['telkom_trx'];
-      log('referralCode: $referralCode', label: "REFERRAL_CODE");
-      if (referralCode != null) {
-        await locator<ReferralRepository>().saveReferralCode(referralCode);
-      }
-    });
+    log("_initializeService() dipanggil", label: "UNIVERSAL_LINK");
+    await uniLink.initializeUriHandlers();
+    await notif.initializeFcmHandlers();
+    await notif.setForegroundMessageActionListeners();
   }
 
   @override
