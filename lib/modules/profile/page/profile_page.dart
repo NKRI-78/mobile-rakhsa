@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/referral/widget/referral_info_container.dart';
-import 'package:rakhsa/service/device/vibration_manager.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/widgets/avatar.dart';
@@ -80,8 +80,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   child: Bounce(
-                    onTap: () =>
-                        VibrationManager.instance.vibrate(durationInMs: 50),
+                    onTap: () => HapticFeedback.lightImpact(),
                     child: Avatar(
                       src: notifier.user?.avatar,
                       radius: 53,
@@ -119,16 +118,23 @@ class ProfilePageState extends State<ProfilePage> {
 
                       4.spaceY,
 
-                      Text(
-                        "Informasi Paket Roaming",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-
-                      ReferralInfoContainer(
-                        package: (packages ?? []).isNotEmpty
-                            ? packages![0]
-                            : null,
-                      ),
+                      if (BuildConfig.isProd)
+                        Column(
+                          spacing: 16,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Informasi Paket Roaming",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            ReferralInfoContainer(
+                              package: (packages ?? []).isNotEmpty
+                                  ? packages![0]
+                                  : null,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),

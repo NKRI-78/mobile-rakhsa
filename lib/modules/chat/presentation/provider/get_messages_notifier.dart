@@ -20,7 +20,7 @@ class GetMessagesNotifier with ChangeNotifier {
   GetMessagesNotifier({required this.useCase});
 
   final sessionCacheKey = "end_session";
-  final endSessionDuration = 5; // dalam hitungan menit
+  final endSessionDuration = Duration(minutes: 5);
 
   var _usernames = <String>{};
   List<String> get usernames => _usernames.toList();
@@ -56,9 +56,30 @@ class GetMessagesNotifier with ChangeNotifier {
     await StorageHelper.write(sessionCacheKey, DateTime.now().toString());
   }
 
+  bool hasCacheTimeSession() {
+    return StorageHelper.containsKey(sessionCacheKey);
+  }
+
   void initTimeSessionWhenIsNull() async {
     if (StorageHelper.containsKey(sessionCacheKey)) return;
     await StorageHelper.write(sessionCacheKey, DateTime.now().toString());
+  }
+
+  Duration getChatSessionRemainingDuration() {
+    final cSession = StorageHelper.read(sessionCacheKey);
+    if (cSession == null) return Duration.zero;
+
+    try {
+      final savedTime = DateTime.parse(cSession);
+      final elapsed = DateTime.now().difference(savedTime);
+      final remaining = endSessionDuration - elapsed;
+
+      if (remaining.isNegative) return Duration.zero;
+
+      return remaining;
+    } catch (e) {
+      return Duration.zero;
+    }
   }
 
   void checkTimeSession() {
@@ -69,7 +90,7 @@ class GetMessagesNotifier with ChangeNotifier {
 
       // dibaca cuy 🙏😋
       // jika selisih waktu sudah/lebih dari 5 menit maka _isBtnSessionEnd = true
-      if (diffInMinutes >= endSessionDuration) {
+      if (diffInMinutes >= endSessionDuration.inMinutes) {
         _isBtnSessionEnd = true;
         notifyListeners();
       } else {
@@ -80,12 +101,6 @@ class GetMessagesNotifier with ChangeNotifier {
       _isBtnSessionEnd = false;
       notifyListeners();
     }
-  }
-
-  void clearActiveChatId() {
-    _activeChatId = "";
-
-    notifyListeners();
   }
 
   void setStateNote({required String val}) {

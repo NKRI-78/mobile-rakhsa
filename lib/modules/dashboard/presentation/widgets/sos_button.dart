@@ -13,12 +13,12 @@ import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/modules/sos/pages/sos_camera.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SosButtonParam {
@@ -148,8 +148,8 @@ class SosButtonState extends State<SosButton>
                 .ceil()
                 .clamp(0, _cdInSeconds);
         if (remaining != _remainingSeconds) {
-          VibrationManager.instance.vibrate(durationInMs: 10);
           setState(() => _remainingSeconds = remaining);
+          HapticFeedback.lightImpact();
         }
       });
       _tickerController!.addStatusListener((status) {
@@ -240,6 +240,9 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   Future<bool> _checkIfCurrentCountryIsAllowed() async {
+    // kalau staging ga perlu cek lokasi
+    if (BuildConfig.isStag) return true;
+
     final overlayController = _showLoadingLocationDialog();
     await _locationProvider.getCurrentLocation();
     overlayController.dismiss();
@@ -268,7 +271,6 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
 
     // langsung stop proses selanjutnya karena error get lokasi
     if (errorGetCurrentLocation) return false;
-    if (BuildConfig.isStag) return true;
 
     final allowedCountry = _locationProvider.isCountryAllowed;
 
@@ -347,7 +349,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   Future<void> _onLongPressStart() async {
-    VibrationManager.instance.vibrate(durationInMs: 50);
+    HapticFeedback.mediumImpact();
     final shouldPress = await _handleShouldLongPressStart();
     if (shouldPress) {
       _pulseController?.forward();
@@ -368,7 +370,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   void _runSOS() {
-    VibrationManager.instance.vibrate(durationInMs: 100);
+    HapticFeedback.heavyImpact();
     Navigator.push(
       context,
       MaterialPageRoute(

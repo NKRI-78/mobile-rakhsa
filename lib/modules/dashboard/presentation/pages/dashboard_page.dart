@@ -16,7 +16,6 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/router/route_trees.dart';
-import 'package:rakhsa/service/device/vibration_manager.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
@@ -74,8 +73,6 @@ class DashboardPageState extends State<DashboardPage>
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-
-    VibrationManager.instance.init();
 
     profileNotifier = context.read<UserProvider>();
     updateAddressNotifier = context.read<UpdateAddressNotifier>();
@@ -183,7 +180,7 @@ class DashboardPageState extends State<DashboardPage>
   _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
-    VibrationManager.instance.vibrate(durationInMs: 40);
+    HapticFeedback.mediumImpact();
   }
 
   Future<void> getCurrentLocation() async {
@@ -379,6 +376,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
 
           // BOTTOM NAV BAR
           bottomNavigationBar: SafeArea(
+            bottom: Platform.isAndroid,
             child: Theme(
               data: Platform.isIOS
                   ? Theme.of(context).copyWith(

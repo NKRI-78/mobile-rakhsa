@@ -27,13 +27,16 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
     super.initState();
     _referralProvider = context.read<ReferralProvider>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _referralProvider.activateReferralCode(widget.uid, Duration(seconds: 5));
+      _referralProvider.activateReferralCode(
+        widget.uid,
+        delay: Duration(seconds: 1),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return StatusBarStyle(
+    return StatusBarStyle.dark(
       child: Consumer<ReferralProvider>(
         builder: (context, p, child) {
           return PopScope(
@@ -53,7 +56,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
                   16,
                   context.top + 16,
                   16,
-                  context.bottom + 16,
+                  context.bottom + 8,
                 ),
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),

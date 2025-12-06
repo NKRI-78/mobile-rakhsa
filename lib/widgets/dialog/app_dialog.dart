@@ -72,6 +72,7 @@ class AppDialog {
     String? title,
     bool dismissible = true,
     bool canPop = true,
+    Axis? actionButtonDirection,
     List<DialogActionButton> Function(BuildContext c)? buildActions,
   }) {
     return show(
@@ -82,6 +83,7 @@ class AppDialog {
         assetIcon: assetIcon ?? AssetSource.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
+        actionButtonDirection: actionButtonDirection,
         buildActions: buildActions,
       ),
     );

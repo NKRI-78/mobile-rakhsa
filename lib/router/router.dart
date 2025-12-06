@@ -33,6 +33,8 @@ class AppRouter {
         final goingToOnBoarding = currentRoute == OnBoardingRoute().location;
         final goingToWelcome = currentRoute == WelcomeRoute().location;
         final goingToLogin = currentRoute == LoginRoute().location;
+        final goingToForgotPass =
+            currentRoute == ForgotPasswordRoute().location;
         final goingToRegister = currentRoute == RegisterRoute().location;
         final goingToDashboard = currentRoute == DashboardRoute().location;
         final goingToActivateReferral =
@@ -54,6 +56,7 @@ class AppRouter {
               !goingToLogin &&
               !goingToRegister &&
               !goingToNoReferral &&
+              !goingToForgotPass &&
               !goingToActivateReferral) {
             return WelcomeRoute().location;
           }
@@ -67,6 +70,7 @@ class AppRouter {
         if (goingToWelcome ||
             goingToLogin ||
             goingToRegister ||
+            goingToForgotPass ||
             goingToOnBoarding ||
             currentRoute == '/') {
           if (!goingToDashboard) return DashboardRoute().location;

@@ -23,9 +23,9 @@ class ReferralProvider extends ChangeNotifier {
   }
 
   Future<void> activateReferralCode(
-    String uid, [
+    String uid, {
     Duration delay = Duration.zero,
-  ]) async {
+  }) async {
     setState(_state.copyWith(state: RequestState.loading));
 
     if (hasReferralCode) {

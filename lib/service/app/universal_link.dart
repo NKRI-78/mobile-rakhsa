@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_links/app_links.dart';
-import 'package:flutter/material.dart' show AppLifecycleListener;
 import 'package:play_install_referrer/play_install_referrer.dart';
 import 'package:rakhsa/injection.dart';
-import 'package:rakhsa/misc/utils/logger.dart' show log;
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
+import 'package:rakhsa/service/storage/storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+enum _FilterSource { playstore, appstore }
 
 class UniversalLink {
   UniversalLink._();
@@ -13,11 +17,15 @@ class UniversalLink {
   factory UniversalLink() => _instance;
 
   StreamSubscription<Uri>? _linkSubs;
-  AppLifecycleListener? _lifecycleListener;
+
+  final _fetchPlaystoreCacheKey = "fetch_playstore_referrer_cache_key";
+  final _fetchAppstoreCacheKey = "fetch_from_appstore_cache_key";
+
+  SharedPreferences get _prefs => StorageHelper.sharedPreferences;
 
   Future<void> initializeUriHandlers() async {
-    _initializeAppLifecycleListener();
-    await _handleLinkFromPlaystore();
+    if (Platform.isAndroid) await _handleLinkFromPlaystore();
+    if (Platform.isIOS) await _handleLinkFromAppstore();
     _handleLinkFromApplink();
   }
 
@@ -36,33 +44,91 @@ class UniversalLink {
   // ini yang argumen link referral bisa tembus
   // saat user download dari playstore
   Future<void> _handleLinkFromPlaystore() async {
-    final referrerDetail = await PlayInstallReferrer.installReferrer;
-    final referrer = referrerDetail.installReferrer;
+    final hasFetchBefore = _prefs.getBool(_fetchPlaystoreCacheKey) ?? false;
     log(
-      '_handleLinkFromPlaystore(): ${{"install_referrer": referrer, "referral_code": referrer}}',
+      '_handleLinkFromPlaystore() hasFetchBefore? $hasFetchBefore',
       label: "UNIVERSAL_LINK",
     );
+    if (hasFetchBefore) return;
+
+    try {
+      final referrerDetail = await PlayInstallReferrer.installReferrer;
+      final referrer = referrerDetail.installReferrer;
+      log(
+        '_handleLinkFromPlaystore(): ${{"install_referrer": referrer}}',
+        label: "UNIVERSAL_LINK",
+      );
+
+      final code = _filterReferralCode(referrer, _FilterSource.playstore);
+      await _saveReferralCode(code);
+
+      await _prefs.setBool(_fetchPlaystoreCacheKey, true);
+    } catch (e) {
+      log(
+        '_handleLinkFromPlaystore() gagal: ${e.toString()}',
+        label: "UNIVERSAL_LINK",
+      );
+    }
+  }
+
+  // ini yang argumen link referral bisa tembus
+  // saat user download dari appstore
+  Future<void> _handleLinkFromAppstore() async {
+    final hasFetchBefore = _prefs.getBool(_fetchAppstoreCacheKey) ?? false;
+    log(
+      '_handleLinkFromAppstore() hasFetchBefore? $hasFetchBefore',
+      label: "UNIVERSAL_LINK",
+    );
+    if (hasFetchBefore) return;
+
+    try {
+      await _prefs.setBool(_fetchAppstoreCacheKey, true);
+    } catch (e) {
+      log(
+        '_handleLinkFromAppstore() gagal: ${e.toString()}',
+        label: "UNIVERSAL_LINK",
+      );
+    }
+  }
+
+  String? _filterReferralCode(String? referrer, _FilterSource from) {
+    if (referrer == null) return null;
+
+    if (from == _FilterSource.playstore) {
+      // dibaca ya sayy 😙, ini bukan tulisan AI njir 😠
+      // kalau user download marlinda selain dari applink maka begini output referrernya:
+      // 1. dari pencarian playstore: utm_source=google-play&utm_medium=organic
+      // 2. dari link yang dibagian via website: utm_source=(not%20set)&utm_medium=(not%20set)
+      // makanya pengecekan dengan cara apakah referrer mengandung kata "utm_source" atau "utm_medium"
+      // jika iya maka anggep user tidak mendapatkan kode referral karena download marlinda tidak melalui applink
+      final isFromOrganicOrWebsite =
+          referrer.contains("utm_source") || referrer.contains("utm_medium");
+      if (isFromOrganicOrWebsite) return null;
+
+      // nah kalau via applink output referrernya tuh kaya gini:
+      // "0425249e-f650-44b1-9dst...."
+      // dia langsung berupa referral code
+      // makanya kembalikan aja langsung referral code tanpa harus mem-filter lagi
+      return referrer;
+    }
+
+    if (from == _FilterSource.appstore) {}
+
+    return null;
   }
 
   Future<void> _saveReferralCode(String? code) async {
+    log(
+      'mencoba _saveReferralCode, apakah referral code null? ${code == null}',
+      label: "UNIVERSAL_LINK",
+    );
     if (code == null) return;
     await locator<ReferralRepository>().saveReferralCode(code);
-  }
-
-  void _initializeAppLifecycleListener() {
-    _lifecycleListener?.dispose();
-    _lifecycleListener = AppLifecycleListener(
-      onResume: () async {
-        log('_lifecycleListener onResume', label: "UNIVERSAL_LINK");
-        await _handleLinkFromPlaystore();
-      },
-    );
+    log('berhasil _saveReferralCode', label: "UNIVERSAL_LINK");
   }
 
   void dispose() {
     _linkSubs?.cancel();
-    _lifecycleListener?.dispose();
     _linkSubs = null;
-    _lifecycleListener = null;
   }
 }

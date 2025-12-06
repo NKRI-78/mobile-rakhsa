@@ -149,7 +149,7 @@ class NotificationManager {
       );
 
       // pokoknya jangan show local notification di iOS biar ga dobel notifikasinya
-      if (Platform.isIOS && type == NotificationType.chat) return;
+      if (Platform.isIOS) return;
 
       try {
         // kalau notif terkait ews jangan munculin notifikasi cukup update ews

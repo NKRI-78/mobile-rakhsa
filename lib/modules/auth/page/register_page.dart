@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
@@ -158,10 +158,13 @@ class RegisterPageState extends State<RegisterPage> {
           phone: PhoneNumberFormatter.unmask(_phoneController.text),
           password: _passController.text,
           onSuccess: (uid) async {
-            log("user id dari _onRegisterUser di halaman register $uid");
             await StorageHelper.getUserSession();
             if (c.mounted) {
-              ActivateReferralRoute(uid: uid).push(c);
+              if (BuildConfig.isProd) {
+                ActivateReferralRoute(uid: uid).push(c);
+              } else {
+                DashboardRoute(fromRegister: true).go(c);
+              }
             }
           },
           onError: (message, errorCode) async {

@@ -30,18 +30,6 @@ class StorageHelper {
       aOptions: _getAndroidOptions(),
       iOptions: IOSOptions(accessibility: KeychainAccessibility.unlocked),
     );
-
-    if (Platform.isIOS) {
-      _removeiOSKeychainOnFirstRun();
-    }
-  }
-
-  static Future _removeiOSKeychainOnFirstRun() async {
-    final hasRun = sharedPreferences.getBool('has_run_before') ?? false;
-    if (!hasRun) {
-      await secureStorage.deleteAll();
-      await sharedPreferences.setBool('has_run_before', true);
-    }
   }
 
   static Future<bool> write(String key, String value) {
@@ -63,10 +51,12 @@ class StorageHelper {
   static Future<bool> clear() => sharedPreferences.clear();
 
   static Future<void> saveUserSession(UserSession newSession) async {
-    await secureStorage.write(
-      key: "user_session",
-      value: userSessionToJson(newSession),
-    );
+    final parsedSession = userSessionToJson(newSession);
+    if (Platform.isIOS) {
+      await write("ios_user_session", parsedSession);
+    } else {
+      await secureStorage.write(key: "user_session", value: parsedSession);
+    }
 
     // dibaca beb.. 😘😘
     // revalidate cache _session biar ga bikin bug
@@ -79,9 +69,15 @@ class StorageHelper {
   }
 
   static Future<UserSession?> getUserSession() async {
-    final sessionCache = await secureStorage.read(key: "user_session");
-    if (sessionCache == null) return null;
-    return userSessionFromJson(sessionCache);
+    if (Platform.isIOS) {
+      final sessionCache = read("ios_user_session");
+      if (sessionCache == null) return null;
+      return userSessionFromJson(sessionCache);
+    } else {
+      final sessionCache = await secureStorage.read(key: "user_session");
+      if (sessionCache == null) return null;
+      return userSessionFromJson(sessionCache);
+    }
   }
 
   static Future<UserSession?> loadlocalSession() async {
@@ -97,7 +93,11 @@ class StorageHelper {
 
   static Future<void> removeUserSession() async {
     _session = null;
-    await secureStorage.delete(key: "user_session");
+    if (Platform.isIOS) {
+      await delete("ios_user_session");
+    } else {
+      await secureStorage.delete(key: "user_session");
+    }
   }
 
   static String? getUserNationality() {

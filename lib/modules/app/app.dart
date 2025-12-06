@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:rakhsa/service/app/universal_link.dart';
@@ -29,11 +28,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    log("initState App dipanggil", label: "UNIVERSAL_LINK");
-    router = AppRouter().generateRoute(
-      locator<AuthProvider>(),
-      locator<ReferralProvider>(),
-    );
+    _initializeRouter();
     _initializeService();
   }
 
@@ -44,10 +39,16 @@ class AppState extends State<App> {
   }
 
   void _initializeService() async {
-    log("_initializeService() dipanggil", label: "UNIVERSAL_LINK");
-    await uniLink.initializeUriHandlers();
+    if (BuildConfig.isProd) await uniLink.initializeUriHandlers();
     await notif.initializeFcmHandlers();
     await notif.setForegroundMessageActionListeners();
+  }
+
+  void _initializeRouter() {
+    router = AppRouter().generateRoute(
+      locator<AuthProvider>(),
+      locator<ReferralProvider>(),
+    );
   }
 
   @override

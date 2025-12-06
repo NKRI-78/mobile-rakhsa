@@ -1,14 +1,11 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class WeatherPageParams {
   final String area;
@@ -47,108 +44,97 @@ class _WeatherPageState extends State<WeatherPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: CupertinoNavigationBarBackButton(
-          color: ColorResources.white,
-          onPressed: context.pop,
-        ),
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.light,
-          statusBarIconBrightness: Brightness.light,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Align(
-                alignment: const AlignmentDirectional(3, -0.3),
-                child: Container(
-                  height: 300,
-                  width: 300,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.deepPurple,
+    return StatusBarStyle.light(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: const AlignmentDirectional(3, -0.3),
+                  child: Container(
+                    height: 300,
+                    width: 300,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.deepPurple,
+                    ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: const AlignmentDirectional(-3, -0.3),
-                child: Container(
-                  height: 300,
-                  width: 300,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.deepPurple,
+                Align(
+                  alignment: const AlignmentDirectional(-3, -0.3),
+                  child: Container(
+                    height: 300,
+                    width: 300,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.deepPurple,
+                    ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: const AlignmentDirectional(0, -1.2),
-                child: Container(
-                  height: 300,
-                  width: 600,
-                  decoration: const BoxDecoration(color: Color(0xFFFFAB40)),
+                Align(
+                  alignment: const AlignmentDirectional(0, -1.2),
+                  child: Container(
+                    height: 300,
+                    width: 600,
+                    decoration: const BoxDecoration(color: Color(0xFFFFAB40)),
+                  ),
                 ),
-              ),
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.transparent),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.transparent),
+                  ),
                 ),
-              ),
-              Consumer<WeatherNotifier>(
-                builder: (context, provider, child) {
-                  if (provider.loading) {
-                    return Center(
-                      child: TweenAnimationBuilder(
-                        duration: const Duration(seconds: 1),
-                        tween: Tween<double>(
-                          begin: -20,
-                          end: provider.loading ? 0 : -200,
+                Consumer<WeatherNotifier>(
+                  builder: (context, provider, child) {
+                    if (provider.loading) {
+                      return Center(
+                        child: TweenAnimationBuilder(
+                          duration: const Duration(seconds: 1),
+                          tween: Tween<double>(
+                            begin: -20,
+                            end: provider.loading ? 0 : -200,
+                          ),
+                          builder: (context, value, child) {
+                            return Transform.translate(
+                              offset: Offset(0, value),
+                              child: child,
+                            );
+                          },
+                          child: Text(
+                            'Memuat',
+                            style: robotoRegular.copyWith(color: Colors.white),
+                          ),
                         ),
+                      );
+                    } else {
+                      return TweenAnimationBuilder(
+                        duration: const Duration(seconds: 1),
+                        tween: Tween<double>(begin: 0.0, end: 1.0),
                         builder: (context, value, child) {
-                          return Transform.translate(
-                            offset: Offset(0, value),
-                            child: child,
+                          return Opacity(
+                            opacity: value,
+                            child: Transform.translate(
+                              offset: Offset(0, 50 * (1 - value)),
+                              child: child,
+                            ),
                           );
                         },
-                        child: Text(
-                          'Memuat',
-                          style: robotoRegular.copyWith(color: Colors.white),
+                        child: _WeatherViewState(
+                          key: const ValueKey('viewState'),
+                          provider,
+                          widget.param.area,
                         ),
-                      ),
-                    );
-                  } else {
-                    return TweenAnimationBuilder(
-                      duration: const Duration(seconds: 1),
-                      tween: Tween<double>(begin: 0.0, end: 1.0),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, 50 * (1 - value)),
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: _WeatherViewState(
-                        key: const ValueKey('viewState'),
-                        provider,
-                        widget.param.area,
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

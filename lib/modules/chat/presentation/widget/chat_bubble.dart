@@ -10,6 +10,7 @@ class ChatBubble extends StatelessWidget {
   final String time;
   final bool isMe;
   final bool isRead;
+  final bool isSingleAdmin;
   final String username;
 
   const ChatBubble({
@@ -17,6 +18,7 @@ class ChatBubble extends StatelessWidget {
     required this.text,
     required this.time,
     required this.isMe,
+    required this.isSingleAdmin,
     required this.isRead,
     required this.username,
   });
@@ -30,7 +32,7 @@ class ChatBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!isMe)
+          if (!isMe && !isSingleAdmin)
             Row(
               spacing: 6,
               mainAxisSize: MainAxisSize.min,
