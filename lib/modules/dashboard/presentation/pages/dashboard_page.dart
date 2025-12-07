@@ -26,6 +26,7 @@ import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home_page.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/service/permission/permission_manager.dart';
@@ -180,7 +181,7 @@ class DashboardPageState extends State<DashboardPage>
   _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
-    HapticFeedback.mediumImpact();
+    HapticService.instance.mediumImpact();
   }
 
   Future<void> getCurrentLocation() async {

@@ -9,6 +9,7 @@ import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/modules/sos/pages/sos_camera.dart';
 
@@ -18,7 +19,6 @@ import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
-import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SosButtonParam {
@@ -149,7 +149,7 @@ class SosButtonState extends State<SosButton>
                 .clamp(0, _cdInSeconds);
         if (remaining != _remainingSeconds) {
           setState(() => _remainingSeconds = remaining);
-          HapticFeedback.lightImpact();
+          HapticService.instance.lightImpact();
         }
       });
       _tickerController!.addStatusListener((status) {
@@ -349,7 +349,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   Future<void> _onLongPressStart() async {
-    HapticFeedback.mediumImpact();
+    HapticService.instance.mediumImpact();
     final shouldPress = await _handleShouldLongPressStart();
     if (shouldPress) {
       _pulseController?.forward();
@@ -370,7 +370,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   }
 
   void _runSOS() {
-    HapticFeedback.heavyImpact();
+    HapticService.instance.heavyImpact();
     Navigator.push(
       context,
       MaterialPageRoute(

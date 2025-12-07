@@ -10,6 +10,7 @@ import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/referral/widget/referral_info_container.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -80,7 +81,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   child: Bounce(
-                    onTap: () => HapticFeedback.lightImpact(),
+                    onTap: () => HapticService.instance.lightImpact(),
                     child: Avatar(
                       src: notifier.user?.avatar,
                       radius: 53,

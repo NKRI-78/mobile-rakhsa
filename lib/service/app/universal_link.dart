@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:dio/dio.dart';
 import 'package:play_install_referrer/play_install_referrer.dart';
 import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/storage/storage.dart';
@@ -22,6 +24,14 @@ class UniversalLink {
   final _fetchAppstoreCacheKey = "fetch_from_appstore_cache_key";
 
   SharedPreferences get _prefs => StorageHelper.sharedPreferences;
+
+  DioClient get _client => locator<DioClient>();
+
+  Dio get _newClient {
+    return _client.createNewInstance(
+      baseUrl: "https://marlinda.app-links.langitdigital78.com",
+    );
+  }
 
   Future<void> initializeUriHandlers() async {
     if (Platform.isAndroid) await _handleLinkFromPlaystore();
@@ -82,17 +92,31 @@ class UniversalLink {
     if (hasFetchBefore) return;
 
     try {
-      await _prefs.setBool(_fetchAppstoreCacheKey, true);
+      if (await _client.hasInternet) {
+        final res = await _newClient.post("/deeplink/claim");
+        log("_handleLinkFromAppstore() res: ${res.data}");
+        await _prefs.setBool(_fetchAppstoreCacheKey, true);
+      } else {
+        log(
+          '_handleLinkFromAppstore() gagal: tidak ada koneksi internet',
+          label: "UNIVERSAL_LINK",
+        );
+      }
+    } on DioException catch (e) {
+      log(
+        '_handleLinkFromAppstore() gagal DioException: ${{"error": e.error.toString(), "message": e.message, "dio_exception_type": e.type, "res": e.response.toString()}}',
+        label: "UNIVERSAL_LINK",
+      );
     } catch (e) {
       log(
-        '_handleLinkFromAppstore() gagal: ${e.toString()}',
+        '_handleLinkFromAppstore() gagal UnhandledException: ${e.toString()}',
         label: "UNIVERSAL_LINK",
       );
     }
   }
 
-  String? _filterReferralCode(String? referrer, _FilterSource from) {
-    if (referrer == null) return null;
+  String? _filterReferralCode(String? raw, _FilterSource from) {
+    if (raw == null) return null;
 
     if (from == _FilterSource.playstore) {
       // dibaca ya sayy 😙, ini bukan tulisan AI njir 😠
@@ -102,14 +126,14 @@ class UniversalLink {
       // makanya pengecekan dengan cara apakah referrer mengandung kata "utm_source" atau "utm_medium"
       // jika iya maka anggep user tidak mendapatkan kode referral karena download marlinda tidak melalui applink
       final isFromOrganicOrWebsite =
-          referrer.contains("utm_source") || referrer.contains("utm_medium");
+          raw.contains("utm_source") || raw.contains("utm_medium");
       if (isFromOrganicOrWebsite) return null;
 
       // nah kalau via applink output referrernya tuh kaya gini:
-      // "0425249e-f650-44b1-9dst...."
+      // "0425249e-f650-44b1-9 dst...."
       // dia langsung berupa referral code
       // makanya kembalikan aja langsung referral code tanpa harus mem-filter lagi
-      return referrer;
+      return raw;
     }
 
     if (from == _FilterSource.appstore) {}

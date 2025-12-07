@@ -15,6 +15,7 @@ import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
 
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -135,7 +136,7 @@ class CameraPageState extends State<CameraPage> {
     if (controller == null || !isRecording) return;
 
     try {
-      await HapticFeedback.heavyImpact();
+      await HapticService.instance.heavyImpact();
       final temp = await controller!.stopVideoRecording();
       _recordingController.stop();
 

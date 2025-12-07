@@ -24,6 +24,7 @@ import 'package:rakhsa/service/provider/providers.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 
 import './modules/app/app.dart';
+import 'service/haptic/haptic_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,8 @@ Future<void> main() async {
   await SosCoordinator().initAndRestore();
 
   await AppMetadata().initialize();
+
+  await HapticService.instance.initialize();
 
   HttpOverrides.global = HttpOverridesConfig();
 

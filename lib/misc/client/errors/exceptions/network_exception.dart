@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:rakhsa/misc/client/errors/errors.dart';
 
 class NetworkException implements Exception {
@@ -39,4 +40,9 @@ class NetworkException implements Exception {
     message: 'Tidak ada koneksi internet. Mohon periksa jaringan Anda.',
     statusCode: 608,
   );
+
+  @override
+  String toString() {
+    return 'NetworkException(errorType: $errorType, statusCode: $statusCode, errorCode: $errorCode, title: $title, message: $message, body: $body, original: $original)';
+  }
 }
