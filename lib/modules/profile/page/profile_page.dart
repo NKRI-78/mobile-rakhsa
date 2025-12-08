@@ -38,6 +38,9 @@ class ProfilePageState extends State<ProfilePage> {
       color: Colors.black,
       fontWeight: FontWeight.w600,
     );
+
+    final top = context.top + kToolbarHeight;
+
     return StatusBarStyle.light(
       child: Scaffold(
         extendBody: true,
@@ -54,12 +57,7 @@ class ProfilePageState extends State<ProfilePage> {
                 children: [
                   // avatar
                   Container(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      context.top + 32,
-                      16,
-                      context.top + 16,
-                    ),
+                    padding: EdgeInsets.fromLTRB(16, top, 16, (top - 16)),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       gradient: RadialGradient(
@@ -84,7 +82,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
-                  6.spaceY,
+                  12.spaceY,
 
                   // info profil
                   Padding(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -30,7 +32,7 @@ class ReferralInfoContainer extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade400, width: 0.7),
       ),
       child: Column(
-        spacing: 6,
+        spacing: 8,
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildInfo(
@@ -80,27 +82,25 @@ class ReferralInfoContainer extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: Row(
-            spacing: 3,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.black54, fontSize: 12.5),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  await _showInfo(c, label, explanation);
-                },
-                child: Icon(
-                  IconsaxPlusBold.info_circle,
-                  color: Colors.grey.shade400,
+          child: GestureDetector(
+            onTap: () async => await _showInfo(c, label, explanation),
+            child: Row(
+              spacing: 4,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.black54, fontSize: 12.5),
+                ),
+                Icon(
+                  IconsaxPlusLinear.info_circle,
+                  color: Colors.black54,
                   size: 16,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -122,6 +122,8 @@ class ReferralInfoContainer extends StatelessWidget {
     String title,
     String subtitle,
   ) async {
+    final bottomBasedOS = Platform.isIOS ? 8.0 : 24.0;
+    final bottomPadding = context.bottom + bottomBasedOS;
     await showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -131,7 +133,7 @@ class ReferralInfoContainer extends StatelessWidget {
       ),
       builder: (modalContext) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, context.bottom + 8),
+          padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding),
           child: Column(
             spacing: 16,
             mainAxisSize: MainAxisSize.min,
