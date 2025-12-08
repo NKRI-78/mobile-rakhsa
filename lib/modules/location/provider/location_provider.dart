@@ -51,7 +51,7 @@ class LocationProvider extends ChangeNotifier {
 
   Future<LocationData?> getCurrentLocation({
     bool enableCache = true,
-    Duration cacheAge = const Duration(minutes: 5),
+    Duration cacheAge = const Duration(minutes: 2),
   }) async {
     final activeDuration = _checkCacheAgeIsActive(cacheAge);
     _isLocationCacheActive = activeDuration;

@@ -119,7 +119,8 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
         if (p.state.data != null)
           Text("Detail Roaming", style: TextStyle(fontWeight: FontWeight.w600)),
 
-        if (p.state.data != null) ReferralInfoContainer(referral: p.state.data),
+        if (p.state.data != null)
+          ReferralInfoContainer(package: p.state.data?.package),
 
         10.spaceY,
 

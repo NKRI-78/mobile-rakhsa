@@ -65,8 +65,6 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 8.1)
     - nanopb (~> 3.30910.0)
   - Flutter (1.0.0)
-  - flutter_secure_storage (6.0.0):
-    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
   - geocoding_ios (1.0.5):
@@ -140,6 +138,8 @@ PODS:
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
+  - vibration (3.0.0):
+    - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -160,7 +160,6 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
-  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -174,6 +173,7 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - vibration (from `.symlinks/plugins/vibration/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
@@ -220,8 +220,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
-  flutter_secure_storage:
-    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoding_ios:
@@ -248,6 +246,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  vibration:
+    :path: ".symlinks/plugins/vibration/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   wakelock_plus:
@@ -275,7 +275,6 @@ SPEC CHECKSUMS:
   FirebaseInstallations: ae9f4902cb5bf1d0c5eaa31ec1f4e5495a0714e2
   FirebaseMessaging: d33971b7bb252745ea6cd31ab190d1a1df4b8ed5
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   fluttertoast: 2c67e14dce98bbdb200df9e1acf610d7a6264ea1
   geocoding_ios: bcbdaa6bddd7d3129c9bcb8acddc5d8778689768
   geolocator_apple: 1560c3c875af2a412242c7a923e15d0d401966ff
@@ -298,6 +297,7 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  vibration: 69774ad57825b11c951ee4c46155f455d7a592ce
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2

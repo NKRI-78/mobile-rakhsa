@@ -80,7 +80,6 @@ class RecipientUser extends Equatable {
   final String? id;
   final String? avatar;
   final String? name;
-  final String role;
   final bool? isMe;
   final bool? isOnline;
   final DateTime? lastActive;
@@ -92,7 +91,6 @@ class RecipientUser extends Equatable {
     this.isMe,
     this.isOnline,
     this.lastActive,
-    this.role = "command_center",
   });
 
   factory RecipientUser.fromJson(Map<String, dynamic> json) => RecipientUser(
@@ -102,7 +100,6 @@ class RecipientUser extends Equatable {
     isMe: json["is_me"],
     isOnline: json["is_online"],
     lastActive: DateTime.parse(json["last_active"]),
-    role: "command_center",
   );
 
   Map<String, dynamic> toJson() {
@@ -113,20 +110,18 @@ class RecipientUser extends Equatable {
       'is_me': isMe,
       'is_online': isOnline,
       'last_active': lastActive?.millisecondsSinceEpoch,
-      'role': role,
     };
   }
 
   @override
   List<Object?> get props {
-    return [id, avatar, name, isMe, isOnline, lastActive, role];
+    return [id, avatar, name, isMe, isOnline, lastActive];
   }
 
   RecipientUser copyWith({
     String? id,
     String? avatar,
     String? name,
-    String? role,
     bool? isMe,
     bool? isOnline,
     DateTime? lastActive,
@@ -135,7 +130,6 @@ class RecipientUser extends Equatable {
       id: id ?? this.id,
       avatar: avatar ?? this.avatar,
       name: name ?? this.name,
-      role: role ?? this.role,
       isMe: isMe ?? this.isMe,
       isOnline: isOnline ?? this.isOnline,
       lastActive: lastActive ?? this.lastActive,

@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/repositories/referral/model/referral.dart';
 
 class ReferralInfoContainer extends StatelessWidget {
-  const ReferralInfoContainer({super.key, this.referral, this.package});
+  const ReferralInfoContainer({super.key, this.package});
 
-  final ReferralData? referral;
   final ReferralPackage? package;
 
   @override
   Widget build(BuildContext context) {
+    final namaPaket = package?.packageKeyword ?? "-";
+
     final now = DateTime.now();
 
-    final namaPaket =
-        referral?.package?.packageKeyword ?? package?.packageKeyword ?? "-";
-    final end = referral?.package?.endAt ?? package?.endAt ?? now;
+    final startAt = (package?.startAt ?? now).format("dd MMMM yyyy");
+
+    final end = package?.endAt ?? now;
+    final endAt = end.format("dd MMMM yyyy");
+
     final diff = end.difference(now);
     final sisaMasaAktif = (diff.isNegative ? Duration.zero : diff).inDays;
-    final berakhirPada = (referral?.package?.endAt ?? package?.endAt ?? now)
-        .format("dd MMMM yyyy");
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -28,30 +30,77 @@ class ReferralInfoContainer extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade400, width: 0.7),
       ),
       child: Column(
-        spacing: 4,
+        spacing: 6,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildRow("Nama Paket", namaPaket),
+          _buildInfo(
+            context,
+            "Nama Paket",
+            namaPaket,
+            "Nama paket roaming yang aktif untuk saat ini.",
+          ),
           Divider(),
-          _buildRow("Status", "Aktif"),
-          _buildRow("Sisa Masa Aktif", "$sisaMasaAktif Hari"),
-          _buildRow("Berakhir Pada", berakhirPada),
+          _buildInfo(
+            context,
+            "Status",
+            "Aktif",
+            "Status aktivasi paket roaming ditentukan oleh sisa masa aktif. Jika masa aktif paket roaming telah berakhir, aplikasi akan otomatis melakukan logout. Untuk dapat kembali menggunakan Marlinda, Anda perlu membeli paket roaming kembali dan login menggunakan akun yang sama.",
+          ),
+          _buildInfo(
+            context,
+            "Tanggal Mulai",
+            startAt,
+            "Tanggal dimulainya pembelian paket roaming untuk pertama kalinya.",
+          ),
+          _buildInfo(
+            context,
+            "Berakhir Pada",
+            endAt,
+            "Tanggal berakhir masa paket roaming dihitung berdasarkan pembelian paket roaming terakhir. Tanggal tersebut akan otomatis diperpanjang apabila Anda membeli atau memperpanjang paket roaming menggunakan nomor telepon yang sama.",
+          ),
+          _buildInfo(
+            context,
+            "Sisa Masa Aktif",
+            "$sisaMasaAktif Hari Lagi",
+            "Sisa masa aktif dihitung dari selisih antara tanggal saat ini dan tanggal berakhir paket roaming.",
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildRow(String label, String data) {
+  Widget _buildInfo(
+    BuildContext c,
+    String label,
+    String data,
+    String explanation,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           flex: 2,
-          child: Text(
-            label,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.black54),
+          child: Row(
+            spacing: 3,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.black54, fontSize: 12.5),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await _showInfo(c, label, explanation);
+                },
+                child: Icon(
+                  IconsaxPlusBold.info_circle,
+                  color: Colors.grey.shade400,
+                  size: 16,
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -61,10 +110,45 @@ class ReferralInfoContainer extends StatelessWidget {
             maxLines: 2,
             textAlign: TextAlign.end,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showInfo(
+    BuildContext context,
+    String title,
+    String subtitle,
+  ) async {
+    await showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (modalContext) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, context.bottom + 8),
+          child: Column(
+            spacing: 16,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                subtitle,
+                style: TextStyle(fontSize: 13, color: Colors.black54),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

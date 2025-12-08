@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:play_install_referrer/play_install_referrer.dart';
 import 'package:rakhsa/injection.dart';
@@ -27,11 +28,9 @@ class UniversalLink {
 
   DioClient get _client => locator<DioClient>();
 
-  Dio get _newClient {
-    return _client.createNewInstance(
-      baseUrl: "https://marlinda.app-links.langitdigital78.com",
-    );
-  }
+  Dio get _uniLinkClient => _client.createNewInstance(
+    baseUrl: "https://marlinda.app-links.langitdigital78.com",
+  );
 
   Future<void> initializeUriHandlers() async {
     if (Platform.isAndroid) await _handleLinkFromPlaystore();
@@ -93,15 +92,27 @@ class UniversalLink {
 
     try {
       if (await _client.hasInternet) {
-        final res = await _newClient.post("/deeplink/claim");
+        final deviceInfo = await DeviceInfoPlugin().iosInfo;
+        final res = await _uniLinkClient.post(
+          "/deeplink/claim",
+          data: {"model": deviceInfo.model},
+        );
         log("_handleLinkFromAppstore() res: ${res.data}");
-        await _prefs.setBool(_fetchAppstoreCacheKey, true);
+
+        if (res.data['status'] == "ok") {
+          if (res.data['deep_link_params'] != null) {
+            final code = res.data['deep_link_params']['telkom_trx'];
+            await _saveReferralCode(code);
+          }
+        }
       } else {
         log(
           '_handleLinkFromAppstore() gagal: tidak ada koneksi internet',
           label: "UNIVERSAL_LINK",
         );
       }
+
+      await _prefs.setBool(_fetchAppstoreCacheKey, true);
     } on DioException catch (e) {
       log(
         '_handleLinkFromAppstore() gagal DioException: ${{"error": e.error.toString(), "message": e.message, "dio_exception_type": e.type, "res": e.response.toString()}}',

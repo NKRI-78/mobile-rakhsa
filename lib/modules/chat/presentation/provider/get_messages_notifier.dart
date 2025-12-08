@@ -101,16 +101,13 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void removeAthanFromRecipients() {
-    _recipients.removeWhere((r) => r.role == "athan");
+    _recipients.removeWhere((r) => r.name == "Athan");
   }
 
   void addRecipients(RecipientUser newR, {bool shouldNotify = true}) {
     if (_recipients.any((r) => r.id == newR.id)) return;
     if (newR.id == StorageHelper.session?.user.id) return;
-    _recipients = [
-      ..._recipients,
-      newR.copyWith(role: newR.name == "Athan" ? "athan" : "command_center"),
-    ];
+    _recipients = [..._recipients, newR];
     if (shouldNotify) notifyListeners();
   }
 
