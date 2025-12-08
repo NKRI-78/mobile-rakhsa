@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
+
 class MessageModel {
   int status;
   bool error;
@@ -73,21 +76,23 @@ class MessageData {
   );
 }
 
-class RecipientUser {
-  String? id;
-  String? avatar;
-  String? name;
-  bool? isMe;
-  bool? isOnline;
-  DateTime? lastActive;
+class RecipientUser extends Equatable {
+  final String? id;
+  final String? avatar;
+  final String? name;
+  final String role;
+  final bool? isMe;
+  final bool? isOnline;
+  final DateTime? lastActive;
 
-  RecipientUser({
+  const RecipientUser({
     this.id,
     this.avatar,
     this.name,
     this.isMe,
     this.isOnline,
     this.lastActive,
+    this.role = "command_center",
   });
 
   factory RecipientUser.fromJson(Map<String, dynamic> json) => RecipientUser(
@@ -97,7 +102,45 @@ class RecipientUser {
     isMe: json["is_me"],
     isOnline: json["is_online"],
     lastActive: DateTime.parse(json["last_active"]),
+    role: "command_center",
   );
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'avatar': avatar,
+      'name': name,
+      'is_me': isMe,
+      'is_online': isOnline,
+      'last_active': lastActive?.millisecondsSinceEpoch,
+      'role': role,
+    };
+  }
+
+  @override
+  List<Object?> get props {
+    return [id, avatar, name, isMe, isOnline, lastActive, role];
+  }
+
+  RecipientUser copyWith({
+    String? id,
+    String? avatar,
+    String? name,
+    String? role,
+    bool? isMe,
+    bool? isOnline,
+    DateTime? lastActive,
+  }) {
+    return RecipientUser(
+      id: id ?? this.id,
+      avatar: avatar ?? this.avatar,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      isMe: isMe ?? this.isMe,
+      isOnline: isOnline ?? this.isOnline,
+      lastActive: lastActive ?? this.lastActive,
+    );
+  }
 }
 
 class MessageUser {

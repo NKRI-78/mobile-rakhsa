@@ -240,6 +240,10 @@ class SocketIoService with ChangeNotifier {
         "athan_user_id": "4c547729-f0c7-4532-9bc8-84a12d63635f",
       };
       socket?.emit("message", payload);
+      log(
+        'emit sendMessage socket?.emit("message", payload) = $payload',
+        label: "SOCKET_SERVICE",
+      );
     }
   }
 

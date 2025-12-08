@@ -22,8 +22,8 @@ class GetMessagesNotifier with ChangeNotifier {
   final sessionCacheKey = "end_session";
   final endSessionDuration = Duration(minutes: 5);
 
-  var _usernames = <String>{};
-  List<String> get usernames => _usernames.toList();
+  var _recipients = <RecipientUser>[];
+  List<RecipientUser> get recipients => _recipients;
 
   String _activeChatId = "";
   String get activeChatId => _activeChatId;
@@ -36,9 +36,6 @@ class GetMessagesNotifier with ChangeNotifier {
 
   bool _showAutoGreetings = false;
   bool get showAutoGreetings => _showAutoGreetings;
-
-  RecipientUser _recipient = RecipientUser();
-  RecipientUser get recipient => _recipient;
 
   List<MessageData> _messages = [];
   List<MessageData> get messages => [..._messages];
@@ -103,6 +100,20 @@ class GetMessagesNotifier with ChangeNotifier {
     }
   }
 
+  void removeAthanFromRecipients() {
+    _recipients.removeWhere((r) => r.role == "athan");
+  }
+
+  void addRecipients(RecipientUser newR, {bool shouldNotify = true}) {
+    if (_recipients.any((r) => r.id == newR.id)) return;
+    if (newR.id == StorageHelper.session?.user.id) return;
+    _recipients = [
+      ..._recipients,
+      newR.copyWith(role: newR.name == "Athan" ? "athan" : "command_center"),
+    ];
+    if (shouldNotify) notifyListeners();
+  }
+
   void setStateNote({required String val}) {
     _note = val;
 
@@ -151,8 +162,6 @@ class GetMessagesNotifier with ChangeNotifier {
         setStateProvider(ProviderState.error);
       },
       (r) {
-        _recipient = r.data.recipient;
-
         _note = r.data.note;
 
         _activeChatId = r.data.chatId;
@@ -162,6 +171,8 @@ class GetMessagesNotifier with ChangeNotifier {
         _messages = [];
 
         _messages.addAll(r.data.messages);
+
+        addRecipients(r.data.recipient, shouldNotify: false);
 
         notifyListeners();
 
@@ -202,18 +213,25 @@ class GetMessagesNotifier with ChangeNotifier {
 
     if (closedByAgent) {
       if (_messages.any((m) => m.id == "closed_by_agent")) return;
+
       _messages.insert(
         0,
         MessageData(
           id: "closed_by_agent",
           chatId: activeChatId,
-          user: MessageUser(id: null, isMe: false, avatar: null, name: null),
+          user: MessageUser(
+            id: null,
+            isMe: false,
+            avatar: null,
+            name: "Command Center",
+          ),
           isRead: true,
           sentTime: DateTime.now().format("HH.mm"),
           text: _note,
           createdAt: DateTime.now(),
         ),
       );
+
       await NotificationManager().dismissAllNotification();
     } else {
       String incomingChatId = data["chat_id"];
@@ -241,11 +259,15 @@ class GetMessagesNotifier with ChangeNotifier {
       );
       if (containIncomingMsgId) return;
 
-      final incomingUsername = data["user"]["name"];
+      addRecipients(
+        RecipientUser(
+          id: data["user"]["id"],
+          avatar: data["user"]["avatar"],
+          name: data["user"]["name"],
+        ),
+      );
 
-      if (incomingUsername is String) {
-        _usernames = {incomingUsername};
-      }
+      log("incomingRecipients $_recipients", label: "GET_MESSAGE_NOTIFIER");
 
       _messages.insert(
         0,
@@ -256,7 +278,7 @@ class GetMessagesNotifier with ChangeNotifier {
             id: data["user"]["id"],
             isMe: data["user"]["is_me"],
             avatar: data["user"]["avatar"],
-            name: incomingUsername,
+            name: data["user"]["name"],
           ),
           isRead: isRead,
           sentTime: data["sent_time"],

@@ -100,7 +100,11 @@ class _AvatarState extends State<Avatar> {
         _getInitials() ?? _randomLetter,
         style: TextStyle(
           color: whiteColor,
-          fontSize: minDiameter >= 90 ? 32.0 : 18.0,
+          fontSize: minDiameter >= 90
+              ? 32.0
+              : minDiameter <= 20
+              ? 11.0
+              : 16.0,
         ),
       ),
     );

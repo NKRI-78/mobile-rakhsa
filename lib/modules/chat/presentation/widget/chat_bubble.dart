@@ -25,6 +25,8 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isAthan = username == "Athan";
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
@@ -37,10 +39,21 @@ class ChatBubble extends StatelessWidget {
               spacing: 6,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Avatar(src: username, initial: username, radius: 12),
+                Avatar(
+                  src:
+                      "https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg",
+                  initial: username,
+                  radius: 12,
+                  withBorder: true,
+                  borderColor: isAthan ? primaryColor : Colors.grey,
+                ),
                 Text(
                   username,
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    color: Colors.black54,
+                    fontWeight: isAthan ? FontWeight.w600 : FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -54,13 +67,16 @@ class ChatBubble extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
             decoration: BoxDecoration(
-              color: isMe ? primaryColor : Colors.grey[200],
+              color: isMe ? primaryColor : Colors.grey.shade200,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(isMe ? 12.0 : 0.0),
                 topRight: Radius.circular(isMe ? 0.0 : 12.0),
                 bottomLeft: const Radius.circular(12.0),
                 bottomRight: const Radius.circular(12.0),
               ),
+              border: !isMe
+                  ? Border.all(color: isAthan ? primaryColor : Colors.grey)
+                  : null,
             ),
             child: Column(
               spacing: 4,

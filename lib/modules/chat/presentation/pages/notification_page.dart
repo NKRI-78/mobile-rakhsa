@@ -203,7 +203,7 @@ class NotificationPageState extends State<NotificationPage> {
       itemBuilder: (context, i) {
         final c = chats[i];
         return ListTile(
-          leading: Avatar(src: c.user.avatar),
+          leading: Avatar(src: c.user.avatar, initial: c.user.name),
           title: Text(
             c.user.name,
             style: robotoRegular.copyWith(fontWeight: FontWeight.bold),

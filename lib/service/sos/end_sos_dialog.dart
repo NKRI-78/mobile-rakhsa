@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/router/router.dart';
@@ -72,6 +73,7 @@ class EndSosDialog extends StatelessWidget {
               onTap: () async {
                 c.read<SosRatingNotifier>().sosRating(sosId: sosId);
                 c.read<SocketIoService>().userResolvedSos(sosId: sosId);
+                c.read<GetMessagesNotifier>().removeAthanFromRecipients();
                 c.pop(true);
                 if (!fromHome) DashboardRoute().go(context);
                 await NotificationManager().dismissAllNotification();

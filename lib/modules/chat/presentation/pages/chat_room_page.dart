@@ -227,225 +227,252 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.unfocus(),
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: AppBar(
-            backgroundColor: primaryColor,
-            leading: CupertinoNavigationBarBackButton(
-              color: whiteColor,
-              onPressed: context.pop,
-            ),
-            centerTitle: false,
-            title: Consumer<GetMessagesNotifier>(
-              builder: (context, notifier, child) {
-                final username = notifier.recipient.name ?? "-";
-                final agentIsTyping = notifier.isTyping(widget.param.chatId);
-                return Row(
-                  spacing: 10,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Avatar(src: notifier.recipient.avatar, initial: username),
-                    Column(
-                      spacing: 3,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          username,
-                          style: robotoRegular.copyWith(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+      child: PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          messageNotifier.removeAthanFromRecipients();
+        },
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              backgroundColor: primaryColor,
+              leading: CupertinoNavigationBarBackButton(
+                color: whiteColor,
+                onPressed: context.pop,
+              ),
+              centerTitle: false,
+              title: Consumer<GetMessagesNotifier>(
+                builder: (context, notifier, child) {
+                  final agentIsTyping = notifier.isTyping(widget.param.chatId);
+
+                  final recipients = notifier.recipients;
+                  final isSingleAdmin = recipients.length == 1;
+                  final usernames = recipients.isEmpty
+                      ? '-'
+                      : isSingleAdmin
+                      ? (recipients[0].name ?? '-')
+                      : '${recipients[0].name ?? "-"} & ${recipients[1].name ?? "-"}';
+
+                  return Row(
+                    spacing: isSingleAdmin ? 10 : 8,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (notifier.recipients.isNotEmpty)
+                        Avatar(
+                          src: notifier.recipients[0].avatar,
+                          initial: notifier.recipients[0].name,
                         ),
-                        if (agentIsTyping)
-                          Text(
-                            "Sedang mengetik...",
-                            style: robotoRegular.copyWith(
-                              fontSize: 10.0,
-                              color: Colors.white,
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              usernames,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: isSingleAdmin ? 18 : 16,
+                              ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ],
-                );
-              },
+
+                            if (agentIsTyping)
+                              Text(
+                                "Sedang mengetik...",
+                                style: robotoRegular.copyWith(
+                                  fontSize: 10.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        body: Consumer<GetMessagesNotifier>(
-          builder: (context, notifier, child) {
-            final closedSession =
-                widget.param.status == "CLOSED" || notifier.note.isNotEmpty;
-            return SafeArea(
-              bottom: Platform.isAndroid,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: notifier.showAutoGreetings
-                        ? _buildAutoGreetings()
-                        : ListView.builder(
-                            controller: sC,
-                            reverse: true,
-                            itemCount: notifier.messages.length,
-                            padding: const EdgeInsets.all(16),
-                            itemBuilder: (context, index) {
-                              final item = notifier.messages[index];
+          body: Consumer<GetMessagesNotifier>(
+            builder: (context, notifier, child) {
+              final closedSession =
+                  widget.param.status == "CLOSED" || notifier.note.isNotEmpty;
+              return SafeArea(
+                bottom: Platform.isAndroid,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: notifier.showAutoGreetings
+                          ? _buildAutoGreetings()
+                          : ListView.builder(
+                              controller: sC,
+                              reverse: true,
+                              itemCount: notifier.messages.length,
+                              padding: const EdgeInsets.all(16),
+                              itemBuilder: (context, index) {
+                                final item = notifier.messages[index];
 
-                              return ChatBubble(
-                                text: item.text,
-                                time: item.sentTime,
-                                isMe: item.user.isMe!,
-                                isRead: item.isRead,
-                                isSingleAdmin: notifier.usernames.length == 1,
-                                username: item.user.name ?? "-",
-                              );
-                            },
-                          ),
-                  ),
-
-                  // send message
-                  Container(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      8,
-                      16,
-                      Platform.isIOS ? (context.bottom + 8) : 16,
+                                return ChatBubble(
+                                  text: item.text,
+                                  time: item.sentTime,
+                                  isMe: item.user.isMe!,
+                                  isRead: item.isRead,
+                                  isSingleAdmin:
+                                      notifier.recipients.length == 1,
+                                  username: item.user.name ?? "-",
+                                );
+                              },
+                            ),
                     ),
-                    decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (closedSession) ...[
-                          Text(
-                            "Sesi Chat Berakhir",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          16.spaceY,
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: primaryColor,
-                                foregroundColor: whiteColor,
-                                padding: EdgeInsets.all(12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    12,
+
+                    // send message
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        8,
+                        16,
+                        Platform.isIOS ? (context.bottom + 8) : 16,
+                      ),
+                      decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (closedSession) ...[
+                            Text(
+                              "Sesi Chat Berakhir",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            16.spaceY,
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                  foregroundColor: whiteColor,
+                                  padding: EdgeInsets.all(12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      12,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              onPressed: () => DashboardRoute().go(context),
-                              child: Text("Kembali ke Beranda"),
-                            ),
-                          ),
-                        ] else ...[
-                          if (notifier.isBtnSessionEnd || showEndChatSugesstion)
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: CustomButton(
-                                onTap: () async {
-                                  await EndSosDialog.launch(
-                                    sosId: widget.param.sosId,
-                                    chatId: "-",
-                                    recipientId: "-",
-                                  );
+                                onPressed: () {
+                                  messageNotifier.removeAthanFromRecipients();
+                                  DashboardRoute().go(context);
                                 },
-                                btnColor: const Color(0xFFC82927),
-                                isLoading: false,
-                                isBorder: false,
-                                isBoxShadow: false,
-                                isBorderRadius: true,
-                                btnTxt: "Apa keluhan sudah ditangani ?",
+                                child: Text("Kembali ke Beranda"),
                               ),
                             ),
-                          Row(
-                            spacing: 14,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                    textSelectionTheme: TextSelectionThemeData(
-                                      cursorColor: primaryColor,
-                                      selectionColor: primaryColor.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      selectionHandleColor: primaryColor,
+                          ] else ...[
+                            if (notifier.isBtnSessionEnd ||
+                                showEndChatSugesstion)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: CustomButton(
+                                  onTap: () async {
+                                    await EndSosDialog.launch(
+                                      sosId: widget.param.sosId,
+                                      chatId: "-",
+                                      recipientId: "-",
+                                    );
+                                  },
+                                  btnColor: const Color(0xFFC82927),
+                                  isLoading: false,
+                                  isBorder: false,
+                                  isBoxShadow: false,
+                                  isBorderRadius: true,
+                                  btnTxt: "Apa keluhan sudah ditangani ?",
+                                ),
+                              ),
+                            Row(
+                              spacing: 14,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      textSelectionTheme:
+                                          TextSelectionThemeData(
+                                            cursorColor: primaryColor,
+                                            selectionColor: primaryColor
+                                                .withValues(alpha: 0.1),
+                                            selectionHandleColor: primaryColor,
+                                          ),
                                     ),
-                                  ),
-                                  child: TextField(
-                                    controller: messageC,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: 12.0,
-                                    ),
-                                    maxLines: 4,
-                                    minLines: 1,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      filled: true,
-                                      fillColor: ColorResources.white,
-                                      hintText: "ketik pesan singkat dan jelas",
-                                      hintStyle: robotoRegular.copyWith(
+                                    child: TextField(
+                                      controller: messageC,
+                                      style: robotoRegular.copyWith(
                                         fontSize: 12.0,
-                                        color: Colors.grey,
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                      maxLines: 4,
+                                      minLines: 1,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        filled: true,
+                                        fillColor: ColorResources.white,
+                                        hintText:
+                                            "ketik pesan singkat dan jelas",
+                                        hintStyle: robotoRegular.copyWith(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
                                         ),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
                                         ),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          30.0,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
                                         ),
-                                        borderSide: BorderSide.none,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30.0,
+                                          ),
+                                          borderSide: BorderSide.none,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Flexible(
-                                child: IconButton(
-                                  onPressed: sendMessage,
-                                  icon: Container(
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: const BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(50.0),
+                                Flexible(
+                                  child: IconButton(
+                                    onPressed: sendMessage,
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: const BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0),
+                                        ),
                                       ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.send,
-                                      size: 20.0,
-                                      color: Colors.white,
+                                      child: const Icon(
+                                        Icons.send,
+                                        size: 20.0,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
