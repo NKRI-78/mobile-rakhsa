@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/service/storage/storage.dart';
@@ -51,9 +52,12 @@ class LocationProvider extends ChangeNotifier {
 
   Future<LocationData?> getCurrentLocation({
     bool enableCache = true,
-    Duration cacheAge = const Duration(minutes: 2),
+    Duration? cacheAge,
   }) async {
-    final activeDuration = _checkCacheAgeIsActive(cacheAge);
+    final defCacheAge =
+        cacheAge ?? Duration(minutes: BuildConfig.isProd ? 30 : 1);
+
+    final activeDuration = _checkCacheAgeIsActive(defCacheAge);
     _isLocationCacheActive = activeDuration;
     notifyListeners();
 
@@ -65,13 +69,14 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
 
     if (enableCache && _locationData != null) {
+      // dibaca sayy 😗
       // init last update revalidate date time
       // pas aplikasi pertama kali dibuka
       if (!prefs.containsKey(_revalidateCacheKey)) {
         await _initCacheTimeOnFirstRun();
       }
 
-      final needRefresh = await _shouldRevalidateLocationCache(cacheAge);
+      final needRefresh = await _shouldRevalidateLocationCache(defCacheAge);
       log(
         "enableCache && hasLocationData? ${enableCache && _locationData != null} | needRefresh? $needRefresh",
         label: "LOCATION_PROVIDER",

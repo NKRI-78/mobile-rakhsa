@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/router/router.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
@@ -94,6 +95,30 @@ class SocketIoService with ChangeNotifier {
       final context = navigatorKey.currentContext;
       if (context != null) {
         context.read<GetMessagesNotifier>().appendMessage(data: message);
+      }
+    });
+
+    socket?.on("response-ews", (data) async {
+      log("response-ews masuk, data = $data", label: "SOCKET_SERVICE");
+
+      final c = navigatorKey.currentContext;
+      final lat = data['lat'];
+      final lng = data['lng'];
+
+      if (lat is String && lng is String) {
+        await c?.read<DashboardNotifier>().getEws(
+          lat: double.tryParse(lat) ?? 0.0,
+          lng: double.tryParse(lng) ?? 0.0,
+          state: data['state'] ?? "-",
+        );
+      }
+
+      if (lat is double && lng is double) {
+        await c?.read<DashboardNotifier>().getEws(
+          lat: lat,
+          lng: lng,
+          state: data['state'] ?? "-",
+        );
       }
     });
 

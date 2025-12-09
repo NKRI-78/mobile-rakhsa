@@ -69,22 +69,30 @@ class NotificationManager {
     return _instance!;
   }
 
-  Future<void> initializeLocalNotification({
-    NotificationImportance importance = NotificationImportance.High,
-    bool setAlertForIOS = true,
-  }) async {
+  Future<void> initializeLocalNotification({bool setAlertForIOS = true}) async {
     if (isNotificationInitialized) return;
 
     await AwesomeNotifications()
         .initialize('resource://drawable/ic_notification', [
           NotificationChannel(
-            channelKey: 'notification',
-            channelName: 'notification',
-            channelDescription: 'Notification',
+            channelKey: 'general_channel',
+            channelName: 'General Notifications',
+            channelDescription: 'Notifikasi umum Marlinda',
             playSound: true,
             channelShowBadge: true,
             criticalAlerts: true,
-            importance: importance,
+            importance: NotificationImportance.High,
+            icon: 'resource://drawable/ic_notification',
+          ),
+          NotificationChannel(
+            channelKey: 'chat_channel',
+            channelName: 'Chat Notifications',
+            channelDescription: 'Notifikasi chat SOS',
+            playSound: true,
+            channelShowBadge: true,
+            criticalAlerts: true,
+            importance: NotificationImportance.Max,
+            icon: 'resource://drawable/ic_notification_chat',
           ),
         ], debug: false);
 
@@ -152,13 +160,6 @@ class NotificationManager {
       if (Platform.isIOS) return;
 
       try {
-        // kalau notif terkait ews jangan munculin notifikasi cukup update ews
-        if (type == NotificationType.ews ||
-            type == NotificationType.ewsDelete) {
-          await _revalidateEws();
-          return;
-        }
-
         if (type == NotificationType.fetchLatestLocation) {
           await sendLatestLocation(
             "Notification on Foreground",
@@ -178,6 +179,7 @@ class NotificationManager {
             "recipient_id": data["recipient_id"].toString(),
             "sos_id": data["sos_id"].toString(),
           },
+          channelKey: type == NotificationType.chat ? "chat_channel" : null,
         );
       } catch (e) {
         d.log(
@@ -214,6 +216,7 @@ class NotificationManager {
     int? id,
     String? title,
     String? body,
+    String? channelKey,
     Map<String, String?>? payload,
   }) async {
     final notificationId = id ?? Random().nextInt(105);
@@ -223,7 +226,7 @@ class NotificationManager {
         notificationLayout: NotificationLayout.Default,
         actionType: ActionType.Default,
         id: notificationId,
-        channelKey: 'notification',
+        channelKey: channelKey ?? 'general_channel',
         title: title,
         body: body,
       ),
@@ -278,17 +281,17 @@ class NotificationManager {
     await AwesomeNotifications().decrementGlobalBadgeCounter();
   }
 
-  Future<void> _revalidateEws() async {
-    final c = navigatorKey.currentContext!;
-    final user = await c.read<UserProvider>().getUser(enableCache: true);
+  // Future<void> _revalidateEws() async {
+  //   final c = navigatorKey.currentContext!;
+  //   final user = await c.read<UserProvider>().getUser(enableCache: true);
 
-    final lat = double.tryParse(user?.lat ?? "0") ?? 0;
-    final lng = double.tryParse(user?.lng ?? "0") ?? 0;
-    final state = user?.state ?? "Indonesia";
+  //   final lat = double.tryParse(user?.lat ?? "0") ?? 0;
+  //   final lng = double.tryParse(user?.lng ?? "0") ?? 0;
+  //   final state = user?.state ?? "Indonesia";
 
-    // ignore: use_build_context_synchronously
-    await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);
-  }
+  //   // ignore: use_build_context_synchronously
+  //   await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);
+  // }
 
   void _handleResolveSOS(BuildContext c) async {
     await c.read<UserProvider>().getUser();
