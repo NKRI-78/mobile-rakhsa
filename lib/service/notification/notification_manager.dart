@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:rakhsa/misc/utils/logger.dart' as d;
 
@@ -156,9 +155,6 @@ class NotificationManager {
         label: "NOTIFICATION_MANAGER",
       );
 
-      // pokoknya jangan show local notification di iOS biar ga dobel notifikasinya
-      if (Platform.isIOS) return;
-
       try {
         if (type == NotificationType.fetchLatestLocation) {
           await sendLatestLocation(
@@ -168,6 +164,8 @@ class NotificationManager {
                 .location,
           );
         }
+
+        if (type == NotificationType.ews) await _revalidateEws();
 
         await showNotification(
           title: m.notification?.title ?? "-",
@@ -281,17 +279,17 @@ class NotificationManager {
     await AwesomeNotifications().decrementGlobalBadgeCounter();
   }
 
-  // Future<void> _revalidateEws() async {
-  //   final c = navigatorKey.currentContext!;
-  //   final user = await c.read<UserProvider>().getUser(enableCache: true);
+  Future<void> _revalidateEws() async {
+    final c = navigatorKey.currentContext!;
+    final user = await c.read<UserProvider>().getUser(enableCache: true);
 
-  //   final lat = double.tryParse(user?.lat ?? "0") ?? 0;
-  //   final lng = double.tryParse(user?.lng ?? "0") ?? 0;
-  //   final state = user?.state ?? "Indonesia";
+    final lat = double.tryParse(user?.lat ?? "0") ?? 0;
+    final lng = double.tryParse(user?.lng ?? "0") ?? 0;
+    final state = user?.state ?? "Indonesia";
 
-  //   // ignore: use_build_context_synchronously
-  //   await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);
-  // }
+    // ignore: use_build_context_synchronously
+    await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);
+  }
 
   void _handleResolveSOS(BuildContext c) async {
     await c.read<UserProvider>().getUser();

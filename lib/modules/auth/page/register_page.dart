@@ -152,7 +152,7 @@ class RegisterPageState extends State<RegisterPage> {
 
   void _onRegisterUser(BuildContext c, ReferralProvider r) async {
     if (_formKey.currentState!.validate()) {
-      if (r.hasReferralCode) {
+      if (r.hasReferralCode || BuildConfig.isStag) {
         await c.read<AuthProvider>().register(
           fullname: _fullNameController.text,
           phone: PhoneNumberFormatter.unmask(_phoneController.text),
