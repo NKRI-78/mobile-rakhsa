@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 
 class PermissionManager {
@@ -64,6 +67,12 @@ class PermissionManager {
     bool canPopDialog = false,
     bool fromRequestable = false,
   }) async {
+    // dapetin remote config untuk ngakalain app sedang direview di Appstore
+    bool isUnderReview = false;
+    if (Platform.isIOS) {
+      isUnderReview = await RemoteConfigService.instance.checkIsUnderReview();
+    }
+
     await completeTaskExecution("requestAllPermissions");
     final statuses = await requestAllPermissions(customPermission);
     log("permission result = $statuses", label: "REQUEST_ALL_PERMISSION");
@@ -109,7 +118,8 @@ class PermissionManager {
       label: "REQUEST_ALL_PERMISSION",
     );
 
-    if (parentContext.mounted) {
+    // hanya munculin custom modal permission ketika tidak under review oleh tim Appstore
+    if (parentContext.mounted && !isUnderReview) {
       await showModalBottomSheet(
         context: parentContext,
         enableDrag: canPopDialog,
