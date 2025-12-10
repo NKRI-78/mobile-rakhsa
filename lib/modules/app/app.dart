@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
@@ -23,7 +24,7 @@ class AppState extends State<App> {
   final uniLink = UniversalLink();
   final notif = NotificationManager();
 
-  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: kDebugMode);
 
   @override
   void initState() {
