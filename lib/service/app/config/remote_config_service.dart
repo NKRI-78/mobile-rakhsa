@@ -73,10 +73,11 @@ class RemoteConfigService {
 
     final d = _remoteConfig.lastFetchTime.format("dd MMM yyyy");
     final h = _remoteConfig.lastFetchTime.format("HH:mm");
+    final fetchStatus = _remoteConfig.pluginConstants['lastFetchStatus'];
     final fetchInterval = _remoteConfig.pluginConstants['minimumFetchInterval'];
 
     log(
-      "getData() ${{"last_fetched": "$d jam $h", "fetch_interval": "$fetchInterval detik", "data": data}}",
+      "getData() ${{"last_fetched": "$d jam $h", "last_fetch_status": fetchStatus, "fetch_interval": "$fetchInterval detik", "data": data}}",
       label: "REMOTE_CONFIG_SERVICE",
     );
 
