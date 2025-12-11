@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/service/app/app_metadata.dart';
 import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 
@@ -56,13 +55,9 @@ Future<void> main() async {
 
   await NotificationManager().initializeLocalNotification();
 
-  if (Platform.isIOS) {
-    await RemoteConfigService.instance.initialize();
-  }
+  await RemoteConfigService.instance.initialize();
 
   await SosCoordinator().initAndRestore();
-
-  await AppMetadata().initialize();
 
   await HapticService.instance.initialize();
 

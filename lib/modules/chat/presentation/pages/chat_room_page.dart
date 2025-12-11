@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_app_bar.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
+import 'package:rakhsa/widgets/lottie/lottie_animation.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -157,7 +158,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
       return;
     }
 
-    String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    final createdAt = DateTime.now().format("yyyy-MM-dd HH:mm:ss");
 
     final msg = messageC.text.trimLeft().trimRight();
 
@@ -226,8 +227,12 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     return GestureDetector(
       onTap: () => context.unfocus(),
       child: PopScope(
+        canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          messageNotifier.removeAthanFromRecipients();
+          if (!didPop) {
+            messageNotifier.removeAthanFromRecipients();
+            context.pop("refetch");
+          }
         },
         child: Scaffold(
           appBar: ChatAppBar(widget.param.chatId),
@@ -241,7 +246,9 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
-                      child: notifier.showAutoGreetings
+                      child:
+                          notifier.showAutoGreetings ||
+                              notifier.messages.isEmpty
                           ? _buildAutoGreetings()
                           : ListView.builder(
                               controller: sC,
@@ -416,12 +423,11 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   }
 
   Widget _buildAutoGreetings() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
+      padding: EdgeInsets.all(12),
       children: [
         Container(
           width: double.infinity,
-          margin: EdgeInsets.all(12),
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: primaryColor,
@@ -449,6 +455,27 @@ class ChatRoomPageState extends State<ChatRoomPage> {
               ],
             ),
           ),
+        ),
+
+        170.spaceY,
+
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Opacity(
+              opacity: 0.7,
+              child: LottieAnimation(
+                "assets/animations/chats.lottie",
+                width: 170,
+                height: 170,
+              ),
+            ),
+            Text(
+              "Sesi sedang aktif. Ketik pesan pertama Anda agar kami dapat membantu.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+          ],
         ),
       ],
     );

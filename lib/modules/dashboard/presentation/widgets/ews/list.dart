@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
@@ -88,7 +87,7 @@ class EwsListWidget extends StatelessWidget {
                           Text(
                             "Info kejadian disekitar Anda",
                             style: robotoRegular.copyWith(
-                              fontSize: 16,
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -97,13 +96,14 @@ class EwsListWidget extends StatelessWidget {
                           Text(
                             item.createdAt,
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
+                              fontSize: 11,
+                              color: Colors.white,
                             ),
                           ),
 
                           4.spaceY,
 
-                          if (item.location != "-")
+                          if (item.location.isNotEmpty && item.location != "-")
                             Row(
                               spacing: 4,
                               children: [
@@ -132,54 +132,48 @@ class EwsListWidget extends StatelessWidget {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: robotoRegular.copyWith(
-                              fontSize: 15,
+                              fontSize: 13,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
 
-                          SizedBox(
-                            height: 30,
-                            child: OverflowBox(
-                              maxHeight: 30,
-                              alignment: Alignment.topLeft,
-                              child: fh.Html(
-                                data: item.desc,
-                                shrinkWrap: true,
-
-                                style: {
-                                  'body': fh.Style(
-                                    margin: fh.Margins.zero,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    fontSize: fh.FontSize(12),
-                                    display: fh.Display.inline,
-                                    textOverflow: TextOverflow.ellipsis,
-                                  ),
-                                  'p': fh.Style(
-                                    margin: fh.Margins.zero,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    fontSize: fh.FontSize(12),
-                                    display: fh.Display.inline,
-                                    fontWeight: FontWeight.normal,
-                                    textOverflow: TextOverflow.ellipsis,
-                                  ),
-                                  'span': fh.Style(
-                                    margin: fh.Margins.zero,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    fontSize: fh.FontSize(12),
-                                    display: fh.Display.inline,
-                                  ),
-                                  'div': fh.Style(
-                                    margin: fh.Margins.zero,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    fontSize: fh.FontSize(12),
-                                    display: fh.Display.inline,
-                                  ),
-                                  'strong': fh.Style(
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                },
-                              ),
+                          Flexible(
+                            child: fh.Html(
+                              data: item.desc,
+                              shrinkWrap: true,
+                              style: {
+                                'body': fh.Style(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  maxLines: 3,
+                                  margin: fh.Margins.zero,
+                                  padding: fh.HtmlPaddings.zero,
+                                  fontSize: fh.FontSize(11),
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
+                                'p': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(10),
+                                  display: fh.Display.inline,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                'span': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(12),
+                                  display: fh.Display.inline,
+                                ),
+                                'div': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(12),
+                                  display: fh.Display.inline,
+                                ),
+                                'strong': fh.Style(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              },
                             ),
                           ),
                         ],

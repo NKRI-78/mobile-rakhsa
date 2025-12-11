@@ -285,7 +285,7 @@ class NotificationManager {
 
     final lat = double.tryParse(user?.lat ?? "0") ?? 0;
     final lng = double.tryParse(user?.lng ?? "0") ?? 0;
-    final state = user?.state ?? "Indonesia";
+    final state = StorageHelper.getUserNationality() ?? "indonesia";
 
     // ignore: use_build_context_synchronously
     await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);

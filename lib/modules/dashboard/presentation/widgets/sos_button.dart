@@ -213,7 +213,6 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
   OverlayDialogController _showLoadingLocationDialog() {
     return showOverlayDialog(
       context,
-      barrierDismissible: false,
       positioned: (dialog) {
         return Positioned(
           top: context.top + kToolbarHeight + 24,
@@ -272,7 +271,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     // langsung stop proses selanjutnya karena error get lokasi
     if (errorGetCurrentLocation) return false;
 
-    final allowedCountry = _locationProvider.isCountryAllowed;
+    final allowedCountry = await _locationProvider.validateCountry();
 
     if (!allowedCountry) {
       if (mounted) {
@@ -514,7 +513,6 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
 
           Consumer<LocationProvider>(
             builder: (context, p, child) {
-              final allowedCountry = p.isCountryAllowed;
               final locationError = p.isGetLocationState(RequestState.error);
               return GestureDetector(
                 onLongPressStart: (_) async {
@@ -530,18 +528,13 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                     height: buttonSize,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color:
-                          widget.param.hasSocketConnection ||
-                              !locationError ||
-                              !allowedCountry
+                      color: widget.param.hasSocketConnection || !locationError
                           ? buttonColor
                           : disabledColor,
                       boxShadow: [
                         BoxShadow(
                           color:
-                              widget.param.hasSocketConnection ||
-                                  !locationError ||
-                                  !allowedCountry
+                              widget.param.hasSocketConnection || !locationError
                               ? buttonColor.withValues(alpha: 0.5)
                               : disabledColor.withValues(alpha: 0.5),
                           blurRadius: 10,

@@ -24,7 +24,8 @@ extension NumExtension on num {
 }
 
 extension DateTimeExtension on DateTime {
-  String format(String pattern) => DateFormat(pattern, "id").format(toLocal());
+  String format(String pattern, [String locale = "id"]) =>
+      DateFormat(pattern, locale).format(toLocal());
 }
 
 extension StringExtensions on String {

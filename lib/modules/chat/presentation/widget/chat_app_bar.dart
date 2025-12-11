@@ -19,7 +19,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: primaryColor,
       leading: CupertinoNavigationBarBackButton(
         color: whiteColor,
-        onPressed: context.pop,
+        onPressed: () => context.pop("refetch"),
       ),
       centerTitle: false,
       title: Consumer<GetMessagesNotifier>(

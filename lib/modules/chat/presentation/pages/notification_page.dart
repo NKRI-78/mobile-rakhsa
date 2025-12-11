@@ -39,8 +39,8 @@ class NotificationPageState extends State<NotificationPage> {
     await context.read<GetChatsNotifier>().getChats();
   }
 
-  void _navigateToChatRoom(ChatsData c) {
-    ChatRoomRoute(
+  Future<void> _navigateToChatRoom(ChatsData c) async {
+    String? onNavigateResult = await ChatRoomRoute(
       ChatRoomParams(
         chatId: c.chat.id,
         sosId: c.sosId,
@@ -49,7 +49,11 @@ class NotificationPageState extends State<NotificationPage> {
         status: c.status,
         newSession: false,
       ),
-    ).push(context);
+    ).push<String?>(context);
+
+    if (onNavigateResult != null && onNavigateResult == "refetch") {
+      await fetchChats();
+    }
   }
 
   @override

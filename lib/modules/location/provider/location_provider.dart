@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
 
@@ -13,19 +14,12 @@ import 'package:rakhsa/repositories/location/model/location_data.dart';
 export 'package:rakhsa/repositories/location/model/location_data.dart';
 
 class LocationProvider extends ChangeNotifier {
-  final List<String> allowedCountries;
-
-  LocationProvider({this.allowedCountries = const <String>["SG"]});
+  LocationProvider();
 
   LocationData? _locationData;
   LocationData? get location => _locationData;
 
   String? get iSOCountryCode => _locationData?.placemark?.isoCountryCode;
-
-  bool get isCountryAllowed {
-    if (iSOCountryCode == null) return false;
-    return allowedCountries.contains(iSOCountryCode);
-  }
 
   RequestState _getLocationState = RequestState.idle;
   bool isGetLocationState(RequestState state) => _getLocationState == state;
@@ -38,6 +32,12 @@ class LocationProvider extends ChangeNotifier {
 
   final prefs = StorageHelper.sharedPreferences;
   final _revalidateCacheKey = "location_revalidate_cache_key";
+
+  Future<bool> validateCountry() async {
+    if (iSOCountryCode == null) return false;
+    final remoteConfig = await RemoteConfigService.instance.getData();
+    return remoteConfig.sosSupportedCountries.contains(iSOCountryCode);
+  }
 
   LocationSettings getLocationSettings({
     LocationAccuracy accuracy = LocationAccuracy.best,
@@ -112,10 +112,10 @@ class LocationProvider extends ChangeNotifier {
 
       final newLocation =
           await Geolocator.getCurrentPosition(
-            locationSettings: getLocationSettings(),
-          ).then((p) {
-            return LocationData(coord: Coord(p.latitude, p.longitude));
-          });
+                locationSettings: getLocationSettings(),
+              )
+              .then((p) => LocationData(coord: Coord(p.latitude, p.longitude)))
+              .timeout(Duration(seconds: 10));
       log(
         "newLocation = ${newLocation.coord.toString()}",
         label: "LOCATION_PROVIDER",
@@ -126,7 +126,7 @@ class LocationProvider extends ChangeNotifier {
             newLocation.coord.lng,
           ).then((placemarks) {
             if (placemarks.isEmpty) return null;
-            return placemarks[0];
+            return placemarks.first;
           });
       log(
         "newPlacemark = ${newPlacemark?.toString() ?? "-"}",
