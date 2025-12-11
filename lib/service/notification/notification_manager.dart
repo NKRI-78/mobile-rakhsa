@@ -233,7 +233,9 @@ class NotificationManager {
 
   Future<void> dismissAllNotification() async {
     d.log("cancel semua notif", label: "NOTIFICATION_MANAGER");
-    await AwesomeNotifications().dismissAllNotifications();
+    await AwesomeNotifications().dismissNotificationsByChannelKey(
+      "chat_channel",
+    );
     await AwesomeNotifications().resetGlobalBadge();
   }
 

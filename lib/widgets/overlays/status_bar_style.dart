@@ -8,34 +8,24 @@ class StatusBarStyle extends StatelessWidget {
 
   const StatusBarStyle({super.key, this.style, required this.child});
 
-  factory StatusBarStyle.light({
-    required Widget child,
-    SystemUiOverlayStyle? style,
-  }) {
+  factory StatusBarStyle.light({required Widget child, Color? statusBarColor}) {
     return StatusBarStyle(
-      style:
-          style ??
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarBrightness: Brightness.dark,
-            statusBarIconBrightness: Brightness.light,
-          ),
+      style: SystemUiOverlayStyle(
+        statusBarColor: statusBarColor ?? Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+      ),
       child: child,
     );
   }
 
-  factory StatusBarStyle.dark({
-    required Widget child,
-    SystemUiOverlayStyle? style,
-  }) {
+  factory StatusBarStyle.dark({required Widget child, Color? statusBarColor}) {
     return StatusBarStyle(
-      style:
-          style ??
-          SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.dark,
-          ),
+      style: SystemUiOverlayStyle(
+        statusBarColor: statusBarColor ?? Colors.transparent,
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       child: child,
     );
   }

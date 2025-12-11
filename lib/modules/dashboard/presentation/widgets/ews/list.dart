@@ -129,7 +129,6 @@ class EwsListWidget extends StatelessWidget {
 
                           Text(
                             item.title,
-                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: robotoRegular.copyWith(
                               fontSize: 13,
@@ -145,7 +144,7 @@ class EwsListWidget extends StatelessWidget {
                               style: {
                                 'body': fh.Style(
                                   color: Colors.white.withValues(alpha: 0.8),
-                                  maxLines: 3,
+                                  maxLines: 2,
                                   margin: fh.Margins.zero,
                                   padding: fh.HtmlPaddings.zero,
                                   fontSize: fh.FontSize(11),

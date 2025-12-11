@@ -308,12 +308,14 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
       return false;
     }
 
+    final activeRunning = _checkIfSessionIsRunning();
+    if (activeRunning) return false;
+
     // kalau negara ga dizinkan langsung return false
     // biar dia ga menjalankan fungsi dibawahnya
     final allowedCountry = await _checkIfCurrentCountryIsAllowed();
     if (!allowedCountry) return false;
 
-    final activeRunning = _checkIfSessionIsRunning();
     final hasSocketConnection = widget.param.hasSocketConnection;
 
     // handle toast
@@ -330,7 +332,6 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     return userLoggedIn &&
         !activeRunning &&
         hasSocketConnection &&
-        // !isGettingLocation &&
         !waitingConfirmSOS &&
         allowedCountry;
   }
