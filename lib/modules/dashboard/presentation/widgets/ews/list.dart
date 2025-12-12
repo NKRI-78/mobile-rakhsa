@@ -84,12 +84,14 @@ class EwsListWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            "Info kejadian disekitar Anda",
-                            style: robotoRegular.copyWith(
-                              fontSize: 15,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Text(
+                              "Info kejadian disekitar Anda",
+                              style: robotoRegular.copyWith(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
 
@@ -100,8 +102,6 @@ class EwsListWidget extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-
-                          4.spaceY,
 
                           if (item.location.isNotEmpty && item.location != "-")
                             Row(
@@ -125,7 +125,7 @@ class EwsListWidget extends StatelessWidget {
                               ],
                             ),
 
-                          4.spaceY,
+                          5.spaceY,
 
                           Text(
                             item.title,

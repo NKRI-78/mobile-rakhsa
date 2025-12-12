@@ -72,7 +72,7 @@ class NotificationManager {
     if (isNotificationInitialized) return;
 
     await AwesomeNotifications()
-        .initialize('resource://drawable/ic_notification', [
+        .initialize("resource://drawable/ic_notification", [
           NotificationChannel(
             channelKey: 'general_channel',
             channelName: 'General Notifications',

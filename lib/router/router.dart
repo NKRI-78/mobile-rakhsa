@@ -67,6 +67,10 @@ class AppRouter {
           return ActivateReferralRoute().location;
         }
 
+        if (goingToDashboard && referral.hasReferralCode) {
+          return DashboardRoute().location;
+        }
+
         if (goingToWelcome ||
             goingToLogin ||
             goingToRegister ||

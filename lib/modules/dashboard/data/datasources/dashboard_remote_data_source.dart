@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rakhsa/build_config.dart';
 
 import 'package:rakhsa/misc/client/errors/exception.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';
 
@@ -67,7 +66,6 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         data: {"lat": lat.toString(), "lng": lng.toString(), "state": state},
       );
       Map<String, dynamic> data = response.data;
-      log("data = $data");
       NewsModel newsModel = NewsModel.fromJson(data);
       return newsModel;
     } on DioException catch (e) {

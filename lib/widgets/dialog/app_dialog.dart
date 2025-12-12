@@ -48,11 +48,7 @@ class AppDialog {
         pageBuilder: (context, _, _) {
           return PopScope(
             canPop: canPop,
-            child: Dialog(
-              shadowColor: Colors.transparent,
-              backgroundColor: Colors.transparent,
-              child: customDialogBuilder?.call(context) ?? DialogCard(content),
-            ),
+            child: customDialogBuilder?.call(context) ?? DialogCard(content),
           );
         },
       );
