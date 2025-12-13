@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rakhsa/misc/utils/logger.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_invalid_page.dart';
@@ -29,6 +30,8 @@ class AppRouter {
       errorBuilder: (_, s) => RouteInvalidPage(s),
       redirect: (c, s) {
         final currentRoute = s.matchedLocation;
+
+        log("router = ${s.uri.path}", label: "APP_ROUTER");
 
         final goingToOnBoarding = currentRoute == OnBoardingRoute().location;
         final goingToWelcome = currentRoute == WelcomeRoute().location;
@@ -67,16 +70,13 @@ class AppRouter {
           return ActivateReferralRoute().location;
         }
 
-        if (goingToDashboard && referral.hasReferralCode) {
-          return DashboardRoute().location;
-        }
-
         if (goingToWelcome ||
             goingToLogin ||
             goingToRegister ||
             goingToForgotPass ||
             goingToOnBoarding ||
-            currentRoute == '/') {
+            currentRoute == '/' ||
+            currentRoute == "/referral") {
           if (!goingToDashboard) return DashboardRoute().location;
         }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,7 +42,9 @@ class AppState extends State<App> {
   }
 
   void _initializeService() async {
-    if (BuildConfig.isProd) await uniLink.initializeUriHandlers();
+    if (BuildConfig.isProd || Platform.isIOS) {
+      await uniLink.initializeUriHandlers();
+    }
     await notif.initializeFcmHandlers();
     await notif.setForegroundMessageActionListeners();
   }
