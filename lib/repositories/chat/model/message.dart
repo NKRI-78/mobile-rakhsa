@@ -4,8 +4,8 @@ import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'chat_user.dart';
 
 class Message extends Equatable {
-  final String id;
-  final bool isRead;
+  final String? id;
+  final bool? isRead;
 
   // properti dari api yang endpointya /chat/list
   final String? content;
@@ -22,8 +22,8 @@ class Message extends Equatable {
   final String? text;
 
   const Message({
-    required this.id,
-    required this.isRead,
+    this.id,
+    this.isRead,
     this.content,
     this.isTyping,
     this.isMe,

@@ -19,6 +19,7 @@ import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/service/notification/notification_sound.dart';
 
 import '../storage/storage.dart';
 import '../../modules/dashboard/presentation/provider/dashboard_notifier.dart';
@@ -69,22 +70,30 @@ class NotificationManager {
     return _instance!;
   }
 
-  Future<void> initializeLocalNotification({
-    NotificationImportance importance = NotificationImportance.High,
-    bool setAlertForIOS = true,
-  }) async {
+  Future<void> initializeLocalNotification({bool setAlertForIOS = true}) async {
     if (isNotificationInitialized) return;
 
     await AwesomeNotifications()
-        .initialize('resource://drawable/ic_notification', [
+        .initialize("resource://drawable/ic_notification", [
           NotificationChannel(
-            channelKey: 'notification',
-            channelName: 'notification',
-            channelDescription: 'Notification',
+            channelKey: 'general_channel',
+            channelName: 'General Notifications',
+            channelDescription: 'Notifikasi umum Marlinda',
             playSound: true,
             channelShowBadge: true,
             criticalAlerts: true,
-            importance: importance,
+            importance: NotificationImportance.High,
+            icon: 'resource://drawable/ic_notification',
+          ),
+          NotificationChannel(
+            channelKey: 'chat_channel',
+            channelName: 'Chat Notifications',
+            channelDescription: 'Notifikasi chat SOS',
+            playSound: true,
+            channelShowBadge: true,
+            criticalAlerts: true,
+            importance: NotificationImportance.Max,
+            icon: 'resource://drawable/ic_notification_chat',
           ),
         ], debug: false);
 
@@ -148,17 +157,7 @@ class NotificationManager {
         label: "NOTIFICATION_MANAGER",
       );
 
-      // pokoknya jangan show local notification di iOS biar ga dobel notifikasinya
-      if (Platform.isIOS) return;
-
       try {
-        // kalau notif terkait ews jangan munculin notifikasi cukup update ews
-        if (type == NotificationType.ews ||
-            type == NotificationType.ewsDelete) {
-          await _revalidateEws();
-          return;
-        }
-
         if (type == NotificationType.fetchLatestLocation) {
           await sendLatestLocation(
             "Notification on Foreground",
@@ -166,6 +165,21 @@ class NotificationManager {
                 ?.read<LocationProvider>()
                 .location,
           );
+        }
+
+        if (type == NotificationType.ews) await _revalidateEws();
+
+        // handle show notifikasi dari ios
+        // di iOS hanya play sound notifikasi karena firebase ga munculin suara sama getar
+        if (Platform.isIOS) {
+          if (type == NotificationType.chat) {
+            await FCMSoundService.instance.play(type: SoundType.chat);
+          } else {
+            await FCMSoundService.instance.play(type: SoundType.general);
+          }
+
+          // stop notifikasi chat di iOS karena firebase sendiri udah ngeluarin notif
+          return;
         }
 
         await showNotification(
@@ -177,6 +191,10 @@ class NotificationManager {
             "chat_id": data["chat_id"].toString(),
             "recipient_id": data["recipient_id"].toString(),
             "sos_id": data["sos_id"].toString(),
+          },
+          channelKey: switch (type) {
+            NotificationType.chat => "chat_channel",
+            _ => "general_channel",
           },
         );
       } catch (e) {
@@ -214,6 +232,7 @@ class NotificationManager {
     int? id,
     String? title,
     String? body,
+    String? channelKey,
     Map<String, String?>? payload,
   }) async {
     final notificationId = id ?? Random().nextInt(105);
@@ -223,16 +242,21 @@ class NotificationManager {
         notificationLayout: NotificationLayout.Default,
         actionType: ActionType.Default,
         id: notificationId,
-        channelKey: 'notification',
+        channelKey: channelKey ?? 'general_channel',
         title: title,
         body: body,
       ),
     );
   }
 
-  Future<void> dismissAllNotification() async {
+  Future<void> dismissChatsNotification() async {
     d.log("cancel semua notif", label: "NOTIFICATION_MANAGER");
-    await AwesomeNotifications().dismissAllNotifications();
+    await AwesomeNotifications().dismissNotificationsByChannelKey(
+      "chat_channel",
+    );
+    if (Platform.isIOS) {
+      await AwesomeNotifications().dismissAllNotifications();
+    }
     await AwesomeNotifications().resetGlobalBadge();
   }
 
@@ -284,7 +308,7 @@ class NotificationManager {
 
     final lat = double.tryParse(user?.lat ?? "0") ?? 0;
     final lng = double.tryParse(user?.lng ?? "0") ?? 0;
-    final state = user?.state ?? "Indonesia";
+    final state = StorageHelper.getUserNationality() ?? "indonesia";
 
     // ignore: use_build_context_synchronously
     await c.read<DashboardNotifier>().getEws(lat: lat, lng: lng, state: state);

@@ -129,7 +129,9 @@ class NewsListPageState extends State<NewsListPage> {
                             fit: BoxFit.fitWidth,
                             imageUrl: n.news[0].img.toString(),
                             placeholder: (BuildContext context, String url) {
-                              return Image.asset('assets/images/default.jpeg');
+                              return Image.asset(
+                                'assets/images/user-placeholder.webp',
+                              );
                             },
                             errorWidget:
                                 (
@@ -138,7 +140,7 @@ class NewsListPageState extends State<NewsListPage> {
                                   Object error,
                                 ) {
                                   return Image.asset(
-                                    'assets/images/default.jpeg',
+                                    'assets/images/user-placeholder.webp',
                                   );
                                 },
                           ),
@@ -214,7 +216,7 @@ class NewsListPageState extends State<NewsListPage> {
                                   placeholder:
                                       (BuildContext context, String url) {
                                         return Image.asset(
-                                          'assets/images/default.jpeg',
+                                          'assets/images/user-placeholder.webp',
                                         );
                                       },
                                   errorWidget:
@@ -224,7 +226,7 @@ class NewsListPageState extends State<NewsListPage> {
                                         Object error,
                                       ) {
                                         return Image.asset(
-                                          'assets/images/default.jpeg',
+                                          'assets/images/user-placeholder.webp',
                                         );
                                       },
                                 ),

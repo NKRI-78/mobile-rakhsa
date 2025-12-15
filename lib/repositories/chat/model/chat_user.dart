@@ -2,9 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:rakhsa/misc/client/errors/errors.dart';
 
 class ChatUser extends Equatable {
-  final String id;
-  final String avatar;
-  final String name;
+  final String? id;
+  final String? avatar;
+  final String? name;
 
   // properti dari api yang endpointya /chat/messages
   // untuk object "recipient"
@@ -17,9 +17,9 @@ class ChatUser extends Equatable {
   final bool? isMe;
 
   const ChatUser({
-    required this.id,
-    required this.avatar,
-    required this.name,
+    this.id,
+    this.avatar,
+    this.name,
     this.isTyping,
     this.isMe,
     this.isOnline,

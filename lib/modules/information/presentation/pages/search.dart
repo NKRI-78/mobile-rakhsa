@@ -9,7 +9,6 @@ import 'package:rakhsa/modules/information/presentation/provider/information_pro
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
@@ -86,14 +85,18 @@ class SearchPageState extends State<SearchPage> {
                   if (n.isGetCurrentKbri(RequestState.loading))
                     SliverFillRemaining(
                       child: Center(
-                        child: SpinKitChasingDots(color: primaryColor),
+                        child: CircularProgressIndicator.adaptive(
+                          valueColor: AlwaysStoppedAnimation(primaryColor),
+                        ),
                       ),
                     ),
 
                   if (n.isGetCurrentKbri(RequestState.error))
                     SliverFillRemaining(
                       child: Center(
-                        child: SpinKitChasingDots(color: primaryColor),
+                        child: CircularProgressIndicator.adaptive(
+                          valueColor: AlwaysStoppedAnimation(primaryColor),
+                        ),
                       ),
                     ),
 
@@ -154,7 +157,7 @@ class SearchPageState extends State<SearchPage> {
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
                                             image: AssetImage(
-                                              'assets/images/default_image.png',
+                                              'assets/images/placeholder.png',
                                             ),
                                           ),
                                         ),
@@ -171,7 +174,7 @@ class SearchPageState extends State<SearchPage> {
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
                                             image: AssetImage(
-                                              'assets/images/default_image.png',
+                                              'assets/images/placeholder.png',
                                             ),
                                           ),
                                         ),

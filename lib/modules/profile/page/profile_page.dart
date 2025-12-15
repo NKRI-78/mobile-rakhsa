@@ -82,8 +82,6 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
 
-                  12.spaceY,
-
                   // info profil
                   Padding(
                     padding: EdgeInsets.fromLTRB(
@@ -118,17 +116,20 @@ class ProfilePageState extends State<ProfilePage> {
                         ),
 
                         if (BuildConfig.isProd && packages.isNotEmpty)
-                          Column(
-                            spacing: 16,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Informasi Paket Roaming",
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              ReferralInfoContainer(package: packages[0]),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Column(
+                              spacing: 16,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Informasi Paket Roaming",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                                ReferralInfoContainer(package: packages[0]),
+                              ],
+                            ),
                           ),
                       ],
                     ),

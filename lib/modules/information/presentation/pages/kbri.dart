@@ -166,7 +166,7 @@ class KbriPageState extends State<KbriPage> {
                                 image: const DecorationImage(
                                   fit: BoxFit.fitWidth,
                                   image: AssetImage(
-                                    'assets/images/default.jpeg',
+                                    'assets/images/user-placeholder.webp',
                                   ),
                                 ),
                               ),
@@ -199,7 +199,7 @@ class KbriPageState extends State<KbriPage> {
                                     image: const DecorationImage(
                                       fit: BoxFit.fitWidth,
                                       image: AssetImage(
-                                        'assets/images/default.jpeg',
+                                        'assets/images/user-placeholder.webp',
                                       ),
                                     ),
                                   ),

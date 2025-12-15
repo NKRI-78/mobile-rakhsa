@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
-import 'package:rakhsa/service/app/app_metadata.dart';
+import 'package:rakhsa/service/app/config/remote_config_service.dart';
 
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/build_config.dart';
@@ -25,6 +25,7 @@ import 'package:rakhsa/service/socket/socketio.dart';
 
 import './modules/app/app.dart';
 import 'service/haptic/haptic_service.dart';
+import 'service/notification/notification_sound.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,9 +56,13 @@ Future<void> main() async {
 
   await NotificationManager().initializeLocalNotification();
 
-  await SosCoordinator().initAndRestore();
+  if (Platform.isIOS) {
+    await FCMSoundService.instance.initialize();
+  }
 
-  await AppMetadata().initialize();
+  await RemoteConfigService.instance.initialize();
+
+  await SosCoordinator().initAndRestore();
 
   await HapticService.instance.initialize();
 

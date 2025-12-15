@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
@@ -23,7 +22,7 @@ import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> globalKey;
   final Future<void> Function() onRefresh;
   final List<Widget> banners;
@@ -36,29 +35,12 @@ class HomePage extends StatefulWidget {
   });
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarColor: Colors.transparent,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: context.top),
         child: RefreshIndicator.adaptive(
-          onRefresh: widget.onRefresh,
+          onRefresh: onRefresh,
           color: primaryColor,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -67,7 +49,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HeaderSection(scaffoldKey: widget.globalKey),
+                  HeaderSection(scaffoldKey: globalKey),
 
                   40.spaceY,
 
@@ -162,8 +144,8 @@ class _HomePageState extends State<HomePage> {
                       return Padding(
                         padding: const EdgeInsets.only(top: 45.0),
                         child: (n.ews.isNotEmpty)
-                            ? EwsListWidget(getData: widget.onRefresh)
-                            : HomeHightlightBanner(banners: widget.banners),
+                            ? EwsListWidget()
+                            : HomeHightlightBanner(banners: banners),
                       );
                     },
                   ),

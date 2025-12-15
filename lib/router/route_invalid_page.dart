@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 
 class RouteInvalidPage extends StatelessWidget {
   final GoRouterState state;
@@ -46,26 +47,34 @@ class RouteInvalidPage extends StatelessWidget {
                 Text(
                   'Tidak dapat menemukan rute ${state.matchedLocation}.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 if (state.error != null)
                   Padding(
-                    padding: EdgeInsets.only(top: 4.0),
+                    padding: EdgeInsets.only(top: 8),
                     child: Text(
                       state.error?.toString() ?? "-",
                       textAlign: TextAlign.center,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey[700],
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => DashboardRoute().go(context),
+                    onPressed: () {
+                      if (StorageHelper.isLoggedIn()) {
+                        DashboardRoute().go(context);
+                      } else {
+                        WelcomeRoute().go(context);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
@@ -76,7 +85,7 @@ class RouteInvalidPage extends StatelessWidget {
                       elevation: 0,
                     ),
                     child: Text(
-                      "Kembali ke Beranda",
+                      "Kembali",
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/injection.dart';
+import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 import 'package:rakhsa/router/router.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
@@ -127,6 +128,7 @@ class SocketIoService with ChangeNotifier {
         context.read<GetMessagesNotifier>().appendMessage(
           data: {"closed_by_agent": true},
         );
+        await context.read<GetChatsNotifier>().getChats();
       }
     });
 

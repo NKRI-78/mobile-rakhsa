@@ -122,7 +122,7 @@ class AuthProvider extends ChangeNotifier {
       socketService.socket?.emit("leave", {"user_id": uid});
       socketService.close();
       await _repository.logout(uid);
-      await NotificationManager().dismissAllNotification();
+      await NotificationManager().dismissChatsNotification();
       await sendLatestLocation(
         "User Logout",
         otherSource: locationProvider.location,
