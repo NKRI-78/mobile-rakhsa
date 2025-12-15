@@ -25,6 +25,7 @@ import 'package:rakhsa/service/socket/socketio.dart';
 
 import './modules/app/app.dart';
 import 'service/haptic/haptic_service.dart';
+import 'service/notification/notification_sound.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,10 @@ Future<void> main() async {
   await initializeDateFormatting('id_ID', null);
 
   await NotificationManager().initializeLocalNotification();
+
+  if (Platform.isIOS) {
+    await FCMSoundService.instance.initialize();
+  }
 
   await RemoteConfigService.instance.initialize();
 

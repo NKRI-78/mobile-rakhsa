@@ -17,6 +17,7 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/firebase_options.dart';
 
 import 'package:rakhsa/injection.dart' as di;
+import 'package:rakhsa/service/notification/notification_sound.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
@@ -54,6 +55,10 @@ Future<void> main() async {
   await initializeDateFormatting('id_ID', null);
 
   await NotificationManager().initializeLocalNotification();
+
+  if (Platform.isIOS) {
+    await FCMSoundService.instance.initialize();
+  }
 
   await RemoteConfigService.instance.initialize();
 

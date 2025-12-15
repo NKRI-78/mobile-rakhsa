@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:rakhsa/misc/utils/logger.dart' as d;
 
@@ -18,6 +19,7 @@ import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/service/notification/notification_sound.dart';
 
 import '../storage/storage.dart';
 import '../../modules/dashboard/presentation/provider/dashboard_notifier.dart';
@@ -167,6 +169,19 @@ class NotificationManager {
 
         if (type == NotificationType.ews) await _revalidateEws();
 
+        // handle show notifikasi dari ios
+        // di iOS hanya play sound notifikasi karena firebase ga munculin suara sama getar
+        if (Platform.isIOS) {
+          if (type == NotificationType.chat) {
+            await FCMSoundService.instance.play(type: SoundType.chat);
+          } else {
+            await FCMSoundService.instance.play(type: SoundType.general);
+          }
+
+          // stop notifikasi chat di iOS karena firebase sendiri udah ngeluarin notif
+          return;
+        }
+
         await showNotification(
           title: m.notification?.title ?? "-",
           body: m.notification?.body ?? "-",
@@ -177,7 +192,10 @@ class NotificationManager {
             "recipient_id": data["recipient_id"].toString(),
             "sos_id": data["sos_id"].toString(),
           },
-          channelKey: type == NotificationType.chat ? "chat_channel" : null,
+          channelKey: switch (type) {
+            NotificationType.chat => "chat_channel",
+            _ => "general_channel",
+          },
         );
       } catch (e) {
         d.log(
@@ -236,6 +254,9 @@ class NotificationManager {
     await AwesomeNotifications().dismissNotificationsByChannelKey(
       "chat_channel",
     );
+    if (Platform.isIOS) {
+      await AwesomeNotifications().dismissAllNotifications();
+    }
     await AwesomeNotifications().resetGlobalBadge();
   }
 

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_app_bar.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
@@ -227,12 +226,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     return GestureDetector(
       onTap: () => context.unfocus(),
       child: PopScope(
-        canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          if (!didPop) {
-            messageNotifier.removeAthanFromRecipients();
-            context.pop("refetch");
-          }
+          messageNotifier.removeAthanFromRecipients();
         },
         child: Scaffold(
           appBar: ChatAppBar(widget.param.chatId),

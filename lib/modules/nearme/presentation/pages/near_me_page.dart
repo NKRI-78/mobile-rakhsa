@@ -159,7 +159,7 @@ class NearMePageState extends State<NearMePage> {
                   spacing: 16,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator.adaptive(
+                    CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(primaryColor),
                     ),
                     Text(

@@ -39,8 +39,8 @@ class NotificationPageState extends State<NotificationPage> {
     await context.read<GetChatsNotifier>().getChats();
   }
 
-  Future<void> _navigateToChatRoom(ChatsData c) async {
-    await ChatRoomRoute(
+  void _navigateToChatRoom(ChatsData c) {
+    ChatRoomRoute(
       ChatRoomParams(
         chatId: c.chat.id,
         sosId: c.sosId,
@@ -49,7 +49,7 @@ class NotificationPageState extends State<NotificationPage> {
         status: c.status,
         newSession: false,
       ),
-    ).push<String?>(context);
+    ).push(context);
   }
 
   @override

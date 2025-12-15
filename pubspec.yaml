@@ -86,6 +86,7 @@ dependencies:
 
   # S
   shimmer: ^3.0.0
+  flutter_soloud: ^3.4.6
 
   # V
   vibration: ^3.1.4
@@ -109,11 +110,16 @@ flutter:
     - assets/images/icons/
     - assets/images/weather/
 
+    # animations
     - assets/animations/
+
+    # sound
+    - assets/sound/
 
     # env
     - assets/env/.env.stag
     - assets/env/.env.prod
+
 
   fonts:
     - family: Roboto

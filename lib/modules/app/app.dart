@@ -7,6 +7,7 @@ import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:rakhsa/service/app/universal_link.dart';
+import 'package:rakhsa/service/notification/notification_sound.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -38,6 +39,9 @@ class AppState extends State<App> {
   @override
   void dispose() {
     uniLink.dispose();
+    if (Platform.isIOS) {
+      FCMSoundService.instance.dispose();
+    }
     super.dispose();
   }
 
