@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -16,12 +15,8 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: primaryColor,
-      leading: CupertinoNavigationBarBackButton(
-        color: whiteColor,
-        onPressed: () => context.pop("refetch"),
-      ),
       centerTitle: false,
+      backgroundColor: primaryColor,
       title: Consumer<GetMessagesNotifier>(
         builder: (context, notifier, child) {
           final agentIsTyping = notifier.isTyping(chatId);
@@ -89,6 +84,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         message: isSingleAdmin
             ? "Anda sekarang terhubung ke Command Center"
             : "Anda sekarang terhubung ke Command Center dan Athan",
+        buildActions: (c) {
+          return [
+            DialogActionButton(label: "Mengerti", primary: true, onTap: c.pop),
+          ];
+        },
       ),
     );
   }
