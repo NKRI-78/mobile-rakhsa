@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
@@ -160,7 +159,9 @@ class NearMePageState extends State<NearMePage> {
                   spacing: 16,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SpinKitChasingDots(color: Color(0xFFFE1717)),
+                    CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation(primaryColor),
+                    ),
                     Text(
                       "Memuat Lokasi",
                       style: TextStyle(

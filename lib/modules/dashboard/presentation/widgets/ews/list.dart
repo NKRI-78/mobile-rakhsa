@@ -15,9 +15,7 @@ import 'package:rakhsa/router/route_trees.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EwsListWidget extends StatelessWidget {
-  final Function getData;
-
-  const EwsListWidget({required this.getData, super.key});
+  const EwsListWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

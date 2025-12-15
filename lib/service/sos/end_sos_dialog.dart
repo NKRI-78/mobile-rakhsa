@@ -76,7 +76,7 @@ class EndSosDialog extends StatelessWidget {
                 c.read<GetMessagesNotifier>().removeAthanFromRecipients();
                 c.pop(true);
                 if (!fromHome) DashboardRoute().go(context);
-                await NotificationManager().dismissAllNotification();
+                await NotificationManager().dismissChatsNotification();
               },
             ),
           ];
