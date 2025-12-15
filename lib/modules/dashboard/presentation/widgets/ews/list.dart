@@ -3,214 +3,186 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_html/flutter_html.dart' as fh;
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/router/route_trees.dart';
+import 'package:shimmer/shimmer.dart';
 
 class EwsListWidget extends StatelessWidget {
-  final Function getData;
-
-  const EwsListWidget({required this.getData, super.key});
+  const EwsListWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardNotifier>(
-      builder: (context, notifier, child) {
-        return CarouselSlider(
-          options: CarouselOptions(
-            autoPlayInterval: const Duration(seconds: 5),
-            autoPlay: true,
-            enableInfiniteScroll: (notifier.ews.length == 1) ? false : true,
-            viewportFraction: 1.0,
-            height: 200.0,
-          ),
-          items: notifier.ews.map((item) {
-            return GestureDetector(
-              onTap: () {
-                NewsDetailRoute(
-                  NewsDetailPageParams(id: item.id, type: item.type),
-                ).go(context);
-              },
-              child: Card(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                elevation: 1.0,
-                child: CachedNetworkImage(
-                  imageUrl: item.img.toString(),
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: imageProvider,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Consumer<DashboardNotifier>(
+        builder: (context, n, child) {
+          return CarouselSlider(
+            options: CarouselOptions(
+              height: 200.0,
+              autoPlay: true,
+              viewportFraction: 1.0,
+              autoPlayInterval: const Duration(seconds: 5),
+              enableInfiniteScroll: (n.ews.length == 1) ? false : true,
+            ),
+            items: n.ews.map((item) {
+              return GestureDetector(
+                onTap: () {
+                  NewsDetailRoute(
+                    NewsDetailPageParams(id: item.id, type: item.type),
+                  ).go(context);
+                },
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CachedNetworkImage(
+                        imageUrl: item.img,
+                        fit: BoxFit.cover,
+                        width: double.maxFinite,
+                        height: 200.0,
+                        placeholder: (context, url) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade200,
+                            child: Container(color: Colors.grey.shade300),
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade200,
+                            child: Container(color: Colors.grey.shade300),
+                          );
+                        },
+                      ),
+                    ),
+
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.black26, Colors.black87],
+                          ),
                         ),
                       ),
-                      child: Stack(
-                        clipBehavior: Clip.none,
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        spacing: 2,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(10.0),
+                          Expanded(
+                            child: Text(
+                              "Info kejadian disekitar Anda",
+                              style: robotoRegular.copyWith(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
+
+                          Text(
+                            item.createdAt,
+                            style: robotoRegular.copyWith(
+                              fontSize: 11,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          if (item.location.isNotEmpty && item.location != "-")
+                            Row(
+                              spacing: 4,
                               children: [
-                                Text(
-                                  "Info Kejadian di sekitar Anda",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorResources.white,
-                                  ),
+                                Icon(
+                                  IconsaxPlusBold.location,
+                                  color: Colors.white,
+                                  size: 14,
                                 ),
-                                const SizedBox(height: 8.0),
-                                Text(
-                                  item.location.toString(),
-                                  maxLines: 1,
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.white,
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  item.createdAt.toString(),
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.white.withValues(
-                                      alpha: 0.8,
-                                    ),
-                                    fontSize: Dimensions.fontSizeSmall,
-                                  ),
-                                ),
-                                const SizedBox(height: 8.0),
-                                Text(
-                                  item.title.toString(),
-                                  maxLines: 2,
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.white,
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                  child: OverflowBox(
-                                    alignment: Alignment.topLeft,
-                                    maxHeight: 20,
-                                    child: fh.Html(
-                                      data: item.desc.toString(),
-                                      shrinkWrap: true,
-                                      style: {
-                                        'body': fh.Style(
-                                          margin: fh.Margins.zero,
-                                          color: ColorResources.white
-                                              .withValues(alpha: 0.8),
-                                          fontSize: fh.FontSize(
-                                            Dimensions.fontSizeSmall,
-                                          ),
-                                          display: fh.Display.inline,
-                                        ),
-                                        'p': fh.Style(
-                                          margin: fh.Margins.zero,
-                                          color: ColorResources.white
-                                              .withValues(alpha: 0.8),
-                                          fontSize: fh.FontSize(
-                                            Dimensions.fontSizeSmall,
-                                          ),
-                                          display: fh.Display.inline,
-                                        ),
-                                        'span': fh.Style(
-                                          margin: fh.Margins.zero,
-                                          color: ColorResources.white
-                                              .withValues(alpha: 0.8),
-                                          fontSize: fh.FontSize(
-                                            Dimensions.fontSizeSmall,
-                                          ),
-                                          display: fh.Display.inline,
-                                        ),
-                                        'div': fh.Style(
-                                          margin: fh.Margins.zero,
-                                          color: ColorResources.white
-                                              .withValues(alpha: 0.8),
-                                          fontSize: fh.FontSize(
-                                            Dimensions.fontSizeSmall,
-                                          ),
-                                          display: fh.Display.inline,
-                                        ),
-                                      },
+                                Expanded(
+                                  child: Text(
+                                    item.location,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: robotoRegular.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 11,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
+
+                          5.spaceY,
+
+                          Text(
+                            item.title,
+                            overflow: TextOverflow.ellipsis,
+                            style: robotoRegular.copyWith(
+                              fontSize: 13,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                  placeholder: (context, url) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        image: const DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: AssetImage('assets/images/default.jpeg'),
-                        ),
-                      ),
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(10.0),
+
+                          Flexible(
+                            child: fh.Html(
+                              data: item.desc,
+                              shrinkWrap: true,
+                              style: {
+                                'body': fh.Style(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  maxLines: 2,
+                                  margin: fh.Margins.zero,
+                                  padding: fh.HtmlPaddings.zero,
+                                  fontSize: fh.FontSize(11),
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
+                                'p': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(10),
+                                  display: fh.Display.inline,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                'span': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(12),
+                                  display: fh.Display.inline,
+                                ),
+                                'div': fh.Style(
+                                  margin: fh.Margins.zero,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: fh.FontSize(12),
+                                  display: fh.Display.inline,
+                                ),
+                                'strong': fh.Style(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              },
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                  errorWidget: (context, url, error) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        image: const DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: AssetImage('assets/images/default.jpeg'),
-                        ),
-                      ),
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ),
-            );
-          }).toList(),
-        );
-      },
+              );
+            }).toList(),
+          );
+        },
+      ),
     );
   }
 }

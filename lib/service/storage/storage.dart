@@ -70,9 +70,8 @@ class StorageHelper {
   }
 
   static String? getUserNationality() {
-    String? nationality = sharedPreferences.getString("nationality") ?? "-";
-
-    return nationality;
+    final result = sharedPreferences.getString("nationality");
+    return result;
   }
 
   static void saveUserNationality({required String nationality}) async {

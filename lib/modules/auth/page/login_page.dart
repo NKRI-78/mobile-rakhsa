@@ -1,4 +1,3 @@
-import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -46,24 +45,24 @@ class LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _onNavigateToForgotPassword(BuildContext c) async {
-    bool? successUpdate = await ForgotPasswordRoute().push<bool?>(context);
-    if (c.mounted) c.unfocus();
-    if (successUpdate != null && successUpdate) {
-      final phone = StorageHelper.read("phone_cache");
-      if (phone != null) {
-        _phoneController.text = phone;
-        _passController.text = "";
-        await Future.delayed(Duration(milliseconds: 100));
-        if (mounted) _passFNode.requestFocus();
-        await Future.delayed(Duration(milliseconds: 200));
-        AppDialog.showToast(
-          "Masuk menggunakan password baru Anda",
-          length: Toast.LENGTH_LONG,
-        );
-      }
-    }
-  }
+  // void _onNavigateToForgotPassword(BuildContext c) async {
+  //   bool? successUpdate = await ForgotPasswordRoute().push<bool?>(context);
+  //   if (c.mounted) c.unfocus();
+  //   if (successUpdate != null && successUpdate) {
+  //     final phone = StorageHelper.read("phone_cache");
+  //     if (phone != null) {
+  //       _phoneController.text = phone;
+  //       _passController.text = "";
+  //       await Future.delayed(Duration(milliseconds: 100));
+  //       if (mounted) _passFNode.requestFocus();
+  //       await Future.delayed(Duration(milliseconds: 200));
+  //       AppDialog.showToast(
+  //         "Masuk menggunakan password baru Anda",
+  //         length: Toast.LENGTH_LONG,
+  //       );
+  //     }
+  //   }
+  // }
 
   void _addErrField(AuthField field, ErrorReason reason) {
     _errFields[field] = reason;
@@ -289,32 +288,31 @@ class LoginPageState extends State<LoginPage> {
 
                               8.spaceY,
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Bounce(
-                                    scaleFactor: 0.98,
-                                    onTap: () =>
-                                        _onNavigateToForgotPassword(context),
-                                    child: Container(
-                                      height: kMinInteractiveDimension,
-                                      alignment: Alignment.center,
-                                      padding: EdgeInsets.only(left: 12),
-                                      child: Text(
-                                        "Lupa Password",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.end,
+                              //   children: [
+                              //     Bounce(
+                              //       scaleFactor: 0.98,
+                              //       onTap: () =>
+                              //           _onNavigateToForgotPassword(context),
+                              //       child: Container(
+                              //         height: kMinInteractiveDimension,
+                              //         alignment: Alignment.center,
+                              //         padding: EdgeInsets.only(left: 12),
+                              //         child: Text(
+                              //           "Lupa Password",
+                              //           style: TextStyle(
+                              //             fontSize: 13,
+                              //             color: Colors.white,
+                              //             fontWeight: FontWeight.w600,
+                              //             decoration: TextDecoration.underline,
+                              //             decorationColor: Colors.white,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               8.spaceY,
 
                               Consumer<AuthProvider>(

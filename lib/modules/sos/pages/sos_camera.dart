@@ -66,8 +66,9 @@ class CameraPageState extends State<CameraPage> {
       controller = CameraController(cameras![0], ResolutionPreset.high);
       await controller!.initialize();
 
-      startVideoRecording();
-      setState(() {});
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        startVideoRecording();
+      });
     }
   }
 
@@ -465,7 +466,6 @@ class RecordingButton extends StatefulWidget {
   final VoidCallback onTap;
   final RecordingButtonController controller;
 
-  /// Optional: mulai animasi langsung ketika dibikin
   final bool autoStart;
 
   const RecordingButton({
@@ -473,7 +473,7 @@ class RecordingButton extends StatefulWidget {
     required this.durationInSeconds,
     required this.onTap,
     required this.controller,
-    this.autoStart = false,
+    this.autoStart = true,
   });
 
   @override
@@ -493,7 +493,6 @@ class _RecordingButtonState extends State<RecordingButton>
       duration: Duration(seconds: widget.durationInSeconds),
     );
 
-    // Hubungkan controller eksternal ke fungsi di dalam widget ini
     widget.controller._attach(
       onStart: _handleStart,
       onPause: _handlePause,
@@ -515,7 +514,6 @@ class _RecordingButtonState extends State<RecordingButton>
     }
 
     if (oldWidget.controller != widget.controller) {
-      // Lepas dari controller lama, attach ke controller baru
       oldWidget.controller._detach();
       widget.controller._attach(
         onStart: _handleStart,
@@ -535,7 +533,6 @@ class _RecordingButtonState extends State<RecordingButton>
 
   double get _progress => 1.0 - _anim.value;
 
-  // ====== FUNGSI YANG DIKONTROL DARI LUAR ======
   void _handleStart() {
     _anim
       ..reset()
@@ -553,10 +550,9 @@ class _RecordingButtonState extends State<RecordingButton>
 
   void _handleStop() {
     _anim.stop();
-    _anim.value = 1.0; // atau 0.0 kalau mau balik ke awal
+    _anim.value = 1.0;
   }
 
-  // ====== UI ======
   @override
   Widget build(BuildContext context) {
     return Stack(

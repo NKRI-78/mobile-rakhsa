@@ -1,5 +1,4 @@
 import 'package:bounce/bounce.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/misc/utils/color_resources.dart';
@@ -83,7 +82,11 @@ class CustomButton extends StatelessWidget {
         ),
         child: isLoading
             ? Center(
-                child: SpinKitFadingCircle(color: loadingColor, size: 25.0),
+                child: SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(color: loadingColor),
+                ),
               )
             : Row(
                 mainAxisAlignment: isPrefixIcon

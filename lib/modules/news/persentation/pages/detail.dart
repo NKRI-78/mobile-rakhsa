@@ -1,19 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_html/flutter_html.dart' as fh;
+import 'package:rakhsa/misc/constants/theme.dart';
 
 import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
 
 class NewsDetailPageParams {
@@ -36,11 +34,6 @@ class NewsDetailPage extends StatefulWidget {
 class NewsDetailPageState extends State<NewsDetailPage> {
   late DetailNewsNotifier detailNewsNotifier;
 
-  Future<void> getData() async {
-    if (!mounted) return;
-    await detailNewsNotifier.detailNews(id: widget.id);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -50,290 +43,125 @@ class NewsDetailPageState extends State<NewsDetailPage> {
     Future.microtask(() => getData());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> getData() async {
+    if (!mounted) return;
+    await detailNewsNotifier.detailNews(id: widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF4F4F7),
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        backgroundColor: const Color(0xffF4F4F7),
-        leading: CupertinoNavigationBarBackButton(
-          onPressed: context.pop,
-          color: ColorResources.black,
-        ),
+        centerTitle: true,
+        title: Text("Detail Berita"),
+        backgroundColor: Colors.grey.shade50,
       ),
       body: Consumer<DetailNewsNotifier>(
-        builder: (BuildContext context, DetailNewsNotifier notifier, Widget? child) {
-          if (notifier.state == ProviderState.loading) {
-            return const Center(
-              child: SizedBox(
-                width: 16.0,
-                height: 16.0,
-                child: CircularProgressIndicator(),
+        builder: (context, notifier, child) {
+          if (notifier.state != ProviderState.loaded) {
+            return Center(
+              child: Column(
+                spacing: 16,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(color: primaryColor),
+                  Text(
+                    "Memuat data..",
+                    style: TextStyle(color: Colors.black87, fontSize: 12),
+                  ),
+                ],
               ),
             );
           }
 
-          if (notifier.state == ProviderState.error) {
-            return const SizedBox();
-          }
+          final data = notifier.entity;
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                notifier.entity.title.toString(),
-                style: robotoRegular.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Dimensions.fontSizeLarge,
-                ),
-              ),
-              SizedBox(
-                height: notifier.entity.location.toString().isNotEmpty
-                    ? 12.0
-                    : 0.0,
-              ),
-              Container(
-                clipBehavior: Clip.antiAlias,
-                height: MediaQuery.sizeOf(context).width * .6,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(9.0),
-                ),
-                child: Image.network(
-                  notifier.entity.img.toString(),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(
-                height: notifier.entity.location.toString().isNotEmpty
-                    ? 18.0
-                    : 0.0,
-              ),
-              Text(
-                notifier.entity.location.toString(),
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall,
-                  fontWeight: FontWeight.bold,
-                  color: ColorResources.black,
-                ),
-              ),
-              SizedBox(
-                height: notifier.entity.location.toString().isNotEmpty
-                    ? 10.0
-                    : 0.0,
-              ),
-              Text(
-                notifier.entity.createdAt.toString(),
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeExtraSmall,
-                  color: ColorResources.grey,
-                ),
-              ),
-              const SizedBox(height: 15.0),
-              fh.Html(
-                data: notifier.entity.desc.toString(),
-                style: {
-                  'body': fh.Style(
-                    margin: fh.Margins.zero,
-                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                  ),
-                  'p': fh.Style(
-                    margin: fh.Margins.zero,
-                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                  ),
-                  'span': fh.Style(
-                    margin: fh.Margins.zero,
-                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                  ),
-                  'div': fh.Style(
-                    margin: fh.Margins.zero,
-                    fontSize: fh.FontSize(Dimensions.fontSizeSmall),
-                  ),
-                },
-              ),
-
-              widget.type == "ews"
-                  ? const SizedBox()
-                  : const SizedBox(height: 18),
-              widget.type == "ews"
-                  ? const SizedBox()
-                  : context.watch<DashboardNotifier>().state ==
-                        ProviderState.loading
-                  ? const SizedBox()
-                  : context.watch<DashboardNotifier>().state ==
-                        ProviderState.empty
-                  ? const SizedBox()
-                  : const Text(
-                      '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                      ),
+          return RefreshIndicator.adaptive(
+            onRefresh: getData,
+            color: primaryColor,
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, context.bottom + 16),
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: CachedNetworkImage(
+                      imageUrl: data.img ?? "",
+                      fit: BoxFit.cover,
                     ),
-              widget.type == "ews"
-                  ? const SizedBox()
-                  : const SizedBox(height: 18),
-              widget.type == "ews"
-                  ? const SizedBox()
-                  : Consumer<DashboardNotifier>(
-                      builder:
-                          (
-                            BuildContext context,
-                            DashboardNotifier notifier,
-                            Widget? child,
-                          ) {
-                            if (notifier.state == ProviderState.loading) {
-                              return const Center(
-                                child: SizedBox(
-                                  width: 16.0,
-                                  height: 16.0,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
-                            if (notifier.state == ProviderState.empty) {
-                              return const SizedBox();
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: notifier.news.length,
-                              itemBuilder: (BuildContext context, int i) {
-                                if (notifier.news[i].id == widget.id) {
-                                  return const SizedBox();
-                                }
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: InkWell(
-                                    onTap: () {
-                                      NewsDetailRoute(
-                                        NewsDetailPageParams(
-                                          id: notifier.news[i].id,
-                                          type: widget.type,
-                                        ),
-                                      ).go(context);
-                                    },
-                                    child: Container(
-                                      clipBehavior: Clip.antiAlias,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(9),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 100,
-                                            height: double.infinity,
-                                            child: CachedNetworkImage(
-                                              fit: BoxFit.fitWidth,
-                                              imageUrl: notifier.news[i].img
-                                                  .toString(),
-                                              placeholder:
-                                                  (
-                                                    BuildContext context,
-                                                    String url,
-                                                  ) {
-                                                    return Image.asset(
-                                                      'assets/images/default.jpeg',
-                                                    );
-                                                  },
-                                              errorWidget:
-                                                  (
-                                                    BuildContext context,
-                                                    String url,
-                                                    Object error,
-                                                  ) {
-                                                    return Image.asset(
-                                                      'assets/images/default.jpeg',
-                                                    );
-                                                  },
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 16.0,
-                                                  ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    notifier.news[i].title
-                                                        .toString(),
-                                                    maxLines: 3,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: robotoRegular
-                                                        .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault,
-                                                        ),
-                                                  ),
+                  ),
+                ),
 
-                                                  const SizedBox(height: 6.0),
+                16.spaceY,
 
-                                                  fh.Html(
-                                                    data: notifier.news[i].desc
-                                                        .toString(),
-                                                    style: {
-                                                      'body': fh.Style(
-                                                        maxLines: 1,
-                                                        margin: fh.Margins.zero,
-                                                        fontSize: fh.FontSize(
-                                                          Dimensions
-                                                              .fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                      'p': fh.Style(
-                                                        maxLines: 1,
-                                                        margin: fh.Margins.zero,
-                                                        fontSize: fh.FontSize(
-                                                          Dimensions
-                                                              .fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                      'span': fh.Style(
-                                                        maxLines: 1,
-                                                        fontSize: fh.FontSize(
-                                                          Dimensions
-                                                              .fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                      'div': fh.Style(
-                                                        maxLines: 1,
-                                                        fontSize: fh.FontSize(
-                                                          Dimensions
-                                                              .fontSizeSmall,
-                                                        ),
-                                                      ),
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                Text(
+                  data.title ?? "-",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+
+                16.spaceY,
+
+                if (data.location != null &&
+                    (data.location?.isNotEmpty ?? false) &&
+                    data.location != "-")
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        Icon(
+                          IconsaxPlusBold.location,
+                          color: Colors.black54,
+                          size: 18,
+                        ),
+                        Expanded(
+                          child: Text(
+                            data.location ?? "-",
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-            ],
+                  ),
+
+                Text(
+                  data.createdAt ?? "-",
+                  style: robotoRegular.copyWith(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                16.spaceY,
+
+                fh.Html(
+                  data: data.desc,
+                  style: {
+                    'body': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'p': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'span': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                    'div': fh.Style(
+                      margin: fh.Margins.zero,
+                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                    ),
+                  },
+                ),
+              ],
+            ),
           );
         },
       ),

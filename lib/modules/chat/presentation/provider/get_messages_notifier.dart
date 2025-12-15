@@ -229,7 +229,7 @@ class GetMessagesNotifier with ChangeNotifier {
         ),
       );
 
-      await NotificationManager().dismissAllNotification();
+      await NotificationManager().dismissChatsNotification();
     } else {
       String incomingChatId = data["chat_id"];
       String incomingMessageId = data["id"];

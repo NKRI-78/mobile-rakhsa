@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/modules/chat/presentation/widget/chat_app_bar.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
-import 'package:rakhsa/widgets/avatar.dart';
+import 'package:rakhsa/widgets/lottie/lottie_animation.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/service/socket/socketio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -159,7 +157,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
       return;
     }
 
-    String createdAt = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    final createdAt = DateTime.now().format("yyyy-MM-dd HH:mm:ss");
 
     final msg = messageC.text.trimLeft().trimRight();
 
@@ -232,68 +230,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
           messageNotifier.removeAthanFromRecipients();
         },
         child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              backgroundColor: primaryColor,
-              leading: CupertinoNavigationBarBackButton(
-                color: whiteColor,
-                onPressed: context.pop,
-              ),
-              centerTitle: false,
-              title: Consumer<GetMessagesNotifier>(
-                builder: (context, notifier, child) {
-                  final agentIsTyping = notifier.isTyping(widget.param.chatId);
-
-                  final recipients = notifier.recipients;
-                  final isSingleAdmin = recipients.length == 1;
-                  final usernames = recipients.isEmpty
-                      ? '-'
-                      : isSingleAdmin
-                      ? (recipients[0].name ?? '-')
-                      : '${recipients[0].name ?? "-"} & ${recipients[1].name ?? "-"}';
-
-                  return Row(
-                    spacing: isSingleAdmin ? 10 : 8,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (notifier.recipients.isNotEmpty)
-                        Avatar(
-                          src: notifier.recipients[0].avatar,
-                          initial: notifier.recipients[0].name,
-                        ),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              usernames,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: isSingleAdmin ? 18 : 16,
-                              ),
-                            ),
-
-                            if (agentIsTyping)
-                              Text(
-                                "Sedang mengetik...",
-                                style: robotoRegular.copyWith(
-                                  fontSize: 10.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
+          appBar: ChatAppBar(widget.param.chatId),
           body: Consumer<GetMessagesNotifier>(
             builder: (context, notifier, child) {
               final closedSession =
@@ -304,7 +241,9 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
-                      child: notifier.showAutoGreetings
+                      child:
+                          notifier.showAutoGreetings ||
+                              notifier.messages.isEmpty
                           ? _buildAutoGreetings()
                           : ListView.builder(
                               controller: sC,
@@ -479,12 +418,11 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   }
 
   Widget _buildAutoGreetings() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
+      padding: EdgeInsets.all(12),
       children: [
         Container(
           width: double.infinity,
-          margin: EdgeInsets.all(12),
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: primaryColor,
@@ -512,6 +450,27 @@ class ChatRoomPageState extends State<ChatRoomPage> {
               ],
             ),
           ),
+        ),
+
+        170.spaceY,
+
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Opacity(
+              opacity: 0.7,
+              child: LottieAnimation(
+                "assets/animations/chats.lottie",
+                width: 170,
+                height: 170,
+              ),
+            ),
+            Text(
+              "Sesi sedang aktif. Ketik pesan pertama Anda agar kami dapat membantu.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+          ],
         ),
       ],
     );

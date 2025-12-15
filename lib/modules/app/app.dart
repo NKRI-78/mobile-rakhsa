@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/service/app/new_version/app_upgrader.dart';
 import 'package:rakhsa/service/app/universal_link.dart';
+import 'package:rakhsa/service/notification/notification_sound.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -23,7 +27,7 @@ class AppState extends State<App> {
   final uniLink = UniversalLink();
   final notif = NotificationManager();
 
-  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: true);
+  final _upgrader = Upgrader(countryCode: 'ID', debugLogging: kDebugMode);
 
   @override
   void initState() {
@@ -35,11 +39,16 @@ class AppState extends State<App> {
   @override
   void dispose() {
     uniLink.dispose();
+    if (Platform.isIOS) {
+      FCMSoundService.instance.dispose();
+    }
     super.dispose();
   }
 
   void _initializeService() async {
-    if (BuildConfig.isProd) await uniLink.initializeUriHandlers();
+    if (BuildConfig.isProd || Platform.isIOS) {
+      await uniLink.initializeUriHandlers();
+    }
     await notif.initializeFcmHandlers();
     await notif.setForegroundMessageActionListeners();
   }
