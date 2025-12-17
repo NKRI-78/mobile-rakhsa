@@ -18,7 +18,7 @@ import 'package:rakhsa/modules/information/presentation/provider/information_pro
 import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
-import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
+import 'package:rakhsa/modules/nearme/presentation/provider/near_me_provider.dart';
 
 import 'package:rakhsa/injection.dart' as di;
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -38,7 +38,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider.value(value: di.locator<InformationProvider>()),
   ChangeNotifierProvider.value(value: di.locator<UpdateAddressNotifier>()),
   ChangeNotifierProvider.value(value: di.locator<InsertMessageNotifier>()),
-  ChangeNotifierProvider.value(value: di.locator<GetNearbyPlacenNotifier>()),
+  ChangeNotifierProvider.value(value: di.locator<NearMeProvider>()),
   ChangeNotifierProvider.value(value: di.locator<SosProvider>()),
   ChangeNotifierProvider.value(value: di.locator<ReferralProvider>()),
   ChangeNotifierProxyProvider<LocationProvider, WeatherNotifier>(

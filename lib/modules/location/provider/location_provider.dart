@@ -56,7 +56,7 @@ class LocationProvider extends ChangeNotifier {
   }) async {
     final defCacheAge =
         cacheAge ??
-        Duration(minutes: (BuildConfig.isProd && kReleaseMode) ? 120 : 1);
+        Duration(minutes: (BuildConfig.isProd && kReleaseMode) ? 120 : 3);
 
     final activeDuration = _checkCacheAgeIsActive(defCacheAge);
     _isLocationCacheActive = activeDuration;

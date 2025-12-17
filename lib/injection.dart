@@ -9,7 +9,6 @@ import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 import 'package:rakhsa/repositories/information/information_repository.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
-import 'package:rakhsa/modules/nearme/data/datasources/nearme_remote_data_source.dart';
 
 import 'package:rakhsa/repositories/media/media_repository.dart';
 
@@ -47,14 +46,13 @@ import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dart';
 
 import 'package:rakhsa/modules/chat/domain/repository/chat_repository.dart';
-import 'package:rakhsa/modules/nearme/data/repositories/nearme_repository_impl.dart';
-import 'package:rakhsa/modules/nearme/domain/repository/nearme_repository.dart';
-import 'package:rakhsa/modules/nearme/domain/usecases/get_place_nearby.dart';
-import 'package:rakhsa/modules/nearme/presentation/provider/nearme_notifier.dart';
+import 'package:rakhsa/modules/nearme/presentation/provider/near_me_provider.dart';
 import 'package:rakhsa/misc/client/dio_client.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
+
+import 'repositories/nearme/nearme_repository.dart';
 
 final locator = GetIt.instance;
 
@@ -82,9 +80,6 @@ void init() {
   );
 
   // REMOTE DATA SOURCE
-  locator.registerLazySingleton<NearmeRemoteDataSource>(
-    () => NearmeRemoteDataSourceImpl(client: locator()),
-  );
   locator.registerLazySingleton<DashboardRemoteDataSource>(
     () => DashboardRemoteDataSourceImpl(client: locator()),
   );
@@ -100,19 +95,18 @@ void init() {
   locator.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(remoteDataSource: locator()),
   );
-  locator.registerLazySingleton<NearmeRepository>(
-    () => NearmeRepositoryImpl(remoteDataSource: locator()),
-  );
   locator.registerLazySingleton<MediaRepository>(
     () => MediaRepository(locator()),
   );
   locator.registerLazySingleton<InformationRepository>(
     () => InformationRepository(client: locator()),
   );
+  locator.registerLazySingleton<NearMeRepository>(
+    () => NearMeRepository(locator()),
+  );
 
   // USE CASE
   locator.registerLazySingleton(() => GetNewsUseCase(locator()));
-  locator.registerLazySingleton(() => GetPlaceNearbyUseCase(locator()));
   locator.registerLazySingleton(() => SosRatingUseCase(locator()));
   locator.registerLazySingleton(() => GetBannerUseCase(locator()));
   locator.registerLazySingleton(() => DetailNewsUseCase(locator()));
@@ -146,7 +140,7 @@ void init() {
   locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
   locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
-  locator.registerFactory(() => GetNearbyPlacenNotifier(useCase: locator()));
+  locator.registerFactory(() => NearMeProvider(locator()));
   locator.registerFactory(() => DetailInboxNotifier(useCase: locator()));
   locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
 }

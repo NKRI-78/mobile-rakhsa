@@ -11,7 +11,7 @@ import 'package:rakhsa/modules/information/presentation/pages/kbri.dart';
 import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum.dart';
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/index.dart';
 import 'package:rakhsa/modules/information/presentation/pages/search.dart';
-import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page.dart';
+import 'package:rakhsa/modules/nearme/presentation/pages/near_me_detail_page.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
@@ -181,7 +181,7 @@ class NearMeRoute extends GoRouteData with $NearMeRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return NearMePage(type: type);
+    return NearMeDetailPage(type: type);
   }
 }
 

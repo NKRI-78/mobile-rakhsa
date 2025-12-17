@@ -6,14 +6,9 @@ class ErrorState extends Equatable {
   final String? title;
   final String? message;
   final String? errorCode;
-  final ErrorSource source;
+  final ErrorSource? source;
 
-  const ErrorState({
-    this.title,
-    this.message,
-    this.errorCode,
-    this.source = ErrorSource.unknown,
-  });
+  const ErrorState({this.title, this.message, this.errorCode, this.source});
 
   @override
   List<Object?> get props => [title, message, errorCode, source];

@@ -73,3 +73,14 @@ class UserProvider with ChangeNotifier {
     }
   }
 }
+
+extension ReferralPackageExtension on ReferralPackage {
+  int extractNumberFromKeyword() {
+    final match = RegExp(
+      r'(\d+)',
+      caseSensitive: false,
+    ).firstMatch(packageKeyword);
+    if (match == null) return 0;
+    return int.parse(match.group(1)!);
+  }
+}

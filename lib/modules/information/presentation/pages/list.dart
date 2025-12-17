@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-
-import 'package:rakhsa/misc/utils/asset_source.dart';
-
-import 'package:rakhsa/modules/information/presentation/pages/widgets/list_card.dart';
 import 'package:rakhsa/router/route_trees.dart';
+import 'package:rakhsa/modules/nearme/presentation/widgets/near_me_place_tile.dart';
 
 class InformationListPage extends StatelessWidget {
   const InformationListPage({super.key});
@@ -30,18 +27,22 @@ class InformationListPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          ListCardInformation(
-            onTap: () => InformasiKBRIRoute(info: "informasi-kbri").go(context),
-            image: AssetSource.iconInfo,
-            title: "Informasi KBRI",
+          NearMePlaceTile(
+            NearMePlaceType(
+              "Informasi KBRI",
+              "assets/images/icons/icon-office.png",
+              () => InformasiKBRIRoute(info: "informasi-kbri").go(context),
+            ),
           ),
 
           16.spaceY,
 
-          ListCardInformation(
-            onTap: () => PanduanHukumRoute().go(context),
-            image: AssetSource.iconHukum,
-            title: "Panduan",
+          NearMePlaceTile(
+            NearMePlaceType(
+              "Panduan",
+              "assets/images/icons/icon-guide.png",
+              () => PanduanHukumRoute().go(context),
+            ),
           ),
         ],
       ),

@@ -124,7 +124,7 @@ class ProfilePageState extends State<ProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Informasi Paket Roaming",
+                                  "Informasi Layanan Marlinda",
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
                                 ReferralInfoContainer(package: packages[0]),
