@@ -13,8 +13,6 @@ class AppDialog {
   AppDialog._();
 
   static OverlayEntry? _entry;
-  static Timer? _autoDismissTimer;
-  static Completer<void>? _completer;
   static bool get isShowing => _entry != null;
 
   static Duration get animDuration => Duration(milliseconds: 250);
@@ -114,7 +112,6 @@ class AppDialog {
   static void showLoading(
     BuildContext context, {
     String? message,
-    Duration? duration,
     bool dismissible = false,
     Color barrierColor = Colors.black54,
   }) {
@@ -132,58 +129,10 @@ class AppDialog {
     );
 
     overlayState.insert(_entry!);
-
-    if (duration != null) {
-      _autoDismissTimer?.cancel();
-      _autoDismissTimer = Timer(duration, () {
-        dismissLoading();
-      });
-    }
-  }
-
-  static Future<void> showLoadingAsync(
-    BuildContext context, {
-    String? message,
-    Duration? duration,
-    bool dismissible = false,
-    Color barrierColor = Colors.black54,
-  }) {
-    if (_entry != null) {
-      return _completer?.future ?? Future.value();
-    }
-
-    final overlayState = Overlay.of(context, rootOverlay: true);
-    _completer = Completer<void>();
-
-    _entry = OverlayEntry(
-      builder: (context) => OverlayLoading(
-        message: message,
-        dismissible: dismissible,
-        barrierColor: barrierColor,
-        onDismissRequested: dismissLoading,
-      ),
-    );
-
-    overlayState.insert(_entry!);
-
-    if (duration != null) {
-      _autoDismissTimer?.cancel();
-      _autoDismissTimer = Timer(duration, dismissLoading);
-    }
-
-    return _completer!.future;
   }
 
   static void dismissLoading() {
-    _autoDismissTimer?.cancel();
-    _autoDismissTimer = null;
-
     _entry?.remove();
     _entry = null;
-
-    if (_completer != null && !_completer!.isCompleted) {
-      _completer!.complete();
-    }
-    _completer = null;
   }
 }

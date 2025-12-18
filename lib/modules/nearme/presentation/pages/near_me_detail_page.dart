@@ -4,15 +4,18 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/modules/nearme/presentation/widgets/maps_mode_dialog.dart';
 import 'package:rakhsa/modules/nearme/presentation/widgets/place_item_list_tile.dart';
 import 'package:rakhsa/repositories/nearme/model/google_maps_place.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
-import 'package:rakhsa/widgets/dialog/app_dialog.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
+import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:rakhsa/widgets/lottie/lottie_animation.dart' as la;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +36,9 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
   late LocationProvider _locationProvider;
   late NearMeProvider _nearmeProvider;
 
-  final _mapCompletter = Completer<GoogleMapController>();
+  GoogleMapController? _mapController;
+
+  String? _mapStyle;
 
   @override
   void initState() {
@@ -41,14 +46,16 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
     _locationProvider = context.read<LocationProvider>();
     _nearmeProvider = context.read<NearMeProvider>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
-
     Future.microtask(_fetchNearMe);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadMapStyle();
+    });
   }
 
   @override
   void dispose() {
-    _mapCompletter.future.then((c) => c.dispose());
+    _mapController?.dispose();
     super.dispose();
   }
 
@@ -63,36 +70,58 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
     }
   }
 
-  Future<void> _goToMaps(Coord c, MarkerId? markerId) async {
+  void _loadMapStyle() async {
+    final style = await rootBundle.loadString(
+      "assets/json/google-maps-style.json",
+    );
+    if (mounted) {
+      _mapStyle = style;
+      setState(() {});
+    }
+  }
+
+  Future<void> _goToMaps(GoogleMapsPlace place, MarkerId? markerId) async {
+    final coord = place.coord;
+    if (coord == null) return;
+
     try {
-      final mapController = await _mapCompletter.future;
-      await mapController.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(c.lat, c.lng), 18.0),
+      await _mapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(LatLng(coord.lat, coord.lng), 18.0),
+        duration: Duration(milliseconds: 700),
       );
       if (markerId != null) {
-        await mapController.showMarkerInfoWindow(markerId);
+        await _mapController?.showMarkerInfoWindow(markerId);
       }
     } catch (e) {
       log("error navigate to maps = ${e.toString()}");
     }
   }
 
-  Future<void> _launchOnGoogleMaps(String placeId, String placeName) async {
+  Future<void> _launchOnGoogleMaps(GoogleMapsPlace place) async {
     final uri = Uri.parse(
       'https://www.google.com/maps/search/?api=1'
-      '&query=${Uri.encodeComponent(placeName)}'
-      '&query_place_id=$placeId',
+      '&query=${Uri.encodeComponent(place.placeName)}'
+      '&query_place_id=${place.placeId}',
     );
-    if (await canLaunchUrl(uri)) {
-      try {
-        await launchUrl(uri);
-      } catch (e) {
-        AppDialog.showToast("Tidak bisa membuka maps");
-      } finally {
-        AppDialog.dismissLoading();
-      }
-    } else {
-      AppDialog.dismissLoading();
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      AppDialog.showToast("Tidak bisa membuka maps");
+    }
+  }
+
+  Future<void> _launchOnAppleMaps(GoogleMapsPlace place) async {
+    final label = place.placeName;
+    final coord = place.coord;
+    if (coord == null) return;
+
+    final uri = Uri.parse(
+      'https://maps.apple.com/?ll=${coord.lat},${coord.lng}'
+      '&q=${Uri.encodeComponent(label)}',
+    );
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
       AppDialog.showToast("Tidak bisa membuka maps");
     }
   }
@@ -135,13 +164,7 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
             return _buildIdleState(animSize, "Lokasi Anda tidak ditemukan.");
           }
 
-          final filteredLocations = np.state.places.filterByPlaceType(
-            widget.type,
-          );
-
-          final nearest = filteredLocations.findNearestByDistance();
-
-          final placeMarkers = filteredLocations.generateMarker(_iconAsset);
+          final placeMarkers = _generateMarkers(np.state.places);
           final selfMarker = _buildSelfLocationMarker(coord);
           final allMarkers = {...placeMarkers, selfMarker};
 
@@ -149,9 +172,13 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
             children: [
               Positioned.fill(
                 child: GoogleMap(
+                  style: _mapStyle,
+                  markers: allMarkers,
+                  zoomControlsEnabled: false,
+                  myLocationButtonEnabled: false,
+                  padding: EdgeInsets.only(bottom: context.bottom + 16),
                   onMapCreated: (controller) {
-                    if (_mapCompletter.isCompleted) return;
-                    _mapCompletter.complete(controller);
+                    _mapController = controller;
                   },
                   gestureRecognizers: {}
                     ..add(
@@ -159,8 +186,6 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
                         return EagerGestureRecognizer();
                       }),
                     ),
-                  markers: allMarkers,
-                  zoomControlsEnabled: false,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(coord.lat, coord.lng),
                     zoom: 17.0,
@@ -168,45 +193,45 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
                 ),
               ),
 
-              if (nearest != null)
-                Builder(
-                  builder: (_) {
-                    final dm = nearest.distanceInMeters;
-                    final dkm = dm / 1000;
-                    final distanceLabel = dm.toInt() < 1000
-                        ? "${dm.toInt()} meter"
-                        : "${dkm.toStringAsFixed(2)} km";
-
-                    return Positioned(
-                      top: 16,
-                      left: 16,
-                      right: 16,
-                      child: Material(
-                        elevation: 10,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        shadowColor: Colors.black38,
-                        child: ListTile(
-                          leading: Icon(IconsaxPlusBold.location),
-                          title: Text("$_title Terdekat"),
-                          subtitle: Text(
-                            "${nearest.placeName} ($distanceLabel)",
+              Builder(
+                builder: (_) {
+                  return Positioned(
+                    top: 16,
+                    left: 16,
+                    right: 16,
+                    child: Material(
+                      elevation: 10,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      shadowColor: Colors.black38,
+                      child: ListTile(
+                        leading: Icon(IconsaxPlusBold.menu_1),
+                        title: Text(
+                          "${np.state.places.length} $_title Terdekat Ditemukan",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
                           ),
-                          trailing: Icon(IconsaxPlusBold.menu_1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          onTap: () async {
-                            await _showPlacesModalDialog(
-                              filteredLocations,
-                              allMarkers,
-                            );
-                          },
                         ),
+                        subtitle: Text(
+                          "Menampilkan lokasi terdekat dalam radius 3 kilometer",
+                          style: TextStyle(fontSize: 12, color: Colors.black87),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        onTap: () async {
+                          HapticService.instance.lightImpact();
+                          await _showPlacesModalDialog(
+                            np.state.places,
+                            allMarkers,
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
             ],
           );
         },
@@ -250,6 +275,52 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
     );
   }
 
+  Set<Marker> _generateMarkers(List<GoogleMapsPlace> places) {
+    return places.map((place) {
+      final dm = place.distanceInMeters;
+      final dkm = dm / 1000;
+      final distanceDescription = dm.toInt() < 1000
+          ? "${dm.toInt()} m"
+          : "${dkm.toStringAsFixed(2)} km";
+
+      final markerId = MarkerId(place.placeId);
+
+      return Marker(
+        markerId: markerId,
+        position: LatLng(place.coord?.lat ?? 0.0, place.coord?.lng ?? 0.0),
+        icon: AssetMapBitmap(_iconAsset, height: 50, width: 50),
+        infoWindow: InfoWindow(
+          title: place.placeName,
+          snippet: distanceDescription,
+        ),
+        onTap: () async {
+          final mode = await MapsLaunchModeDialog.launch(
+            context,
+            place,
+            fromMapsTile: true,
+          );
+          if (mode != null) {
+            if (mounted) AppDialog.showLoading(context);
+            await Future.delayed(Duration(milliseconds: 200));
+            AppDialog.dismissLoading();
+
+            switch (mode) {
+              case MapsLaunchMode.goToMaps:
+                await _goToMaps(place, markerId);
+                break;
+              case MapsLaunchMode.openOnAppleMaps:
+                await _launchOnAppleMaps(place);
+                break;
+              case MapsLaunchMode.openOnGoogleMaps:
+                await _launchOnGoogleMaps(place);
+                break;
+            }
+          }
+        },
+      );
+    }).toSet();
+  }
+
   Future<Coord?> _showPlacesModalDialog(
     List<GoogleMapsPlace> places,
     Set<Marker> markers,
@@ -273,32 +344,41 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
           maxChildSize: 0.98,
           minChildSize: 0.4,
           initialChildSize: 0.8,
-          builder: (context, scrollController) {
+          builder: (_, scrollController) {
             return ListView.separated(
               controller: scrollController,
               itemCount: sortedPlaces.length,
               padding: EdgeInsets.fromLTRB(12, 0, 12, bottomPadding),
               separatorBuilder: (context, index) => 12.spaceY,
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 final place = sortedPlaces[index];
                 return PlaceItemListTile(
                   place: place,
-                  onPlaceSelected: (place, mode) async {
-                    modalContext.pop();
-
-                    AppDialog.showLoading(context);
-
-                    final marker = markers.findMarkerByPlaceName(
-                      place.placeName,
+                  onPlaceSelected: (place) async {
+                    final mode = await MapsLaunchModeDialog.launch(
+                      context,
+                      place,
                     );
+                    if (mode != null) {
+                      if (mounted) AppDialog.showLoading(context);
+                      await Future.delayed(Duration(milliseconds: 200));
+                      AppDialog.dismissLoading();
+                      if (modalContext.mounted) modalContext.pop();
 
-                    AppDialog.dismissLoading();
-                    if (mode == PlaceSelectedMode.goToMaps) {
-                      if (place.coord != null) {
-                        await _goToMaps(place.coord!, marker?.markerId);
+                      switch (mode) {
+                        case MapsLaunchMode.goToMaps:
+                          final marker = markers.findMarkerByPlaceName(
+                            place.placeName,
+                          );
+                          await _goToMaps(place, marker?.markerId);
+                          break;
+                        case MapsLaunchMode.openOnAppleMaps:
+                          await _launchOnAppleMaps(place);
+                          break;
+                        case MapsLaunchMode.openOnGoogleMaps:
+                          await _launchOnGoogleMaps(place);
+                          break;
                       }
-                    } else {
-                      await _launchOnGoogleMaps(place.placeId, place.placeName);
                     }
                   },
                 );
@@ -319,26 +399,5 @@ extension MarkersExtension on Set<Marker> {
       }
     }
     return null;
-  }
-}
-
-extension FilteredPlacesExtension on List<GoogleMapsPlace> {
-  Set<Marker> generateMarker(String iconAsset) {
-    return map((e) {
-      final dm = e.distanceInMeters;
-      final dkm = dm / 1000;
-      final distanceDescription = dm.toInt() < 1000
-          ? "${dm.toInt()} meter dari sini"
-          : "${dkm.toStringAsFixed(2)} km dari sini";
-      return Marker(
-        markerId: MarkerId(e.placeId),
-        position: LatLng(e.coord?.lat ?? 0.0, e.coord?.lng ?? 0.0),
-        icon: AssetMapBitmap(iconAsset, height: 50, width: 50),
-        infoWindow: InfoWindow(
-          title: e.placeName,
-          snippet: distanceDescription,
-        ),
-      );
-    }).toSet();
   }
 }

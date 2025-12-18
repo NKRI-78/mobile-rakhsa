@@ -116,6 +116,9 @@ flutter:
     # sound
     - assets/sound/
 
+    # json
+    - assets/json/
+
     # env
     - assets/env/.env.stag
     - assets/env/.env.prod
