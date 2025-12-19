@@ -101,7 +101,9 @@ class GetMessagesNotifier with ChangeNotifier {
   }
 
   void removeAthanFromRecipients() {
-    _recipients.removeWhere((r) => r.name == "Athan");
+    _recipients.removeWhere(
+      (r) => r.name == "Athan" || r.name == "Marlinda Singapore",
+    );
   }
 
   void addRecipients(RecipientUser newR, {bool shouldNotify = true}) {

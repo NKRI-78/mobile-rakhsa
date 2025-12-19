@@ -7,16 +7,21 @@ import 'package:rakhsa/misc/client/errors/errors.dart';
 import 'package:rakhsa/misc/client/response/response_dto.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
 import 'package:rakhsa/repositories/media/model/media.dart';
+import 'package:rakhsa/service/storage/storage.dart';
 
 class MediaRepository {
   MediaRepository(this._client);
 
   final DioClient _client;
 
-  Dio get _mediaClient => _client.createNewInstance(
-    baseUrl: dotenv.env['API_MEDIA_BASE_URL'] ?? "",
-    sendTimeout: Duration(minutes: 6),
-  );
+  Dio get _mediaClient {
+    final token = StorageHelper.session?.token;
+    return _client.createNewInstance(
+      baseUrl: dotenv.env['API_MEDIA_BASE_URL'] ?? "",
+      headers: {'Authorization': 'Bearer $token'},
+      sendTimeout: Duration(minutes: 6),
+    );
+  }
 
   Future<Media> sendSosRecordVideo({
     required File video,

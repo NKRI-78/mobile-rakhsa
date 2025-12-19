@@ -141,13 +141,6 @@ class CameraPageState extends State<CameraPage> {
       final temp = await controller!.stopVideoRecording();
       _recordingController.stop();
 
-      File videoFile;
-      if (Platform.isAndroid) {
-        videoFile = await convertTempToMp4(temp);
-      } else {
-        videoFile = File(temp.path);
-      }
-
       setState(() {
         stop = true;
         loading = true;
@@ -156,7 +149,7 @@ class CameraPageState extends State<CameraPage> {
 
       // Start upload in a separate future, with timeout
       await sosProvider.sendSos(
-        videoFile,
+        File(temp.path),
         onTimeout: () {
           setState(() => loading = false);
           Future.delayed(Duration(milliseconds: 200)).then((_) {
@@ -167,6 +160,23 @@ class CameraPageState extends State<CameraPage> {
                 title: "Koneksi Internet Lemah",
                 message:
                     "Request Timeout, Periksa kembali koneksi internet Anda, lalu coba lagi.",
+                buildActions: (dc) => [
+                  DialogActionButton(label: "Mengerti", onTap: dc.pop),
+                ],
+              );
+            }
+          });
+        },
+        onError: () {
+          setState(() => loading = false);
+          Future.delayed(Duration(milliseconds: 200)).then((_) {
+            if (mounted) {
+              AppDialog.error(
+                canPop: false,
+                c: context,
+                title: "Tidak Bisa Mengirim SOS",
+                message:
+                    "Periksa kembali koneksi internet Anda, lalu coba lagi.",
                 buildActions: (dc) => [
                   DialogActionButton(label: "Mengerti", onTap: dc.pop),
                 ],
@@ -195,18 +205,6 @@ class CameraPageState extends State<CameraPage> {
     } catch (e) {
       if (mounted) setState(() => loading = false);
     }
-  }
-
-  Future<File> convertTempToMp4(XFile xfile) async {
-    final tempFile = File(xfile.path);
-
-    final newFile = await tempFile.copy(
-      '${tempFile.dirname}/${tempFile.filenameWithoutExtension}.mp4',
-    );
-
-    await tempFile.delete();
-
-    return newFile;
   }
 
   void _handlePauseVideoRecord() async {

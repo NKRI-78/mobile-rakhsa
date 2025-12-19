@@ -74,9 +74,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
 
   @override
   Future<ChatsModel> getChats() async {
+    final token = StorageHelper.session?.token;
     try {
       final response = await client.post(
         "$_baseUrl/chat/list",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
         data: {"user_id": StorageHelper.session?.user.id, "is_agent": false},
       );
       Map<String, dynamic> data = response.data;
@@ -96,9 +98,11 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     required String chatId,
     required String status,
   }) async {
+    final token = StorageHelper.session?.token;
     try {
       final response = await client.post(
         "$_baseUrl/chat/messages",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
         data: {
           "sender_id": StorageHelper.session?.user.id,
           "chat_id": chatId,

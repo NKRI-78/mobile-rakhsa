@@ -9,7 +9,7 @@ class SosRatingUseCase {
 
   SosRatingUseCase(this.repository);
 
-  Future<Either<Failure, void>> execute({required sosId, required rating}) {
+  Future<Either<Failure, void>> execute({required String sosId, required String rating}) {
     return repository.ratingSos(sosId: sosId, rating: rating);
   }
 }

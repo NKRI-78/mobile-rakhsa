@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,10 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       centerTitle: false,
       backgroundColor: primaryColor,
+      leading: CupertinoNavigationBarBackButton(
+        color: Colors.white,
+        onPressed: context.pop,
+      ),
       title: Consumer<GetMessagesNotifier>(
         builder: (context, notifier, child) {
           final agentIsTyping = notifier.isTyping(chatId);
@@ -30,7 +35,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               : '${recipients[0].name ?? "-"} & ${recipients[1].name ?? "-"}';
 
           return GestureDetector(
-            onTap: () => _showRecipientOverview(context, isSingleAdmin),
+            onTap: () => _showRecipientOverview(context, usernames),
             child: Row(
               spacing: isSingleAdmin ? 10 : 8,
               mainAxisSize: MainAxisSize.min,
@@ -77,13 +82,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
-  void _showRecipientOverview(BuildContext context, bool isSingleAdmin) {
+  void _showRecipientOverview(BuildContext context, String usernames) {
     AppDialog.show(
       c: context,
       content: DialogContent(
-        message: isSingleAdmin
-            ? "Anda sekarang terhubung ke Command Center"
-            : "Anda sekarang terhubung ke Command Center dan Athan",
+        message: "Anda sekarang terhubung dengan $usernames",
         buildActions: (c) {
           return [
             DialogActionButton(label: "Mengerti", primary: true, onTap: c.pop),

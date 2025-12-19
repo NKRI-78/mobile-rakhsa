@@ -178,7 +178,7 @@ class DashboardPageState extends State<DashboardPage>
     initBanners();
   }
 
-  _onPageChanged(int index) {
+  void _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
     HapticService.instance.mediumImpact();

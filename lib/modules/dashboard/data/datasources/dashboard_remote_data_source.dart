@@ -40,16 +40,19 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   @override
   Future<BannerModel> getBanner() async {
+    final token = StorageHelper.session?.token;
     try {
-      final response = await client.get("$_baseUrl/banner");
+      final response = await client.get(
+        "$_baseUrl/banner",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
       Map<String, dynamic> data = response.data;
       BannerModel bannerModel = BannerModel.fromJson(data);
       return bannerModel;
     } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
@@ -60,10 +63,12 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lng,
     required String state,
   }) async {
+    final token = StorageHelper.session?.token;
     try {
       final response = await client.post(
         "$_baseUrl/news/list-v2",
         data: {"lat": lat.toString(), "lng": lng.toString(), "state": state},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       Map<String, dynamic> data = response.data;
       NewsModel newsModel = NewsModel.fromJson(data);
@@ -79,8 +84,12 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   @override
   Future<NewsDetailModel> getNewsDetail({required int id}) async {
+    final token = StorageHelper.session?.token;
     try {
-      final response = await client.get("$_baseUrl/news/$id");
+      final response = await client.get(
+        "$_baseUrl/news/$id",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
       Map<String, dynamic> data = response.data;
       NewsDetailModel newsDetailModel = NewsDetailModel.fromJson(data);
       return newsDetailModel;
@@ -99,9 +108,11 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lat,
     required double lng,
   }) async {
+    final token = StorageHelper.session?.token;
     try {
       await client.post(
         "$_baseUrl/profile/insert-user-track",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
         data: {
           "user_id": StorageHelper.session?.user.id,
           "address": address,
@@ -125,9 +136,11 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required double lat,
     required double lng,
   }) async {
+    final token = StorageHelper.session?.token;
     try {
       await client.post(
         "$_baseUrl/profile/address/update",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
         data: {
           "user_id": StorageHelper.session?.user.id,
           "address": address,
@@ -150,9 +163,11 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     required String sosId,
     required String rating,
   }) async {
+    final token = StorageHelper.session?.token;
     try {
       await client.post(
         "$_baseUrl/sos/rating",
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
         data: {
           "id": sosId,
           "user_id": StorageHelper.session?.user.id,

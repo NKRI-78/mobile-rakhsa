@@ -84,6 +84,7 @@ class NotificationManager {
             criticalAlerts: true,
             importance: NotificationImportance.High,
             icon: 'resource://drawable/ic_notification',
+            soundSource: 'resource://raw/notification_general',
           ),
           NotificationChannel(
             channelKey: 'chat_channel',
@@ -94,6 +95,7 @@ class NotificationManager {
             criticalAlerts: true,
             importance: NotificationImportance.Max,
             icon: 'resource://drawable/ic_notification_chat',
+            soundSource: 'resource://raw/notification_chat',
           ),
         ], debug: false);
 

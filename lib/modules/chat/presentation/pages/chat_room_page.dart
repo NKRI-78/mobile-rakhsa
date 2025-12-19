@@ -157,7 +157,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
       return;
     }
 
-    final createdAt = DateTime.now().format("yyyy-MM-dd HH:mm:ss");
+    final createdAt = DateTime.now().toUtc().toIso8601String();
 
     final msg = messageC.text.trimLeft().trimRight();
 

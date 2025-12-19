@@ -25,7 +25,11 @@ class SosProvider extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  Future<void> sendSos(File file, {VoidCallback? onTimeout}) async {
+  Future<void> sendSos(
+    File file, {
+    VoidCallback? onTimeout,
+    VoidCallback? onError,
+  }) async {
     _sendSosVideoState = RequestState.loading;
     notifyListeners();
 
@@ -44,6 +48,8 @@ class SosProvider extends ChangeNotifier {
     } on NetworkException catch (e) {
       if (e.errorType == NetworkError.sendTimeout) {
         onTimeout?.call();
+      } else {
+        onError?.call();
       }
 
       _errorMessage = e.message;

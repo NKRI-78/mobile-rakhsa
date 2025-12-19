@@ -28,6 +28,9 @@ Future<bool> sendLatestLocation(
   log("base url = $baseUrl", label: "SEND_LATEST_LOCATION");
 
   // set dio client
+  final token = await StorageHelper.loadlocalSession().then((session) {
+    return session?.token;
+  });
   client = Dio(
     BaseOptions(
       baseUrl: baseUrl,
@@ -35,6 +38,7 @@ Future<bool> sendLatestLocation(
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
       },
     ),
   );

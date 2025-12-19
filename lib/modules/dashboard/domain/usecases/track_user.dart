@@ -10,9 +10,9 @@ class TrackUserUseCase {
   TrackUserUseCase(this.repository);
 
   Future<Either<Failure, void>> execute({
-    required address,
-    required lat,
-    required lng,
+    required String address,
+    required double lat,
+    required double lng,
   }) {
     return repository.userTrack(address: address, lat: lat, lng: lng);
   }

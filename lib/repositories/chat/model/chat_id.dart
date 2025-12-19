@@ -25,7 +25,7 @@ class ChatId extends Equatable {
     }
   }
 
-  factory ChatId.fromSingleValue(chatId) {
+  factory ChatId.fromSingleValue(String chatId) {
     try {
       return ChatId(chatId);
     } catch (e) {
