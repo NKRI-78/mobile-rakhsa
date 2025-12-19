@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
@@ -26,8 +27,8 @@ class AppUpgradeAlertState extends UpgradeAlertState {
     AppDialog.show(
       c: widget.navigatorKey?.currentState?.overlay?.context ?? context,
       // kalau diproduction gaboleh pop
-      canPop: BuildConfig.isStag,
-      dismissible: BuildConfig.isStag,
+      canPop: BuildConfig.isStag || kDebugMode,
+      dismissible: BuildConfig.isStag || kDebugMode,
       content: DialogContent(
         assetIcon: AssetSource.iconWelcomeDialog,
         title: "Pembaruan Tersedia",
@@ -37,13 +38,6 @@ class AppUpgradeAlertState extends UpgradeAlertState {
         style: DialogStyle(assetIconSize: 130),
         buildActions: (c) {
           return [
-            DialogActionButton(
-              label: "Ingatkan nanti",
-              onTap: () async {
-                await widget.upgrader.saveLastAlerted();
-                if (c.mounted) onUserLater(c, true);
-              },
-            ),
             DialogActionButton(
               label: "Perbarui sekarang",
               primary: true,
