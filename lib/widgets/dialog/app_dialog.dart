@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:rakhsa/misc/utils/asset_source.dart';
 
@@ -130,9 +132,7 @@ class AppDialog {
   }
 
   static void dismissLoading() {
-    try {
-      _entry?.remove();
-    } catch (_) {}
+    _entry?.remove();
     _entry = null;
   }
 }

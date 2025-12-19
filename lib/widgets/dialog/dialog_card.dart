@@ -86,16 +86,20 @@ class DialogCard extends StatelessWidget {
                     child: _renderAsyncTitle(titleStyle),
                   ),
 
-                if (content?.message == null && content?.messageAsync == null)
+                if (content?.message == null &&
+                    content?.messageAsync == null &&
+                    content?.messageWidget == null)
                   Text(
-                    "Tulis message diparameter message atau messageAsync",
+                    "Buat message diparameter messageWidget, message atau messageAsync",
                     maxLines: 8,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                     style: messageStyle,
                   ),
 
-                if (content?.message != null)
+                if (content?.messageWidget != null) content!.messageWidget!,
+
+                if (content?.message != null && content?.messageWidget == null)
                   Text(
                     content!.message!,
                     maxLines: 8,
@@ -104,7 +108,8 @@ class DialogCard extends StatelessWidget {
                     style: messageStyle,
                   ),
 
-                if (content?.messageAsync != null)
+                if (content?.messageAsync != null &&
+                    content?.messageWidget == null)
                   _renderAsyncMessage(messageStyle),
 
                 if (filteredActions.isNotEmpty)

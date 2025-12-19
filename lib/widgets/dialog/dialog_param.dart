@@ -7,6 +7,7 @@ class DialogContent {
   final String? title;
   final Future<String>? titleAsync;
   final String? message;
+  final Widget? messageWidget;
   final Future<String>? messageAsync;
   final DialogStyle? style;
   final Axis? actionButtonDirection;
@@ -16,6 +17,7 @@ class DialogContent {
     this.assetIcon,
     this.title,
     this.message,
+    this.messageWidget,
     this.titleAsync,
     this.messageAsync,
     this.style,

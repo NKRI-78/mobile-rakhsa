@@ -17,14 +17,14 @@ class LocationData extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'coord': coord.toMap(),
+      'coord': coord.toJson(),
       'placemark': placemark?.toJson(),
     };
   }
 
   factory LocationData.fromMap(Map<String, dynamic> map) {
     return LocationData(
-      coord: Coord.fromMap(map['coord'] as Map<String, dynamic>),
+      coord: Coord.fromJson(map['coord'] as Map<String, dynamic>),
       placemark: map['placemark'] != null
           ? Placemark.fromMap(map['placemark'] as Map<String, dynamic>)
           : null,
@@ -60,18 +60,13 @@ class Coord extends Equatable {
     return Coord(lat ?? this.lat, lng ?? this.lng);
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{'lat': lat, 'lng': lng};
   }
 
-  factory Coord.fromMap(Map<String, dynamic> map) {
+  factory Coord.fromJson(Map<String, dynamic> map) {
     return Coord(map['lat'] as double, map['lng'] as double);
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Coord.fromJson(String source) =>
-      Coord.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;

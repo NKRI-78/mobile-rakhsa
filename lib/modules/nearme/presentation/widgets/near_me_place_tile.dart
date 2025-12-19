@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
 
 import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/misc/utils/dimensions.dart';
 
-import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
+class NearMePlaceType {
+  final String title;
+  final String assets;
+  final VoidCallback action;
 
-class TypeTile extends StatelessWidget {
-  const TypeTile(this.type, {super.key, required this.onTap});
+  NearMePlaceType(this.title, this.assets, this.action);
+}
 
-  final NearMeType type;
-  final VoidCallback onTap;
+class NearMePlaceTile extends StatelessWidget {
+  const NearMePlaceTile(this.type, {super.key});
+
+  final NearMePlaceType type;
 
   @override
   Widget build(BuildContext context) {
@@ -17,21 +24,18 @@ class TypeTile extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
-        onTap: onTap,
+        onTap: type.action,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              // icon asset
               _buildIconAsset(),
-              const SizedBox(width: 16),
+              16.spaceX,
 
-              // title
               _buildTitle(),
 
-              // arrow icon
-              const Icon(Icons.arrow_forward),
+              Icon(Icons.arrow_forward),
             ],
           ),
         ),
@@ -57,16 +61,17 @@ class TypeTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFCD302E), Color(0xFFF46F6C)],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [primaryColor, primaryColor.withValues(alpha: 0.7)],
         ),
       ),
       child: Image.asset(
         type.assets,
-        width: Dimensions.iconSizeExtraLarge,
-        height: Dimensions.iconSizeExtraLarge,
+        color: Colors.white,
+        width: 32,
+        height: 32,
       ),
     );
   }

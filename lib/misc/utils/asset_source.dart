@@ -30,15 +30,4 @@ class AssetSource {
   static const String iconHukum = "assets/images/icon-hukum.png";
   static const String iconFamilyCall = "assets/images/icon-familycall.png";
   static const String iconInfoBottom = "assets/images/icon-info-bottom.pngic-";
-
-  // main menu -> near me
-  static const String iconTempatIbadah = "assets/images/icon-tempat-ibadah.png";
-  static const String iconKantorPolisi = "assets/images/icon-kantor-polisi.png";
-  static const String iconRestoran = "assets/images/icon-restoran.png";
-  static const String iconHotel = "assets/images/icon-hotel.png";
-
-  // icons
-  static const String lodging = "assets/images/icons/lodging";
-  static const String mosque = "assets/images/icons/mosque.png";
-  static const String update = "assets/images/update/update.jpg";
 }

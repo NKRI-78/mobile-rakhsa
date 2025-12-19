@@ -1,0 +1,138 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/repositories/nearme/model/google_maps_place.dart';
+
+enum MapsLaunchMode { goToMaps, openOnGoogleMaps, openOnAppleMaps }
+
+class MapsLaunchModeDialog extends StatelessWidget {
+  const MapsLaunchModeDialog._(this.place, this.fromMapsTile);
+
+  final GoogleMapsPlace place;
+  final bool fromMapsTile;
+
+  static Future<MapsLaunchMode?> launch(
+    BuildContext context,
+    GoogleMapsPlace place, {
+    bool fromMapsTile = false,
+  }) {
+    return showModalBottomSheet<MapsLaunchMode?>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (dialogContext) {
+        return MapsLaunchModeDialog._(place, fromMapsTile);
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext dialogContext) {
+    final bottomBasedOS = Platform.isIOS ? 8.0 : 24.0;
+    final bottomPadding = dialogContext.bottom + bottomBasedOS;
+    final tileShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    final dm = place.distanceInMeters;
+    final dkm = dm / 1000;
+    final distanceLabel = dm.toInt() < 1000
+        ? "${dm.toInt()} meter"
+        : "${dkm.toStringAsFixed(2)} kilometer";
+
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding),
+        child: Column(
+          spacing: 6,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              place.placeName,
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            if (place.vicinity != null)
+              Text(
+                place.vicinity!,
+                maxLines: 4,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            Text(
+              "$distanceLabel dari lokasi Anda",
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 12),
+            ),
+
+            16.spaceY,
+
+            if (!fromMapsTile)
+              ListTile(
+                leading: Image.asset(
+                  "assets/images/icons/maps.webp",
+                  width: 32,
+                  height: 32,
+                ),
+                title: Text("Maps"),
+                subtitle: Text("Lihat lokasi di Maps"),
+                trailing: Icon(
+                  Icons.arrow_outward_rounded,
+                  color: Colors.black54,
+                ),
+                onTap: () {
+                  dialogContext.pop(MapsLaunchMode.goToMaps);
+                },
+                shape: tileShape,
+              ),
+            if (Platform.isIOS)
+              ListTile(
+                leading: Image.asset(
+                  "assets/images/icons/apple-maps.webp",
+                  width: 32,
+                  height: 32,
+                ),
+                title: Text("Apple Maps"),
+                subtitle: Text("Buka menggunakan Apple Maps"),
+                trailing: Icon(
+                  Icons.arrow_outward_rounded,
+                  color: Colors.black54,
+                ),
+                onTap: () {
+                  dialogContext.pop(MapsLaunchMode.openOnAppleMaps);
+                },
+                shape: tileShape,
+              ),
+            ListTile(
+              leading: Image.asset(
+                "assets/images/icons/google-maps.webp",
+                width: 32,
+                height: 32,
+              ),
+              title: Text("Google Maps"),
+              subtitle: Text("Buka menggunakan Google Maps"),
+              trailing: Icon(
+                Icons.arrow_outward_rounded,
+                color: Colors.black54,
+              ),
+              onTap: () {
+                dialogContext.pop(MapsLaunchMode.openOnGoogleMaps);
+              },
+              shape: tileShape,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

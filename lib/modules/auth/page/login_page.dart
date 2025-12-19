@@ -135,7 +135,7 @@ class LoginPageState extends State<LoginPage> {
           final newTitle =
               title ??
               (userNotFound
-                  ? "Akun Belum Terdaftar"
+                  ? "Email Salah atau Akun Belum Terdaftar"
                   : wrongPassword
                   ? "Password Salah"
                   : "Terjadi Kesalahan");
@@ -313,7 +313,7 @@ class LoginPageState extends State<LoginPage> {
                               //     ),
                               //   ],
                               // ),
-                              8.spaceY,
+                              24.spaceY,
 
                               Consumer<AuthProvider>(
                                 builder: (context, provider, child) {

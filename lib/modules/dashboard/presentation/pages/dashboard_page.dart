@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/modules/dashboard/presentation/widgets/welcome_dialog.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart';
@@ -19,13 +20,12 @@ import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 import 'package:rakhsa/modules/information/presentation/pages/list.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
-import 'package:rakhsa/modules/nearme/presentation/pages/near_me_page_list_type.dart';
+import 'package:rakhsa/modules/nearme/presentation/pages/near_me_places_page.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home_page.dart';
 import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
@@ -83,10 +83,6 @@ class DashboardPageState extends State<DashboardPage>
     authProvider = context.read<AuthProvider>();
     referralProvider = context.read<ReferralProvider>();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.fromRegister) _showWelcomeDialog();
-    });
-
     Future.delayed(Duration(seconds: 1)).then((value) {
       socketIoService.connect();
     });
@@ -131,6 +127,10 @@ class DashboardPageState extends State<DashboardPage>
 
     if (!mounted) return;
     await profileNotifier.getUser();
+
+    if (mounted && widget.fromRegister) {
+      WelcomeDialog.launch(context);
+    }
 
     if (BuildConfig.isProd) {
       final package = await profileNotifier.getRoamingPackage();
@@ -304,31 +304,6 @@ class DashboardPageState extends State<DashboardPage>
     });
   }
 
-  void _showWelcomeDialog() async {
-    await Future.delayed(Duration(seconds: 1));
-    if (mounted) {
-      await AppDialog.show(
-        c: context,
-        content: DialogContent(
-          assetIcon: AssetSource.iconWelcomeDialog,
-          title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
-          message: """
-Karena kamu telah mengaktifkan paket roaming dan kamu sudah resmi gabung bersama Marlinda.
-Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas kami!
-""",
-          style: DialogStyle(assetIconSize: 175),
-          buildActions: (dc) => [
-            DialogActionButton(
-              label: "Oke",
-              primary: true,
-              onTap: () => dc.pop(true),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return StatusBarStyle.dark(
@@ -369,7 +344,7 @@ Stay Connected & Stay Safe dimanapun kamu berada, karena keamananmu Prioritas ka
                     banners: banners,
                   ),
                   InformationListPage(),
-                  NearMeListTypePage(),
+                  NearMePlacesPage(),
                 ],
               );
             },

@@ -28,7 +28,7 @@ class AuthRepository {
       return session;
     } on NetworkException catch (e) {
       final message = e.message == "User not found"
-          ? "Anda belum memiliki akun Marlinda. Silakan daftar terlebih dahulu untuk melanjutkan."
+          ? "Akun Marlinda tidak ditemukan. Email yang Anda masukkan mungkin salah atau belum terdaftar. Silakan daftar terlebih dahulu untuk melanjutkan."
           : e.message == "Credentials invalid"
           ? "Password Anda salah silahkan coba lagi"
           : e.message;

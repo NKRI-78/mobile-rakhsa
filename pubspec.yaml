@@ -2,7 +2,7 @@ name: rakhsa
 description: "Rakhsa"
 publish_to: "none"
 
-version: 2.2.2+27
+version: 2.3.0+28
 
 environment:
   sdk: ^3.9.2
@@ -116,10 +116,12 @@ flutter:
     # sound
     - assets/sound/
 
+    # json
+    - assets/json/
+
     # env
     - assets/env/.env.stag
     - assets/env/.env.prod
-
 
   fonts:
     - family: Roboto
