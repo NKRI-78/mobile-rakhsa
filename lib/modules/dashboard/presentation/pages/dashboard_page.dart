@@ -328,7 +328,7 @@ class DashboardPageState extends State<DashboardPage>
           key: _scaffoldKey,
 
           // PROFIlE DRAWER
-          endDrawer: SafeArea(child: HomeDrawer()),
+          endDrawer: SafeArea(child: HomeDrawer(context)),
 
           // HOME PAGE
           body: ValueListenableBuilder(

@@ -20,7 +20,9 @@ import 'package:rakhsa/widgets/components/button/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({super.key});
+  const HomeDrawer(this.parentContext, {super.key});
+
+  final BuildContext parentContext;
 
   @override
   State<HomeDrawer> createState() => _HomeDrawerState();
@@ -32,58 +34,59 @@ class _HomeDrawerState extends State<HomeDrawer> {
     if (isSOSRunning) {
       context.pop(); // close drawer
       await Future.delayed(Duration(milliseconds: 300));
-      if (!mounted) return;
-      AppDialog.error(
-        c: context,
-        title: "SOS Sedang Berjalan",
-        message:
-            "Anda tidak bisa keluar dari aplikasi ketika SOS sedang berjalan, tunggu hingga hitung mundur selesai baru Anda bisa keluar.",
-        buildActions: (c) => [
-          DialogActionButton(label: "Mengerti", primary: true, onTap: c.pop),
-        ],
-      );
+
+      if (widget.parentContext.mounted) {
+        await AppDialog.error(
+          c: widget.parentContext,
+          title: "SOS Sedang Berjalan",
+          message:
+              "Anda tidak bisa keluar dari aplikasi ketika SOS sedang berjalan, tunggu hingga hitung mundur selesai baru Anda bisa keluar.",
+          buildActions: (c) => [
+            DialogActionButton(label: "Mengerti", primary: true, onTap: c.pop),
+          ],
+        );
+      }
       return;
     }
 
-    await AppDialog.show(
-      c: context,
-      content: DialogContent(
-        assetIcon: "assets/images/logout-icon.png",
-        title: "Permintaan Keluar",
-        message: "Apakah kamu yakin ingin keluar dari Marlinda?",
-        // dc => dialog context
-        buildActions: (dc) {
-          return [
-            DialogActionButton(label: "Batal", onTap: dc.pop),
-            DialogActionButton(
-              label: "Keluar",
-              primary: true,
-              onTap: () async {
-                dc.pop(); // close dialog dc = dialog context
+    context.pop(); // close drawer
+    await Future.delayed(Duration(milliseconds: 300));
 
-                final auth = context.read<AuthProvider>();
+    if (widget.parentContext.mounted) {
+      await AppDialog.show(
+        c: widget.parentContext,
+        content: DialogContent(
+          assetIcon: "assets/images/logout-icon.png",
+          title: "Permintaan Keluar",
+          message: "Apakah kamu yakin ingin keluar dari Marlinda?",
+          // dc => dialog context
+          buildActions: (dc) {
+            return [
+              DialogActionButton(label: "Batal", onTap: dc.pop),
+              DialogActionButton(
+                label: "Keluar",
+                primary: true,
+                onTap: () async {
+                  dc.pop(); // close dialog dc = dialog context
 
-                AppDialog.showLoading(context);
+                  final auth = widget.parentContext.read<AuthProvider>();
 
-                await auth.logout(context);
-                if (!mounted) return;
+                  AppDialog.showLoading(widget.parentContext);
 
-                AppDialog.dismissLoading();
+                  await auth.logout(widget.parentContext);
 
-                await Future.delayed(Duration(milliseconds: 300));
+                  AppDialog.dismissLoading();
 
-                if (mounted) context.pop(); // close drawer
-
-                await Future.delayed(Duration(milliseconds: 300));
-
-                // ignore: use_build_context_synchronously
-                WelcomeRoute().go(context);
-              },
-            ),
-          ];
-        },
-      ),
-    );
+                  if (widget.parentContext.mounted) {
+                    WelcomeRoute().go(widget.parentContext);
+                  }
+                },
+              ),
+            ];
+          },
+        ),
+      );
+    }
   }
 
   @override
