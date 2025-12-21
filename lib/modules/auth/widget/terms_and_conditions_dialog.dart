@@ -12,9 +12,7 @@ class TermsAndConditionsDialog extends StatefulWidget {
   final bool canPop;
 
   static bool get hasLaunchBefore {
-    return StorageHelper.sharedPreferences.getBool(
-          "terms_and_conditions_cache_key",
-        ) ??
+    return StorageHelper.prefs.getBool("terms_and_conditions_cache_key") ??
         false;
   }
 
@@ -54,10 +52,7 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
   }
 
   void _completeDialog() async {
-    await StorageHelper.sharedPreferences.setBool(
-      "terms_and_conditions_cache_key",
-      true,
-    );
+    await StorageHelper.prefs.setBool("terms_and_conditions_cache_key", true);
     if (mounted) context.pop(true);
   }
 

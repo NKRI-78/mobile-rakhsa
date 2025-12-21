@@ -252,7 +252,7 @@ class DashboardPageState extends State<DashboardPage>
   Future<bool> _shouldSendLatestLocation({
     Duration sendInterval = const Duration(hours: 20),
   }) async {
-    final prefs = StorageHelper.sharedPreferences;
+    final prefs = StorageHelper.prefs;
     final key = "dashboard_latest_location_cache_key";
 
     final savedMils = prefs.getInt(key);

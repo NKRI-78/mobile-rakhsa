@@ -22,7 +22,7 @@ class PermissionManager {
   }
 
   bool get hasTaskExecutionBefore {
-    return StorageHelper.sharedPreferences.getBool(
+    return StorageHelper.prefs.getBool(
           "permission_manager_task_execution_cache_key",
         ) ??
         false;
@@ -34,14 +34,14 @@ class PermissionManager {
       label: "REQUEST_ALL_PERMISSION",
     );
     if (hasTaskExecutionBefore) return;
-    await StorageHelper.sharedPreferences.setBool(
+    await StorageHelper.prefs.setBool(
       "permission_manager_task_execution_cache_key",
       true,
     );
   }
 
   Future<void> resetTaskExecutionFlag() async {
-    await StorageHelper.sharedPreferences.remove(
+    await StorageHelper.prefs.remove(
       "permission_manager_task_execution_cache_key",
     );
   }

@@ -135,12 +135,12 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> completeOnBoarding() {
-    return StorageHelper.sharedPreferences.setBool("on_boarding_key", true);
+    return StorageHelper.prefs.setBool("on_boarding_cache_key", true);
   }
 
   bool showOnBoarding() {
     final containKeyOnBoarding =
-        StorageHelper.sharedPreferences.getBool("on_boarding_key") ?? false;
+        StorageHelper.prefs.getBool("on_boarding_cache_key") ?? false;
     return !containKeyOnBoarding;
   }
 }

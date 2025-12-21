@@ -16,7 +16,7 @@ class SosCoordinator {
   static final SosCoordinator _instance = SosCoordinator._internal();
   factory SosCoordinator() => _instance;
 
-  static SharedPreferences get _prefs => StorageHelper.sharedPreferences;
+  static SharedPreferences get _prefs => StorageHelper.prefs;
 
   final ValueNotifier<bool> isCountingDown = ValueNotifier<bool>(false);
   final _bus = StreamController<SosEvent>.broadcast();

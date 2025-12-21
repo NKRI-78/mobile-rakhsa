@@ -2,16 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class HomeHightlightBanner extends StatelessWidget {
-  const HomeHightlightBanner({
-    super.key,
-    required this.banners,
-  });
+  const HomeHightlightBanner(this.banners, {super.key});
 
   final List<Widget> banners;
 
   @override
   Widget build(BuildContext context) {
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: CarouselSlider(

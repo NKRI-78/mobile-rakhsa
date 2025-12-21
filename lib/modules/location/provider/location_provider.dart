@@ -30,7 +30,7 @@ class LocationProvider extends ChangeNotifier {
   String? _errMessage;
   String? get errGetCurrentLocation => _errMessage;
 
-  final prefs = StorageHelper.sharedPreferences;
+  final prefs = StorageHelper.prefs;
   final _revalidateCacheKey = "location_revalidate_cache_key";
 
   Future<bool> validateCountry() async {

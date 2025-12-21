@@ -145,7 +145,7 @@ class HomePage extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 45.0),
                         child: (n.ews.isNotEmpty)
                             ? EwsListWidget()
-                            : HomeHightlightBanner(banners: banners),
+                            : HomeHightlightBanner(banners),
                       );
                     },
                   ),

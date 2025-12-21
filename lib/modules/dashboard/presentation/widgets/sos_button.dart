@@ -77,7 +77,7 @@ class SosButtonState extends State<SosButton>
   final disabledColor = Color(0xFF7A7A7A);
   final countdownColor = Color(0xFF1FFE17);
 
-  SharedPreferences get _prefs => StorageHelper.sharedPreferences;
+  SharedPreferences get _prefs => StorageHelper.prefs;
 
   @override
   void initState() {

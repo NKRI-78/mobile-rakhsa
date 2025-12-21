@@ -3,7 +3,7 @@ import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageHelper {
-  static late SharedPreferences sharedPreferences;
+  static late SharedPreferences prefs;
 
   static UserSession? _session;
   static UserSession? get session {
@@ -15,26 +15,26 @@ class StorageHelper {
   }
 
   static Future<void> init() async {
-    sharedPreferences = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
   }
 
   static Future<bool> write(String key, String value) {
-    return sharedPreferences.setString(key, value);
+    return prefs.setString(key, value);
   }
 
   static String? read(String key) {
-    return sharedPreferences.getString(key);
+    return prefs.getString(key);
   }
 
   static Future<bool> delete(String key) {
-    return sharedPreferences.remove(key);
+    return prefs.remove(key);
   }
 
   static bool containsKey(String key) {
-    return sharedPreferences.containsKey(key);
+    return prefs.containsKey(key);
   }
 
-  static Future<bool> clear() => sharedPreferences.clear();
+  static Future<bool> clear() => prefs.clear();
 
   static Future<void> saveUserSession(UserSession newSession) async {
     final parsedSession = userSessionToJson(newSession);
@@ -70,12 +70,12 @@ class StorageHelper {
   }
 
   static String? getUserNationality() {
-    final result = sharedPreferences.getString("nationality");
+    final result = prefs.getString("nationality");
     return result;
   }
 
   static void saveUserNationality({required String nationality}) async {
-    await sharedPreferences.setString("nationality", nationality.toLowerCase());
+    await prefs.setString("nationality", nationality.toLowerCase());
   }
 
   static bool isLoggedIn() {

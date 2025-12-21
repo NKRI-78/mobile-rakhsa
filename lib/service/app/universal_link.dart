@@ -24,7 +24,7 @@ class UniversalLink {
   final _fetchPlaystoreCacheKey = "fetch_playstore_referrer_cache_key";
   final _fetchAppstoreCacheKey = "fetch_from_appstore_cache_key";
 
-  SharedPreferences get _prefs => StorageHelper.sharedPreferences;
+  SharedPreferences get _prefs => StorageHelper.prefs;
 
   DioClient get _client => locator<DioClient>();
 
