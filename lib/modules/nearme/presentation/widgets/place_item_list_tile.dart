@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/nearme/model/google_maps_place.dart';
 
 class PlaceItemListTile extends StatelessWidget {

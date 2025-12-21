@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -63,10 +62,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                       if (agentIsTyping)
                         Text(
                           "Sedang mengetik...",
-                          style: robotoRegular.copyWith(
-                            fontSize: 10.0,
-                            color: Colors.white,
-                          ),
+                          style: TextStyle(fontSize: 10.0, color: Colors.white),
                         ),
                     ],
                   ),

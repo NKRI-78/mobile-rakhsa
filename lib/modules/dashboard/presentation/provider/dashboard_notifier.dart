@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/data/models/banner.dart';

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import 'package:rakhsa/misc/client/errors/failure.dart';
+import 'package:rakhsa/core/client/errors/failure.dart';
 
 import 'package:rakhsa/modules/chat/data/models/messages.dart';
 

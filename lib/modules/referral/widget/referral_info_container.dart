@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/referral/model/referral.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 

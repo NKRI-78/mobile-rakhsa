@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
@@ -107,7 +106,7 @@ class _WeatherPageState extends State<WeatherPage> {
                           },
                           child: Text(
                             'Memuat',
-                            style: robotoRegular.copyWith(color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       );

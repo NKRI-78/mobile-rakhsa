@@ -2,8 +2,8 @@ import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/referral/widget/referral_info_container.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';

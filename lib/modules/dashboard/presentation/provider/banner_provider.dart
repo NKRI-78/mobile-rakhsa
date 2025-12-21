@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/repositories/banner/banner_repository.dart';
 import 'package:rakhsa/repositories/banner/model/image_banner.dart';
 import 'package:rakhsa/service/storage/storage.dart';

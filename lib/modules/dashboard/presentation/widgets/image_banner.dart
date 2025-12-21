@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ImageBanner extends StatelessWidget {
@@ -21,9 +21,8 @@ class ImageBanner extends StatelessWidget {
         height: 190,
         fit: BoxFit.fill,
         width: double.infinity,
-        errorWidget: (_, _, _) => Image.asset(AssetSource.iconDefaultImg),
-        placeholder: (_, _) =>
-            const Center(child: CircularProgressIndicator()),
+        errorWidget: (_, _, _) => Image.asset(Assets.iconDefaultImg),
+        placeholder: (_, _) => const Center(child: CircularProgressIndicator()),
       ),
     );
   }

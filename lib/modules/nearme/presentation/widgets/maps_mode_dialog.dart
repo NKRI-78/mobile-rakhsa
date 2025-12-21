@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/nearme/model/google_maps_place.dart';
 
 enum MapsLaunchMode { goToMaps, openOnGoogleMaps, openOnAppleMaps }

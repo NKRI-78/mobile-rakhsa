@@ -11,7 +11,7 @@ import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dar
 import 'package:rakhsa/router/router.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';

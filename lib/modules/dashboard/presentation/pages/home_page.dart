@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -14,11 +14,8 @@ import 'package:rakhsa/modules/dashboard/presentation/widgets/sos_button.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 
@@ -60,8 +57,8 @@ class HomePage extends StatelessWidget {
                         child: Text(
                           "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
                           textAlign: TextAlign.center,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeLarge,
+                          style: TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -132,9 +129,9 @@ class HomePage extends StatelessWidget {
                           child: Center(
                             child: Text(
                               n.message,
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
-                                color: ColorResources.black,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
                               ),
                             ),
                           ),

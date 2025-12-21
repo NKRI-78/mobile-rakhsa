@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/nearme/presentation/widgets/near_me_place_tile.dart';
 

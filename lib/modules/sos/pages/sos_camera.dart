@@ -8,13 +8,9 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:camera/camera.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/sos/provider/sos_provider.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -283,9 +279,9 @@ class CameraPageState extends State<CameraPage> {
           }
         },
         child: Scaffold(
-          backgroundColor: blackColor,
+          backgroundColor: Colors.black,
           body: controller == null || !controller!.value.isInitialized
-              ? Center(child: CircularProgressIndicator(color: whiteColor))
+              ? Center(child: CircularProgressIndicator(color: Colors.white))
               : Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -310,9 +306,9 @@ class CameraPageState extends State<CameraPage> {
                           if (isRecording)
                             Text(
                               '$recordTimeLeft s',
-                              style: robotoRegular.copyWith(
-                                color: ColorResources.white,
-                                fontSize: Dimensions.fontSizeLarge,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
                               ),
                             ),
                         ],
@@ -346,7 +342,7 @@ class CameraPageState extends State<CameraPage> {
                                         children: [
                                           Icon(
                                             IconsaxPlusLinear.user,
-                                            color: whiteColor,
+                                            color: Colors.white,
                                             size: 32,
                                           ),
                                           Expanded(
@@ -361,7 +357,7 @@ class CameraPageState extends State<CameraPage> {
                                           ),
                                           Icon(
                                             IconsaxPlusLinear.security_user,
-                                            color: whiteColor,
+                                            color: Colors.white,
                                             size: 32,
                                           ),
                                         ],

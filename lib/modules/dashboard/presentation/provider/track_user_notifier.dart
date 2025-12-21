@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
 
 import 'package:rakhsa/modules/dashboard/domain/usecases/track_user.dart';
 

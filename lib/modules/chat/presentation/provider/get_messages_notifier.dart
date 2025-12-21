@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/router/router.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 
 import 'package:rakhsa/modules/chat/data/models/messages.dart';

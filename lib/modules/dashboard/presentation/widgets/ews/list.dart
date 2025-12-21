@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart' as fh;
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-
-import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
@@ -85,7 +83,7 @@ class EwsListWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               "Info kejadian disekitar Anda",
-                              style: robotoRegular.copyWith(
+                              style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -95,10 +93,7 @@ class EwsListWidget extends StatelessWidget {
 
                           Text(
                             item.createdAt,
-                            style: robotoRegular.copyWith(
-                              fontSize: 11,
-                              color: Colors.white,
-                            ),
+                            style: TextStyle(fontSize: 11, color: Colors.white),
                           ),
 
                           if (item.location.isNotEmpty && item.location != "-")
@@ -114,7 +109,7 @@ class EwsListWidget extends StatelessWidget {
                                   child: Text(
                                     item.location,
                                     overflow: TextOverflow.ellipsis,
-                                    style: robotoRegular.copyWith(
+                                    style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 11,
                                     ),
@@ -128,7 +123,7 @@ class EwsListWidget extends StatelessWidget {
                           Text(
                             item.title,
                             overflow: TextOverflow.ellipsis,
-                            style: robotoRegular.copyWith(
+                            style: TextStyle(
                               fontSize: 13,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

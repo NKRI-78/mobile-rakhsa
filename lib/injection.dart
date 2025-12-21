@@ -47,7 +47,7 @@ import 'package:rakhsa/modules/chat/presentation/provider/get_chats_notifier.dar
 
 import 'package:rakhsa/modules/chat/domain/repository/chat_repository.dart';
 import 'package:rakhsa/modules/nearme/presentation/provider/near_me_provider.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
 import 'package:rakhsa/repositories/auth/auth_repository.dart';
 import 'package:rakhsa/repositories/user/user_repository.dart';
 import 'package:rakhsa/service/socket/socketio.dart';

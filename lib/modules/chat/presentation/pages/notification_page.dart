@@ -5,12 +5,9 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/chat/data/models/chats.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 
@@ -54,7 +51,7 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = TextStyle(color: whiteColor);
+    final titleStyle = TextStyle(color: Colors.white);
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -75,7 +72,7 @@ class NotificationPageState extends State<NotificationPage> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                      color: whiteColor,
+                      color: Colors.white,
                       strokeWidth: 1.5,
                     ),
                   ),
@@ -86,7 +83,7 @@ class NotificationPageState extends State<NotificationPage> {
           },
         ),
         leading: CupertinoNavigationBarBackButton(
-          color: whiteColor,
+          color: Colors.white,
           onPressed: context.pop,
         ),
       ),
@@ -206,14 +203,14 @@ class NotificationPageState extends State<NotificationPage> {
           leading: Avatar(src: c.user.avatar, initial: c.user.name),
           title: Text(
             c.user.name,
-            style: robotoRegular.copyWith(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: c.messages.isNotEmpty
               ? Text(
                   c.messages.first.content,
                   maxLines: 2,
                   overflow: TextOverflow.clip,
-                  style: robotoRegular.copyWith(fontSize: 10.0),
+                  style: TextStyle(fontSize: 10.0),
                 )
               : null,
           onTap: () => _navigateToChatRoom(c),
@@ -230,14 +227,14 @@ class NotificationPageState extends State<NotificationPage> {
             ),
             child: Text(
               c.status,
-              style: robotoRegular.copyWith(
-                color: ColorResources.white,
-                fontSize: Dimensions.fontSizeExtraSmall,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          tileColor: whiteColor,
+          tileColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(8),
           ),

@@ -1,5 +1,5 @@
-import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
+import 'package:rakhsa/core/client/errors/exceptions/exceptions.dart';
 
 import 'model/image_banner.dart';
 

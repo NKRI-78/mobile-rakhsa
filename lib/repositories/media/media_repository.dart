@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/client/response/response_dto.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
+import 'package:rakhsa/core/client/response/response_dto.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/media/model/media.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 

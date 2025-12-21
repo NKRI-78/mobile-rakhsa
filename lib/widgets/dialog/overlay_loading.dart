@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
 class OverlayLoading extends StatelessWidget {
   final String? message;

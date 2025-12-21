@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/auth/widget/terms_and_conditions_dialog.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/service/permission/permission_manager.dart';
 
 import 'package:rakhsa/widgets/dialog/app_dialog.dart';
@@ -87,7 +86,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: Image.asset(AssetSource.loginOrnament),
+                child: Image.asset(Assets.loginOrnament),
               ),
 
               // content
@@ -99,7 +98,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                   children: [
                     // logo
                     Image.asset(
-                      AssetSource.logoMarlinda,
+                      Assets.logoMarlinda,
                       width: 90.0,
                       fit: BoxFit.scaleDown,
                     ),
@@ -109,9 +108,9 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                       '\n"Mari Lindungi Diri Anda"\n',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: whiteColor,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: fontSizeExtraLarge,
+                        fontSize: 18,
                       ),
                     ),
 
@@ -128,9 +127,9 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: whiteColor,
+                        foregroundColor: Colors.white,
                         backgroundColor: primaryColor,
-                        side: const BorderSide(color: whiteColor),
+                        side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -149,7 +148,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                       children: [
                         Flexible(
                           child: Divider(
-                            color: whiteColor.withValues(alpha: 0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                           ),
                         ),
                         Flexible(
@@ -159,15 +158,15 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                             ),
                             child: Text(
                               'Atau',
-                              style: robotoRegular.copyWith(
-                                color: whiteColor.withValues(alpha: 0.5),
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.5),
                               ),
                             ),
                           ),
                         ),
                         Flexible(
                           child: Divider(
-                            color: whiteColor.withValues(alpha: 0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                           ),
                         ),
                       ],
@@ -185,9 +184,9 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: blackColor,
-                        backgroundColor: whiteColor,
-                        side: const BorderSide(color: whiteColor),
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -196,9 +195,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(12),
                         child: Text(
                           'Registrasi',
-                          style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 

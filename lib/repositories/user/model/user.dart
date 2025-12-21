@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 import 'package:rakhsa/repositories/referral/model/referral.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));

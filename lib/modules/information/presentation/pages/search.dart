@@ -4,18 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
 class SearchPage extends StatefulWidget {
   final String info;
@@ -59,7 +55,7 @@ class SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.backgroundColor,
+      backgroundColor: Colors.grey.shade50,
       body: Consumer<LocationProvider>(
         builder: (context, lp, child) {
           if (!lp.isGetLocationState(RequestState.success)) {
@@ -75,10 +71,10 @@ class SearchPageState extends State<SearchPage> {
                 ),
                 slivers: [
                   SliverAppBar(
-                    backgroundColor: ColorResources.backgroundColor,
+                    backgroundColor: Colors.grey.shade50,
                     leading: CupertinoNavigationBarBackButton(
                       onPressed: context.pop,
-                      color: ColorResources.black,
+                      color: Colors.black,
                     ),
                   ),
 
@@ -104,12 +100,10 @@ class SearchPageState extends State<SearchPage> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-                        decoration: const BoxDecoration(
-                          color: ColorResources.white,
-                        ),
+                        decoration: const BoxDecoration(color: Colors.white),
                         child: Card(
-                          color: ColorResources.white,
-                          surfaceTintColor: ColorResources.white,
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -118,10 +112,10 @@ class SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   n.currentKbri?.title ?? "-",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.black,
+                                  style: TextStyle(
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: Dimensions.fontSizeLarge,
+                                    fontSize: 16,
                                   ),
                                 ),
 
@@ -235,7 +229,7 @@ class SearchPageState extends State<SearchPage> {
                                             bottom: 8.0,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: ColorResources.white,
+                                            color: Colors.white,
                                             borderRadius: BorderRadius.circular(
                                               8.0,
                                             ),
@@ -301,8 +295,8 @@ class SearchPageState extends State<SearchPage> {
                       ),
                       child: Text(
                         "Informasi Alamat KBRI ",
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeOverLarge,
+                        style: TextStyle(
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -319,11 +313,9 @@ class SearchPageState extends State<SearchPage> {
                             left: 16.0,
                             right: 16.0,
                           ),
-                          decoration: const BoxDecoration(
-                            color: ColorResources.white,
-                          ),
+                          decoration: const BoxDecoration(color: Colors.white),
                           child: Material(
-                            color: ColorResources.transparent,
+                            color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
                                 switch (widget.info) {
@@ -346,7 +338,7 @@ class SearchPageState extends State<SearchPage> {
                                   children: [
                                     const Icon(
                                       Icons.flag,
-                                      color: ColorResources.black,
+                                      color: Colors.black,
                                       size: 16.0,
                                     ),
 
@@ -354,9 +346,9 @@ class SearchPageState extends State<SearchPage> {
 
                                     Text(
                                       n.countries[i].name,
-                                      style: robotoRegular.copyWith(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: ColorResources.black,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ],
@@ -388,12 +380,10 @@ class SearchPageState extends State<SearchPage> {
                             },
                           );
                         },
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
-                        ),
+                        style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: ColorResources.white,
+                          fillColor: Colors.white,
                           border: const OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.all(
@@ -406,14 +396,14 @@ class SearchPageState extends State<SearchPage> {
                               Radius.circular(9.0),
                             ),
                           ),
-                          hintStyle: robotoRegular.copyWith(
-                            color: ColorResources.grey,
-                            fontSize: Dimensions.fontSizeSmall,
+                          hintStyle: TextStyle(
+                            color: Color(0xff707070),
+                            fontSize: 12,
                           ),
                           hintText: "Pilih Negara yang Anda Inginkan",
                           prefixIcon: const Icon(
                             Icons.search,
-                            color: ColorResources.grey,
+                            color: Color(0xff707070),
                           ),
                         ),
                       ),

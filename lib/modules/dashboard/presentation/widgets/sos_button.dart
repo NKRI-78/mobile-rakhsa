@@ -5,8 +5,8 @@ import 'package:bounce/bounce.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
@@ -14,7 +14,6 @@ import 'package:rakhsa/service/sos/end_sos_dialog.dart';
 import 'package:rakhsa/modules/sos/pages/sos_camera.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 
 import 'package:rakhsa/repositories/user/model/user.dart';
@@ -546,7 +545,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                     alignment: Alignment.center,
                     child: Text(
                       isWaitingConfirmSOS ? "$_remainingSeconds" : "SOS",
-                      style: robotoRegular.copyWith(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

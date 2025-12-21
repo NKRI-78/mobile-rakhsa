@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 
 class NearMePlaceType {
   final String title;
@@ -48,10 +45,7 @@ class NearMePlaceTile extends StatelessWidget {
       fit: FlexFit.tight,
       child: Text(
         type.title,
-        style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }

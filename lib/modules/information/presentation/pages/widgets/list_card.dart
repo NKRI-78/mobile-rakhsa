@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 
 class ListCardInformation extends StatelessWidget {
   const ListCardInformation({
@@ -23,14 +19,14 @@ class ListCardInformation extends StatelessWidget {
       title: Text(
         title,
         style: const TextStyle(
-          color: ColorResources.black,
-          fontSize: Dimensions.fontSizeExtraLarge,
+          color: Colors.black,
+          fontSize: 25,
           fontWeight: FontWeight.w600,
         ),
       ),
       trailing: const Icon(Icons.arrow_forward, size: 30.0),
       onTap: onTap,
-      tileColor: whiteColor,
+      tileColor: Colors.white,
       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadiusGeometry.circular(12),

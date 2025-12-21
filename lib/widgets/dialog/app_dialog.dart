@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 
 export 'package:fluttertoast/fluttertoast.dart'
     show Fluttertoast, ToastGravity, Toast;
@@ -82,7 +82,7 @@ class AppDialog {
       canPop: canPop,
       dismissible: dismissible,
       content: DialogContent(
-        assetIcon: assetIcon ?? AssetSource.iconAlert,
+        assetIcon: assetIcon ?? Assets.iconAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
         actionButtonDirection: actionButtonDirection,

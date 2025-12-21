@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_invalid_page.dart';

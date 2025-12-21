@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 
@@ -176,8 +176,8 @@ class PermissionManager {
                         "Izin Diperlukan",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: blackColor,
-                          fontSize: fontSizeOverLarge,
+                          color: Colors.black,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -423,7 +423,7 @@ class _PermissionCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: blackColor,
+              color: Colors.black,
             ),
           ),
 

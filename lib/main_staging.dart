@@ -7,7 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 

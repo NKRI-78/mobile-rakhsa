@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 
 class TutorialGetReferralCode extends StatelessWidget {
   const TutorialGetReferralCode({super.key});

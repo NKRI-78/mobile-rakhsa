@@ -123,10 +123,3 @@ flutter:
     # env
     - assets/env/.env.stag
     - assets/env/.env.prod
-
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/roboto/Roboto-Regular.ttf
-        - asset: assets/fonts/roboto/Roboto-Italic.ttf
-        - asset: assets/fonts/roboto/Roboto-Bold.ttf

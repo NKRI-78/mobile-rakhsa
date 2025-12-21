@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 
 enum Flavor { stag, prod }
 

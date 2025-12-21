@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/formatters/text_field_formatter.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
@@ -210,7 +208,7 @@ class LoginPageState extends State<LoginPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(AssetSource.loginOrnament),
+                        image: AssetImage(Assets.loginOrnament),
                       ),
                     ),
                   ),
@@ -237,7 +235,7 @@ class LoginPageState extends State<LoginPage> {
                             Text(
                               "Login",
                               style: TextStyle(
-                                fontSize: fontSizeTitle,
+                                fontSize: 32,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -270,7 +268,7 @@ class LoginPageState extends State<LoginPage> {
                                   "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: 0.9),
-                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    fontSize: 10,
                                   ),
                                 ),
                               ),
@@ -325,8 +323,8 @@ class LoginPageState extends State<LoginPage> {
                                     isBoxShadow: false,
                                     btnTxt: "Masuk",
                                     loadingColor: primaryColor,
-                                    btnColor: ColorResources.white,
-                                    btnTextColor: ColorResources.black,
+                                    btnColor: Colors.white,
+                                    btnTextColor: Colors.black,
                                     onTap: () => _onLoginUser(context),
                                   );
                                 },

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/referral/widget/tutorial_get_referral_code.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/widgets/components/app_button.dart';
-import 'package:rakhsa/widgets/lottie/lottie_animation.dart';
+import 'package:rakhsa/widgets/lottie_animation.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class NoReferralCodePage extends StatelessWidget {

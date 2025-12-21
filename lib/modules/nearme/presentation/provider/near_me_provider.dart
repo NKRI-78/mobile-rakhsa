@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 import 'package:rakhsa/repositories/nearme/nearme_repository.dart';

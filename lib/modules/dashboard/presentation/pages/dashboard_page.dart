@@ -9,8 +9,8 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/welcome_dialog.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -25,13 +25,13 @@ import 'package:rakhsa/modules/nearme/presentation/pages/near_me_places_page.dar
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/home_page.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 import 'package:rakhsa/service/permission/permission_manager.dart';
 
-import 'package:rakhsa/widgets/components/drawer/home_drawer.dart';
+import 'package:rakhsa/modules/dashboard/presentation/widgets/home_drawer.dart';
 
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
@@ -374,9 +374,9 @@ class DashboardPageState extends State<DashboardPage>
                       selectedFontSize: 14,
                       unselectedFontSize: 14,
                       backgroundColor: primaryColor,
-                      selectedItemColor: whiteColor,
+                      selectedItemColor: Colors.white,
                       type: BottomNavigationBarType.fixed,
-                      unselectedItemColor: whiteColor.withValues(alpha: 0.7),
+                      unselectedItemColor: Colors.white.withValues(alpha: 0.7),
                       items: [
                         BottomNavigationBarItem(
                           icon: Icon(IconsaxPlusLinear.home_1),

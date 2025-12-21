@@ -5,8 +5,8 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 
 import 'remote_config_data.dart';
 export 'remote_config_data.dart';

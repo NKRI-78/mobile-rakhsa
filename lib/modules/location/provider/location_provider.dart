@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/service/app/config/remote_config_service.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 export 'package:rakhsa/repositories/location/model/location_data.dart';

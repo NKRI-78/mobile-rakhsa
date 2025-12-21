@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
 import 'dialog.dart';
 
@@ -21,7 +21,7 @@ class DialogActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final dBorderRadius = 100.0;
     final dBackgroundColor = primaryColor;
-    final dForegroundColor = whiteColor;
+    final dForegroundColor = Colors.white;
 
     final borderRadius = style?.borderRadius ?? dBorderRadius;
     final backgroundColor = style?.backgroundColor ?? dBackgroundColor;

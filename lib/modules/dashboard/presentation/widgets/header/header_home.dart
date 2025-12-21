@@ -3,13 +3,10 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/router/route_trees.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:rakhsa/widgets/avatar.dart';
@@ -47,13 +44,13 @@ class HeaderSection extends StatelessWidget {
             // title marlinda
             Flexible(
               fit: FlexFit.tight,
-              child: Image.asset(AssetSource.titleMarlinda, height: 38.0),
+              child: Image.asset(Assets.titleMarlinda, height: 38.0),
             ),
 
             // logo marlinda
             Flexible(
               child: Image.asset(
-                AssetSource.logoMarlindaNoTitle,
+                Assets.logoMarlindaNoTitle,
                 width: 45,
                 height: 45,
               ),
@@ -75,10 +72,7 @@ class HeaderSection extends StatelessWidget {
                 children: [
                   Text(
                     "Selamat Datang",
-                    style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.hintColor,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Color(0xff9E9E9E)),
                   ),
                   Consumer<UserProvider>(
                     builder: (context, provider, child) {
@@ -88,9 +82,9 @@ class HeaderSection extends StatelessWidget {
                           child: Text(
                             provider.user?.username ?? "-",
                             overflow: TextOverflow.ellipsis,
-                            style: robotoRegular.copyWith(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: Dimensions.fontSizeDefault,
+                              fontSize: 14,
                             ),
                           ),
                         );
@@ -129,10 +123,7 @@ class HeaderSection extends StatelessWidget {
                       position: badges.BadgePosition.custom(top: -8, end: -4),
                       badgeContent: Text(
                         "0",
-                        style: robotoRegular.copyWith(
-                          color: primaryColor,
-                          fontSize: 9,
-                        ),
+                        style: TextStyle(color: primaryColor, fontSize: 9),
                       ),
                       child: const Icon(
                         IconsaxPlusLinear.notification,

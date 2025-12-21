@@ -1,4 +1,4 @@
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/repositories/auth/model/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

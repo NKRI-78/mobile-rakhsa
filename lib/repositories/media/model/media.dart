@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 
 class Media extends Equatable {
   const Media({

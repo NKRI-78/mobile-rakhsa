@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
 
 class Avatar extends StatefulWidget {
   const Avatar({
@@ -11,7 +10,7 @@ class Avatar extends StatefulWidget {
     this.initial,
     this.radius = 20.0,
     this.withBorder = false,
-    this.borderColor = blackColor,
+    this.borderColor = Colors.black,
   });
 
   final String? src;
@@ -94,12 +93,12 @@ class _AvatarState extends State<Avatar> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: _backgroundColor,
-        border: widget.withBorder ? Border.all(color: greyColor) : null,
+        border: widget.withBorder ? Border.all(color: Colors.grey) : null,
       ),
       child: Text(
         _getInitials() ?? _randomLetter,
         style: TextStyle(
-          color: whiteColor,
+          color: Colors.white,
           fontSize: minDiameter >= 90
               ? 32.0
               : minDiameter <= 20

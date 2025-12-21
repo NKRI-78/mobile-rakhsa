@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/passport/passport.dart';
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/visa/visa.dart';
@@ -23,7 +21,7 @@ class PassportVisaIndexPage extends StatelessWidget {
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
         leading: CupertinoNavigationBarBackButton(
-          color: ColorResources.black,
+          color: Colors.black,
           onPressed: context.pop,
         ),
         bottom: const PreferredSize(
@@ -37,10 +35,7 @@ class PassportVisaIndexPage extends StatelessWidget {
             ),
             child: Text(
               'Informasi mengenai Passport / Visa ?',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeOverLarge,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
           ),
         ),
@@ -59,7 +54,7 @@ class PassportVisaIndexPage extends StatelessWidget {
                 ),
               );
             },
-            image: AssetSource.iconInfo,
+            image: Assets.iconInfo,
             title: "Passport",
           ),
           ListCardInformation(
@@ -73,7 +68,7 @@ class PassportVisaIndexPage extends StatelessWidget {
                 ),
               );
             },
-            image: AssetSource.iconHukum,
+            image: Assets.iconHukum,
             title: "Visa",
           ),
         ],

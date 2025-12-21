@@ -1,5 +1,5 @@
 import 'package:flutter_soloud/flutter_soloud.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 
 enum SoundType { general, chat }

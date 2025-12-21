@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'dialog.dart';
@@ -20,11 +19,11 @@ class DialogCard extends StatelessWidget {
   final _defaultIconSize = 100.0;
   final _defaultBorderRadius = 16.0;
   final _defaultContentPadding = 16.0;
-  final _defaultBackgroundColor = whiteColor;
+  final _defaultBackgroundColor = Colors.white;
   final _defaultActionButtonDirection = Axis.horizontal;
   final _defaultTitleStyle = TextStyle(
-    color: blackColor,
-    fontSize: fontSizeOverLarge,
+    color: Colors.black,
+    fontSize: 22,
     fontWeight: FontWeight.bold,
   );
   final _defaultMessageStyle = TextStyle(color: Colors.black87, fontSize: 13);

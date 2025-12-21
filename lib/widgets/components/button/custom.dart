@@ -1,9 +1,6 @@
 import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-
 class CustomButton extends StatelessWidget {
   final Function() onTap;
   final String? btnTxt;
@@ -37,9 +34,9 @@ class CustomButton extends StatelessWidget {
     this.sizeBorderRadius = 10.0,
     this.isLoading = false,
     this.borderRadiusGeometry = BorderRadius.zero,
-    this.loadingColor = ColorResources.white,
-    this.btnColor = ColorResources.primary,
-    this.btnTextColor = ColorResources.white,
+    this.loadingColor = Colors.white,
+    this.btnColor = const Color(0xff174DB9),
+    this.btnTextColor = Colors.white,
     this.btnBorderColor = Colors.transparent,
     this.isBorder = false,
     this.isBorderRadius = false,
@@ -107,7 +104,7 @@ class CustomButton extends StatelessWidget {
                       : Center(
                           child: Text(
                             btnTxt!,
-                            style: robotoRegular.copyWith(
+                            style: TextStyle(
                               color: btnTextColor,
                               fontWeight: FontWeight.bold,
                               fontSize: fontSize,

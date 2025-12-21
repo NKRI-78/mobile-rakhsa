@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
-import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
+import 'package:rakhsa/core/formatters/text_field_formatter.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
-
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
 import 'package:rakhsa/widgets/components/button/custom.dart';
@@ -248,7 +246,7 @@ class RegisterPageState extends State<RegisterPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(loginOrnament),
+                        image: AssetImage(Assets.loginOrnament),
                       ),
                     ),
                   ),
@@ -277,7 +275,7 @@ class RegisterPageState extends State<RegisterPage> {
                             Text(
                               "Register",
                               style: TextStyle(
-                                fontSize: fontSizeTitle,
+                                fontSize: 32,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -321,7 +319,7 @@ class RegisterPageState extends State<RegisterPage> {
                                   "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: 0.9),
-                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    fontSize: 10,
                                   ),
                                 ),
                               ),
@@ -361,10 +359,10 @@ class RegisterPageState extends State<RegisterPage> {
                                     isBorderRadius: true,
                                     sizeBorderRadius: 100,
                                     isBoxShadow: false,
-                                    btnColor: ColorResources.white,
+                                    btnColor: Colors.white,
                                     btnTxt: "Register",
                                     loadingColor: primaryColor,
-                                    btnTextColor: ColorResources.black,
+                                    btnTextColor: Colors.black,
                                     onTap: () => _onRegisterUser(context, r),
                                   );
                                 },

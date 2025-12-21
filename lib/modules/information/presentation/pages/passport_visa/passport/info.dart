@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
 class PassportInfoPage extends StatefulWidget {
@@ -48,7 +45,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
         leading: CupertinoNavigationBarBackButton(
-          color: ColorResources.black,
+          color: Colors.black,
           onPressed: context.pop,
         ),
         bottom: const PreferredSize(
@@ -62,10 +59,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
             ),
             child: Text(
               'Passport Baru',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeOverLarge,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
           ),
         ),
@@ -85,10 +79,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
             return Center(
               child: Text(
                 n.errorMessage ?? "-",
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.black),
               ),
             );
           }
@@ -103,10 +94,7 @@ class PassportInfoPageState extends State<PassportInfoPage> {
             children: [
               Text(
                 n.passportData ?? "-",
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.black),
               ),
             ],
           );

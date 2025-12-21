@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/router/route_trees.dart';
 
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-
 import 'package:rakhsa/modules/nearme/presentation/widgets/near_me_place_tile.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 
 class NearMePlacesPage extends StatelessWidget {
   const NearMePlacesPage({super.key});
@@ -45,10 +43,7 @@ class NearMePlacesPage extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   "Mencari lokasi terdekat dari Anda...",
-                  style: robotoRegular.copyWith(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

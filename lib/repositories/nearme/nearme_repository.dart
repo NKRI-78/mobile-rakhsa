@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 
 import 'model/google_maps_place.dart';

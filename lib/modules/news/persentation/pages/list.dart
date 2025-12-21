@@ -3,12 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
 import 'package:rakhsa/router/route_trees.dart';
-
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
@@ -76,10 +72,7 @@ class NewsListPageState extends State<NewsListPage> {
             return Center(
               child: Text(
                 "Belum ada berita",
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.black),
               ),
             );
           }
@@ -87,10 +80,7 @@ class NewsListPageState extends State<NewsListPage> {
             return Center(
               child: Text(
                 n.message,
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.black),
               ),
             );
           }
@@ -165,8 +155,8 @@ class NewsListPageState extends State<NewsListPage> {
                           right: 16.0,
                           child: Text(
                             n.news[0].title.toString(),
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
+                            style: TextStyle(
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
                             ),
@@ -244,7 +234,7 @@ class NewsListPageState extends State<NewsListPage> {
                                       Text(
                                         n.news[i].title,
                                         maxLines: 3,
-                                        style: robotoRegular.copyWith(
+                                        style: TextStyle(
                                           overflow: TextOverflow.ellipsis,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -252,9 +242,9 @@ class NewsListPageState extends State<NewsListPage> {
                                       const SizedBox(height: 6.0),
                                       Text(
                                         n.news[i].createdAt,
-                                        style: robotoRegular.copyWith(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: Dimensions.fontSizeSmall,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ],

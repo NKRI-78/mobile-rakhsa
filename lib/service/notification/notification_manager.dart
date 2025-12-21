@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:rakhsa/misc/utils/logger.dart' as d;
+import 'package:rakhsa/core/debug/logger.dart' as d;
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,7 +15,7 @@ import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/service/location/location_service.dart';
 import 'package:rakhsa/firebase_options.dart';
 import 'package:rakhsa/injection.dart';
-import 'package:rakhsa/misc/client/dio_client.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
 import 'package:rakhsa/modules/news/persentation/pages/detail.dart';

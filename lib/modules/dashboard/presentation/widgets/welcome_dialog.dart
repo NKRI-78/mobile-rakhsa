@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
@@ -28,7 +28,7 @@ class WelcomeDialog extends StatelessWidget {
     );
     return DialogCard(
       DialogContent(
-        assetIcon: AssetSource.iconWelcomeDialog,
+        assetIcon: Assets.iconWelcomeDialog,
         title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
         messageWidget: Consumer<UserProvider>(
           builder: (context, p, child) {

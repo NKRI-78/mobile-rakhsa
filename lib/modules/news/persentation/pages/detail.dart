@@ -4,13 +4,10 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_html/flutter_html.dart' as fh;
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
 
@@ -131,10 +128,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
 
                 Text(
                   data.createdAt ?? "-",
-                  style: robotoRegular.copyWith(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
 
                 16.spaceY,
@@ -144,19 +138,19 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                   style: {
                     'body': fh.Style(
                       margin: fh.Margins.zero,
-                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                      fontSize: fh.FontSize(12),
                     ),
                     'p': fh.Style(
                       margin: fh.Margins.zero,
-                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                      fontSize: fh.FontSize(12),
                     ),
                     'span': fh.Style(
                       margin: fh.Margins.zero,
-                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                      fontSize: fh.FontSize(12),
                     ),
                     'div': fh.Style(
                       margin: fh.Margins.zero,
-                      fontSize: fh.FontSize(Dimensions.fontSizeSmall),
+                      fontSize: fh.FontSize(12),
                     ),
                   },
                 ),

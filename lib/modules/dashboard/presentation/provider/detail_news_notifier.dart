@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/helpers/enum.dart';
+import 'package:rakhsa/core/enums/provider_state.dart';
 
 import 'package:rakhsa/modules/dashboard/data/models/news_detail.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/detail_news.dart';

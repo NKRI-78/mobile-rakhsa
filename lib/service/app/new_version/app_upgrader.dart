@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -30,7 +30,7 @@ class AppUpgradeAlertState extends UpgradeAlertState {
       canPop: BuildConfig.isStag || kDebugMode,
       dismissible: BuildConfig.isStag || kDebugMode,
       content: DialogContent(
-        assetIcon: AssetSource.iconWelcomeDialog,
+        assetIcon: Assets.iconWelcomeDialog,
         title: "Pembaruan Tersedia",
         message:
             "Versi terbaru aplikasi tersedia. Disarankan untuk memperbarui agar mendapatkan perbaikan dan fitur baru.",

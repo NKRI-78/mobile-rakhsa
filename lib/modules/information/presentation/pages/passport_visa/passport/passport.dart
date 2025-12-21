@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/passport/info.dart';
 import 'package:rakhsa/modules/information/presentation/pages/widgets/list_card.dart';
@@ -36,7 +34,7 @@ class PassportPageState extends State<PassportPage> {
         backgroundColor: const Color(0xffF4F4F7),
         automaticallyImplyLeading: false,
         leading: CupertinoNavigationBarBackButton(
-          color: ColorResources.black,
+          color: Colors.black,
           onPressed: context.pop,
         ),
         bottom: const PreferredSize(
@@ -50,10 +48,7 @@ class PassportPageState extends State<PassportPage> {
             ),
             child: Text(
               'Jelajahi Layanan Passport',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeOverLarge,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
           ),
         ),
@@ -72,7 +67,7 @@ class PassportPageState extends State<PassportPage> {
                 ),
               );
             },
-            image: AssetSource.iconInfo,
+            image: Assets.iconInfo,
             title: "Passport Baru",
           ),
         ],

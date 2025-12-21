@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/referral/widget/referral_info_container.dart';
 import 'package:rakhsa/modules/referral/widget/tutorial_get_referral_code.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/widgets/components/app_button.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
-import 'package:rakhsa/widgets/lottie/lottie_animation.dart';
+import 'package:rakhsa/widgets/lottie_animation.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class ActivateReferralPage extends StatefulWidget {
@@ -97,7 +97,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: successColor.withValues(alpha: 0.08),
+                    color: Colors.green.withValues(alpha: 0.08),
                   ),
                   child: LottieAnimation(
                     "assets/animations/checked.lottie",

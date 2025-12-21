@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -90,19 +87,19 @@ class ChatBubble extends StatelessWidget {
               children: [
                 Text(
                   text,
-                  style: robotoRegular.copyWith(
+                  style: TextStyle(
                     color: isMe ? Colors.white : Colors.black,
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: 14,
                   ),
                 ),
 
                 Text(
                   currentTime,
-                  style: robotoRegular.copyWith(
+                  style: TextStyle(
                     color: isMe
-                        ? ColorResources.white
-                        : ColorResources.black.withValues(alpha: 0.8),
-                    fontSize: Dimensions.fontSizeExtraSmall,
+                        ? Colors.white
+                        : Colors.black.withValues(alpha: 0.8),
+                    fontSize: 10,
                   ),
                 ),
               ],

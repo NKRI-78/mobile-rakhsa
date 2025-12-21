@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/client/errors/exceptions/exceptions.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/repositories/information/information_repository.dart';
 import 'package:rakhsa/repositories/information/model/geo_node.dart';
 import 'package:rakhsa/repositories/information/model/kbri.dart';

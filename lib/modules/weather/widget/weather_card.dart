@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/modules/weather/page/weather_page.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
@@ -35,10 +33,7 @@ class WeatherCard extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.asset(
-                    AssetSource.bgCardWeather,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.asset(Assets.bgCardWeather, fit: BoxFit.cover),
                 ),
                 Positioned.fill(
                   child: Padding(
@@ -100,9 +95,9 @@ class WeatherCard extends StatelessWidget {
                   Text(
                     '${(today.temperature?.celsius ?? 0).round()} °C',
                     textAlign: TextAlign.center,
-                    style: robotoRegular.copyWith(
+                    style: TextStyle(
                       fontSize: 22,
-                      color: whiteColor,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -114,9 +109,9 @@ class WeatherCard extends StatelessWidget {
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(
+                style: TextStyle(
                   fontSize: 10,
-                  color: whiteColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -134,7 +129,7 @@ class WeatherCard extends StatelessWidget {
               Text(
                 'Hari ini',
                 overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(fontSize: 11, color: whiteColor),
+                style: TextStyle(fontSize: 11, color: Colors.white),
               ),
 
               // hari ini
@@ -142,9 +137,9 @@ class WeatherCard extends StatelessWidget {
                 (today.date ?? DateTime.now()).format("EEEE, dd MMM yyyy"),
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(
+                style: TextStyle(
                   fontSize: 12,
-                  color: whiteColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -154,9 +149,9 @@ class WeatherCard extends StatelessWidget {
                 area,
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(
+                style: TextStyle(
                   fontSize: 11,
-                  color: whiteColor,
+                  color: Colors.white,
                   fontWeight: FontWeight.w300,
                 ),
               ),
@@ -186,7 +181,7 @@ class WeatherCard extends StatelessWidget {
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: robotoRegular.copyWith(color: whiteColor, fontSize: 12),
+              style: TextStyle(color: Colors.white, fontSize: 12),
             ),
 
             // suhu°C
@@ -195,7 +190,7 @@ class WeatherCard extends StatelessWidget {
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-              style: robotoRegular.copyWith(color: whiteColor, fontSize: 12),
+              style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
         );

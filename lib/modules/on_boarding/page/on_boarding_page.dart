@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
-import 'package:rakhsa/misc/utils/asset_source.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class OnBoardingPage extends StatelessWidget {
@@ -19,7 +17,7 @@ class OnBoardingPage extends StatelessWidget {
           children: [
             // bg
             Positioned.fill(
-              child: Image.asset(AssetSource.bgOnBoarding, fit: BoxFit.fill),
+              child: Image.asset(Assets.bgOnBoarding, fit: BoxFit.fill),
             ),
 
             // content
@@ -47,17 +45,17 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
     _OnBoardingData(
       message:
           'Keamanan di ujung jari Anda!. Gunakan fitur SOS di aplikasi kami untuk mendapatkan bantuan cepat saat darurat. Aktifkan sekarang dan tetap terlindungi di setiap peristiwa!',
-      asset: AssetSource.onBoarding1,
+      asset: Assets.onBoarding1,
     ),
     _OnBoardingData(
       message:
           'Rekam dan kirim video kejadian secara real-time! Bukti kuat untuk keamanan Anda—langsung terkirim dan tersimpan sebagai alat bukti resmi. Lindungi diri dengan teknologi cerdas!',
-      asset: AssetSource.onBoarding3,
+      asset: Assets.onBoarding3,
     ),
     _OnBoardingData(
       message:
           'Tanggap cepat melalui chat langsung! Kami siap membantu Anda dalam situasi darurat, kapan pun dan di mana pun!',
-      asset: AssetSource.onBoarding2,
+      asset: Assets.onBoarding2,
     ),
   ];
 
@@ -133,7 +131,7 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
           height: 8,
           width: (_currentPage == index) ? 30 : 8,
           decoration: BoxDecoration(
-            color: whiteColor,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(100),
           ),
         );
@@ -147,13 +145,13 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
       child: ElevatedButton(
         onPressed: () => _actionOnTap(context),
         style: ElevatedButton.styleFrom(
-          backgroundColor: whiteColor,
-          foregroundColor: blackColor,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: Text(
           _lastIndex ? 'Selesai' : 'Lanjutkan',
-          style: robotoRegular.copyWith(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -186,7 +184,7 @@ class _ContentView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               height: messageContainerHeight,
               decoration: BoxDecoration(
-                color: redColor.withValues(alpha: 0.4),
+                color: Colors.red.withValues(alpha: 0.4),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(16),
                 ),
@@ -194,8 +192,8 @@ class _ContentView extends StatelessWidget {
               child: Text(
                 content.message,
                 textAlign: TextAlign.center,
-                style: robotoRegular.copyWith(
-                  color: whiteColor,
+                style: TextStyle(
+                  color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
               ),

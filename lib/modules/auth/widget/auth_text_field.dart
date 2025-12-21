@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/formatters/text_field_formatter.dart';
+import 'package:rakhsa/core/formatters/text_field_formatter.dart';
 
 class AuthTextField extends StatefulWidget {
   const AuthTextField({
@@ -64,17 +63,17 @@ class _AuthTextFieldState extends State<AuthTextField> {
         if (widget.label != null)
           Text(
             widget.label!,
-            style: TextStyle(color: whiteColor, fontSize: fontSizeLarge),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
         Container(
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: whiteColor.withValues(alpha: 0.1),
+            color: Colors.white.withValues(alpha: 0.1),
           ),
           child: Theme(
             data: Theme.of(context).copyWith(
               textSelectionTheme: TextSelectionThemeData(
-                selectionHandleColor: whiteColor,
+                selectionHandleColor: Colors.white,
               ),
             ),
             child: TextFormField(
@@ -82,13 +81,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
               autovalidateMode:
                   widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
               focusNode: widget.focusNode,
-              cursorColor: whiteColor,
-              cursorErrorColor: whiteColor,
+              cursorColor: Colors.white,
+              cursorErrorColor: Colors.white,
               inputFormatters: forrmatters,
               keyboardType: _keyboardType,
               obscureText: widget.password && _hidePassword,
               onFieldSubmitted: widget.onFieldSubmitted,
-              style: TextStyle(color: whiteColor),
+              style: TextStyle(color: Colors.white),
               validator: (value) {
                 final val = widget.phone
                     ? PhoneNumberFormatter.unmask(value)
@@ -97,32 +96,34 @@ class _AuthTextFieldState extends State<AuthTextField> {
               },
               decoration: InputDecoration(
                 hintText: widget.hintText,
-                hintStyle: TextStyle(color: whiteColor.withValues(alpha: 0.6)),
+                hintStyle: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                ),
                 contentPadding: EdgeInsets.symmetric(
                   vertical: 4,
                   horizontal: 16,
                 ),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: whiteColor, width: 0.5),
+                  borderSide: BorderSide(color: Colors.white, width: 0.5),
                   borderRadius: borderRadius,
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: whiteColor, width: 1.8),
+                  borderSide: BorderSide(color: Colors.white, width: 1.8),
                   borderRadius: borderRadius,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: whiteColor, width: 2.0),
+                  borderSide: BorderSide(color: Colors.white, width: 2.0),
                   borderRadius: borderRadius,
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: whiteColor, width: 2.0),
+                  borderSide: BorderSide(color: Colors.white, width: 2.0),
                   borderRadius: borderRadius,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: whiteColor, width: 0.5),
+                  borderSide: BorderSide(color: Colors.white, width: 0.5),
                   borderRadius: borderRadius,
                 ),
-                errorStyle: TextStyle(color: whiteColor),
+                errorStyle: TextStyle(color: Colors.white),
                 suffixIcon: _renderSuffix(),
               ),
             ),
@@ -145,12 +146,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
             ? Icon(
                 key: ValueKey("invisible"),
                 IconsaxPlusBold.eye_slash,
-                color: whiteColor,
+                color: Colors.white,
               )
             : Icon(
                 key: ValueKey("visible"),
                 IconsaxPlusBold.eye,
-                color: whiteColor,
+                color: Colors.white,
               ),
       ),
     );

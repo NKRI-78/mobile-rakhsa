@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/repositories/chat/model/chat.dart';
 
 class ChatState extends Equatable {

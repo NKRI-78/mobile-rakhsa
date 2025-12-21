@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 
 import 'chat_id.dart';
 import 'chat_user.dart';

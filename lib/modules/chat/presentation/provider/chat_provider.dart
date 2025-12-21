@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/client/errors/exceptions/exceptions.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/client/errors/exceptions/exceptions.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/chat/chat_repository.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
 

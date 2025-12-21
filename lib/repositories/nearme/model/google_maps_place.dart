@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:rakhsa/misc/client/errors/errors.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 
 class GoogleMapsPlace extends Equatable {

@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
-
 class PanduanHukumPage extends StatefulWidget {
   const PanduanHukumPage({super.key});
 
@@ -45,16 +41,11 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
             sliver: SliverToBoxAdapter(
               child: Text.rich(
                 TextSpan(
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                   children: [
                     TextSpan(
                       text: '1. Persiapan Dokumen Penting\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -65,9 +56,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '2. Informasi Kontak KBRI/Konsulat\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -77,9 +66,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '3. Pengetahuan tentang Hukum dan Aturan Setempat\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -89,9 +76,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '4. Kepatuhan terhadap Protokol Kesehatan\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -101,9 +86,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '5. Penggunaan Mata Uang dan Transaksi Keuangan\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -113,9 +96,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '6. Menghindari Tindakan yang Melanggar Hukum\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -126,9 +107,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '7. Perlindungan Terhadap Eksploitasi atau Penipuan\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -139,9 +118,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '8. Langkah Darurat jika Menghadapi Masalah Hukum\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -151,9 +128,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '9. Menghindari Masalah Keimigrasian\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:
@@ -163,9 +138,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '10. Pentingnya Asuransi Perjalanan\n',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const TextSpan(
                       text:

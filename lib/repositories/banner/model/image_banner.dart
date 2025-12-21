@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:rakhsa/misc/client/errors/exceptions/data_parsing_exception.dart';
+import 'package:rakhsa/core/client/errors/exceptions/data_parsing_exception.dart';
 
 class ImageBanner extends Equatable {
   final int id;

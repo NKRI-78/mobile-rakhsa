@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:rakhsa/misc/client/dio_client.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/dio_client.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 import './model/user.dart';
 

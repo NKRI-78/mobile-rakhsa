@@ -8,9 +8,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/misc/utils/logger.dart';
+import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 
 Future<bool> sendLatestLocation(

@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:rakhsa/misc/helpers/extensions.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_app_bar.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
 import 'package:rakhsa/service/sos/end_sos_dialog.dart';
-import 'package:rakhsa/widgets/lottie/lottie_animation.dart';
+import 'package:rakhsa/widgets/lottie_animation.dart';
 import 'package:uuid/uuid.dart' as uuid;
 
 import 'package:rakhsa/service/socket/socketio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rakhsa/misc/constants/theme.dart';
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
@@ -291,7 +288,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                               child: FilledButton(
                                 style: FilledButton.styleFrom(
                                   backgroundColor: primaryColor,
-                                  foregroundColor: whiteColor,
+                                  foregroundColor: Colors.white,
                                   padding: EdgeInsets.all(12),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadiusGeometry.circular(
@@ -345,18 +342,16 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                     ),
                                     child: TextField(
                                       controller: messageC,
-                                      style: robotoRegular.copyWith(
-                                        fontSize: 12.0,
-                                      ),
+                                      style: TextStyle(fontSize: 12.0),
                                       maxLines: 4,
                                       minLines: 1,
                                       decoration: InputDecoration(
                                         isDense: true,
                                         filled: true,
-                                        fillColor: ColorResources.white,
+                                        fillColor: Colors.white,
                                         hintText:
                                             "ketik pesan singkat dan jelas",
-                                        hintStyle: robotoRegular.copyWith(
+                                        hintStyle: TextStyle(
                                           fontSize: 12.0,
                                           color: Colors.grey,
                                         ),
@@ -431,17 +426,14 @@ class ChatRoomPageState extends State<ChatRoomPage> {
           child: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.white),
               children: [
                 const TextSpan(text: "Terima kasih telah menghubungi kami di "),
                 TextSpan(
                   text: "Marlinda",
-                  style: robotoRegular.copyWith(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: ColorResources.white,
+                    color: Colors.white,
                   ),
                 ),
                 const TextSpan(

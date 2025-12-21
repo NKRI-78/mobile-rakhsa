@@ -8,11 +8,8 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rakhsa/misc/enums/request_state.dart';
+import 'package:rakhsa/core/enums/request_state.dart';
 
-import 'package:rakhsa/misc/utils/color_resources.dart';
-import 'package:rakhsa/misc/utils/custom_themes.dart';
-import 'package:rakhsa/misc/utils/dimensions.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
 class KbriPage extends StatefulWidget {
@@ -49,7 +46,7 @@ class KbriPageState extends State<KbriPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.backgroundColor,
+      backgroundColor: Colors.grey.shade50,
       body: RefreshIndicator.adaptive(
         onRefresh: () {
           return Future.sync(() {
@@ -66,7 +63,7 @@ class KbriPageState extends State<KbriPage> {
                 SliverAppBar(
                   title: const SizedBox(),
                   leading: CupertinoNavigationBarBackButton(
-                    color: ColorResources.black,
+                    color: Colors.black,
                     onPressed: context.pop,
                   ),
                 ),
@@ -87,10 +84,7 @@ class KbriPageState extends State<KbriPage> {
                     child: Center(
                       child: Text(
                         "KBRI not found",
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          color: ColorResources.black,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.black),
                       ),
                     ),
                   ),
@@ -102,10 +96,10 @@ class KbriPageState extends State<KbriPage> {
                       margin: const EdgeInsets.only(left: 8.0, right: 8.0),
                       child: Text(
                         "Data Pencarian KBRI Negara ${n.kbriCountry?.stateName.toString()}",
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeOverLarge,
+                        style: TextStyle(
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: ColorResources.black,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -148,9 +142,9 @@ class KbriPageState extends State<KbriPage> {
                                     alignment: Alignment.bottomLeft,
                                     child: Text(
                                       "Kbri ${n.kbriCountry?.title.toString()}",
-                                      style: robotoRegular.copyWith(
-                                        color: ColorResources.white,
-                                        fontSize: Dimensions.fontSizeOverLarge,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -180,9 +174,9 @@ class KbriPageState extends State<KbriPage> {
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
                                   "Kbri ${n.kbriCountry?.title.toString()}",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.white,
-                                    fontSize: Dimensions.fontSizeOverLarge,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -213,9 +207,9 @@ class KbriPageState extends State<KbriPage> {
                                     alignment: Alignment.bottomLeft,
                                     child: Text(
                                       "Kbri ${n.kbriCountry?.title.toString()}",
-                                      style: robotoRegular.copyWith(
-                                        color: ColorResources.white,
-                                        fontSize: Dimensions.fontSizeOverLarge,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -237,9 +231,7 @@ class KbriPageState extends State<KbriPage> {
                           },
                           onTapUrl: (String url) => Future.value(true),
                           renderMode: RenderMode.column,
-                          textStyle: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                          ),
+                          textStyle: TextStyle(fontSize: 14),
                         ),
                       ),
 
@@ -252,10 +244,10 @@ class KbriPageState extends State<KbriPage> {
                         ),
                         child: Text(
                           n.kbriCountry?.address.toString() ?? "-",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
+                          style: TextStyle(
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: ColorResources.black,
+                            color: Colors.black,
                           ),
                         ),
                       ),

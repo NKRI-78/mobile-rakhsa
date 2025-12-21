@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rakhsa/misc/constants/theme.dart';
+import 'package:rakhsa/core/constants/colors.dart';
 
 enum AppButtonType { filled, outlined, text }
 
@@ -9,8 +9,8 @@ class AppButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.padding,
-    this.type = AppButtonType.filled,
-    this.borderRadius = BorderRadius.zero,
+    this.type = .filled,
+    this.borderRadius = .zero,
   });
 
   final String label;
@@ -22,7 +22,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (type) {
-      AppButtonType.filled => FilledButton(
+      .filled => FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: primaryColor,
@@ -32,7 +32,7 @@ class AppButton extends StatelessWidget {
         ),
         child: Text(label),
       ),
-      AppButtonType.outlined => OutlinedButton(
+      .outlined => OutlinedButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           foregroundColor: primaryColor,
@@ -41,7 +41,7 @@ class AppButton extends StatelessWidget {
         ),
         child: Text(label),
       ),
-      AppButtonType.text => TextButton(
+      .text => TextButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           foregroundColor: primaryColor,

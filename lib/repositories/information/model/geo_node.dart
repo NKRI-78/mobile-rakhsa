@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:rakhsa/misc/client/errors/errors.dart';
+import 'package:rakhsa/core/client/errors/errors.dart';
 
 class GeoNode extends Equatable {
   final int id;
