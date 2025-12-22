@@ -11,9 +11,9 @@ class PanduanHukumPage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
+            elevation: 0,
             expandedHeight: 180,
             backgroundColor: Colors.white,
-            elevation: 0,
             scrolledUnderElevation: 0,
             shadowColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(

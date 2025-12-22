@@ -167,14 +167,14 @@ RouteBase get $activateReferralRoute => GoRouteData.$route(
 
 mixin $ActivateReferralRoute on GoRouteData {
   static ActivateReferralRoute _fromState(GoRouterState state) =>
-      ActivateReferralRoute(uid: state.uri.queryParameters['uid'] ?? "");
+      ActivateReferralRoute(uid: state.uri.queryParameters['uid'] ?? "-");
 
   ActivateReferralRoute get _self => this as ActivateReferralRoute;
 
   @override
   String get location => GoRouteData.$location(
     '/activate-referral-code',
-    queryParams: {if (_self.uid != "") 'uid': _self.uid},
+    queryParams: {if (_self.uid != "-") 'uid': _self.uid},
   );
 
   @override
@@ -197,15 +197,11 @@ RouteBase get $dashboardRoute => GoRouteData.$route(
   routes: [
     GoRouteData.$route(
       path: 'informasi-kbri',
-      factory: $InformasiKBRIRoute._fromState,
+      factory: $CurrentKBRIRoute._fromState,
       routes: [
         GoRouteData.$route(
           path: 'kbri-detail',
           factory: $KBRIDetailRoute._fromState,
-        ),
-        GoRouteData.$route(
-          path: 'kbri-user-document',
-          factory: $KBRIUserDocumentRoute._fromState,
         ),
       ],
     ),
@@ -264,17 +260,12 @@ mixin $DashboardRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $InformasiKBRIRoute on GoRouteData {
-  static InformasiKBRIRoute _fromState(GoRouterState state) =>
-      InformasiKBRIRoute(info: state.uri.queryParameters['info'] ?? "");
-
-  InformasiKBRIRoute get _self => this as InformasiKBRIRoute;
+mixin $CurrentKBRIRoute on GoRouteData {
+  static CurrentKBRIRoute _fromState(GoRouterState state) =>
+      const CurrentKBRIRoute();
 
   @override
-  String get location => GoRouteData.$location(
-    '/informasi-kbri',
-    queryParams: {if (_self.info != "") 'info': _self.info},
-  );
+  String get location => GoRouteData.$location('/informasi-kbri');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -300,34 +291,6 @@ mixin $KBRIDetailRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/informasi-kbri/kbri-detail',
-    queryParams: {'state-id': _self.stateId.toString()},
-  );
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $KBRIUserDocumentRoute on GoRouteData {
-  static KBRIUserDocumentRoute _fromState(GoRouterState state) =>
-      KBRIUserDocumentRoute(
-        stateId: int.parse(state.uri.queryParameters['state-id']!),
-      );
-
-  KBRIUserDocumentRoute get _self => this as KBRIUserDocumentRoute;
-
-  @override
-  String get location => GoRouteData.$location(
-    '/informasi-kbri/kbri-user-document',
     queryParams: {'state-id': _self.stateId.toString()},
   );
 

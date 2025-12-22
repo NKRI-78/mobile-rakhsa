@@ -12,24 +12,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/core/constants/colors.dart';
 
-class SearchPage extends StatefulWidget {
-  final String info;
-
-  const SearchPage({required this.info, super.key});
+class CurrentKBRIPage extends StatefulWidget {
+  const CurrentKBRIPage({super.key});
 
   @override
-  State<SearchPage> createState() => SearchPageState();
+  State<CurrentKBRIPage> createState() => _CurrentKBRIPageState();
 }
 
-class SearchPageState extends State<SearchPage> {
+class _CurrentKBRIPageState extends State<CurrentKBRIPage> {
   Timer? _queryDebouncer;
 
-  late InformationProvider informationProvider;
+  late InformationProvider _provider;
 
   final _searchCountryController = TextEditingController();
 
   Future<void> getData() async {
-    await informationProvider.getCurrentKBRI(
+    await _provider.getCurrentKBRI(
       context.read<LocationProvider>().location?.placemark?.country ?? "-",
     );
   }
@@ -38,7 +36,7 @@ class SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
 
-    informationProvider = context.read<InformationProvider>()..clearCountry();
+    _provider = context.read<InformationProvider>()..clearCountry();
 
     Future.microtask(() => getData());
   }
@@ -142,7 +140,7 @@ class SearchPageState extends State<SearchPage> {
                                         width: double.infinity,
                                         height: 180.0,
                                         decoration: const BoxDecoration(
-                                          borderRadius: .all(.circular(10.0)),
+                                          borderRadius: .all(.circular(10)),
                                           image: DecorationImage(
                                             fit: .cover,
                                             image: AssetImage(
@@ -287,17 +285,9 @@ class SearchPageState extends State<SearchPage> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                switch (widget.info) {
-                                  case "informasi-kbri":
-                                    KBRIDetailRoute(
-                                      stateId: n.countries[i].id,
-                                    ).push(context);
-                                    break;
-                                  case "passport-visa":
-                                    break;
-                                  case "panduan-hukum":
-                                    break;
-                                }
+                                KBRIDetailRoute(
+                                  stateId: n.countries[i].id,
+                                ).push(context);
                               },
                               child: Padding(
                                 padding: const .all(8.0),
@@ -341,7 +331,7 @@ class SearchPageState extends State<SearchPage> {
                           _queryDebouncer = Timer(
                             const Duration(milliseconds: 500),
                             () {
-                              informationProvider.fetchCountry(query);
+                              _provider.fetchCountry(query);
                             },
                           );
                         },

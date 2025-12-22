@@ -7,10 +7,9 @@ import 'package:rakhsa/modules/auth/page/welcome_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/notification_page.dart';
 import 'package:rakhsa/modules/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:rakhsa/modules/information/presentation/pages/kbri.dart';
-import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum.dart';
-import 'package:rakhsa/modules/information/presentation/pages/passport_visa/index.dart';
-import 'package:rakhsa/modules/information/presentation/pages/search.dart';
+import 'package:rakhsa/modules/information/presentation/pages/kbri_country_page.dart';
+import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum_page.dart';
+import 'package:rakhsa/modules/information/presentation/pages/current_kbri_page.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_detail_page.dart';
 import 'package:rakhsa/modules/ews/persentation/pages/ews_detail_page.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
@@ -100,12 +99,9 @@ class ForgotPasswordRoute extends GoRouteData with $ForgotPasswordRoute {
 @TypedGoRoute<DashboardRoute>(
   path: '/',
   routes: [
-    TypedGoRoute<InformasiKBRIRoute>(
+    TypedGoRoute<CurrentKBRIRoute>(
       path: "informasi-kbri",
-      routes: [
-        TypedGoRoute<KBRIDetailRoute>(path: "kbri-detail"),
-        TypedGoRoute<KBRIUserDocumentRoute>(path: "kbri-user-document"),
-      ],
+      routes: [TypedGoRoute<KBRIDetailRoute>(path: "kbri-detail")],
     ),
     TypedGoRoute<PanduanHukumRoute>(path: "panduan-hukum"),
     TypedGoRoute<NearMeRoute>(path: "near-me"),
@@ -128,14 +124,12 @@ class DashboardRoute extends GoRouteData with $DashboardRoute {
 }
 
 //* DASHBOARD / INFORMASI KBRI
-class InformasiKBRIRoute extends GoRouteData with $InformasiKBRIRoute {
-  const InformasiKBRIRoute({this.info = ""});
-
-  final String info;
+class CurrentKBRIRoute extends GoRouteData with $CurrentKBRIRoute {
+  const CurrentKBRIRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return SearchPage(info: info);
+    return CurrentKBRIPage();
   }
 }
 
@@ -147,19 +141,7 @@ class KBRIDetailRoute extends GoRouteData with $KBRIDetailRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return KbriPage(stateId: stateId);
-  }
-}
-
-//* DASHBOARD / INFORMASI KBRI / KBRI DETAIL
-class KBRIUserDocumentRoute extends GoRouteData with $KBRIUserDocumentRoute {
-  const KBRIUserDocumentRoute({required this.stateId});
-
-  final int stateId;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return PassportVisaIndexPage(stateId: stateId);
+    return KBRICountryPage(stateId: stateId);
   }
 }
 

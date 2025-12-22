@@ -272,6 +272,9 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
       final mid = MarkerId(place.placeId);
 
       void showLaunchModeDialog() async {
+        await HapticFeedback.lightImpact();
+        if (!mounted) return;
+
         final mode = await MapsLaunchModeDialog.launch(
           context,
           place,

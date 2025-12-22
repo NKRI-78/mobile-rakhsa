@@ -24,6 +24,4 @@ class Assets {
   static const String iconAlert = "assets/images/ic-alert.png";
   static const String iconWelcomeDialog =
       "assets/images/icons/ic-welcome-dialog.png";
-  static const String iconInfo = "assets/images/icon-info.png";
-  static const String iconHukum = "assets/images/icon-hukum.png";
 }

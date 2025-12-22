@@ -11,35 +11,30 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
-class KbriPage extends StatefulWidget {
+class KBRICountryPage extends StatefulWidget {
   final int stateId;
 
-  const KbriPage({required this.stateId, super.key});
+  const KBRICountryPage({required this.stateId, super.key});
 
   @override
-  State<KbriPage> createState() => KbriPageState();
+  State<KBRICountryPage> createState() => _KBRICountryPageState();
 }
 
-class KbriPageState extends State<KbriPage> {
-  late InformationProvider informationProvider;
-
-  Future<void> getData() async {
-    if (!mounted) return;
-    informationProvider.getKBRIByCountryId(widget.stateId.toString());
-  }
+class _KBRICountryPageState extends State<KBRICountryPage> {
+  late InformationProvider _provider;
 
   @override
   void initState() {
     super.initState();
 
-    informationProvider = context.read<InformationProvider>();
+    _provider = context.read<InformationProvider>();
 
-    Future.microtask(() => getData());
+    Future.microtask(() => _getData());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> _getData() async {
+    if (!mounted) return;
+    _provider.getKBRIByCountryId(widget.stateId.toString());
   }
 
   @override
@@ -47,11 +42,7 @@ class KbriPageState extends State<KbriPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: RefreshIndicator.adaptive(
-        onRefresh: () {
-          return Future.sync(() {
-            getData();
-          });
-        },
+        onRefresh: _getData,
         child: Consumer<InformationProvider>(
           builder: (context, n, child) {
             return CustomScrollView(
@@ -60,7 +51,6 @@ class KbriPageState extends State<KbriPage> {
               ),
               slivers: [
                 SliverAppBar(
-                  title: const SizedBox(),
                   leading: CupertinoNavigationBarBackButton(
                     color: Colors.black,
                     onPressed: context.pop,
@@ -71,8 +61,8 @@ class KbriPageState extends State<KbriPage> {
                   const SliverFillRemaining(
                     child: Center(
                       child: SizedBox(
-                        width: 16.0,
-                        height: 16.0,
+                        width: 16,
+                        height: 16,
                         child: CircularProgressIndicator(),
                       ),
                     ),
@@ -94,7 +84,7 @@ class KbriPageState extends State<KbriPage> {
                       padding: const .all(8.0),
                       margin: const .symmetric(horizontal: 8),
                       child: Text(
-                        "Data Pencarian KBRI Negara ${n.kbriCountry?.stateName.toString()}",
+                        "Data Pencarian KBRI Negara ${n.kbriCountry?.stateName ?? "-"}",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: .bold,
@@ -110,7 +100,7 @@ class KbriPageState extends State<KbriPage> {
                       Container(
                         margin: .symmetric(horizontal: 18, vertical: 8),
                         child: CachedNetworkImage(
-                          imageUrl: n.kbriCountry?.img.toString() ?? "-",
+                          imageUrl: n.kbriCountry?.img.toString() ?? "",
                           imageBuilder: (context, imageProvider) {
                             return Container(
                               width: double.infinity,

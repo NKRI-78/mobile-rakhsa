@@ -17,7 +17,7 @@ import 'package:rakhsa/modules/dashboard/presentation/widgets/image_banner.dart'
 import 'package:rakhsa/modules/weather/widget/weather_card.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
-import 'package:rakhsa/modules/information/presentation/pages/list.dart';
+import 'package:rakhsa/modules/information/presentation/pages/information_page.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_places_page.dart';
 
@@ -342,7 +342,7 @@ class DashboardPageState extends State<DashboardPage>
                     onRefresh: () => getData(),
                     banners: banners,
                   ),
-                  InformationListPage(),
+                  InformationPage(),
                   NearMePlacesPage(),
                 ],
               );
