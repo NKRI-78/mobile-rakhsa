@@ -14,21 +14,13 @@ import 'package:rakhsa/repositories/media/media_repository.dart';
 
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart' as ap;
 import 'package:rakhsa/modules/chat/data/datasources/chat_remote_data_source.dart';
-import 'package:rakhsa/modules/chat/domain/usecases/detail_inbox.dart';
-import 'package:rakhsa/modules/chat/domain/usecases/get_inbox.dart';
-import 'package:rakhsa/modules/chat/domain/usecases/insert_message.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/detail_inbox_notifier.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/get_inbox_notifier.dart';
-import 'package:rakhsa/modules/chat/presentation/provider/insert_message_notifier.dart';
 import 'package:rakhsa/modules/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/detail_news.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_banner.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/sos_rating.dart';
-import 'package:rakhsa/modules/dashboard/domain/usecases/track_user.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/update_address.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
-import 'package:rakhsa/modules/dashboard/presentation/provider/track_user_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/update_address_notifier.dart';
 
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_news.dart';
@@ -111,12 +103,8 @@ void init() {
   locator.registerLazySingleton(() => GetBannerUseCase(locator()));
   locator.registerLazySingleton(() => DetailNewsUseCase(locator()));
   locator.registerLazySingleton(() => UpdateAddressUseCase(locator()));
-  locator.registerLazySingleton(() => TrackUserUseCase(locator()));
   locator.registerLazySingleton(() => GetChatsUseCase(locator()));
   locator.registerLazySingleton(() => GetMessagesUseCase(locator()));
-  locator.registerLazySingleton(() => InsertMessageUseCase(locator()));
-  locator.registerLazySingleton(() => GetInboxUseCase(locator()));
-  locator.registerLazySingleton(() => DetailInboxUseCase(locator()));
 
   // NOT AFFECTED IN WEBSOCKET IF USE ONLY REGISTER FACTORY
   // NOTIFIER
@@ -137,10 +125,6 @@ void init() {
   locator.registerFactory(() => UpdateAddressNotifier(useCase: locator()));
   locator.registerFactory(() => GetChatsNotifier(useCase: locator()));
   locator.registerFactory(() => GetMessagesNotifier(useCase: locator()));
-  locator.registerFactory(() => InsertMessageNotifier(useCase: locator()));
   locator.registerFactory(() => DetailNewsNotifier(useCase: locator()));
-  locator.registerFactory(() => TrackUserNotifier(useCase: locator()));
   locator.registerFactory(() => NearMeProvider(locator()));
-  locator.registerFactory(() => DetailInboxNotifier(useCase: locator()));
-  locator.registerFactory(() => GetInboxNotifier(useCase: locator()));
 }

@@ -17,11 +17,6 @@ abstract class DashboardRemoteDataSource {
     required String state,
   });
   Future<NewsDetailModel> getNewsDetail({required int id});
-  Future<void> trackUser({
-    required String address,
-    required double lat,
-    required double lng,
-  });
   Future<void> updateAddress({
     required String address,
     required String state,
@@ -93,33 +88,6 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       Map<String, dynamic> data = response.data;
       NewsDetailModel newsDetailModel = NewsDetailModel.fromJson(data);
       return newsDetailModel;
-    } on DioException catch (e) {
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
-  Future<void> trackUser({
-    required String address,
-    required double lat,
-    required double lng,
-  }) async {
-    final token = StorageHelper.session?.token;
-    try {
-      await client.post(
-        "$_baseUrl/profile/insert-user-track",
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-        data: {
-          "user_id": StorageHelper.session?.user.id,
-          "address": address,
-          "lat": lat,
-          "lng": lng,
-        },
-      );
     } on DioException catch (e) {
       String message = handleDioException(e);
       throw ServerException(message);

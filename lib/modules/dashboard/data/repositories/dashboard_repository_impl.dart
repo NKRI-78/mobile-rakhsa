@@ -87,26 +87,6 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<Either<Failure, void>> userTrack({
-    required String address,
-    required double lat,
-    required double lng,
-  }) async {
-    try {
-      var result = await remoteDataSource.trackUser(
-        address: address,
-        lat: lat,
-        lng: lng,
-      );
-      return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message.toString()));
-    } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, BannerModel>> getBanner() async {
     try {
       var result = await remoteDataSource.getBanner();

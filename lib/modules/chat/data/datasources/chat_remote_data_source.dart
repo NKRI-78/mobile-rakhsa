@@ -6,23 +6,13 @@ import 'package:rakhsa/core/client/errors/exception.dart';
 import 'package:rakhsa/service/storage/storage.dart';
 
 import 'package:rakhsa/modules/chat/data/models/chats.dart';
-import 'package:rakhsa/modules/chat/data/models/detail_inbox.dart';
-import 'package:rakhsa/modules/chat/data/models/inbox.dart';
 import 'package:rakhsa/modules/chat/data/models/messages.dart';
 
 abstract class ChatRemoteDataSource {
-  Future<InboxModel> getInbox();
-  Future<InboxDetailModel> detailInbox({required int id});
   Future<ChatsModel> getChats();
   Future<MessageModel> getMessages({
     required String chatId,
     required String status,
-  });
-  Future<void> insertMessage({
-    required String chatId,
-    required String recipient,
-    required String text,
-    required DateTime createdAt,
   });
 }
 
@@ -32,45 +22,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
   ChatRemoteDataSourceImpl({required this.client});
 
   String get _baseUrl => BuildConfig.instance.apiBaseUrl ?? "";
-
-  @override
-  Future<InboxModel> getInbox() async {
-    try {
-      final response = await client.post(
-        "https://api-ppob.langitdigital78.com/api/v1/inbox",
-        data: {"user_id": StorageHelper.session?.user.id},
-      );
-      Map<String, dynamic> data = response.data;
-      InboxModel inboxModel = InboxModel.fromJson(data);
-      return inboxModel;
-    } on DioException catch (e) {
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
-  Future<InboxDetailModel> detailInbox({required int id}) async {
-    try {
-      final response = await client.post(
-        "https://api-ppob.langitdigital78.com/api/v1/inbox/detail",
-        data: {"id": id},
-      );
-      Map<String, dynamic> data = response.data;
-      InboxDetailModel inboxDetailModel = InboxDetailModel.fromJson(data);
-      return inboxDetailModel;
-    } on DioException catch (e) {
-      debugPrint(e.response.toString());
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw Exception(e.toString());
-    }
-  }
 
   @override
   Future<ChatsModel> getChats() async {
@@ -114,34 +65,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       MessageModel messageModel = MessageModel.fromJson(data);
       return messageModel;
     } on DioException catch (e) {
-      String message = handleDioException(e);
-      throw ServerException(message);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
-  Future<void> insertMessage({
-    required String chatId,
-    required String recipient,
-    required String text,
-    required DateTime createdAt,
-  }) async {
-    try {
-      await client.post(
-        "$_baseUrl/chat/insert-message",
-        data: {
-          "chat_id": chatId,
-          "sender": StorageHelper.session?.user.id,
-          "recipient": recipient,
-          "created_at": createdAt.toLocal().toIso8601String(),
-          "text": text,
-        },
-      );
-    } on DioException catch (e) {
-      debugPrint(e.response.toString());
       String message = handleDioException(e);
       throw ServerException(message);
     } catch (e, stacktrace) {

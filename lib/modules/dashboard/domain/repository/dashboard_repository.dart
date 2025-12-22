@@ -14,11 +14,6 @@ abstract class DashboardRepository {
     required String state,
   });
   Future<Either<Failure, NewsDetailModel>> detailNews({required int id});
-  Future<Either<Failure, void>> userTrack({
-    required String address,
-    required double lat,
-    required double lng,
-  });
   Future<Either<Failure, void>> updateAddress({
     required String address,
     required String state,
