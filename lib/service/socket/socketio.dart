@@ -32,10 +32,10 @@ class HttpOverridesConfig extends HttpOverrides {
 
 extension SocketConnectionStatusExtension on SocketConnectionStatus {
   Color get color => switch (this) {
-    SocketConnectionStatus.idle => Colors.grey.shade600,
-    SocketConnectionStatus.connect => Colors.green,
-    SocketConnectionStatus.reconnect => Colors.yellow,
-    SocketConnectionStatus.error => Colors.red,
+    .idle => Colors.grey.shade600,
+    .connect => Colors.green,
+    .reconnect => Colors.yellow,
+    .error => Colors.red,
   };
 }
 
@@ -44,9 +44,9 @@ class SocketIoService with ChangeNotifier {
 
   IO.Socket? socket;
 
-  SocketConnectionStatus _connStatus = SocketConnectionStatus.idle;
+  SocketConnectionStatus _connStatus = .idle;
   SocketConnectionStatus get connStatus => _connStatus;
-  bool get isConnected => _connStatus == SocketConnectionStatus.connect;
+  bool get isConnected => _connStatus == .connect;
 
   void _setConnectionStatus(SocketConnectionStatus newStatus) {
     _connStatus = newStatus;
@@ -74,12 +74,12 @@ class SocketIoService with ChangeNotifier {
 
     socket?.onConnect((message) {
       log("🛜 SOKET BERHASIL TERSAMBUNG $_baseUrl", label: "SOCKET_SERVICE");
-      _setConnectionStatus(SocketConnectionStatus.connect);
+      _setConnectionStatus(.connect);
     });
 
     socket?.onReconnect((_) {
       log("🔃 MENCOBA MENGHUBUNGKAN SOKET", label: "SOCKET_SERVICE");
-      _setConnectionStatus(SocketConnectionStatus.reconnect);
+      _setConnectionStatus(.reconnect);
     });
 
     socket?.onConnectError((data) {
@@ -87,7 +87,7 @@ class SocketIoService with ChangeNotifier {
         "⚠️ GAGAL MENGHUBUNGKAN SOKET ${data.toString()}",
         label: "SOCKET_SERVICE",
       );
-      _setConnectionStatus(SocketConnectionStatus.error);
+      _setConnectionStatus(.error);
     });
 
     socket?.on("message", (message) {

@@ -52,18 +52,18 @@ class InformationProvider extends ChangeNotifier {
   // event
 
   Future<void> fetchCountry(String q) async {
-    _fetchCountryState = RequestState.loading;
+    _fetchCountryState = .loading;
     notifyListeners();
 
     try {
       final remoteCountries = await _repository.getCountries(q);
 
       _countries = remoteCountries;
-      _fetchCountryState = RequestState.success;
+      _fetchCountryState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorMessage = e.message;
-      _fetchCountryState = RequestState.error;
+      _fetchCountryState = .error;
       notifyListeners();
     }
   }
@@ -71,67 +71,67 @@ class InformationProvider extends ChangeNotifier {
   void clearCountry() => _countries.clear();
 
   Future<void> getCurrentKBRI(String country) async {
-    _getCurrentKbriState = RequestState.loading;
+    _getCurrentKbriState = .loading;
     notifyListeners();
 
     try {
       final remoteKbri = await _repository.getKBRIByCurrentCountry(country);
 
       _currentKbri = remoteKbri;
-      _getCurrentKbriState = RequestState.success;
+      _getCurrentKbriState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorMessage = e.message;
-      _getCurrentKbriState = RequestState.error;
+      _getCurrentKbriState = .error;
       notifyListeners();
     }
   }
 
   Future<void> getKBRIByCountryId(String id) async {
-    _getKbriByCountryIdState = RequestState.loading;
+    _getKbriByCountryIdState = .loading;
     notifyListeners();
 
     try {
       final remoteKbri = await _repository.getKBRIByCountryId(id);
 
       _kbriCountry = remoteKbri;
-      _getKbriByCountryIdState = RequestState.success;
+      _getKbriByCountryIdState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorMessage = e.message;
-      _getKbriByCountryIdState = RequestState.error;
+      _getKbriByCountryIdState = .error;
       notifyListeners();
     }
   }
 
   Future<void> getPassportInfo(String stateId) async {
-    _getPassportState = RequestState.loading;
+    _getPassportState = .loading;
     notifyListeners();
 
     try {
       final remotePassport = await _repository.getPassportInfo(stateId);
       _passportData = remotePassport;
-      _getPassportState = RequestState.success;
+      _getPassportState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorMessage = e.message;
-      _getPassportState = RequestState.error;
+      _getPassportState = .error;
       notifyListeners();
     }
   }
 
   Future<void> getVisaInfo(String stateId) async {
-    _getVisaState = RequestState.loading;
+    _getVisaState = .loading;
     notifyListeners();
 
     try {
       final remoteVisa = await _repository.getVisaInfo(stateId);
       _visaData = remoteVisa;
-      _getVisaState = RequestState.success;
+      _getVisaState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorMessage = e.message;
-      _getVisaState = RequestState.error;
+      _getVisaState = .error;
       notifyListeners();
     }
   }

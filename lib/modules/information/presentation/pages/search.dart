@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
@@ -58,7 +57,7 @@ class SearchPageState extends State<SearchPage> {
       backgroundColor: Colors.grey.shade50,
       body: Consumer<LocationProvider>(
         builder: (context, lp, child) {
-          if (!lp.isGetLocationState(RequestState.success)) {
+          if (!lp.isGetLocationState(.success)) {
             return Center(
               child: CircularProgressIndicator(color: primaryColor),
             );
@@ -78,7 +77,7 @@ class SearchPageState extends State<SearchPage> {
                     ),
                   ),
 
-                  if (n.isGetCurrentKbri(RequestState.loading))
+                  if (n.isGetCurrentKbri(.loading))
                     SliverFillRemaining(
                       child: Center(
                         child: CircularProgressIndicator.adaptive(
@@ -87,7 +86,7 @@ class SearchPageState extends State<SearchPage> {
                       ),
                     ),
 
-                  if (n.isGetCurrentKbri(RequestState.error))
+                  if (n.isGetCurrentKbri(.error))
                     SliverFillRemaining(
                       child: Center(
                         child: CircularProgressIndicator.adaptive(
@@ -96,33 +95,31 @@ class SearchPageState extends State<SearchPage> {
                       ),
                     ),
 
-                  if (n.isGetCurrentKbri(RequestState.success))
+                  if (n.isGetCurrentKbri(.success))
                     SliverToBoxAdapter(
                       child: Container(
-                        margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        margin: const .symmetric(horizontal: 16),
                         decoration: const BoxDecoration(color: Colors.white),
                         child: Card(
                           color: Colors.white,
                           surfaceTintColor: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const .all(8.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: .start,
+                              mainAxisSize: .min,
                               children: [
                                 Text(
                                   n.currentKbri?.title ?? "-",
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: .bold,
                                     fontSize: 16,
                                   ),
                                 ),
 
                                 Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 16.0,
-                                  ),
+                                  margin: .symmetric(vertical: 16.0),
                                   child: CachedNetworkImage(
                                     imageUrl: n.currentKbri?.img ?? "-",
                                     imageBuilder: (context, imageProvider) {
@@ -130,11 +127,11 @@ class SearchPageState extends State<SearchPage> {
                                         width: double.infinity,
                                         height: 180.0,
                                         decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.circular(10.0),
+                                          borderRadius: const .all(
+                                            .circular(10.0),
                                           ),
                                           image: DecorationImage(
-                                            fit: BoxFit.cover,
+                                            fit: .cover,
                                             image: imageProvider,
                                           ),
                                         ),
@@ -145,11 +142,9 @@ class SearchPageState extends State<SearchPage> {
                                         width: double.infinity,
                                         height: 180.0,
                                         decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0),
-                                          ),
+                                          borderRadius: .all(.circular(10.0)),
                                           image: DecorationImage(
-                                            fit: BoxFit.cover,
+                                            fit: .cover,
                                             image: AssetImage(
                                               'assets/images/placeholder.png',
                                             ),
@@ -162,11 +157,9 @@ class SearchPageState extends State<SearchPage> {
                                         width: double.infinity,
                                         height: 180.0,
                                         decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0),
-                                          ),
+                                          borderRadius: .all(.circular(10.0)),
                                           image: DecorationImage(
-                                            fit: BoxFit.cover,
+                                            fit: .cover,
                                             image: AssetImage(
                                               'assets/images/placeholder.png',
                                             ),
@@ -181,15 +174,11 @@ class SearchPageState extends State<SearchPage> {
 
                                 Container(
                                   width: double.infinity,
-                                  height: 180.0,
-                                  margin: const EdgeInsets.only(
-                                    top: 16.0,
-                                    bottom: 16.0,
-                                  ),
+                                  height: 180,
+                                  margin: .symmetric(vertical: 16),
                                   child: Stack(
                                     children: [
                                       GoogleMap(
-                                        mapType: MapType.normal,
                                         myLocationEnabled: false,
                                         zoomControlsEnabled: false,
                                         zoomGesturesEnabled: false,
@@ -222,22 +211,15 @@ class SearchPageState extends State<SearchPage> {
                                       ),
 
                                       Align(
-                                        alignment: Alignment.bottomRight,
+                                        alignment: .bottomRight,
                                         child: Container(
-                                          margin: const EdgeInsets.only(
-                                            right: 8.0,
-                                            bottom: 8.0,
-                                          ),
+                                          margin: .only(right: 8, bottom: 8),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              8.0,
-                                            ),
+                                            borderRadius: .circular(8.0),
                                           ),
                                           child: Material(
-                                            borderRadius: BorderRadius.circular(
-                                              8.0,
-                                            ),
+                                            borderRadius: .circular(8.0),
                                             child: InkWell(
                                               onTap: () async {
                                                 final String googleMapsUrl =
@@ -257,12 +239,10 @@ class SearchPageState extends State<SearchPage> {
                                                 }
                                               },
                                               child: const Padding(
-                                                padding: EdgeInsets.all(8.0),
+                                                padding: .all(8.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
+                                                  crossAxisAlignment: .start,
+                                                  mainAxisSize: .min,
                                                   children: [
                                                     Icon(
                                                       Icons.directions,
@@ -288,31 +268,20 @@ class SearchPageState extends State<SearchPage> {
 
                   SliverToBoxAdapter(
                     child: Container(
-                      margin: const EdgeInsets.only(
-                        top: 20.0,
-                        left: 16.0,
-                        right: 16.0,
-                      ),
+                      margin: const .fromLTRB(16, 20, 16, 0),
                       child: Text(
                         "Informasi Alamat KBRI ",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 24, fontWeight: .bold),
                       ),
                     ),
                   ),
 
-                  if (n.isFetchCountry(RequestState.success))
+                  if (n.isFetchCountry(.success))
                     SliverList.builder(
                       itemCount: n.countries.length,
                       itemBuilder: (BuildContext context, int i) {
                         return Container(
-                          margin: const EdgeInsets.only(
-                            top: 10.0,
-                            left: 16.0,
-                            right: 16.0,
-                          ),
+                          margin: .fromLTRB(16, 10, 16, 0),
                           decoration: const BoxDecoration(color: Colors.white),
                           child: Material(
                             color: Colors.transparent,
@@ -331,10 +300,10 @@ class SearchPageState extends State<SearchPage> {
                                 }
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const .all(8.0),
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: .center,
+                                  mainAxisSize: .min,
                                   children: [
                                     const Icon(
                                       Icons.flag,
@@ -347,7 +316,7 @@ class SearchPageState extends State<SearchPage> {
                                     Text(
                                       n.countries[i].name,
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: .bold,
                                         color: Colors.black,
                                       ),
                                     ),
@@ -362,11 +331,7 @@ class SearchPageState extends State<SearchPage> {
 
                   SliverToBoxAdapter(
                     child: Container(
-                      margin: const EdgeInsets.only(
-                        top: 16.0,
-                        left: 16.0,
-                        right: 16.0,
-                      ),
+                      margin: .fromLTRB(16, 16, 16, 0),
                       child: TextField(
                         controller: _searchCountryController,
                         onChanged: (String query) async {
@@ -386,15 +351,11 @@ class SearchPageState extends State<SearchPage> {
                           fillColor: Colors.white,
                           border: const OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(9.0),
-                            ),
+                            borderRadius: .all(.circular(9.0)),
                           ),
                           enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(9.0),
-                            ),
+                            borderRadius: .all(.circular(9.0)),
                           ),
                           hintStyle: TextStyle(
                             color: Color(0xff707070),
@@ -410,7 +371,7 @@ class SearchPageState extends State<SearchPage> {
                     ),
                   ),
 
-                  if (n.isFetchCountry(RequestState.loading))
+                  if (n.isFetchCountry(.loading))
                     const SliverFillRemaining(
                       child: Center(
                         child: SizedBox(

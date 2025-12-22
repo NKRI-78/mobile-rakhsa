@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/auth/widget/terms_and_conditions_dialog.dart';
 import 'package:rakhsa/core/constants/assets.dart';
@@ -78,7 +79,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
         backgroundColor: primaryColor,
         body: SizedBox(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height,
+          height: context.getScreenHeight(),
           child: Stack(
             children: [
               // pattern fadding
@@ -91,25 +92,25 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
               // content
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const .all(16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: .center,
+                  crossAxisAlignment: .stretch,
                   children: [
                     // logo
                     Image.asset(
                       Assets.logoMarlinda,
                       width: 90.0,
-                      fit: BoxFit.scaleDown,
+                      fit: .scaleDown,
                     ),
 
                     // title 'marlinda'
                     Text(
                       '\n"Mari Lindungi Diri Anda"\n',
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: .bold,
                         fontSize: 18,
                       ),
                     ),
@@ -131,11 +132,11 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         backgroundColor: primaryColor,
                         side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: .circular(12),
                         ),
                       ),
                       child: const Padding(
-                        padding: EdgeInsets.all(12.0),
+                        padding: .all(12.0),
                         child: Text('Login'),
                       ),
                     ),
@@ -144,7 +145,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
                     // divider
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: .center,
                       children: [
                         Flexible(
                           child: Divider(
@@ -153,9 +154,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         ),
                         Flexible(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
+                            padding: const .symmetric(horizontal: 16.0),
                             child: Text(
                               'Atau',
                               style: TextStyle(
@@ -188,14 +187,14 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                         backgroundColor: Colors.white,
                         side: const BorderSide(color: Colors.white),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: .circular(12),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: const .all(12),
                         child: Text(
                           'Registrasi',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontWeight: .bold),
                         ),
                       ),
                     ),

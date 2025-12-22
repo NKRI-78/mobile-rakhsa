@@ -52,7 +52,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
             child: Scaffold(
               backgroundColor: Colors.grey.shade50,
               body: Padding(
-                padding: EdgeInsetsGeometry.fromLTRB(
+                padding: .fromLTRB(
                   16,
                   context.top + 16,
                   16,
@@ -85,18 +85,18 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
     return Column(
       key: ValueKey("success"),
       spacing: 16,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: .stretch,
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const .symmetric(horizontal: 6),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: .min,
+              mainAxisAlignment: .center,
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: .circle,
                     color: Colors.green.withValues(alpha: 0.08),
                   ),
                   child: LottieAnimation(
@@ -108,8 +108,8 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
                 16.spaceY,
                 Text(
                   "Kode Referral Berhasil di Klaim",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: .center,
+                  style: TextStyle(fontSize: 24, fontWeight: .bold),
                 ),
               ],
             ),
@@ -117,7 +117,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
         ),
 
         if (p.state.data != null)
-          Text("Detail Roaming", style: TextStyle(fontWeight: FontWeight.w600)),
+          Text("Detail Roaming", style: TextStyle(fontWeight: .w600)),
 
         if (p.state.data != null)
           ReferralInfoContainer(package: p.state.data?.package),
@@ -129,7 +129,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
           child: AppButton(
             label: "Mulai",
             onPressed: () => DashboardRoute(fromRegister: true).go(context),
-            borderRadius: BorderRadiusGeometry.circular(100),
+            borderRadius: .circular(100),
           ),
         ),
       ],
@@ -139,16 +139,16 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
   Widget _buildErrorState(String? errorTitle, String? errorMessage) {
     return Column(
       key: ValueKey("error"),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: .stretch,
       children: [
         50.spaceY,
         Expanded(
           child: Center(
             child: Container(
-              margin: EdgeInsets.all(80),
-              padding: EdgeInsets.all(16),
+              margin: .all(80),
+              padding: .all(16),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: .circle,
                 color: primaryColor.withValues(alpha: 0.08),
               ),
               child: LottieAnimation("assets/animations/referral.lottie"),
@@ -160,7 +160,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
 
         Text(
           errorTitle ?? "-",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 28, fontWeight: .bold),
         ),
 
         16.spaceY,
@@ -181,7 +181,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
           child: AppButton(
             label: "Tutup",
             onPressed: () => WelcomeRoute().go(context),
-            borderRadius: BorderRadiusGeometry.circular(100),
+            borderRadius: .circular(100),
           ),
         ),
       ],
@@ -193,7 +193,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
       key: ValueKey("loading"),
       child: Column(
         spacing: 16,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           SizedBox(
             width: 200,
@@ -203,13 +203,13 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
 
           Text(
             "Mengaktifkan Kode Referral",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            textAlign: .center,
+            style: TextStyle(fontSize: 18, fontWeight: .bold),
           ),
 
           Text(
             "Tunggu sebentar. Jangan keluar dari halaman atau menutup aplikasi. Proses ini membutuhkan beberapa detik.",
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ],

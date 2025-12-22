@@ -9,15 +9,15 @@ class TutorialGetReferralCode extends StatelessWidget {
     return Theme(
       data: context.theme.copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        tilePadding: EdgeInsets.zero,
-        childrenPadding: EdgeInsets.only(left: 4),
+        tilePadding: .zero,
+        childrenPadding: .only(left: 4),
         title: Text(
           "Bagaimana cara mendapatkan referral link?",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 12, fontWeight: .w600),
         ),
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(
                 "1 Beli paket internet roaming dari operator.",

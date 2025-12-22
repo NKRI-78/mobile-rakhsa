@@ -38,15 +38,15 @@ class WelcomeDialog extends StatelessWidget {
                 : 0;
             return Text.rich(
               maxLines: 8,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+              textAlign: .center,
+              overflow: .ellipsis,
               TextSpan(
                 text: "Pembelian paket layanan Marlinda ",
                 style: defaultStyle,
                 children: [
                   TextSpan(
                     text: "$days hari",
-                    style: defaultStyle.copyWith(fontWeight: FontWeight.w600),
+                    style: defaultStyle.copyWith(fontWeight: .w600),
                   ),
                   TextSpan(
                     text:
@@ -60,7 +60,7 @@ class WelcomeDialog extends StatelessWidget {
                   TextSpan(
                     text: "+6281119911911",
                     style: infoStyle.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: .w600,
                       color: Colors.blue,
                     ),
                     recognizer: TapGestureRecognizer()
@@ -80,7 +80,7 @@ class WelcomeDialog extends StatelessWidget {
                   TextSpan(
                     text: "https://marlinda.id/",
                     style: infoStyle.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: .w600,
                       color: Colors.blue,
                     ),
                     recognizer: TapGestureRecognizer()
@@ -102,7 +102,7 @@ class WelcomeDialog extends StatelessWidget {
           },
         ),
         style: DialogStyle(assetIconSize: 175),
-        actionButtonDirection: Axis.vertical,
+        actionButtonDirection: .vertical,
         buildActions: (dc) => [
           DialogActionButton(
             label: "Oke",

@@ -45,7 +45,7 @@ class SosCoordinator {
     await _prefs.setInt(kRemainKey, 60);
     await _prefs.setInt(kSavedAtKey, DateTime.now().millisecondsSinceEpoch);
 
-    _bus.add(const SosEvent(SosEventType.start));
+    _bus.add(const SosEvent(.start));
   }
 
   Future<void> stop({String? reason}) async {
@@ -55,7 +55,7 @@ class SosCoordinator {
     await _prefs.setInt(kSavedAtKey, DateTime.now().millisecondsSinceEpoch);
     await _clearPendingStop(_prefs);
 
-    _bus.add(SosEvent(SosEventType.stop, reason: reason));
+    _bus.add(SosEvent(.stop, reason: reason));
   }
 
   static Future<void> markPendingStopFromBackground() async {

@@ -42,7 +42,7 @@ class AppDialog {
             opacity: AlwaysStoppedAnimation(opacity),
             child: Transform.scale(
               scale: scale,
-              alignment: Alignment.center,
+              alignment: .center,
               child: child,
             ),
           );

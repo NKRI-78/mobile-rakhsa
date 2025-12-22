@@ -13,9 +13,9 @@ enum NetworkError {
 
 extension NetworkErrorExtension on NetworkError {
   String? get errorCode => switch (this) {
-    NetworkError.unknown => "UNKNOWN",
-    NetworkError.noInternetConnection => "NO_INTERNET_CONNECTION",
-    NetworkError.parsingError => "PARSING_ERROR",
+    .unknown => "UNKNOWN",
+    .noInternetConnection => "NO_INTERNET_CONNECTION",
+    .parsingError => "PARSING_ERROR",
     _ => null,
   };
 }

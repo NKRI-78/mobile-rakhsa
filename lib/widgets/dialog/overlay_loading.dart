@@ -41,14 +41,14 @@ class OverlayLoading extends StatelessWidget {
               child: Container(
                 width: boxSize,
                 height: boxSize,
-                padding: EdgeInsets.all(6),
+                padding: .all(6),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: .circular(12),
                   boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: .center,
                   children: [
                     const SizedBox(
                       width: 34,
@@ -63,12 +63,12 @@ class OverlayLoading extends StatelessWidget {
                       Text(
                         message!,
                         maxLines: 2,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
+                        textAlign: .center,
+                        overflow: .ellipsis,
                         style: TextStyle(
                           fontSize: 12,
                           color: primaryColor,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: .w600,
                         ),
                       ),
                     ],

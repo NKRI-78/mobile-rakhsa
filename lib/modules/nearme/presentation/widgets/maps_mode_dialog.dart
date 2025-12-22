@@ -23,7 +23,7 @@ class MapsLaunchModeDialog extends StatelessWidget {
       showDragHandle: true,
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: .vertical(top: .circular(16)),
       ),
       builder: (dialogContext) {
         return MapsLaunchModeDialog._(place, fromMapsTile);
@@ -35,9 +35,7 @@ class MapsLaunchModeDialog extends StatelessWidget {
   Widget build(BuildContext dialogContext) {
     final bottomBasedOS = Platform.isIOS ? 8.0 : 24.0;
     final bottomPadding = dialogContext.bottom + bottomBasedOS;
-    final tileShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    );
+    final tileShape = RoundedRectangleBorder(borderRadius: .circular(12));
 
     final dm = place.distanceInMeters;
     final dkm = dm / 1000;
@@ -48,30 +46,30 @@ class MapsLaunchModeDialog extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding),
+        padding: .fromLTRB(16, 0, 16, bottomPadding),
         child: Column(
           spacing: 6,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Text(
               place.placeName,
               maxLines: 3,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              textAlign: .center,
+              overflow: .ellipsis,
+              style: TextStyle(fontSize: 16, fontWeight: .bold),
             ),
             if (place.vicinity != null)
               Text(
                 place.vicinity!,
                 maxLines: 4,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
+                textAlign: .center,
+                overflow: .ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             Text(
               "$distanceLabel dari lokasi Anda",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+              textAlign: .center,
+              overflow: .ellipsis,
               style: TextStyle(fontSize: 12),
             ),
 

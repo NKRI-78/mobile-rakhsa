@@ -83,7 +83,7 @@ class _AvatarState extends State<Avatar> {
 
     final loadAndErrorWidget = AnimatedContainer(
       duration: kThemeAnimationDuration,
-      alignment: Alignment.center,
+      alignment: .center,
       constraints: BoxConstraints(
         minHeight: minDiameter,
         minWidth: minDiameter,
@@ -91,9 +91,9 @@ class _AvatarState extends State<Avatar> {
         maxHeight: maxDiameter,
       ),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        shape: .circle,
         color: _backgroundColor,
-        border: widget.withBorder ? Border.all(color: Colors.grey) : null,
+        border: widget.withBorder ? .all(color: Colors.grey) : null,
       ),
       child: Text(
         _getInitials() ?? _randomLetter,
@@ -110,11 +110,11 @@ class _AvatarState extends State<Avatar> {
 
     return CachedNetworkImage(
       imageUrl: widget.src ?? "-",
-      fit: BoxFit.cover,
+      fit: .cover,
       imageBuilder: (context, imageProvider) {
         return AnimatedContainer(
           duration: kThemeAnimationDuration,
-          padding: widget.withBorder ? EdgeInsets.all(1) : null,
+          padding: widget.withBorder ? .all(1) : null,
           constraints: BoxConstraints(
             minHeight: minDiameter,
             minWidth: minDiameter,
@@ -122,12 +122,10 @@ class _AvatarState extends State<Avatar> {
             maxHeight: maxDiameter,
           ),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            shape: .circle,
             color: _backgroundColor,
-            border: widget.withBorder
-                ? Border.all(color: widget.borderColor)
-                : null,
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            border: widget.withBorder ? .all(color: widget.borderColor) : null,
+            image: DecorationImage(image: imageProvider, fit: .cover),
           ),
         );
       },

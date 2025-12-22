@@ -6,7 +6,6 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rakhsa/core/constants/colors.dart';
-import 'package:rakhsa/core/enums/provider_state.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/chat/data/models/chats.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
@@ -59,10 +58,10 @@ class NotificationPageState extends State<NotificationPage> {
         centerTitle: true,
         title: Consumer<GetChatsNotifier>(
           builder: (context, n, child) {
-            if (n.state == ProviderState.loading) {
+            if (n.state == .loading) {
               return Row(
                 spacing: 12,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   Text(
                     "Memuat Notifikasi",
@@ -92,7 +91,7 @@ class NotificationPageState extends State<NotificationPage> {
         color: primaryColor,
         child: Consumer<GetChatsNotifier>(
           builder: (context, n, child) {
-            if (n.state != ProviderState.loaded) {
+            if (n.state != .loaded) {
               return _buildIdleOrErrorState(n);
             }
             return _buildChatList(n.chats);
@@ -104,9 +103,9 @@ class NotificationPageState extends State<NotificationPage> {
 
   Widget _buildIdleOrErrorState(GetChatsNotifier n) {
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: .all(16),
       children: [
-        if (n.state == ProviderState.loading) ...[
+        if (n.state == .loading) ...[
           Shimmer.fromColors(
             highlightColor: Colors.grey.shade100,
             baseColor: Colors.grey.shade300,
@@ -115,37 +114,37 @@ class NotificationPageState extends State<NotificationPage> {
               height: 70,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: .circular(8),
               ),
             ),
           ),
         ] else ...[
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(16),
+            padding: .all(16),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Icon(IconsaxPlusLinear.danger, size: 32),
                 6.spaceY,
 
                 Text(
                   "Gagal Memuat Chat",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: .center,
+                  style: TextStyle(fontSize: 18, fontWeight: .bold),
                 ),
                 14.spaceY,
 
-                Text(n.message, textAlign: TextAlign.center),
+                Text(n.message, textAlign: .center),
                 7.spaceY,
 
                 Row(
                   spacing: 6,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: .center,
                   children: [
                     Text(
                       "Seret kebawah untuk memuat ulang",
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                       style: TextStyle(color: Colors.grey.shade500),
                     ),
                     Icon(
@@ -166,27 +165,27 @@ class NotificationPageState extends State<NotificationPage> {
   Widget _buildChatList(List<ChatsData> chats) {
     if (chats.isEmpty) {
       return ListView(
-        padding: EdgeInsets.all(16),
+        padding: .all(16),
         children: [
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(16),
+            padding: .all(16),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Icon(IconsaxPlusLinear.message, size: 32),
                 6.spaceY,
 
                 Text(
                   "Belum Ada Sesi Chat",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: .center,
+                  style: TextStyle(fontSize: 18, fontWeight: .bold),
                 ),
                 14.spaceY,
 
                 Text(
                   "Chat akan muncul di sini setelah Anda mengirim SOS atau saat sesi bantuan dimulai.",
-                  textAlign: TextAlign.center,
+                  textAlign: .center,
                 ),
               ],
             ),
@@ -196,28 +195,25 @@ class NotificationPageState extends State<NotificationPage> {
     }
     return ListView.builder(
       itemCount: chats.length,
-      padding: EdgeInsets.all(16),
+      padding: .all(16),
       itemBuilder: (context, i) {
         final c = chats[i];
         return ListTile(
           leading: Avatar(src: c.user.avatar, initial: c.user.name),
-          title: Text(
-            c.user.name,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          title: Text(c.user.name, style: TextStyle(fontWeight: .bold)),
           subtitle: c.messages.isNotEmpty
               ? Text(
                   c.messages.first.content,
                   maxLines: 2,
-                  overflow: TextOverflow.clip,
+                  overflow: .clip,
                   style: TextStyle(fontSize: 10.0),
                 )
               : null,
           onTap: () => _navigateToChatRoom(c),
           trailing: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: .symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: .circular(6),
               color: switch (c.status) {
                 "PROCESS" => Colors.blue,
                 "RESOLVED" => Colors.grey,
@@ -230,14 +226,12 @@ class NotificationPageState extends State<NotificationPage> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
               ),
             ),
           ),
           tileColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: .circular(8)),
         );
       },
     );

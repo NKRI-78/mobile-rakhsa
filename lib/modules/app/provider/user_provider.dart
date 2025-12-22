@@ -21,7 +21,7 @@ class UserProvider with ChangeNotifier {
   String? _errMessage;
   String? get errMessage => _errMessage;
 
-  RequestState _getUserState = RequestState.idle;
+  var _getUserState = RequestState.idle;
   RequestState get getUserState => _getUserState;
 
   UserSession? get session => _session;
@@ -45,13 +45,13 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<User?> getUser({bool enableCache = false}) async {
-    _getUserState = RequestState.loading;
+    _getUserState = .loading;
     notifyListeners();
 
     final localUser = _repository.getLocalUser();
     if (enableCache && localUser != null) {
       _user = localUser;
-      _getUserState = RequestState.success;
+      _getUserState = .success;
       notifyListeners();
       return localUser;
     } else {
@@ -61,12 +61,12 @@ class UserProvider with ChangeNotifier {
         });
         final remoteUser = await _repository.getRemoteUser(uid);
         _user = remoteUser;
-        _getUserState = RequestState.success;
+        _getUserState = .success;
         notifyListeners();
         return remoteUser;
       } on NetworkException catch (e) {
         _errMessage = e.message;
-        _getUserState = RequestState.error;
+        _getUserState = .error;
         notifyListeners();
         return null;
       }

@@ -37,20 +37,20 @@ class NearMePlacesPage extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: EdgeInsetsGeometry.only(top: context.top + kToolbarHeight),
+            padding: .only(top: context.top + kToolbarHeight),
             sliver: SliverToBoxAdapter(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16),
+                margin: .symmetric(horizontal: 16),
                 child: Text(
                   "Mencari lokasi terdekat dari Anda...",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: .bold),
                 ),
               ),
             ),
           ),
 
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const .all(16),
             sliver: SliverList.separated(
               itemCount: types.length,
               separatorBuilder: (context, i) => 16.spaceY,

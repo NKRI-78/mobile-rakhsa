@@ -162,23 +162,23 @@ class PermissionManager {
             canPop: canPopDialog,
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.fromLTRB(16, 16, 16, context.bottom + 16),
+              padding: .fromLTRB(16, 16, 16, context.bottom + 16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: .vertical(top: .circular(16)),
               ),
               child: StatefulBuilder(
                 builder: (context, setState) {
                   return Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     children: [
                       Text(
                         "Izin Diperlukan",
-                        textAlign: TextAlign.center,
+                        textAlign: .center,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: .bold,
                         ),
                       ),
 
@@ -186,12 +186,12 @@ class PermissionManager {
 
                       Text(
                         "Marlinda memerlukan izin tambahan. Geser untuk melihat penjelasannya.",
-                        textAlign: TextAlign.center,
+                        textAlign: .center,
                       ),
                       16.spaceY,
 
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: .circular(16),
                         child: Stack(
                           children: [
                             CarouselSlider.builder(
@@ -224,7 +224,7 @@ class PermissionManager {
                                 bottom: 16,
                                 child: Row(
                                   spacing: 8,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: .center,
                                   children: List.generate(contents.length, (
                                     currentIndex,
                                   ) {
@@ -239,9 +239,7 @@ class PermissionManager {
                                             : primaryColor.withValues(
                                                 alpha: 0.3,
                                               ),
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
+                                        borderRadius: .circular(100),
                                       ),
                                     );
                                   }),
@@ -255,7 +253,7 @@ class PermissionManager {
 
                       if (permanentlyDenied.isNotEmpty)
                         Padding(
-                          padding: EdgeInsets.only(bottom: 16),
+                          padding: .only(bottom: 16),
                           child: Text(
                             "Sebagian izin harus diaktifkan lewat Pengaturan karena sebelumnya ditolak secara permanen.",
                             style: TextStyle(
@@ -267,7 +265,7 @@ class PermissionManager {
 
                       Row(
                         spacing: 16,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: .center,
                         children: [
                           if (permanentlyDenied.isNotEmpty)
                             Expanded(
@@ -277,9 +275,7 @@ class PermissionManager {
                                   foregroundColor: Colors.white,
                                   backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      8,
-                                    ),
+                                    borderRadius: .circular(8),
                                   ),
                                 ),
                                 label: Text('Buka Pengaturan'),
@@ -295,9 +291,7 @@ class PermissionManager {
                                   foregroundColor: Colors.white,
                                   backgroundColor: primaryColor,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      8,
-                                    ),
+                                    borderRadius: .circular(8),
                                   ),
                                 ),
                                 label: Text('Minta Izin'),
@@ -398,17 +392,17 @@ class _PermissionCard extends StatelessWidget {
     final meta = _permissionMeta(permission);
 
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 28),
+      padding: .fromLTRB(16, 16, 16, 28),
       color: Colors.grey.shade100,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: .center,
         children: [
           Container(
             width: 72,
             height: 72,
             decoration: BoxDecoration(
               color: meta.bgColor.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
+              shape: .circle,
             ),
             child: Center(
               child: Icon(meta.icon, size: 34, color: meta.bgColor),
@@ -419,10 +413,10 @@ class _PermissionCard extends StatelessWidget {
 
           Text(
             meta.title,
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontWeight: .bold,
               color: Colors.black,
             ),
           ),
@@ -431,7 +425,7 @@ class _PermissionCard extends StatelessWidget {
 
           Text(
             meta.description,
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: TextStyle(fontSize: 12),
           ),
         ],

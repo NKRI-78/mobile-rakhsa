@@ -9,7 +9,7 @@ class InsertMessageNotifier with ChangeNotifier {
 
   InsertMessageNotifier({required this.useCase});
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -37,10 +37,10 @@ class InsertMessageNotifier with ChangeNotifier {
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }

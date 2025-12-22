@@ -9,7 +9,7 @@ class HomeHightlightBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: .circular(16),
       child: CarouselSlider(
         options: CarouselOptions(
           height: 190,

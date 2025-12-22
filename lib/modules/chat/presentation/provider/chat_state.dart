@@ -35,13 +35,13 @@ class GetChatInboxState extends Equatable {
 
   const GetChatInboxState({
     this.chatInbox,
-    this.state = RequestState.idle,
+    this.state = .idle,
     this.errorMessage,
   });
 
-  bool get isLoading => state == RequestState.loading;
-  bool get isError => state == RequestState.error;
-  bool get isSuccess => state == RequestState.success;
+  bool get isLoading => state == .loading;
+  bool get isError => state == .error;
+  bool get isSuccess => state == .success;
 
   @override
   List<Object?> get props => [chatInbox, state, errorMessage];
@@ -67,13 +67,13 @@ class GetChatMessagesState extends Equatable {
 
   const GetChatMessagesState({
     this.messages = const <Message>[],
-    this.state = RequestState.idle,
+    this.state = .idle,
     this.errorMessage,
   });
 
-  bool get isLoading => state == RequestState.loading;
-  bool get isError => state == RequestState.error;
-  bool get isSuccess => state == RequestState.success;
+  bool get isLoading => state == .loading;
+  bool get isError => state == .error;
+  bool get isSuccess => state == .success;
 
   @override
   List<Object?> get props => [messages, state, errorMessage];

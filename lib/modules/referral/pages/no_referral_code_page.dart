@@ -16,23 +16,18 @@ class NoReferralCodePage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.grey.shade50,
         body: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            context.top + 16,
-            16,
-            context.bottom + 16,
-          ),
+          padding: .fromLTRB(16, context.top + 16, 16, context.bottom + 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: .stretch,
             children: [
               50.spaceY,
               Expanded(
                 child: Center(
                   child: Container(
-                    margin: EdgeInsets.all(80),
-                    padding: EdgeInsets.all(16),
+                    margin: .all(80),
+                    padding: .all(16),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                      shape: .circle,
                       color: primaryColor.withValues(alpha: 0.08),
                     ),
                     child: LottieAnimation("assets/animations/referral.lottie"),
@@ -44,7 +39,7 @@ class NoReferralCodePage extends StatelessWidget {
 
               Text(
                 "Akses Marlinda Memerlukan Referral",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 28, fontWeight: .bold),
               ),
 
               16.spaceY,
@@ -65,7 +60,7 @@ class NoReferralCodePage extends StatelessWidget {
                 child: AppButton(
                   label: "Mengerti",
                   onPressed: () => WelcomeRoute().go(context),
-                  borderRadius: BorderRadiusGeometry.circular(100),
+                  borderRadius: .circular(100),
                 ),
               ),
             ],

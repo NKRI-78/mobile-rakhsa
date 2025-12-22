@@ -19,12 +19,12 @@ class NearMePlaceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: .circular(16),
       child: InkWell(
         onTap: type.action,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: .circular(16),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: .all(16),
           child: Row(
             children: [
               _buildIconAsset(),
@@ -42,22 +42,22 @@ class NearMePlaceTile extends StatelessWidget {
 
   Widget _buildTitle() {
     return Flexible(
-      fit: FlexFit.tight,
+      fit: .tight,
       child: Text(
         type.title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 16, fontWeight: .bold),
       ),
     );
   }
 
   Widget _buildIconAsset() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const .all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: .circular(16),
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: .topLeft,
+          end: .bottomRight,
           colors: [primaryColor, primaryColor.withValues(alpha: 0.7)],
         ),
       ),

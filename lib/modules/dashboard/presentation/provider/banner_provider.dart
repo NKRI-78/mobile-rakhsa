@@ -17,9 +17,9 @@ class BannerProvider extends ChangeNotifier {
 
   var _getBannersState = RequestState.idle;
   RequestState get getBannerState => _getBannersState;
-  bool get isLoading => _getBannersState == RequestState.loading;
-  bool get isSuccess => _getBannersState == RequestState.success;
-  bool get isError => _getBannersState == RequestState.error;
+  bool get isLoading => _getBannersState == .loading;
+  bool get isSuccess => _getBannersState == .success;
+  bool get isError => _getBannersState == .error;
 
   ErrorState? _errorState;
   ErrorState? get error => _errorState;
@@ -28,12 +28,12 @@ class BannerProvider extends ChangeNotifier {
     bool enableCache = true,
     Duration cacheAge = const Duration(minutes: 30),
   }) async {
-    _getBannersState = RequestState.loading;
+    _getBannersState = .loading;
     notifyListeners();
 
     if (_banners.isNotEmpty) {
       if (enableCache && await _shouldRevalidate(cacheAge)) {
-        _getBannersState = RequestState.success;
+        _getBannersState = .success;
         notifyListeners();
         return;
       }
@@ -42,7 +42,7 @@ class BannerProvider extends ChangeNotifier {
     try {
       final remoteBanners = await _repository.getBanners();
       _banners = remoteBanners;
-      _getBannersState = RequestState.success;
+      _getBannersState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
       _errorState = ErrorState(
@@ -50,7 +50,7 @@ class BannerProvider extends ChangeNotifier {
         message: e.message,
         title: e.title,
       );
-      _getBannersState = RequestState.error;
+      _getBannersState = .error;
       notifyListeners();
     }
   }

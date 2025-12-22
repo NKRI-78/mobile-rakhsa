@@ -12,13 +12,13 @@ class NearMeState extends Equatable {
 
   const NearMeState({
     this.places = const <GoogleMapsPlace>[],
-    this.state = RequestState.idle,
+    this.state = .idle,
     this.error,
   });
 
-  bool get isLoading => state == RequestState.loading;
-  bool get isError => state == RequestState.error;
-  bool get isSuccess => state == RequestState.success;
+  bool get isLoading => state == .loading;
+  bool get isError => state == .error;
+  bool get isSuccess => state == .success;
 
   @override
   List<Object?> get props => [places, state, error];

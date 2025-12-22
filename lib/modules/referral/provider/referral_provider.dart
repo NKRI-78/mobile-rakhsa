@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:rakhsa/core/client/errors/errors.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/repositories/referral/model/referral.dart';
 import 'package:rakhsa/repositories/referral/referral_repository.dart';
 import 'package:rakhsa/service/storage/storage.dart';
@@ -24,26 +23,24 @@ class ReferralProvider extends ChangeNotifier {
 
   Future<void> activateReferralCode(
     String uid, {
-    Duration delay = Duration.zero,
+    Duration delay = .zero,
   }) async {
-    setState(_state.copyWith(state: RequestState.loading));
+    setState(_state.copyWith(state: .loading));
 
     if (hasReferralCode) {
       try {
         await Future.delayed(delay);
         final newReferralData = await _repository.activateReferralCode(uid);
-        setState(
-          _state.copyWith(data: newReferralData, state: RequestState.success),
-        );
+        setState(_state.copyWith(data: newReferralData, state: .success));
       } on NetworkException catch (e) {
         setState(
           _state.copyWith(
-            state: RequestState.error,
+            state: .error,
             error: ErrorState(
               title: e.title,
               message: e.message,
               errorCode: e.errorCode,
-              source: ErrorSource.network,
+              source: .network,
             ),
           ),
         );
@@ -51,12 +48,12 @@ class ReferralProvider extends ChangeNotifier {
       } on ReferralException catch (e) {
         setState(
           _state.copyWith(
-            state: RequestState.error,
+            state: .error,
             error: ErrorState(
               title: e.title,
               message: e.message,
               errorCode: e.errorCode,
-              source: ErrorSource.referral,
+              source: .referral,
             ),
           ),
         );

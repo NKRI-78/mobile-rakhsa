@@ -22,25 +22,25 @@ class PlaceItemListTile extends StatelessWidget {
         : "${dkm.toStringAsFixed(2)} km";
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: .circular(8),
       child: InkWell(
         onTap: () async => await onPlaceSelected(place),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: .circular(8),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: .symmetric(horizontal: 16, vertical: 12),
           child: Row(
             spacing: 12,
             children: [
               Expanded(
                 child: Column(
                   spacing: 2,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: .min,
+                  crossAxisAlignment: .start,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      padding: .symmetric(horizontal: 6),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
+                        borderRadius: .circular(100),
                         color: primaryColor.withValues(alpha: 0.1),
                       ),
                       child: Text(
@@ -48,23 +48,20 @@ class PlaceItemListTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           color: primaryColor,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: .w600,
                         ),
                       ),
                     ),
                     2.spaceY,
                     Text(
                       place.placeName,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(fontSize: 16, fontWeight: .w500),
                     ),
                     if (place.vicinity != null)
                       Text(
                         place.vicinity!,
                         maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        overflow: .ellipsis,
                         style: TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                   ],

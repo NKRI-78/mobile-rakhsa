@@ -5,7 +5,6 @@ import 'package:bounce/bounce.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
@@ -90,10 +89,10 @@ class SosButtonState extends State<SosButton>
       if (!mounted) return;
 
       switch (e.type) {
-        case SosEventType.start:
+        case .start:
           _resetAndStartCountdown();
           break;
-        case SosEventType.stop:
+        case .stop:
           _stopCountdown();
           break;
       }
@@ -221,16 +220,16 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
         );
       },
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: .all(10),
         decoration: BoxDecoration(
           color: Colors.black54,
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: .circular(100),
         ),
         child: Text(
           "Tunggu Sebentar Sedang Memuat Lokasi",
           maxLines: 2,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
+          textAlign: .center,
+          overflow: .ellipsis,
           style: TextStyle(fontSize: 12, color: Colors.white),
         ),
       ),
@@ -246,7 +245,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
     overlayController.dismiss();
 
     final errorGetCurrentLocation = _locationProvider.isGetLocationState(
-      RequestState.error,
+      .error,
     );
     if (errorGetCurrentLocation) {
       if (mounted) {
@@ -474,7 +473,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
 
     return Center(
       child: Stack(
-        alignment: Alignment.center,
+        alignment: .center,
         children: [
           if (_pulseAnimation != null)
             for (var scaleFactor in [0.8, 1.2, 1.4])
@@ -487,7 +486,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                       width: 70,
                       height: 70,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        shape: .circle,
                         color: buttonColor.withValues(alpha: 0.2 / scaleFactor),
                       ),
                     ),
@@ -513,7 +512,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
 
           Consumer<LocationProvider>(
             builder: (context, p, child) {
-              final locationError = p.isGetLocationState(RequestState.error);
+              final locationError = p.isGetLocationState(.error);
               return GestureDetector(
                 onLongPressStart: (_) async {
                   await _onLongPressStart();
@@ -527,7 +526,7 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                     width: buttonSize,
                     height: buttonSize,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                      shape: .circle,
                       color: widget.param.hasSocketConnection || !locationError
                           ? buttonColor
                           : disabledColor,
@@ -542,12 +541,12 @@ Kami mendeteksi adanya kesalahan pada sesi Anda. Silakan login kembali untuk mel
                         ),
                       ],
                     ),
-                    alignment: Alignment.center,
+                    alignment: .center,
                     child: Text(
                       isWaitingConfirmSOS ? "$_remainingSeconds" : "SOS",
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: .bold,
                         color: Colors.white,
                       ),
                     ),

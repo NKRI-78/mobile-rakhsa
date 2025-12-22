@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
@@ -15,7 +14,6 @@ import 'package:rakhsa/modules/dashboard/presentation/widgets/sos_button.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rakhsa/core/constants/colors.dart';
-import 'package:rakhsa/core/enums/provider_state.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
 
@@ -35,32 +33,29 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.only(top: context.top),
+        padding: .only(top: context.top),
         child: RefreshIndicator.adaptive(
           onRefresh: onRefresh,
           color: primaryColor,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const .all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   HeaderSection(scaffoldKey: globalKey),
 
                   40.spaceY,
 
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: .center,
                     children: [
                       Flexible(
                         child: Text(
                           "Tekan & tahan tombol ini, \njika Anda dalam keadaan darurat.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          textAlign: .center,
+                          style: TextStyle(fontSize: 16, fontWeight: .bold),
                         ),
                       ),
                     ],
@@ -79,9 +74,7 @@ class HomePage extends StatelessWidget {
                           lat: (coord?.lat ?? 0.0).toString(),
                           lng: (coord?.lng ?? 0.0).toString(),
                           hasSocketConnection: s.isConnected,
-                          loadingGmaps: l.isGetLocationState(
-                            RequestState.loading,
-                          ),
+                          loadingGmaps: l.isGetLocationState(.loading),
                           profile: u.user,
                         ),
                       );
@@ -90,18 +83,18 @@ class HomePage extends StatelessWidget {
 
                   Consumer<DashboardNotifier>(
                     builder: (context, n, child) {
-                      if (n.state == ProviderState.loading) {
+                      if (n.state == .loading) {
                         return Container(
-                          margin: EdgeInsets.only(top: 46),
-                          padding: EdgeInsets.all(16),
+                          margin: .only(top: 46),
+                          padding: .all(16),
                           height: 200.0,
                           decoration: BoxDecoration(
                             color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: .circular(16),
                           ),
                           child: Column(
                             spacing: 12,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: .center,
                             children: [
                               SizedBox(
                                 width: 24,
@@ -115,7 +108,7 @@ class HomePage extends StatelessWidget {
                                 width: double.maxFinite,
                                 child: Text(
                                   "Memuat Informasi",
-                                  textAlign: TextAlign.center,
+                                  textAlign: .center,
                                 ),
                               ),
                             ],
@@ -123,7 +116,7 @@ class HomePage extends StatelessWidget {
                         );
                       }
 
-                      if (n.state == ProviderState.error) {
+                      if (n.state == .error) {
                         return SizedBox(
                           height: 200.0,
                           child: Center(
@@ -139,7 +132,7 @@ class HomePage extends StatelessWidget {
                       }
 
                       return Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
+                        padding: const .only(top: 45),
                         child: (n.ews.isNotEmpty)
                             ? EwsListWidget()
                             : HomeHightlightBanner(banners),

@@ -21,7 +21,7 @@ class SosRatingNotifier with ChangeNotifier {
   double _rating = 0.0;
   double get rating => _rating;
 
-  ProviderState _state = ProviderState.idle;
+  ProviderState _state = .idle;
   ProviderState get state => _state;
 
   String _message = "";
@@ -40,7 +40,7 @@ class SosRatingNotifier with ChangeNotifier {
   }
 
   Future<void> sosRating({required String sosId}) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(
       sosId: sosId,
@@ -50,10 +50,10 @@ class SosRatingNotifier with ChangeNotifier {
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }

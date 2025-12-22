@@ -19,8 +19,7 @@ class SosProvider extends ChangeNotifier {
   double get uploadPercent => _uploadProgress * 100;
 
   var _sendSosVideoState = RequestState.idle;
-  bool isSendSosVideoState(List<RequestState> compareStates) =>
-      compareStates.contains(_sendSosVideoState);
+  bool isSendSosVideoState(RequestState state) => state == _sendSosVideoState;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -30,7 +29,7 @@ class SosProvider extends ChangeNotifier {
     VoidCallback? onTimeout,
     VoidCallback? onError,
   }) async {
-    _sendSosVideoState = RequestState.loading;
+    _sendSosVideoState = .loading;
     notifyListeners();
 
     try {
@@ -43,17 +42,17 @@ class SosProvider extends ChangeNotifier {
       );
 
       _sosVideo = remoteSosVideo;
-      _sendSosVideoState = RequestState.success;
+      _sendSosVideoState = .success;
       notifyListeners();
     } on NetworkException catch (e) {
-      if (e.errorType == NetworkError.sendTimeout) {
+      if (e.errorType == .sendTimeout) {
         onTimeout?.call();
       } else {
         onError?.call();
       }
 
       _errorMessage = e.message;
-      _sendSosVideoState = RequestState.error;
+      _sendSosVideoState = .error;
       notifyListeners();
     }
   }

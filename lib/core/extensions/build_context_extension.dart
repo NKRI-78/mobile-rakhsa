@@ -7,5 +7,6 @@ extension ContextExtension on BuildContext {
   double get top => mediaQuery.padding.top;
   double get bottom => mediaQuery.padding.bottom;
   ThemeData get theme => Theme.of(this);
+  TextTheme get textTheme => theme.textTheme;
   double getScreenHeight([double from = 1.0]) => mediaQuery.size.height * from;
 }

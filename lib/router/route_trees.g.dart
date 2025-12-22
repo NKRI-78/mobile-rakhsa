@@ -458,7 +458,7 @@ mixin $ChatRoomRoute on GoRouteData {
 
 mixin $NewsDetailRoute on GoRouteData {
   static NewsDetailRoute _fromState(GoRouterState state) =>
-      NewsDetailRoute(state.extra as NewsDetailPageParams);
+      NewsDetailRoute(state.extra as EwsDetailPageParams);
 
   NewsDetailRoute get _self => this as NewsDetailRoute;
 

@@ -16,7 +16,7 @@ import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/storage/storage.dart';
-import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/components/custom.dart';
 
 class ChatRoomParams {
   final String sosId;
@@ -235,7 +235,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
               return SafeArea(
                 bottom: Platform.isAndroid,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: .stretch,
                   children: [
                     Expanded(
                       child:
@@ -246,7 +246,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                               controller: sC,
                               reverse: true,
                               itemCount: notifier.messages.length,
-                              padding: const EdgeInsets.all(16),
+                              padding: const .all(16),
                               itemBuilder: (context, index) {
                                 final item = notifier.messages[index];
 
@@ -265,7 +265,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
                     // send message
                     Container(
-                      padding: EdgeInsets.fromLTRB(
+                      padding: .fromLTRB(
                         16,
                         8,
                         16,
@@ -273,14 +273,14 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                       ),
                       decoration: BoxDecoration(color: Color(0xFFEAEAEA)),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: .min,
+                        crossAxisAlignment: .stretch,
                         children: [
                           if (closedSession) ...[
                             Text(
                               "Sesi Chat Berakhir",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: .center,
+                              style: TextStyle(fontWeight: .bold),
                             ),
                             16.spaceY,
                             SizedBox(
@@ -289,11 +289,9 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                 style: FilledButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   foregroundColor: Colors.white,
-                                  padding: EdgeInsets.all(12),
+                                  padding: .all(12),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      12,
-                                    ),
+                                    borderRadius: .circular(12),
                                   ),
                                 ),
                                 onPressed: () {
@@ -307,7 +305,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                             if (notifier.isBtnSessionEnd ||
                                 showEndChatSugesstion)
                               Padding(
-                                padding: EdgeInsets.only(bottom: 10),
+                                padding: .only(bottom: 10),
                                 child: CustomButton(
                                   onTap: () async {
                                     await EndSosDialog.launch(
@@ -326,12 +324,12 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                               ),
                             Row(
                               spacing: 14,
-                              mainAxisSize: MainAxisSize.max,
+                              mainAxisSize: .min,
                               children: [
                                 Expanded(
                                   flex: 5,
                                   child: Theme(
-                                    data: Theme.of(context).copyWith(
+                                    data: context.theme.copyWith(
                                       textSelectionTheme:
                                           TextSelectionThemeData(
                                             cursorColor: primaryColor,
@@ -356,21 +354,15 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                           color: Colors.grey,
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30.0,
-                                          ),
+                                          borderRadius: .circular(30.0),
                                           borderSide: BorderSide.none,
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30.0,
-                                          ),
+                                          borderRadius: .circular(30.0),
                                           borderSide: BorderSide.none,
                                         ),
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30.0,
-                                          ),
+                                          borderRadius: .circular(30.0),
                                           borderSide: BorderSide.none,
                                         ),
                                       ),
@@ -381,12 +373,10 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                                   child: IconButton(
                                     onPressed: sendMessage,
                                     icon: Container(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const .all(8.0),
                                       decoration: const BoxDecoration(
                                         color: primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0),
-                                        ),
+                                        borderRadius: .all(.circular(50.0)),
                                       ),
                                       child: const Icon(
                                         Icons.send,
@@ -414,27 +404,24 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 
   Widget _buildAutoGreetings() {
     return ListView(
-      padding: EdgeInsets.all(12),
+      padding: .all(12),
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(12),
+          padding: .all(12),
           decoration: BoxDecoration(
             color: primaryColor,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: .circular(12),
           ),
           child: RichText(
-            textAlign: TextAlign.center,
+            textAlign: .center,
             text: TextSpan(
               style: TextStyle(fontSize: 14, color: Colors.white),
               children: [
                 const TextSpan(text: "Terima kasih telah menghubungi kami di "),
                 TextSpan(
                   text: "Marlinda",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontWeight: .bold, color: Colors.white),
                 ),
                 const TextSpan(
                   text: ". Apakah yang bisa kami bantu atas keluhan anda?",
@@ -447,7 +434,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
         170.spaceY,
 
         Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Opacity(
               opacity: 0.7,
@@ -459,7 +446,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
             ),
             Text(
               "Sesi sedang aktif. Ketik pesan pertama Anda agar kami dapat membantu.",
-              textAlign: TextAlign.center,
+              textAlign: .center,
               style: TextStyle(fontSize: 12, color: Colors.black54),
             ),
           ],

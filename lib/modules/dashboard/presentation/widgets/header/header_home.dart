@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/core/constants/colors.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
@@ -19,12 +18,11 @@ class HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         // profile, title, & logo marlinda
         Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
           children: [
             // profile
             Flexible(
@@ -43,7 +41,7 @@ class HeaderSection extends StatelessWidget {
 
             // title marlinda
             Flexible(
-              fit: FlexFit.tight,
+              fit: .tight,
               child: Image.asset(Assets.titleMarlinda, height: 38.0),
             ),
 
@@ -61,14 +59,14 @@ class HeaderSection extends StatelessWidget {
 
         // welcome, connection indicator, & notif
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
           children: [
             // text selamat datang
             Flexible(
-              fit: FlexFit.tight,
+              fit: .tight,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: .start,
+                mainAxisSize: .min,
                 children: [
                   Text(
                     "Selamat Datang",
@@ -76,16 +74,13 @@ class HeaderSection extends StatelessWidget {
                   ),
                   Consumer<UserProvider>(
                     builder: (context, provider, child) {
-                      if (provider.getUserState == RequestState.success) {
+                      if (provider.getUserState == .success) {
                         return SizedBox(
                           width: 150.0,
                           child: Text(
                             provider.user?.username ?? "-",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                            overflow: .ellipsis,
+                            style: TextStyle(fontWeight: .bold, fontSize: 14),
                           ),
                         );
                       } else {
@@ -103,7 +98,7 @@ class HeaderSection extends StatelessWidget {
                   width: 15,
                   height: 15,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: .circle,
                     color: n.connStatus.color,
                   ),
                 );
@@ -114,7 +109,7 @@ class HeaderSection extends StatelessWidget {
             // icon notif
             InkWell(
               onTap: () => NotificationRoute().go(context),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: .circular(8),
               child: Material(
                 child: Consumer<UserProvider>(
                   builder: (context, n, child) {

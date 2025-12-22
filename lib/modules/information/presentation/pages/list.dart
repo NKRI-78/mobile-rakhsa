@@ -16,16 +16,16 @@ class InformationListPage extends StatelessWidget {
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(80.0),
           child: Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+            padding: .fromLTRB(20, 0, 20, 10),
             child: Text(
               'Informasi apa, yang ingin anda ketahui ?',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              style: TextStyle(fontWeight: .bold, fontSize: 24),
             ),
           ),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const .all(16.0),
         children: [
           NearMePlaceTile(
             NearMePlaceType(

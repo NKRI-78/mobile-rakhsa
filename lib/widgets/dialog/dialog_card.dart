@@ -24,7 +24,7 @@ class DialogCard extends StatelessWidget {
   final _defaultTitleStyle = TextStyle(
     color: Colors.black,
     fontSize: 22,
-    fontWeight: FontWeight.bold,
+    fontWeight: .bold,
   );
   final _defaultMessageStyle = TextStyle(color: Colors.black87, fontSize: 13);
 
@@ -54,34 +54,34 @@ class DialogCard extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Stack(
-        alignment: Alignment.topCenter,
+        alignment: .topCenter,
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(padding, topPadding, padding, padding),
-            margin: EdgeInsets.only(top: topMargin),
+            padding: .fromLTRB(padding, topPadding, padding, padding),
+            margin: .only(top: topMargin),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(borderRadius),
+              borderRadius: .circular(borderRadius),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: .min,
+              crossAxisAlignment: .stretch,
               children: [
                 if (content?.title != null)
                   Padding(
-                    padding: EdgeInsets.only(bottom: padding),
+                    padding: .only(bottom: padding),
                     child: Text(
                       content!.title!,
                       maxLines: 2,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                      textAlign: .center,
+                      overflow: .ellipsis,
                       style: titleStyle,
                     ),
                   ),
 
                 if (content?.titleAsync != null)
                   Padding(
-                    padding: EdgeInsets.only(bottom: padding),
+                    padding: .only(bottom: padding),
                     child: _renderAsyncTitle(titleStyle),
                   ),
 
@@ -91,8 +91,8 @@ class DialogCard extends StatelessWidget {
                   Text(
                     "Buat message diparameter messageWidget, message atau messageAsync",
                     maxLines: 8,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
+                    textAlign: .center,
+                    overflow: .ellipsis,
                     style: messageStyle,
                   ),
 
@@ -102,8 +102,8 @@ class DialogCard extends StatelessWidget {
                   Text(
                     content!.message!,
                     maxLines: 8,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
+                    textAlign: .center,
+                    overflow: .ellipsis,
                     style: messageStyle,
                   ),
 
@@ -113,17 +113,17 @@ class DialogCard extends StatelessWidget {
 
                 if (filteredActions.isNotEmpty)
                   Padding(
-                    padding: EdgeInsets.only(top: (padding + 4)),
-                    child: actionDirections == Axis.vertical
+                    padding: .only(top: (padding + 4)),
+                    child: actionDirections == .vertical
                         ? Column(
                             spacing: 2,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: .min,
+                            crossAxisAlignment: .stretch,
                             children: filteredActions.reversed.toList(),
                           )
                         : Row(
                             spacing: 6,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: .center,
                             children: filteredActions.map((button) {
                               final expand =
                                   (content
@@ -132,7 +132,7 @@ class DialogCard extends StatelessWidget {
                                       false) &&
                                   button.primary;
                               return Flexible(
-                                fit: expand ? FlexFit.tight : FlexFit.loose,
+                                fit: expand ? .tight : .loose,
                                 child: button,
                               );
                             }).toList(),
@@ -147,7 +147,7 @@ class DialogCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     content?.style?.backgroundIconColor ?? Colors.transparent,
-                shape: BoxShape.circle,
+                shape: .circle,
               ),
               child: Image.asset(
                 content!.assetIcon!,
@@ -171,12 +171,12 @@ class DialogCard extends StatelessWidget {
           return Text(
             s.data!,
             maxLines: 2,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
+            textAlign: .center,
+            overflow: .ellipsis,
             style: style,
           );
         }
-        return Text("-", textAlign: TextAlign.center, style: style);
+        return Text("-", textAlign: .center, style: style);
       },
     );
   }
@@ -188,7 +188,7 @@ class DialogCard extends StatelessWidget {
         if (s.connectionState == ConnectionState.waiting) {
           return Column(
             spacing: 5,
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               _renderLoadingSkeleton(width: 130),
               _renderLoadingSkeleton(width: 150),
@@ -199,12 +199,12 @@ class DialogCard extends StatelessWidget {
           return Text(
             s.data!,
             maxLines: 9,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
+            textAlign: .center,
+            overflow: .ellipsis,
             style: style,
           );
         }
-        return Text("-", textAlign: TextAlign.center, style: style);
+        return Text("-", textAlign: .center, style: style);
       },
     );
   }
@@ -218,7 +218,7 @@ class DialogCard extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           color: Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: .circular(4),
         ),
       ),
     );

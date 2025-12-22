@@ -10,7 +10,7 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
-import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/components/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
@@ -191,7 +191,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       height: 300,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          fit: BoxFit.fill,
+                          fit: .fill,
                           image: AssetImage(Assets.loginOrnament),
                         ),
                       ),
@@ -200,9 +200,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                   Positioned.fill(
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.all(16),
+                      padding: .all(16),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: .center,
                         children: [
                           50.spaceY,
                           Row(
@@ -221,7 +221,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 style: TextStyle(
                                   fontSize: 32,
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: .w700,
                                 ),
                               ),
                             ],
@@ -232,7 +232,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           Form(
                             key: _formKey,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              crossAxisAlignment: .stretch,
                               children: [
                                 AuthTextField(
                                   phone: true,

@@ -25,7 +25,7 @@ class RemoteConfigService {
           fetchTimeout: const Duration(seconds: 10),
           minimumFetchInterval: (BuildConfig.isProd && kReleaseMode)
               ? const Duration(hours: 1)
-              : Duration.zero,
+              : .zero,
         ),
       );
 

@@ -21,7 +21,7 @@ class LocationProvider extends ChangeNotifier {
 
   String? get iSOCountryCode => _locationData?.placemark?.isoCountryCode;
 
-  RequestState _getLocationState = RequestState.idle;
+  var _getLocationState = RequestState.idle;
   bool isGetLocationState(RequestState state) => _getLocationState == state;
 
   bool _isLocationCacheActive = false;
@@ -40,7 +40,7 @@ class LocationProvider extends ChangeNotifier {
   }
 
   LocationSettings getLocationSettings({
-    LocationAccuracy accuracy = LocationAccuracy.best,
+    LocationAccuracy accuracy = .best,
     Duration timeLimit = const Duration(seconds: 10),
   }) {
     if (Platform.isIOS) {
@@ -66,24 +66,19 @@ class LocationProvider extends ChangeNotifier {
       "loading getCurrentLocation... | enableCache? $enableCache",
       label: "LOCATION_PROVIDER",
     );
-    _getLocationState = RequestState.loading;
+    _getLocationState = .loading;
     notifyListeners();
 
     if (enableCache && _locationData != null) {
-      // dibaca sayy 😗
-      // init last update revalidate date time
-      // pas aplikasi pertama kali dibuka
-      if (!prefs.containsKey(_revalidateCacheKey)) {
-        await _initCacheTimeOnFirstRun();
-      }
+      await _saveCacheTimeOnFirstRun();
 
-      final needRefresh = await _shouldRevalidateLocationCache(defCacheAge);
+      final needRefresh = await _shouldRevalidate(defCacheAge);
       log(
         "enableCache && hasLocationData? ${enableCache && _locationData != null} | needRefresh? $needRefresh",
         label: "LOCATION_PROVIDER",
       );
       if (!needRefresh) {
-        _getLocationState = RequestState.success;
+        _getLocationState = .success;
         notifyListeners();
         log(
           "location data dari cache = ${_locationData?.toString() ?? "-"}",
@@ -97,18 +92,15 @@ class LocationProvider extends ChangeNotifier {
       final isGPSEnabled = await Geolocator.isLocationServiceEnabled();
       log("hasGPS? $isGPSEnabled", label: "LOCATION_PROVIDER");
       if (!isGPSEnabled) {
-        throw LocationException(LocationError.gpsDisabled);
+        throw LocationException(.gpsDisabled);
       }
 
       final hasPermission = await Geolocator.checkPermission()
-          .then((p) {
-            return p == LocationPermission.always ||
-                p == LocationPermission.whileInUse;
-          })
+          .then((p) => p == .always || p == .whileInUse)
           .onError((e, st) => false);
       log("hasPermission? $hasPermission", label: "LOCATION_PROVIDER");
       if (!hasPermission) {
-        throw LocationException(LocationError.deniedPermission);
+        throw LocationException(.deniedPermission);
       }
 
       final newLocation =
@@ -136,7 +128,7 @@ class LocationProvider extends ChangeNotifier {
 
       // set state
       _locationData = newLocation.copyWith(placemark: newPlacemark);
-      _getLocationState = RequestState.success;
+      _getLocationState = .success;
       notifyListeners();
       log(
         "newLocation data = ${_locationData?.toString() ?? "-"}",
@@ -146,32 +138,37 @@ class LocationProvider extends ChangeNotifier {
       return newLocation;
     } on LocationException catch (e) {
       _errMessage = e.error.getMessage();
-      _getLocationState = RequestState.error;
+      _getLocationState = .error;
       notifyListeners();
       log("error LocationException = $_errMessage", label: "LOCATION_PROVIDER");
       return null;
     } catch (e) {
       final msg = "Terjadi kesahalan yang tidak diketahui, ${e.toString()}";
       _errMessage = msg;
-      _getLocationState = RequestState.error;
+      _getLocationState = .error;
       notifyListeners();
       log("error UnhandledException = $msg", label: "LOCATION_PROVIDER");
       return null;
     }
   }
 
-  Future<void> _initCacheTimeOnFirstRun() async {
-    await prefs.setInt(
-      _revalidateCacheKey,
-      DateTime.now().millisecondsSinceEpoch,
-    );
+  Future<void> _saveCacheTimeOnFirstRun() async {
+    // dibaca sayy 😗
+    // init last update revalidate date time
+    // pas aplikasi pertama kali dibuka
+    if (!prefs.containsKey(_revalidateCacheKey)) {
+      await prefs.setInt(
+        _revalidateCacheKey,
+        DateTime.now().millisecondsSinceEpoch,
+      );
+    }
   }
 
   bool _checkCacheAgeIsActive(Duration cacheAge) {
-    return cacheAge == Duration.zero;
+    return cacheAge == .zero;
   }
 
-  Future<bool> _shouldRevalidateLocationCache(Duration maxAge) async {
+  Future<bool> _shouldRevalidate(Duration maxAge) async {
     final lastUpdatedMs = prefs.getInt(_revalidateCacheKey);
 
     final nowMs = DateTime.now().millisecondsSinceEpoch;

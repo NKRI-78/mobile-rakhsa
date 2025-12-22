@@ -23,6 +23,9 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final placeholderUrl =
+        "https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg";
+
     final isAthan = username == "Athan";
 
     final currentTime = (DateTime.tryParse(time) ?? DateTime.now()).format(
@@ -30,20 +33,19 @@ class ChatBubble extends StatelessWidget {
     );
 
     return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: isMe ? .centerRight : .centerLeft,
       child: Column(
         spacing: 6,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
         children: [
           if (!isMe && !isSingleAdmin)
             Row(
               spacing: 6,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Avatar(
-                  src:
-                      "https://i.pinimg.com/736x/d2/98/4e/d2984ec4b65a8568eab3dc2b640fc58e.jpg",
+                  src: placeholderUrl,
                   initial: username,
                   radius: 12,
                   withBorder: true,
@@ -54,36 +56,31 @@ class ChatBubble extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11.5,
                     color: Colors.black54,
-                    fontWeight: isAthan ? FontWeight.w600 : FontWeight.w500,
+                    fontWeight: isAthan ? .w600 : .w500,
                   ),
                 ),
               ],
             ),
           Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 14.0,
-            ),
-            margin: EdgeInsets.only(bottom: 12),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
-            ),
+            padding: const .symmetric(vertical: 10.0, horizontal: 14.0),
+            margin: .only(bottom: 12),
+            constraints: BoxConstraints(maxWidth: context.getScreenHeight(0.7)),
             decoration: BoxDecoration(
               color: isMe ? primaryColor : Colors.grey.shade200,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isMe ? 12.0 : 0.0),
-                topRight: Radius.circular(isMe ? 0.0 : 12.0),
-                bottomLeft: const Radius.circular(12.0),
-                bottomRight: const Radius.circular(12.0),
+              borderRadius: .only(
+                topLeft: .circular(isMe ? 12 : 0),
+                topRight: .circular(isMe ? 0 : 12),
+                bottomLeft: .circular(12),
+                bottomRight: .circular(12),
               ),
               border: !isMe
-                  ? Border.all(color: isAthan ? primaryColor : Colors.grey)
+                  ? .all(color: isAthan ? primaryColor : Colors.grey)
                   : null,
             ),
             child: Column(
               spacing: 4,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: .end,
+              mainAxisSize: .min,
               children: [
                 Text(
                   text,

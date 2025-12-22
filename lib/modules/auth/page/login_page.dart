@@ -12,7 +12,7 @@ import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/modules/auth/validator/auth_field.dart';
 import 'package:rakhsa/modules/auth/validator/error_reason.dart';
 import 'package:rakhsa/modules/auth/widget/auth_text_field.dart';
-import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/components/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
@@ -207,7 +207,7 @@ class LoginPageState extends State<LoginPage> {
                     height: 300,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        fit: BoxFit.fill,
+                        fit: .fill,
                         image: AssetImage(Assets.loginOrnament),
                       ),
                     ),
@@ -216,9 +216,9 @@ class LoginPageState extends State<LoginPage> {
 
                 Positioned.fill(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.all(16),
+                    padding: .all(16),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: .center,
                       children: [
                         50.spaceY,
                         Row(
@@ -237,7 +237,7 @@ class LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 32,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: .w700,
                               ),
                             ),
                           ],
@@ -248,7 +248,7 @@ class LoginPageState extends State<LoginPage> {
                         Form(
                           key: _formKey,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            crossAxisAlignment: .stretch,
                             children: [
                               AuthTextField(
                                 phone: true,
@@ -263,7 +263,7 @@ class LoginPageState extends State<LoginPage> {
 
                               6.spaceY,
                               Padding(
-                                padding: EdgeInsets.only(left: 8),
+                                padding: .only(left: 8),
                                 child: Text(
                                   "*Pastikan Nomor Telepon Anda terdaftar paket Roaming.",
                                   style: TextStyle(
@@ -287,7 +287,7 @@ class LoginPageState extends State<LoginPage> {
                               8.spaceY,
 
                               // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.end,
+                              //   mainAxisAlignment: .end,
                               //   children: [
                               //     Bounce(
                               //       scaleFactor: 0.98,
@@ -295,14 +295,14 @@ class LoginPageState extends State<LoginPage> {
                               //           _onNavigateToForgotPassword(context),
                               //       child: Container(
                               //         height: kMinInteractiveDimension,
-                              //         alignment: Alignment.center,
-                              //         padding: EdgeInsets.only(left: 12),
+                              //         alignment: .center,
+                              //         padding: .only(left: 12),
                               //         child: Text(
                               //           "Lupa Password",
                               //           style: TextStyle(
                               //             fontSize: 13,
                               //             color: Colors.white,
-                              //             fontWeight: FontWeight.w600,
+                              //             fontWeight: .w600,
                               //             decoration: TextDecoration.underline,
                               //             decorationColor: Colors.white,
                               //           ),

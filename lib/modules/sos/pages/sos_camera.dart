@@ -215,7 +215,7 @@ class CameraPageState extends State<CameraPage> {
         message:
             "Apakah Anda yakin ingin membatalkan perekaman video SOS? Proses belum selesai dan data tidak akan terkirim.",
         canPop: false,
-        actionButtonDirection: Axis.vertical,
+        actionButtonDirection: .vertical,
         buildActions: (c) {
           return [
             DialogActionButton(
@@ -283,7 +283,7 @@ class CameraPageState extends State<CameraPage> {
           body: controller == null || !controller!.value.isInitialized
               ? Center(child: CircularProgressIndicator(color: Colors.white))
               : Stack(
-                  clipBehavior: Clip.none,
+                  clipBehavior: .none,
                   children: [
                     CameraPreview(controller!),
 
@@ -293,7 +293,7 @@ class CameraPageState extends State<CameraPage> {
                       right: 0,
                       child: Column(
                         spacing: 4,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           RecordingButton(
                             durationInSeconds: durationInSeconds,
@@ -330,13 +330,11 @@ class CameraPageState extends State<CameraPage> {
                                     uploadPercent.toInt() > 98;
                                 return Column(
                                   spacing: 12,
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisSize: .min,
                                   children: [
                                     42.spaceY,
                                     Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 32,
-                                      ),
+                                      margin: .symmetric(horizontal: 32),
                                       child: Row(
                                         spacing: 12,
                                         children: [
@@ -351,8 +349,7 @@ class CameraPageState extends State<CameraPage> {
                                               color: Colors.white,
                                               backgroundColor: Colors.white
                                                   .withValues(alpha: 0.3),
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
+                                              borderRadius: .circular(100),
                                             ),
                                           ),
                                           Icon(
@@ -366,12 +363,11 @@ class CameraPageState extends State<CameraPage> {
                                     if (processingData) ...[
                                       Row(
                                         spacing: 10,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: .center,
                                         children: [
                                           Text(
                                             "Memproses data",
-                                            textAlign: TextAlign.center,
+                                            textAlign: .center,
                                             style: TextStyle(
                                               color: Colors.white,
                                             ),
@@ -389,7 +385,7 @@ class CameraPageState extends State<CameraPage> {
                                     ] else ...[
                                       Text(
                                         "Mengirim SOS $percent%",
-                                        textAlign: TextAlign.center,
+                                        textAlign: .center,
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ],
@@ -550,7 +546,7 @@ class _RecordingButtonState extends State<RecordingButton>
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
+      alignment: .center,
       children: [
         SizedBox(
           width: 80,
@@ -561,8 +557,8 @@ class _RecordingButtonState extends State<RecordingButton>
               return CircularProgressIndicator(
                 value: _progress,
                 strokeWidth: 4,
-                strokeCap: StrokeCap.round,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeCap: .round,
+                valueColor: AlwaysStoppedAnimation(Colors.white),
                 backgroundColor: Colors.white.withValues(alpha: 0.2),
               );
             },
@@ -570,12 +566,12 @@ class _RecordingButtonState extends State<RecordingButton>
         ),
         Material(
           color: Colors.red,
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: .circular(100),
           child: InkWell(
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: .circular(100),
             onTap: widget.onTap,
-            child: const Padding(
-              padding: EdgeInsets.all(12),
+            child: Padding(
+              padding: .all(12),
               child: Icon(Icons.stop_circle, color: Colors.white, size: 32),
             ),
           ),

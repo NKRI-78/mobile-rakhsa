@@ -18,7 +18,7 @@ import 'package:rakhsa/injection.dart';
 import 'package:rakhsa/core/client/dio_client.dart';
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
-import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/modules/ews/persentation/pages/ews_detail_page.dart';
 import 'package:rakhsa/service/notification/notification_sound.dart';
 
 import '../storage/storage.dart';
@@ -82,7 +82,7 @@ class NotificationManager {
             playSound: true,
             channelShowBadge: true,
             criticalAlerts: true,
-            importance: NotificationImportance.High,
+            importance: .High,
             icon: 'resource://drawable/ic_notification',
             soundSource: 'resource://raw/notification_general',
           ),
@@ -93,7 +93,7 @@ class NotificationManager {
             playSound: true,
             channelShowBadge: true,
             criticalAlerts: true,
-            importance: NotificationImportance.Max,
+            importance: .Max,
             icon: 'resource://drawable/ic_notification_chat',
             soundSource: 'resource://raw/notification_chat',
           ),
@@ -175,9 +175,9 @@ class NotificationManager {
         // di iOS hanya play sound notifikasi karena firebase ga munculin suara sama getar
         if (Platform.isIOS) {
           if (type == NotificationType.chat) {
-            await FCMSoundService.instance.play(type: SoundType.chat);
+            await FCMSoundService.instance.play(type: .chat);
           } else {
-            await FCMSoundService.instance.play(type: SoundType.general);
+            await FCMSoundService.instance.play(type: .general);
           }
 
           // stop notifikasi chat di iOS karena firebase sendiri udah ngeluarin notif
@@ -330,9 +330,7 @@ class NotificationManager {
   }
 
   void _handleNewsOnTap(BuildContext c, String id) {
-    NewsDetailRoute(
-      NewsDetailPageParams(id: int.parse(id), type: "news"),
-    ).go(c);
+    NewsDetailRoute(EwsDetailPageParams(id: int.parse(id), type: "news")).go(c);
   }
 
   void _handleEwsOnTap(BuildContext c, String newsId) async {
@@ -348,7 +346,7 @@ class NotificationManager {
         state: state,
       );
       NewsDetailRoute(
-        NewsDetailPageParams(id: int.parse(newsId), type: "news"),
+        EwsDetailPageParams(id: int.parse(newsId), type: "news"),
         // ignore: use_build_context_synchronously
       ).go(c);
     });

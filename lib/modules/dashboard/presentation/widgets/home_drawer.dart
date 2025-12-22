@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
@@ -11,7 +10,7 @@ import 'package:rakhsa/widgets/avatar.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
 
-import 'package:rakhsa/widgets/components/button/custom.dart';
+import 'package:rakhsa/widgets/components/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -89,31 +88,31 @@ class _HomeDrawerState extends State<HomeDrawer> {
     return Drawer(
       backgroundColor: const Color(0xFFC82927),
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const .all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: .spaceBetween,
+          mainAxisSize: .min,
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
               children: [
                 Consumer<UserProvider>(
                   builder: (context, p, child) {
-                    if (p.getUserState == RequestState.error) {
+                    if (p.getUserState == .error) {
                       return const SizedBox();
                     }
                     return Container(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const .all(16.0),
                       decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderRadius: .all(.circular(10.0)),
                         color: Colors.white,
                       ),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           Row(
-                            mainAxisSize: MainAxisSize.max,
+                            mainAxisSize: .min,
                             children: [
                               Avatar(
                                 src: p.user?.avatar ?? "",
@@ -123,13 +122,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                               const SizedBox(width: 15.0),
 
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: .start,
+                                mainAxisSize: .min,
                                 children: [
                                   Text(
                                     "Nama",
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: .bold,
                                       fontSize: 12,
                                       color: Color(0xff707070),
                                     ),
@@ -141,10 +140,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                     width: 150.0,
                                     child: Text(
                                       p.user?.username ?? "-",
-                                      overflow: TextOverflow.ellipsis,
+                                      overflow: .ellipsis,
                                       style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: .bold,
                                         color: Colors.black,
                                       ),
                                     ),

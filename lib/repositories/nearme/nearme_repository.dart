@@ -38,17 +38,21 @@ class NearMeRepository {
         },
       );
 
-      if (res.data['results'] == null) return <GoogleMapsPlace>[];
-      if (res.data['results'] is! List) return <GoogleMapsPlace>[];
+      final results = res.data['results'];
 
-      return (res.data['results'] as List).map((data) {
+      if (results == null) return <GoogleMapsPlace>[];
+      if (results is! List) return <GoogleMapsPlace>[];
+      if (results.isEmpty) return <GoogleMapsPlace>[];
+
+      return results.map((data) {
         final p = GoogleMapsPlace.fromJson(data);
-        if (p.coord != null) {
+        final c = p.coord;
+        if (c != null) {
           final d = Geolocator.distanceBetween(
             coord.lat,
             coord.lng,
-            p.coord!.lat,
-            p.coord!.lng,
+            c.lat,
+            c.lng,
           );
           return p.copyWith(type: type, distanceInMeters: d);
         }

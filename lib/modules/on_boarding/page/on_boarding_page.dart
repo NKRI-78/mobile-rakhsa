@@ -17,7 +17,7 @@ class OnBoardingPage extends StatelessWidget {
           children: [
             // bg
             Positioned.fill(
-              child: Image.asset(Assets.bgOnBoarding, fit: BoxFit.fill),
+              child: Image.asset(Assets.bgOnBoarding, fit: .fill),
             ),
 
             // content
@@ -106,7 +106,7 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
           left: 50,
           right: 50,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               // page indicator
               _pageIndicator(),
@@ -123,16 +123,16 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
 
   Widget _pageIndicator() {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: List.generate(_contents.length, (index) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 400),
-          margin: EdgeInsets.only(right: (index == 2) ? 0.0 : 8.0),
+          margin: .only(right: (index == 2) ? 0 : 8),
           height: 8,
           width: (_currentPage == index) ? 30 : 8,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: .circular(100),
           ),
         );
       }),
@@ -147,11 +147,11 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: .circular(8)),
         ),
         child: Text(
           _lastIndex ? 'Selesai' : 'Lanjutkan',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: .bold),
         ),
       ),
     );
@@ -170,7 +170,7 @@ class _ContentView extends StatelessWidget {
     double messageContainerHeight = device.size.height * 0.32;
 
     return Padding(
-      padding: EdgeInsets.only(top: paddingTop, right: 16, left: 16),
+      padding: .only(top: paddingTop, right: 16, left: 16),
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -181,21 +181,16 @@ class _ContentView extends StatelessWidget {
 
             // message container
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: .all(16),
               height: messageContainerHeight,
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.4),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
+                borderRadius: .vertical(top: .circular(16)),
               ),
               child: Text(
                 content.message,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+                textAlign: .center,
+                style: TextStyle(color: Colors.white, fontWeight: .w600),
               ),
             ),
           ],

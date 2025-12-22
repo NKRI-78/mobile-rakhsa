@@ -16,9 +16,9 @@ class AuthProvider extends ChangeNotifier {
   final AuthRepository _repository;
 
   // state
-  RequestState _loginState = RequestState.idle;
-  RequestState _registerState = RequestState.idle;
-  RequestState _forgotPassState = RequestState.idle;
+  RequestState _loginState = .idle;
+  RequestState _registerState = .idle;
+  RequestState _forgotPassState = .idle;
 
   // error
   String? _errorMessage;
@@ -28,9 +28,9 @@ class AuthProvider extends ChangeNotifier {
   RequestState get loginState => _loginState;
   RequestState get registerState => _registerState;
   RequestState get forgotPassState => _forgotPassState;
-  bool get loginLoading => _loginState == RequestState.loading;
-  bool get registerLoading => _registerState == RequestState.loading;
-  bool get forgotPassLoading => _forgotPassState == RequestState.loading;
+  bool get loginLoading => _loginState == .loading;
+  bool get registerLoading => _registerState == .loading;
+  bool get forgotPassLoading => _forgotPassState == .loading;
 
   // login
   Future<void> login({
@@ -39,7 +39,7 @@ class AuthProvider extends ChangeNotifier {
     VoidCallback? onSuccess,
     Function(String? title, String? message, String? errorCode)? onError,
   }) async {
-    _loginState = RequestState.loading;
+    _loginState = .loading;
     notifyListeners();
 
     try {
@@ -47,11 +47,11 @@ class AuthProvider extends ChangeNotifier {
 
       await StorageHelper.saveUserSession(newSession);
 
-      _loginState = RequestState.success;
+      _loginState = .success;
       notifyListeners();
       onSuccess?.call();
     } on NetworkException catch (e) {
-      _loginState = RequestState.error;
+      _loginState = .error;
       _errorMessage = e.message;
       notifyListeners();
       onError?.call(e.title, e.message, e.errorCode);
@@ -66,7 +66,7 @@ class AuthProvider extends ChangeNotifier {
     Function(String uid)? onSuccess,
     Function(String? message, String? errorCode)? onError,
   }) async {
-    _registerState = RequestState.loading;
+    _registerState = .loading;
     notifyListeners();
 
     try {
@@ -74,11 +74,11 @@ class AuthProvider extends ChangeNotifier {
 
       await StorageHelper.saveUserSession(newSession);
 
-      _registerState = RequestState.success;
+      _registerState = .success;
       notifyListeners();
       onSuccess?.call(newSession.user.id);
     } on NetworkException catch (e) {
-      _registerState = RequestState.error;
+      _registerState = .error;
       _errorMessage = e.message;
       notifyListeners();
       onError?.call(e.message, e.errorCode);
@@ -92,17 +92,17 @@ class AuthProvider extends ChangeNotifier {
     VoidCallback? onSuccess,
     Function(String? message, String? errorCode)? onError,
   }) async {
-    _forgotPassState = RequestState.loading;
+    _forgotPassState = .loading;
     notifyListeners();
 
     try {
       await _repository.forgotPassword(phone, newPassword);
 
-      _forgotPassState = RequestState.success;
+      _forgotPassState = .success;
       notifyListeners();
       onSuccess?.call();
     } on NetworkException catch (e) {
-      _forgotPassState = RequestState.error;
+      _forgotPassState = .error;
       _errorMessage = e.message;
       notifyListeners();
       onError?.call(e.message, e.errorCode);

@@ -7,10 +7,6 @@ import 'package:rakhsa/modules/dashboard/data/models/news.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_banner.dart';
 import 'package:rakhsa/modules/dashboard/domain/usecases/get_news.dart';
 
-enum BannerProviderState { idle, loading, empty, loaded, error }
-
-enum NewsProviderState { idle, loading, empty, loaded, error }
-
 class DashboardNotifier with ChangeNotifier {
   final UserProvider profileNotifier;
   final GetNewsUseCase useCase;
@@ -31,7 +27,7 @@ class DashboardNotifier with ChangeNotifier {
   List<NewsData> _news = [];
   List<NewsData> get news => [..._news];
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -44,44 +40,44 @@ class DashboardNotifier with ChangeNotifier {
   }
 
   Future<void> getBanner() async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await bannerUseCase.execute();
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _banners = [];
         _banners.addAll(r.data);
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
 
         if (news.isEmpty) {
-          setStateProvider(ProviderState.empty);
+          setStateProvider(.empty);
         }
       },
     );
   }
 
   Future<void> getNews({required double lat, required double lng}) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(lat: lat, lng: lng, state: "-");
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _news = [];
         _news.addAll(r.data);
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
 
         if (news.isEmpty) {
-          setStateProvider(ProviderState.empty);
+          setStateProvider(.empty);
         }
       },
     );
@@ -92,22 +88,22 @@ class DashboardNotifier with ChangeNotifier {
     required double lng,
     required String state,
   }) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(lat: lat, lng: lng, state: state);
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _ews = [];
         _ews.addAll(r.data);
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
 
         if (ews.isEmpty) {
-          setStateProvider(ProviderState.empty);
+          setStateProvider(.empty);
         }
       },
     );

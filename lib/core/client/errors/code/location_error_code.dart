@@ -2,14 +2,14 @@ enum LocationError { gpsDisabled, deniedPermission }
 
 extension LocationErrorExtension on LocationError {
   String get errorCode => switch (this) {
-    LocationError.gpsDisabled => "GPS_DISABLED",
-    LocationError.deniedPermission => "DENIED_PERMISSION",
+    .gpsDisabled => "GPS_DISABLED",
+    .deniedPermission => "DENIED_PERMISSION",
   };
 
   String getMessage([String? custom]) => switch (this) {
-    LocationError.gpsDisabled =>
+    .gpsDisabled =>
       custom ?? "GPS tidak aktif. Aktifkan lokasi untuk melanjutkan.",
-    LocationError.deniedPermission =>
+    .deniedPermission =>
       custom ??
           "Akses lokasi belum diizinkan. Izinkan terlebih dahulu untuk melanjutkan.",
   };

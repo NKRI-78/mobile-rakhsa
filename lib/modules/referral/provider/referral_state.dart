@@ -10,11 +10,11 @@ class ReferralState extends Equatable {
   final ReferralData? data;
   final ErrorState? error;
 
-  const ReferralState({this.state = RequestState.idle, this.data, this.error});
+  const ReferralState({this.state = .idle, this.data, this.error});
 
-  bool get isLoading => state == RequestState.loading;
-  bool get isSuccess => state == RequestState.success;
-  bool get isError => state == RequestState.error;
+  bool get isLoading => state == .loading;
+  bool get isSuccess => state == .success;
+  bool get isError => state == .error;
 
   @override
   List<Object?> get props => [state, data, error];

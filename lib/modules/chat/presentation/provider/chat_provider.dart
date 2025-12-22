@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rakhsa/core/client/errors/exceptions/exceptions.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/chat/chat_repository.dart';
 import 'package:rakhsa/service/notification/notification_manager.dart';
@@ -27,7 +26,7 @@ class ChatProvider extends ChangeNotifier {
   Future<void> getChatInbox() async {
     _setState(
       _state.copyWith(
-        getChatInbox: _chatInbox.copyWith(state: RequestState.loading),
+        getChatInbox: _chatInbox.copyWith(state: .loading),
       ),
     );
 
@@ -38,7 +37,7 @@ class ChatProvider extends ChangeNotifier {
         _state.copyWith(
           getChatInbox: _chatInbox.copyWith(
             chatInbox: remoteChatInbox,
-            state: RequestState.success,
+            state: .success,
           ),
         ),
       );
@@ -47,7 +46,7 @@ class ChatProvider extends ChangeNotifier {
         _state.copyWith(
           getChatInbox: _chatInbox.copyWith(
             errorMessage: e.message,
-            state: RequestState.error,
+            state: .error,
           ),
         ),
       );
@@ -60,7 +59,7 @@ class ChatProvider extends ChangeNotifier {
   }) async {
     _setState(
       _state.copyWith(
-        getChatMessages: _chatMessages.copyWith(state: RequestState.loading),
+        getChatMessages: _chatMessages.copyWith(state: .loading),
       ),
     );
 
@@ -71,7 +70,7 @@ class ChatProvider extends ChangeNotifier {
         _state.copyWith(
           getChatMessages: _chatMessages.copyWith(
             messages: remoteMessages,
-            state: RequestState.success,
+            state: .success,
           ),
         ),
       );
@@ -80,7 +79,7 @@ class ChatProvider extends ChangeNotifier {
         _state.copyWith(
           getChatMessages: _chatMessages.copyWith(
             errorMessage: e.message,
-            state: RequestState.error,
+            state: .error,
           ),
         ),
       );

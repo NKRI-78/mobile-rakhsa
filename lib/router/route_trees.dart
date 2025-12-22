@@ -12,7 +12,7 @@ import 'package:rakhsa/modules/information/presentation/pages/panduan_hukum.dart
 import 'package:rakhsa/modules/information/presentation/pages/passport_visa/index.dart';
 import 'package:rakhsa/modules/information/presentation/pages/search.dart';
 import 'package:rakhsa/modules/nearme/presentation/pages/near_me_detail_page.dart';
-import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/modules/ews/persentation/pages/ews_detail_page.dart';
 import 'package:rakhsa/modules/on_boarding/page/on_boarding_page.dart';
 import 'package:rakhsa/modules/profile/page/profile_page.dart';
 import 'package:rakhsa/modules/referral/pages/activate_referral_page.dart';
@@ -221,11 +221,11 @@ class ChatRoomRoute extends GoRouteData with $ChatRoomRoute {
 class NewsDetailRoute extends GoRouteData with $NewsDetailRoute {
   const NewsDetailRoute(this.$extra);
 
-  final NewsDetailPageParams $extra;
+  final EwsDetailPageParams $extra;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return NewsDetailPage(id: $extra.id, type: $extra.type);
+    return EwsDetailPage(id: $extra.id, type: $extra.type);
   }
 }
 

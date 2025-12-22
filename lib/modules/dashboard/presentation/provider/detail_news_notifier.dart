@@ -13,7 +13,7 @@ class DetailNewsNotifier with ChangeNotifier {
   NewsDetailData _entity = NewsDetailData();
   NewsDetailData get entity => _entity;
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -26,18 +26,18 @@ class DetailNewsNotifier with ChangeNotifier {
   }
 
   Future<void> detailNews({required int id}) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(id: id);
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _entity = r.data;
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }

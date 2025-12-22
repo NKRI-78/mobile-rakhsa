@@ -17,8 +17,8 @@ class FCMSoundService {
   AudioSource? _chatSource;
 
   final Map<SoundType, SoundHandle?> _lastHandleByType = {
-    SoundType.general: null,
-    SoundType.chat: null,
+    .general: null,
+    .chat: null,
   };
 
   Future<void> initialize() async {
@@ -53,8 +53,8 @@ class FCMSoundService {
     }
 
     final src = switch (type) {
-      SoundType.general => _generalSource,
-      SoundType.chat => _chatSource,
+      .general => _generalSource,
+      .chat => _chatSource,
     };
 
     if (src == null) {
@@ -65,7 +65,7 @@ class FCMSoundService {
   }
 
   Future<SoundHandle> play({
-    SoundType type = SoundType.general,
+    SoundType type = .general,
     double volume = 1.0,
     bool stopPreviousSameType = true,
     bool enableVibrate = true,

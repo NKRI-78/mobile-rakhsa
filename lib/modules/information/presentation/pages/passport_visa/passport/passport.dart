@@ -18,16 +18,6 @@ class PassportPage extends StatefulWidget {
 
 class PassportPageState extends State<PassportPage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -40,28 +30,23 @@ class PassportPageState extends State<PassportPage> {
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: Padding(
-            padding: EdgeInsets.only(
-              top: 16.0,
-              left: 16.0,
-              right: 32,
-              bottom: 10,
-            ),
+            padding: .fromLTRB(16, 16, 32, 10),
             child: Text(
               'Jelajahi Layanan Passport',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              style: TextStyle(fontWeight: .bold, fontSize: 24),
             ),
           ),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const .all(16),
         children: [
           ListCardInformation(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) {
+                  builder: (context) {
                     return PassportInfoPage(stateId: widget.stateId.toString());
                   },
                 ),

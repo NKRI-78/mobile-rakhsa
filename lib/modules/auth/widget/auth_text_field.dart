@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/core/formatters/text_field_formatter.dart';
 
 class AuthTextField extends StatefulWidget {
@@ -42,9 +43,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
   }
 
   TextInputType get _keyboardType {
-    if (widget.phone) return TextInputType.phone;
-    if (widget.password) return TextInputType.visiblePassword;
-    return TextInputType.text;
+    if (widget.phone) return .phone;
+    if (widget.password) return .visiblePassword;
+    return .text;
   }
 
   @override
@@ -57,8 +58,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
 
     return Column(
       spacing: 12,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: .min,
+      crossAxisAlignment: .stretch,
       children: [
         if (widget.label != null)
           Text(
@@ -71,7 +72,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             color: Colors.white.withValues(alpha: 0.1),
           ),
           child: Theme(
-            data: Theme.of(context).copyWith(
+            data: context.theme.copyWith(
               textSelectionTheme: TextSelectionThemeData(
                 selectionHandleColor: Colors.white,
               ),
@@ -99,10 +100,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 hintStyle: TextStyle(
                   color: Colors.white.withValues(alpha: 0.6),
                 ),
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 16,
-                ),
+                contentPadding: .symmetric(vertical: 4, horizontal: 16),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.white, width: 0.5),
                   borderRadius: borderRadius,

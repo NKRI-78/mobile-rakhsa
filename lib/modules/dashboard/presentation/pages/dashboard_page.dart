@@ -10,7 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
 import 'package:rakhsa/core/constants/colors.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/welcome_dialog.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
@@ -228,7 +227,7 @@ class DashboardPageState extends State<DashboardPage>
       final placemark = newLocation.placemark;
       final coord = newLocation.coord;
 
-      Future.delayed(Duration.zero, () async {
+      Future.delayed(.zero, () async {
         await updateAddressNotifier.updateAddress(
           address: placemark?.getAddress() ?? "-",
           state: placemark?.country ?? "-",
@@ -292,7 +291,7 @@ class DashboardPageState extends State<DashboardPage>
   void initBanners() {
     banners.clear();
 
-    if (locationProvider.isGetLocationState(RequestState.success)) {
+    if (locationProvider.isGetLocationState(.success)) {
       banners.add(WeatherCard());
     }
 
@@ -355,15 +354,15 @@ class DashboardPageState extends State<DashboardPage>
             bottom: Platform.isAndroid,
             child: Theme(
               data: Platform.isIOS
-                  ? Theme.of(context).copyWith(
+                  ? context.theme.copyWith(
                       splashFactory: InkSparkle.splashFactory,
                       splashColor: primaryColor.withValues(alpha: 0.5),
                       highlightColor: Colors.transparent,
                     )
-                  : Theme.of(context),
+                  : context.theme,
               child: ClipRRect(
-                borderRadius: BorderRadiusGeometry.vertical(
-                  top: Radius.circular(Platform.isIOS ? 16 : 24),
+                borderRadius: .vertical(
+                  top: .circular(Platform.isIOS ? 16 : 24),
                 ),
                 child: ValueListenableBuilder(
                   valueListenable: _pageNotifyController,
@@ -375,7 +374,7 @@ class DashboardPageState extends State<DashboardPage>
                       unselectedFontSize: 14,
                       backgroundColor: primaryColor,
                       selectedItemColor: Colors.white,
-                      type: BottomNavigationBarType.fixed,
+                      type: .fixed,
                       unselectedItemColor: Colors.white.withValues(alpha: 0.7),
                       items: [
                         BottomNavigationBarItem(

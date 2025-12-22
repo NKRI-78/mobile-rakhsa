@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/dashboard_notifier.dart';
-import 'package:rakhsa/modules/news/persentation/pages/detail.dart';
+import 'package:rakhsa/modules/ews/persentation/pages/ews_detail_page.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -18,7 +18,7 @@ class EwsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: .circular(16),
       child: Consumer<DashboardNotifier>(
         builder: (context, n, child) {
           return CarouselSlider(
@@ -33,7 +33,7 @@ class EwsListWidget extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   NewsDetailRoute(
-                    NewsDetailPageParams(id: item.id, type: item.type),
+                    EwsDetailPageParams(id: item.id, type: item.type),
                   ).go(context);
                 },
                 child: Stack(
@@ -41,7 +41,7 @@ class EwsListWidget extends StatelessWidget {
                     Positioned.fill(
                       child: CachedNetworkImage(
                         imageUrl: item.img,
-                        fit: BoxFit.cover,
+                        fit: .cover,
                         width: double.maxFinite,
                         height: 200.0,
                         placeholder: (context, url) {
@@ -65,8 +65,8 @@ class EwsListWidget extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                            begin: .topCenter,
+                            end: .bottomCenter,
                             colors: [Colors.black26, Colors.black87],
                           ),
                         ),
@@ -74,11 +74,11 @@ class EwsListWidget extends StatelessWidget {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: .all(16),
                       child: Column(
                         spacing: 2,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: .end,
+                        crossAxisAlignment: .stretch,
                         children: [
                           Expanded(
                             child: Text(
@@ -86,7 +86,7 @@ class EwsListWidget extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: .bold,
                               ),
                             ),
                           ),
@@ -108,7 +108,7 @@ class EwsListWidget extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     item.location,
-                                    overflow: TextOverflow.ellipsis,
+                                    overflow: .ellipsis,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 11,
@@ -122,11 +122,11 @@ class EwsListWidget extends StatelessWidget {
 
                           Text(
                             item.title,
-                            overflow: TextOverflow.ellipsis,
+                            overflow: .ellipsis,
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: .bold,
                             ),
                           ),
 
@@ -141,14 +141,14 @@ class EwsListWidget extends StatelessWidget {
                                   margin: fh.Margins.zero,
                                   padding: fh.HtmlPaddings.zero,
                                   fontSize: fh.FontSize(11),
-                                  textOverflow: TextOverflow.ellipsis,
+                                  textOverflow: .ellipsis,
                                 ),
                                 'p': fh.Style(
                                   margin: fh.Margins.zero,
                                   color: Colors.white.withValues(alpha: 0.8),
                                   fontSize: fh.FontSize(10),
                                   display: fh.Display.inline,
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: .normal,
                                 ),
                                 'span': fh.Style(
                                   margin: fh.Margins.zero,
@@ -162,9 +162,7 @@ class EwsListWidget extends StatelessWidget {
                                   fontSize: fh.FontSize(12),
                                   display: fh.Display.inline,
                                 ),
-                                'strong': fh.Style(
-                                  fontWeight: FontWeight.normal,
-                                ),
+                                'strong': fh.Style(fontWeight: .normal),
                               },
                             ),
                           ),

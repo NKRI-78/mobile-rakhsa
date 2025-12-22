@@ -258,21 +258,21 @@ class DioClient {
       switch (error.type) {
         case DioExceptionType.connectionTimeout:
           return NetworkException(
-            errorType: NetworkError.connectionTimeout,
+            errorType: .connectionTimeout,
             message: 'Koneksi terlalu lama. Silakan coba lagi.',
             original: error,
             statusCode: statusCode,
           );
         case DioExceptionType.receiveTimeout:
           return NetworkException(
-            errorType: NetworkError.receiveTimeout,
+            errorType: .receiveTimeout,
             message: 'Server membutuhkan waktu terlalu lama untuk merespons.',
             original: error,
             statusCode: statusCode,
           );
         case DioExceptionType.sendTimeout:
           return NetworkException(
-            errorType: NetworkError.sendTimeout,
+            errorType: .sendTimeout,
             message:
                 'Pengiriman data ke server melebihi batas waktu. Coba ulangi.',
             original: error,
@@ -280,14 +280,14 @@ class DioClient {
           );
         case DioExceptionType.cancel:
           return NetworkException(
-            errorType: NetworkError.cancel,
+            errorType: .cancel,
             message: 'Permintaan dibatalkan. Silakan coba kembali.',
             original: error,
             statusCode: statusCode,
           );
         case DioExceptionType.connectionError:
           return NetworkException(
-            errorType: NetworkError.connectionError,
+            errorType: .connectionError,
             message:
                 'Server tidak dapat dijangkau. Periksa koneksi Anda lalu coba lagi.',
             original: error,
@@ -299,7 +299,7 @@ class DioClient {
               _extractMessageFromBody(body) ??
               "Saat ini sistem tidak dapat terhubung dengan server. Coba beberapa saat lagi. Jika masalah terus berlanjut, pastikan koneksi internet stabil atau coba tutup dan buka kembali aplikasi.";
           return NetworkException(
-            errorType: NetworkError.badResponse,
+            errorType: .badResponse,
             statusCode: statusCode,
             body: body,
             message: msg,

@@ -26,15 +26,15 @@ class ReferralInfoContainer extends StatelessWidget {
     final sisaMasaAktif = (diff.isNegative ? Duration.zero : diff).inDays;
 
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: .all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade400, width: 0.7),
+        borderRadius: .circular(12),
+        border: .all(color: Colors.grey.shade400, width: 0.7),
       ),
       child: Column(
         spacing: 8,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           _buildInfo(
             context,
@@ -79,7 +79,7 @@ class ReferralInfoContainer extends StatelessWidget {
     String explanation,
   ) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: .spaceBetween,
       children: [
         Expanded(
           flex: 2,
@@ -87,12 +87,12 @@ class ReferralInfoContainer extends StatelessWidget {
             onTap: () async => await _showInfo(c, label, explanation),
             child: Row(
               spacing: 4,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Text(
                   label,
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: .ellipsis,
                   style: TextStyle(color: Colors.black54, fontSize: 12.5),
                 ),
                 Icon(
@@ -109,9 +109,9 @@ class ReferralInfoContainer extends StatelessWidget {
           child: Text(
             data,
             maxLines: 2,
-            textAlign: TextAlign.end,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+            textAlign: .end,
+            overflow: .ellipsis,
+            style: TextStyle(fontWeight: .w600, fontSize: 12.5),
           ),
         ),
       ],
@@ -132,20 +132,17 @@ class ReferralInfoContainer extends StatelessWidget {
       showDragHandle: true,
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: .vertical(top: .circular(16)),
       ),
       builder: (modalContext) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding),
+          padding: .fromLTRB(16, 0, 16, bottomPadding),
           child: Column(
             spacing: 16,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
             children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
+              Text(title, style: TextStyle(fontSize: 17, fontWeight: .bold)),
               Text(
                 subtitle,
                 style: TextStyle(fontSize: 13, color: Colors.black54),

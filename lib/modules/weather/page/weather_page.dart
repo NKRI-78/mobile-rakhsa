@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/weather/provider/weather_notifier.dart';
 import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
@@ -47,9 +48,9 @@ class _WeatherPageState extends State<WeatherPage> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
+          padding: const .fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: context.getScreenHeight(),
             child: Stack(
               children: [
                 Align(
@@ -58,7 +59,7 @@ class _WeatherPageState extends State<WeatherPage> {
                     height: 300,
                     width: 300,
                     decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                      shape: .circle,
                       color: Colors.deepPurple,
                     ),
                   ),
@@ -69,7 +70,7 @@ class _WeatherPageState extends State<WeatherPage> {
                     height: 300,
                     width: 300,
                     decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                      shape: .circle,
                       color: Colors.deepPurple,
                     ),
                   ),
@@ -151,20 +152,17 @@ class _WeatherViewState extends StatelessWidget {
   Widget build(BuildContext context) {
     final weather = provider.weathers.first;
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: double.infinity,
+      height: context.getScreenHeight(),
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             const SizedBox(height: 16.0),
             Text(
               "$area",
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              textAlign: .center,
+              style: const TextStyle(color: Colors.white, fontWeight: .w600),
             ),
             const SizedBox(height: 8.0),
             Text(
@@ -172,7 +170,7 @@ class _WeatherViewState extends StatelessWidget {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 25,
-                fontWeight: FontWeight.bold,
+                fontWeight: .bold,
               ),
             ),
             Image.asset(
@@ -185,18 +183,18 @@ class _WeatherViewState extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 55,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                 ),
               ),
             ),
             Center(
               child: Text(
                 (weather.weatherDescription ?? '').toUpperCase(),
-                textAlign: TextAlign.center,
+                textAlign: .center,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
             ),
@@ -210,26 +208,26 @@ class _WeatherViewState extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
-                  fontWeight: FontWeight.w300,
+                  fontWeight: .w300,
                 ),
               ),
             ),
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: .spaceBetween,
               children: [
                 Row(
                   children: [
                     Image.asset('assets/images/weather/11.png', scale: 8),
                     const SizedBox(width: 10),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         const Text(
                           'Sunrise',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: .w300,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -239,7 +237,7 @@ class _WeatherViewState extends StatelessWidget {
                           ),
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: .w700,
                           ),
                         ),
                       ],
@@ -251,13 +249,13 @@ class _WeatherViewState extends StatelessWidget {
                     Image.asset('assets/images/weather/12.png', scale: 8),
                     const SizedBox(width: 10),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         const Text(
                           'Sunset',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: .w300,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -267,7 +265,7 @@ class _WeatherViewState extends StatelessWidget {
                           ),
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: .w700,
                           ),
                         ),
                       ],
@@ -277,24 +275,24 @@ class _WeatherViewState extends StatelessWidget {
               ],
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(vertical: 5.0),
+              padding: .symmetric(vertical: 5.0),
               child: Divider(color: Colors.grey),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: .spaceBetween,
               children: [
                 Row(
                   children: [
                     Image.asset('assets/images/weather/13.png', scale: 8),
                     const SizedBox(width: 10),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         const Text(
                           'Temp Max',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: .w300,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -302,7 +300,7 @@ class _WeatherViewState extends StatelessWidget {
                           "${weather.tempMax!.celsius!.round()} °C",
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: .w700,
                           ),
                         ),
                       ],
@@ -314,13 +312,13 @@ class _WeatherViewState extends StatelessWidget {
                     Image.asset('assets/images/weather/14.png', scale: 8),
                     const SizedBox(width: 10),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         const Text(
                           'Temp Min',
                           style: TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: .w300,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -328,7 +326,7 @@ class _WeatherViewState extends StatelessWidget {
                           "${weather.tempMin!.celsius!.round()} °C",
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: .w700,
                           ),
                         ),
                       ],

@@ -160,10 +160,7 @@ Future<bool> sendLatestLocation(
 
   // get current location
   final hasPermission = await Geolocator.checkPermission()
-      .then((p) {
-        return p == LocationPermission.always ||
-            p == LocationPermission.whileInUse;
-      })
+      .then((p) => p == .always || p == .whileInUse)
       .onError((e, st) => false);
   log("hasPermission? $hasPermission", label: "SEND_LATEST_LOCATION");
   if (hasPermission) {
@@ -181,8 +178,8 @@ Future<bool> sendLatestLocation(
       try {
         position = await Geolocator.getCurrentPosition(
           locationSettings: Platform.isIOS
-              ? AppleSettings(accuracy: LocationAccuracy.best)
-              : AndroidSettings(accuracy: LocationAccuracy.best),
+              ? AppleSettings(accuracy: .best)
+              : AndroidSettings(accuracy: .best),
         );
         sendData = {
           ...sendData,

@@ -21,16 +21,14 @@ class ListCardInformation extends StatelessWidget {
         style: const TextStyle(
           color: Colors.black,
           fontSize: 25,
-          fontWeight: FontWeight.w600,
+          fontWeight: .w600,
         ),
       ),
       trailing: const Icon(Icons.arrow_forward, size: 30.0),
       onTap: onTap,
       tileColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(12),
-      ),
+      contentPadding: .symmetric(horizontal: 12, vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: .circular(12)),
     );
   }
 }

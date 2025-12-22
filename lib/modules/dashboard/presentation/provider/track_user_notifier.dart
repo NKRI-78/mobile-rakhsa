@@ -11,7 +11,7 @@ class TrackUserNotifier with ChangeNotifier {
 
   TrackUserNotifier({required this.useCase});
 
-  ProviderState _state = ProviderState.idle;
+  ProviderState _state = .idle;
   ProviderState get state => _state;
 
   String _message = "";
@@ -28,17 +28,17 @@ class TrackUserNotifier with ChangeNotifier {
     required double lat,
     required double lng,
   }) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(address: address, lat: lat, lng: lng);
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }

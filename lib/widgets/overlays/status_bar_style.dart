@@ -12,8 +12,8 @@ class StatusBarStyle extends StatelessWidget {
     return StatusBarStyle(
       style: SystemUiOverlayStyle(
         statusBarColor: statusBarColor ?? Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: .dark,
+        statusBarIconBrightness: .light,
       ),
       child: child,
     );
@@ -23,8 +23,8 @@ class StatusBarStyle extends StatelessWidget {
     return StatusBarStyle(
       style: SystemUiOverlayStyle(
         statusBarColor: statusBarColor ?? Colors.transparent,
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: .light,
+        statusBarIconBrightness: .dark,
       ),
       child: child,
     );
@@ -37,8 +37,8 @@ class StatusBarStyle extends StatelessWidget {
           style ??
           SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: .light,
+            statusBarIconBrightness: .dark,
           ),
       child: child,
     );

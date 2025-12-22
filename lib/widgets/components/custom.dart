@@ -2,7 +2,7 @@ import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final Function() onTap;
+  final VoidCallback onTap;
   final String? btnTxt;
   final bool customText;
   final Widget? text;
@@ -33,7 +33,7 @@ class CustomButton extends StatelessWidget {
     this.fontSize = 14.0,
     this.sizeBorderRadius = 10.0,
     this.isLoading = false,
-    this.borderRadiusGeometry = BorderRadius.zero,
+    this.borderRadiusGeometry = .zero,
     this.loadingColor = Colors.white,
     this.btnColor = const Color(0xff174DB9),
     this.btnTextColor = Colors.white,
@@ -55,7 +55,7 @@ class CustomButton extends StatelessWidget {
         decoration: BoxDecoration(
           image: isBackgroundImage
               ? const DecorationImage(
-                  fit: BoxFit.cover,
+                  fit: .cover,
                   image: AssetImage('assets/images/background/bg.png'),
                 )
               : null,
@@ -70,11 +70,9 @@ class CustomButton extends StatelessWidget {
                 ]
               : [],
           color: btnColor,
-          border: Border.all(
-            color: isBorder ? btnBorderColor : Colors.transparent,
-          ),
+          border: .all(color: isBorder ? btnBorderColor : Colors.transparent),
           borderRadius: isBorderRadius
-              ? BorderRadius.circular(sizeBorderRadius)
+              ? .circular(sizeBorderRadius)
               : borderRadiusGeometry,
         ),
         child: isLoading
@@ -86,9 +84,7 @@ class CustomButton extends StatelessWidget {
                 ),
               )
             : Row(
-                mainAxisAlignment: isPrefixIcon
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.center,
+                mainAxisAlignment: isPrefixIcon ? .start : .center,
                 children: [
                   isPrefixIcon ? const SizedBox(width: 15) : const SizedBox(),
                   isPrefixIcon
@@ -106,7 +102,7 @@ class CustomButton extends StatelessWidget {
                             btnTxt!,
                             style: TextStyle(
                               color: btnTextColor,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: .bold,
                               fontSize: fontSize,
                             ),
                           ),

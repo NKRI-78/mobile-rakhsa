@@ -34,10 +34,7 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final labelStyle = TextStyle(color: Colors.grey);
-    final valueStyle = TextStyle(
-      color: Colors.black,
-      fontWeight: FontWeight.w600,
-    );
+    final valueStyle = TextStyle(color: Colors.black, fontWeight: .w600);
 
     final top = context.top + kToolbarHeight;
 
@@ -53,12 +50,12 @@ class ProfilePageState extends State<ProfilePage> {
             builder: (context, notifier, child) {
               final packages = notifier.user?.package ?? [];
               return ListView(
-                padding: EdgeInsets.zero,
+                padding: .zero,
                 children: [
                   // avatar
                   Container(
-                    padding: EdgeInsets.fromLTRB(16, top, 16, (top - 16)),
-                    alignment: Alignment.center,
+                    padding: .fromLTRB(16, top, 16, (top - 16)),
+                    alignment: .center,
                     decoration: BoxDecoration(
                       gradient: RadialGradient(
                         colors: [
@@ -68,7 +65,7 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                       image: DecorationImage(
                         image: AssetImage("assets/images/login-ornament.png"),
-                        fit: BoxFit.cover,
+                        fit: .cover,
                       ),
                     ),
                     child: Bounce(
@@ -84,18 +81,13 @@ class ProfilePageState extends State<ProfilePage> {
 
                   // info profil
                   Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      16,
-                      16,
-                      context.bottom + 16,
-                    ),
+                    padding: .fromLTRB(16, 16, 16, context.bottom + 16),
                     child: Column(
                       spacing: 16,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: .spaceBetween,
                           children: [
                             Text("Nama", style: labelStyle),
                             Text(
@@ -105,7 +97,7 @@ class ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: .spaceBetween,
                           children: [
                             Text("Nomor Telepon", style: labelStyle),
                             Text(
@@ -117,15 +109,15 @@ class ProfilePageState extends State<ProfilePage> {
 
                         if (BuildConfig.isProd && packages.isNotEmpty)
                           Padding(
-                            padding: const EdgeInsets.only(top: 16),
+                            padding: .only(top: 16),
                             child: Column(
                               spacing: 16,
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: .min,
+                              crossAxisAlignment: .start,
                               children: [
                                 Text(
                                   "Informasi Layanan Marlinda",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: .w600),
                                 ),
                                 ReferralInfoContainer(package: packages[0]),
                               ],

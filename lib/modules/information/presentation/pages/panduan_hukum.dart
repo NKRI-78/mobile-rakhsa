@@ -1,22 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PanduanHukumPage extends StatefulWidget {
+class PanduanHukumPage extends StatelessWidget {
   const PanduanHukumPage({super.key});
-
-  @override
-  State<PanduanHukumPage> createState() => PanduanHukumPageState();
-}
-
-class PanduanHukumPageState extends State<PanduanHukumPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +22,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsetsGeometry.all(20),
+            padding: .all(20),
             sliver: SliverToBoxAdapter(
               child: Text.rich(
                 TextSpan(
@@ -45,7 +30,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                   children: [
                     TextSpan(
                       text: '1. Persiapan Dokumen Penting\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -56,7 +41,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '2. Informasi Kontak KBRI/Konsulat\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -66,7 +51,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '3. Pengetahuan tentang Hukum dan Aturan Setempat\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -76,7 +61,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '4. Kepatuhan terhadap Protokol Kesehatan\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -86,7 +71,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '5. Penggunaan Mata Uang dan Transaksi Keuangan\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -96,7 +81,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '6. Menghindari Tindakan yang Melanggar Hukum\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -107,7 +92,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '7. Perlindungan Terhadap Eksploitasi atau Penipuan\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -118,7 +103,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     TextSpan(
                       text:
                           '8. Langkah Darurat jika Menghadapi Masalah Hukum\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -128,7 +113,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '9. Menghindari Masalah Keimigrasian\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -138,7 +123,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
 
                     TextSpan(
                       text: '10. Pentingnya Asuransi Perjalanan\n',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: .bold),
                     ),
                     const TextSpan(
                       text:
@@ -147,7 +132,7 @@ class PanduanHukumPageState extends State<PanduanHukumPage> {
                     ),
                   ],
                 ),
-                textAlign: TextAlign.start,
+                textAlign: .start,
               ),
             ),
           ),

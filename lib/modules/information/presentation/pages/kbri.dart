@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rakhsa/core/enums/request_state.dart';
 
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
@@ -68,7 +67,7 @@ class KbriPageState extends State<KbriPage> {
                   ),
                 ),
 
-                if (n.isGetKbriByCountryId(RequestState.loading))
+                if (n.isGetKbriByCountryId(.loading))
                   const SliverFillRemaining(
                     child: Center(
                       child: SizedBox(
@@ -79,7 +78,7 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (n.isGetKbriByCountryId(RequestState.error))
+                if (n.isGetKbriByCountryId(.error))
                   SliverFillRemaining(
                     child: Center(
                       child: Text(
@@ -89,138 +88,113 @@ class KbriPageState extends State<KbriPage> {
                     ),
                   ),
 
-                if (n.isGetKbriByCountryId(RequestState.success))
+                if (n.isGetKbriByCountryId(.success))
                   SliverToBoxAdapter(
                     child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      padding: const .all(8.0),
+                      margin: const .symmetric(horizontal: 8),
                       child: Text(
                         "Data Pencarian KBRI Negara ${n.kbriCountry?.stateName.toString()}",
                         style: TextStyle(
                           fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: .bold,
                           color: Colors.black,
                         ),
                       ),
                     ),
                   ),
 
-                if (n.isGetKbriByCountryId(RequestState.success))
+                if (n.isGetKbriByCountryId(.success))
                   SliverList(
                     delegate: SliverChildListDelegate([
                       Container(
-                        margin: const EdgeInsets.only(
-                          top: 8.0,
-                          left: 18.0,
-                          right: 18.0,
-                          bottom: 8.0,
-                        ),
+                        margin: .symmetric(horizontal: 18, vertical: 8),
                         child: CachedNetworkImage(
                           imageUrl: n.kbriCountry?.img.toString() ?? "-",
-                          imageBuilder:
-                              (
-                                BuildContext context,
-                                ImageProvider<Object> imageProvider,
-                              ) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 200.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: imageProvider,
-                                    ),
-                                  ),
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 10.0,
-                                      right: 10.0,
-                                    ),
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "Kbri ${n.kbriCountry?.title.toString()}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                          placeholder: (BuildContext context, String url) {
+                          imageBuilder: (context, imageProvider) {
                             return Container(
                               width: double.infinity,
                               height: 200.0,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: .circular(10.0),
+                                image: DecorationImage(
+                                  fit: .fitWidth,
+                                  image: imageProvider,
+                                ),
+                              ),
+                              child: Container(
+                                margin: .all(10),
+                                alignment: .bottomLeft,
+                                child: Text(
+                                  "Kbri ${n.kbriCountry?.title.toString()}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: .bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          placeholder: (context, url) {
+                            return Container(
+                              width: double.infinity,
+                              height: 200.0,
+                              decoration: BoxDecoration(
+                                borderRadius: .circular(10.0),
                                 image: const DecorationImage(
-                                  fit: BoxFit.fitWidth,
+                                  fit: .fitWidth,
                                   image: AssetImage(
                                     'assets/images/user-placeholder.webp',
                                   ),
                                 ),
                               ),
                               child: Container(
-                                margin: const EdgeInsets.only(
-                                  top: 10.0,
-                                  bottom: 10.0,
-                                  left: 10.0,
-                                  right: 10.0,
-                                ),
-                                alignment: Alignment.bottomLeft,
+                                margin: const .all(10),
+                                alignment: .bottomLeft,
                                 child: Text(
                                   "Kbri ${n.kbriCountry?.title.toString()}",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: .bold,
                                   ),
                                 ),
                               ),
                             );
                           },
-                          errorWidget:
-                              (BuildContext context, String url, Object error) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 200.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: const DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage(
-                                        'assets/images/user-placeholder.webp',
-                                      ),
-                                    ),
+                          errorWidget: (context, url, error) {
+                            return Container(
+                              width: double.infinity,
+                              height: 200.0,
+                              decoration: BoxDecoration(
+                                borderRadius: .circular(10.0),
+                                image: const DecorationImage(
+                                  fit: .fitWidth,
+                                  image: AssetImage(
+                                    'assets/images/user-placeholder.webp',
                                   ),
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 10.0,
-                                      right: 10.0,
-                                    ),
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "Kbri ${n.kbriCountry?.title.toString()}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                ),
+                              ),
+                              child: Container(
+                                margin: const .all(10),
+                                alignment: .bottomLeft,
+                                child: Text(
+                                  "Kbri ${n.kbriCountry?.title.toString()}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: .bold,
                                   ),
-                                );
-                              },
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
 
                       Container(
-                        margin: const EdgeInsets.all(16.0),
+                        margin: const .all(16.0),
                         child: HtmlWidget(
                           n.kbriCountry?.description.toString() ?? "-",
                           customStylesBuilder: (el) {
@@ -229,24 +203,19 @@ class KbriPageState extends State<KbriPage> {
                           customWidgetBuilder: (el) {
                             return null;
                           },
-                          onTapUrl: (String url) => Future.value(true),
+                          onTapUrl: (url) => Future.value(true),
                           renderMode: RenderMode.column,
                           textStyle: TextStyle(fontSize: 14),
                         ),
                       ),
 
                       Container(
-                        margin: const EdgeInsets.only(
-                          top: 4.0,
-                          left: 16.0,
-                          right: 16.0,
-                          bottom: 4.0,
-                        ),
+                        margin: .symmetric(horizontal: 16, vertical: 4),
                         child: Text(
                           n.kbriCountry?.address.toString() ?? "-",
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: .bold,
                             color: Colors.black,
                           ),
                         ),
@@ -254,15 +223,9 @@ class KbriPageState extends State<KbriPage> {
 
                       Container(
                         width: double.infinity,
-                        height: 180.0,
-                        margin: const EdgeInsets.only(
-                          top: 20.0,
-                          left: 16.0,
-                          right: 16.0,
-                          bottom: 20.0,
-                        ),
+                        height: 180,
+                        margin: .symmetric(horizontal: 16, vertical: 20),
                         child: GoogleMap(
-                          mapType: MapType.normal,
                           gestureRecognizers: {}
                             ..add(
                               Factory<EagerGestureRecognizer>(

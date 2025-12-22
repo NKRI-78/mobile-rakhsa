@@ -44,8 +44,8 @@ class BuildConfig {
     }
   }
 
-  static bool get isProd => _instance?.flavor == Flavor.prod;
-  static bool get isStag => _instance?.flavor == Flavor.stag;
+  static bool get isProd => _instance?.flavor == .prod;
+  static bool get isStag => _instance?.flavor == .stag;
 
   static const _cacheKey = 'config_cache_key';
 
@@ -80,7 +80,7 @@ class BuildConfig {
     return BuildConfig._(
       Flavor.values.firstWhere(
         (e) => e.name == (map['flavor'] as String? ?? ''),
-        orElse: () => Flavor.prod,
+        orElse: () => .prod,
       ),
       map['apiBaseUrl'] as String?,
       map['socketBaseUrl'] as String?,

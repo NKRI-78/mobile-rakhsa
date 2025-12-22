@@ -13,7 +13,7 @@ class DetailInboxNotifier with ChangeNotifier {
   InboxDetailData _inbox = InboxDetailData();
   InboxDetailData get inbox => _inbox;
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -31,11 +31,11 @@ class DetailInboxNotifier with ChangeNotifier {
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _inbox = r.data;
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }

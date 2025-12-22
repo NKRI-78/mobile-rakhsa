@@ -68,7 +68,7 @@ class UniversalLink {
         label: "UNIVERSAL_LINK",
       );
 
-      final code = _filterReferralCode(referrer, _FilterSource.playstore);
+      final code = _filterReferralCode(referrer, .playstore);
       await _saveReferralCode(code);
 
       await _prefs.setBool(_fetchPlaystoreCacheKey, true);
@@ -129,7 +129,7 @@ class UniversalLink {
   String? _filterReferralCode(String? raw, _FilterSource from) {
     if (raw == null) return null;
 
-    if (from == _FilterSource.playstore) {
+    if (from == .playstore) {
       // dibaca ya sayy 😙, ini bukan tulisan AI njir 😠
       // kalau user download marlinda selain dari applink maka begini output referrernya:
       // 1. dari pencarian playstore: utm_source=google-play&utm_medium=organic
@@ -147,7 +147,7 @@ class UniversalLink {
       return raw;
     }
 
-    if (from == _FilterSource.appstore) {}
+    if (from == .appstore) {}
 
     return null;
   }

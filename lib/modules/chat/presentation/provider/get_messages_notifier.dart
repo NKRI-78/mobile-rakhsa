@@ -40,7 +40,7 @@ class GetMessagesNotifier with ChangeNotifier {
   List<MessageData> _messages = [];
   List<MessageData> get messages => [..._messages];
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -64,18 +64,18 @@ class GetMessagesNotifier with ChangeNotifier {
 
   Duration getChatSessionRemainingDuration() {
     final cSession = StorageHelper.read(sessionCacheKey);
-    if (cSession == null) return Duration.zero;
+    if (cSession == null) return .zero;
 
     try {
       final savedTime = DateTime.parse(cSession);
       final elapsed = DateTime.now().difference(savedTime);
       final remaining = endSessionDuration - elapsed;
 
-      if (remaining.isNegative) return Duration.zero;
+      if (remaining.isNegative) return .zero;
 
       return remaining;
     } catch (e) {
-      return Duration.zero;
+      return .zero;
     }
   }
 
@@ -151,21 +151,21 @@ class GetMessagesNotifier with ChangeNotifier {
     required String chatId,
     required String status,
   }) async {
-    setStateProvider(ProviderState.loading);
+    setStateProvider(.loading);
 
     final result = await useCase.execute(chatId: chatId, status: status);
 
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _note = r.data.note;
 
         _activeChatId = r.data.chatId;
 
-        _state = ProviderState.loaded;
+        _state = .loaded;
 
         _messages = [];
 

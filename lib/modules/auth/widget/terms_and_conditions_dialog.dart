@@ -30,7 +30,7 @@ class TermsAndConditionsDialog extends StatefulWidget {
           opacity: AlwaysStoppedAnimation(opacity),
           child: Transform.scale(
             scale: scale,
-            alignment: Alignment.center,
+            alignment: .center,
             child: child,
           ),
         );
@@ -62,20 +62,18 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
       canPop: widget.canPop,
       child: Dialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: .circular(16)),
         child: Container(
-          padding: EdgeInsets.all(16),
+          padding: .all(16),
           height: context.getScreenHeight(0.7),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
             children: [
               Text(
                 "Syarat dan Ketentuan",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                textAlign: .center,
+                style: TextStyle(fontSize: 20, fontWeight: .w800),
               ),
 
               16.spaceY,
@@ -84,7 +82,7 @@ class _TermsAndConditionsDialogState extends State<TermsAndConditionsDialog> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: .circular(4),
                   ),
                   child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
@@ -163,20 +161,20 @@ Untuk pertanyaan atau dukungan, hubungi: <a href="tel:081119911911">081119911911
                         "p": Style(fontSize: FontSize(12)),
                         "ul": Style(
                           fontSize: FontSize(12),
-                          padding: HtmlPaddings.only(left: 16),
-                          margin: Margins.only(top: 4, bottom: 8),
+                          padding: .only(left: 16),
+                          margin: .only(top: 4, bottom: 8),
                         ),
                         "ul ul": Style(
                           fontSize: FontSize(12),
-                          padding: HtmlPaddings.only(left: 14),
-                          margin: Margins.symmetric(vertical: 2),
+                          padding: .only(left: 14),
+                          margin: .symmetric(vertical: 2),
                         ),
                         "li": Style(
                           fontSize: FontSize(12),
-                          margin: Margins.only(bottom: 4),
+                          margin: .only(bottom: 4),
                         ),
                         "p.mt": Style(
-                          padding: HtmlPaddings.only(top: 6),
+                          padding: .only(top: 6),
                           fontSize: FontSize(12),
                         ),
                       },
@@ -198,15 +196,13 @@ Untuk pertanyaan atau dukungan, hubungi: <a href="tel:081119911911">081119911911
                 value: agree,
                 onChanged: _toggleAgree,
                 activeColor: primaryColor,
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
+                controlAffinity: .leading,
+                contentPadding: .zero,
                 visualDensity: VisualDensity(horizontal: -3, vertical: -3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(4),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: .circular(4)),
                 subtitle: Text(
                   "Saya telah membaca dan menyetujui Syarat dan Ketentuan MARLINDA di atas.",
-                  style: TextStyle(fontSize: 11.3, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 11.3, fontWeight: .w500),
                 ),
               ),
 
@@ -217,10 +213,8 @@ Untuk pertanyaan atau dukungan, hubungi: <a href="tel:081119911911">081119911911
                 style: FilledButton.styleFrom(
                   backgroundColor: primaryColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(8),
-                  ),
-                  textStyle: TextStyle(fontWeight: FontWeight.w600),
+                  shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+                  textStyle: TextStyle(fontWeight: .w600),
                 ),
                 child: Text("Lanjutkan"),
               ),

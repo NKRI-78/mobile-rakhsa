@@ -33,11 +33,11 @@ class WeatherCard extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.asset(Assets.bgCardWeather, fit: BoxFit.cover),
+                  child: Image.asset(Assets.bgCardWeather, fit: .cover),
                 ),
                 Positioned.fill(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const .all(16),
                     child: Consumer<WeatherNotifier>(
                       builder: (context, notifier, child) {
                         if (notifier.loading) return Container();
@@ -68,21 +68,21 @@ class WeatherCard extends StatelessWidget {
   Widget _todayWeather(WeatherNotifier notifier, String area) {
     final today = notifier.weathers.first;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: .start,
+      mainAxisAlignment: .spaceBetween,
       children: [
         // suhu & icon
         Flexible(
-          fit: FlexFit.tight,
+          fit: .tight,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
             children: [
               // icon cuaca
               Row(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
+                    borderRadius: .circular(100),
                     child: Image.asset(
                       notifier.getWeatherIcon(
                         notifier.weathers.first.weatherConditionCode,
@@ -94,11 +94,11 @@ class WeatherCard extends StatelessWidget {
 
                   Text(
                     '${(today.temperature?.celsius ?? 0).round()} °C',
-                    textAlign: TextAlign.center,
+                    textAlign: .center,
                     style: TextStyle(
                       fontSize: 22,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: .bold,
                     ),
                   ),
                 ],
@@ -107,12 +107,12 @@ class WeatherCard extends StatelessWidget {
               Text(
                 (today.weatherDescription ?? '').capitalizeEachWord(),
                 maxLines: 1,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
+                textAlign: .center,
+                overflow: .ellipsis,
                 style: TextStyle(
                   fontSize: 10,
                   color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
             ],
@@ -122,37 +122,37 @@ class WeatherCard extends StatelessWidget {
         // suhu & icon & wilayah
         Flexible(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: .min,
+            crossAxisAlignment: .end,
             children: [
               // title hari ini
               Text(
                 'Hari ini',
-                overflow: TextOverflow.ellipsis,
+                overflow: .ellipsis,
                 style: TextStyle(fontSize: 11, color: Colors.white),
               ),
 
               // hari ini
               Text(
                 (today.date ?? DateTime.now()).format("EEEE, dd MMM yyyy"),
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
+                textAlign: .end,
+                overflow: .ellipsis,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
 
               // area
               Text(
                 area,
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
+                textAlign: .end,
+                overflow: .ellipsis,
                 style: TextStyle(
                   fontSize: 11,
                   color: Colors.white,
-                  fontWeight: FontWeight.w300,
+                  fontWeight: .w300,
                 ),
               ),
             ],
@@ -164,10 +164,10 @@ class WeatherCard extends StatelessWidget {
 
   Widget _forecastWeather(WeatherNotifier notifier) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: .spaceBetween,
       children: notifier.weathers.map((weather) {
         return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: .spaceBetween,
           children: [
             // icon cuaca
             Image.asset(
@@ -179,8 +179,8 @@ class WeatherCard extends StatelessWidget {
             Text(
               (weather.date ?? DateTime.now()).format("EE"),
               maxLines: 1,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+              textAlign: .center,
+              overflow: .ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
 
@@ -188,8 +188,8 @@ class WeatherCard extends StatelessWidget {
             Text(
               '${(weather.temperature?.celsius ?? 0).round()} °C',
               maxLines: 1,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+              textAlign: .center,
+              overflow: .ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],

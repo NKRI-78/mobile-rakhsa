@@ -24,7 +24,7 @@ class NetworkException implements Exception {
     Object? orig,
     int statusCode = 0,
   ]) => NetworkException(
-    errorType: NetworkError.unknown,
+    errorType: .unknown,
     title: "Kesalahan Tak Dikenal",
     message:
         'Maaf, terjadi kendala yang belum dapat kami identifikasi. Silakan coba kembali beberapa saat lagi.',
@@ -35,7 +35,7 @@ class NetworkException implements Exception {
 
   factory NetworkException.noInternetConnection() => NetworkException(
     title: "Tidak Ada Koneksi Internet",
-    errorType: NetworkError.noInternetConnection,
+    errorType: .noInternetConnection,
     errorCode: NetworkError.noInternetConnection.errorCode,
     message: 'Tidak ada koneksi internet. Mohon periksa jaringan Anda.',
     statusCode: 608,

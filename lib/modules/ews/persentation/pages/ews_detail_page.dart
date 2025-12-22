@@ -6,43 +6,42 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart' as fh;
 import 'package:rakhsa/core/constants/colors.dart';
 
-import 'package:rakhsa/core/enums/provider_state.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 
 import 'package:rakhsa/modules/dashboard/presentation/provider/detail_news_notifier.dart';
 
-class NewsDetailPageParams {
+class EwsDetailPageParams {
   final int id;
   final String type;
 
-  NewsDetailPageParams({required this.id, required this.type});
+  EwsDetailPageParams({required this.id, required this.type});
 }
 
-class NewsDetailPage extends StatefulWidget {
+class EwsDetailPage extends StatefulWidget {
   final int id;
   final String type;
 
-  const NewsDetailPage({required this.id, required this.type, super.key});
+  const EwsDetailPage({required this.id, required this.type, super.key});
 
   @override
-  State<NewsDetailPage> createState() => NewsDetailPageState();
+  State<EwsDetailPage> createState() => EwsDetailPageState();
 }
 
-class NewsDetailPageState extends State<NewsDetailPage> {
-  late DetailNewsNotifier detailNewsNotifier;
+class EwsDetailPageState extends State<EwsDetailPage> {
+  late DetailNewsNotifier _notifier;
 
   @override
   void initState() {
     super.initState();
 
-    detailNewsNotifier = context.read<DetailNewsNotifier>();
+    _notifier = context.read<DetailNewsNotifier>();
 
     Future.microtask(() => getData());
   }
 
   Future<void> getData() async {
     if (!mounted) return;
-    await detailNewsNotifier.detailNews(id: widget.id);
+    await _notifier.detailNews(id: widget.id);
   }
 
   @override
@@ -56,11 +55,11 @@ class NewsDetailPageState extends State<NewsDetailPage> {
       ),
       body: Consumer<DetailNewsNotifier>(
         builder: (context, notifier, child) {
-          if (notifier.state != ProviderState.loaded) {
+          if (notifier.state != .loaded) {
             return Center(
               child: Column(
                 spacing: 16,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   CircularProgressIndicator(color: primaryColor),
                   Text(
@@ -78,15 +77,15 @@ class NewsDetailPageState extends State<NewsDetailPage> {
             onRefresh: getData,
             color: primaryColor,
             child: ListView(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, context.bottom + 16),
+              padding: .fromLTRB(16, 16, 16, context.bottom + 16),
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: .circular(16),
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: CachedNetworkImage(
                       imageUrl: data.img ?? "",
-                      fit: BoxFit.cover,
+                      fit: .cover,
                     ),
                   ),
                 ),
@@ -95,7 +94,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
 
                 Text(
                   data.title ?? "-",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: .bold),
                 ),
 
                 16.spaceY,
@@ -104,7 +103,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                     (data.location?.isNotEmpty ?? false) &&
                     data.location != "-")
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    padding: .only(bottom: 16),
                     child: Row(
                       spacing: 12,
                       children: [

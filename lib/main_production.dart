@@ -41,7 +41,7 @@ Future<void> main() async {
         throw Exception("Gagal memuat env production = ${e.toString()}");
       });
   await BuildConfig.initialize(
-    flavor: Flavor.prod,
+    flavor: .prod,
     apiBaseUrl: dotenv.env['API_BASE_URL'],
     socketBaseUrl: dotenv.env['SOCKET_BASE_URL'],
   );

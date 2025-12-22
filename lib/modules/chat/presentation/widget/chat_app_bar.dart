@@ -37,7 +37,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             onTap: () => _showRecipientOverview(context, usernames),
             child: Row(
               spacing: isSingleAdmin ? 10 : 8,
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 if (notifier.recipients.isNotEmpty)
                   Avatar(
@@ -46,15 +46,15 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: .min,
+                    crossAxisAlignment: .start,
                     children: [
                       Text(
                         usernames,
-                        overflow: TextOverflow.ellipsis,
+                        overflow: .ellipsis,
                         style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: .w600,
                           fontSize: isSingleAdmin ? 18 : 16,
                         ),
                       ),

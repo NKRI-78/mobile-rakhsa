@@ -27,7 +27,7 @@ class DialogActionButton extends StatelessWidget {
     final backgroundColor = style?.backgroundColor ?? dBackgroundColor;
     final foregroundColor = style?.foregroundColor ?? dForegroundColor;
 
-    final labelText = Text(label, overflow: TextOverflow.ellipsis);
+    final labelText = Text(label, overflow: .ellipsis);
 
     if (primary) {
       return FilledButton(
@@ -35,9 +35,7 @@ class DialogActionButton extends StatelessWidget {
         style: FilledButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(borderRadius),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: .circular(borderRadius)),
         ),
         child: labelText,
       );
@@ -48,7 +46,7 @@ class DialogActionButton extends StatelessWidget {
         foregroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: backgroundColor),
-          borderRadius: BorderRadiusGeometry.circular(borderRadius),
+          borderRadius: .circular(borderRadius),
         ),
       ),
       child: labelText,

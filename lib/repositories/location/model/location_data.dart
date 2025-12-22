@@ -71,33 +71,3 @@ class Coord extends Equatable {
   @override
   bool get stringify => true;
 }
-
-enum PlacemarkPart {
-  name,
-  street,
-  isoCountryCode,
-  country,
-  postalCode,
-  administrativeArea,
-  subAdministrativeArea,
-  locality,
-  subLocality,
-  thoroughfare,
-  subThoroughfare,
-}
-
-extension PlacemarkPartExtension on PlacemarkPart {
-  String? getValue(Placemark p) => switch (this) {
-    PlacemarkPart.name => p.name,
-    PlacemarkPart.street => p.street,
-    PlacemarkPart.isoCountryCode => p.isoCountryCode,
-    PlacemarkPart.country => p.country,
-    PlacemarkPart.postalCode => p.postalCode,
-    PlacemarkPart.administrativeArea => p.administrativeArea,
-    PlacemarkPart.subAdministrativeArea => p.subAdministrativeArea,
-    PlacemarkPart.locality => p.locality,
-    PlacemarkPart.subLocality => p.subLocality,
-    PlacemarkPart.thoroughfare => p.thoroughfare,
-    PlacemarkPart.subThoroughfare => p.subThoroughfare,
-  };
-}

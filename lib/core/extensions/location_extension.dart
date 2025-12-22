@@ -3,10 +3,10 @@ import 'package:rakhsa/modules/location/provider/location_provider.dart';
 extension PlacemarkExtension on Placemark {
   String getAddress([
     List<PlacemarkPart> parts = const [
-      PlacemarkPart.administrativeArea,
-      PlacemarkPart.subAdministrativeArea,
-      PlacemarkPart.street,
-      PlacemarkPart.country,
+      .administrativeArea,
+      .subAdministrativeArea,
+      .street,
+      .country,
     ],
   ]) {
     final values = <String>[];
@@ -26,4 +26,34 @@ extension PlacemarkExtension on Placemark {
 
     return values.join(', ');
   }
+}
+
+enum PlacemarkPart {
+  name,
+  street,
+  isoCountryCode,
+  country,
+  postalCode,
+  administrativeArea,
+  subAdministrativeArea,
+  locality,
+  subLocality,
+  thoroughfare,
+  subThoroughfare,
+}
+
+extension PlacemarkPartExtension on PlacemarkPart {
+  String? getValue(Placemark p) => switch (this) {
+    .name => p.name,
+    .street => p.street,
+    .isoCountryCode => p.isoCountryCode,
+    .country => p.country,
+    .postalCode => p.postalCode,
+    .administrativeArea => p.administrativeArea,
+    .subAdministrativeArea => p.subAdministrativeArea,
+    .locality => p.locality,
+    .subLocality => p.subLocality,
+    .thoroughfare => p.thoroughfare,
+    .subThoroughfare => p.subThoroughfare,
+  };
 }

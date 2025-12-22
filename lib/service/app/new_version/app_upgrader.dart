@@ -34,7 +34,7 @@ class AppUpgradeAlertState extends UpgradeAlertState {
         title: "Pembaruan Tersedia",
         message:
             "Versi terbaru aplikasi tersedia. Disarankan untuk memperbarui agar mendapatkan perbaikan dan fitur baru.",
-        actionButtonDirection: Axis.vertical,
+        actionButtonDirection: .vertical,
         style: DialogStyle(assetIconSize: 130),
         buildActions: (c) {
           return [

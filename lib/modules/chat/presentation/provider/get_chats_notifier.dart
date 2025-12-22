@@ -14,7 +14,7 @@ class GetChatsNotifier with ChangeNotifier {
   List<ChatsData> _chats = [];
   List<ChatsData> get chats => [..._chats];
 
-  ProviderState _state = ProviderState.loading;
+  ProviderState _state = .loading;
   ProviderState get state => _state;
 
   String _message = "";
@@ -32,12 +32,12 @@ class GetChatsNotifier with ChangeNotifier {
     result.fold(
       (l) {
         _message = l.message;
-        setStateProvider(ProviderState.error);
+        setStateProvider(.error);
       },
       (r) {
         _chats = [];
         _chats.addAll(r.data);
-        setStateProvider(ProviderState.loaded);
+        setStateProvider(.loaded);
       },
     );
   }
