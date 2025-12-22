@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/nearme/model/google_maps_place.dart';
 
@@ -78,7 +79,7 @@ class MapsLaunchModeDialog extends StatelessWidget {
             if (!fromMapsTile)
               ListTile(
                 leading: Image.asset(
-                  "assets/images/icons/maps.webp",
+                  Assets.imagesNearmeMapsLocalMaps,
                   width: 32,
                   height: 32,
                 ),
@@ -96,7 +97,7 @@ class MapsLaunchModeDialog extends StatelessWidget {
             if (Platform.isIOS)
               ListTile(
                 leading: Image.asset(
-                  "assets/images/icons/apple-maps.webp",
+                  Assets.imagesNearmeMapsAppleMaps,
                   width: 32,
                   height: 32,
                 ),
@@ -113,7 +114,7 @@ class MapsLaunchModeDialog extends StatelessWidget {
               ),
             ListTile(
               leading: Image.asset(
-                "assets/images/icons/google-maps.webp",
+                Assets.imagesNearmeMapsGoogleMaps,
                 width: 32,
                 height: 32,
               ),

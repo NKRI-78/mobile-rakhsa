@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/modules/nearme/presentation/widgets/near_me_place_tile.dart';
@@ -32,7 +33,7 @@ class InformationPage extends StatelessWidget {
                 NearMePlaceTile(
                   NearMePlaceType(
                     "Informasi KBRI",
-                    "assets/images/icons/icon-office.png",
+                    Assets.imagesInformationOffice,
                     () => CurrentKBRIRoute().go(context),
                   ),
                 ),
@@ -42,7 +43,7 @@ class InformationPage extends StatelessWidget {
                 NearMePlaceTile(
                   NearMePlaceType(
                     "Panduan",
-                    "assets/images/icons/icon-guide.png",
+                    Assets.imagesInformationGuide,
                     () => PanduanHukumRoute().go(context),
                   ),
                 ),

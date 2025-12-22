@@ -48,22 +48,4 @@ class InformationRepository {
       throw NetworkException(message: e.message, errorCode: e.errorCode);
     }
   }
-
-  Future<String> getVisaInfo(String countryId) async {
-    final res = await _client.get(
-      endpoint: "/information/info-visa?state_id=$countryId",
-    );
-    final data = res.data;
-    if (data['content'] is! String) return "-";
-    return data['content'] ?? "-";
-  }
-
-  Future<String> getPassportInfo(String countryId) async {
-    final res = await _client.get(
-      endpoint: "/information/info-passport?state_id=$countryId",
-    );
-    final data = res.data;
-    if (data['content'] is! String) return "-";
-    return data['content'] ?? "-";
-  }
 }

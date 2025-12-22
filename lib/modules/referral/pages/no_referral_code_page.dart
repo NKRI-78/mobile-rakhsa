@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/referral/widget/tutorial_get_referral_code.dart';
@@ -30,7 +31,7 @@ class NoReferralCodePage extends StatelessWidget {
                       shape: .circle,
                       color: primaryColor.withValues(alpha: 0.08),
                     ),
-                    child: LottieAnimation("assets/animations/referral.lottie"),
+                    child: LottieAnimation(Assets.animationsReferral),
                   ),
                 ),
               ),
@@ -60,7 +61,7 @@ class NoReferralCodePage extends StatelessWidget {
                 child: AppButton(
                   label: "Mengerti",
                   onPressed: () => WelcomeRoute().go(context),
-                  borderRadius: .circular(100),
+                  style: AppButtonStyle(borderRadius: .circular(100)),
                 ),
               ),
             ],

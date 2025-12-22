@@ -30,7 +30,7 @@ class AppUpgradeAlertState extends UpgradeAlertState {
       canPop: BuildConfig.isStag || kDebugMode,
       dismissible: BuildConfig.isStag || kDebugMode,
       content: DialogContent(
-        assetIcon: Assets.iconWelcomeDialog,
+        assetIcon: Assets.imagesDialogWelcome,
         title: "Pembaruan Tersedia",
         message:
             "Versi terbaru aplikasi tersedia. Disarankan untuk memperbarui agar mendapatkan perbaikan dan fitur baru.",

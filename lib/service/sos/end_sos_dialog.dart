@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/modules/chat/presentation/pages/chat_room_page.dart';
 import 'package:rakhsa/modules/chat/presentation/provider/get_messages_notifier.dart';
 import 'package:rakhsa/modules/dashboard/presentation/provider/sos_rating_notifier.dart';
@@ -44,7 +45,7 @@ class EndSosDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return DialogCard(
       DialogContent(
-        assetIcon: "assets/images/ic-alert.png",
+        assetIcon: Assets.imagesDialogAlert,
         title: title,
         message: "Apakah kasus Anda sebelumnya telah ditangani?",
         buildActions: (c) {

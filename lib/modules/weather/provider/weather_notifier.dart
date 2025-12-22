@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/repositories/location/model/location_data.dart';
 import 'package:weather/weather.dart';
 
@@ -119,17 +120,17 @@ class WeatherNotifier extends ChangeNotifier {
 
     // Map kondisi ke ikon
     final Map<int, String> dayIcons = {
-      200: 'assets/images/weather/1.png', // petir
-      300: 'assets/images/weather/2.png', // gerimis
-      500: 'assets/images/weather/2.png', // hujan ringan
-      502: 'assets/images/weather/3.png', // hujan lebat
-      800: 'assets/images/weather/11.png', // cerah
-      801: 'assets/images/weather/7.png', // cerah berawan
+      200: Assets.imagesWeather1, // petir
+      300: Assets.imagesWeather2, // gerimis
+      500: Assets.imagesWeather2, // hujan ringan
+      502: Assets.imagesWeather3, // hujan lebat
+      800: Assets.imagesWeather11, // cerah
+      801: Assets.imagesWeather7, // cerah berawan
     };
 
     final Map<int, String> nightIcons = {
-      800: 'assets/images/weather/12.png', // cerah malam
-      801: 'assets/images/weather/12.png', // cerah berawan malam
+      800: Assets.imagesWeather12, // cerah malam
+      801: Assets.imagesWeather12, // cerah berawan malam
     };
 
     if (isNight && nightIcons.containsKey(weatherConditionCode)) {

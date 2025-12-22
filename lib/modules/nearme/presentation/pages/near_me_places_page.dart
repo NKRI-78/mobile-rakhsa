@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/router/route_trees.dart';
 
 import 'package:rakhsa/modules/nearme/presentation/widgets/near_me_place_tile.dart';
@@ -12,22 +13,22 @@ class NearMePlacesPage extends StatelessWidget {
     final types = [
       NearMePlaceType(
         'Kantor Polisi',
-        'assets/images/icons/icon-police.png',
+        Assets.imagesNearmePolice,
         () => NearMeRoute(type: "police").go(context),
       ),
       NearMePlaceType(
         'Tempat Ibadah',
-        'assets/images/icons/icon-pray.png',
+        Assets.imagesNearmePray,
         () => NearMeRoute(type: "mosque").go(context),
       ),
       NearMePlaceType(
         'Hotel',
-        'assets/images/icons/icon-hotel.png',
+        Assets.imagesNearmeLodging,
         () => NearMeRoute(type: "lodging").go(context),
       ),
       NearMePlaceType(
         'Restoran',
-        'assets/images/icons/icon-restaurant.png',
+        Assets.imagesNearmeRestaurant,
         () => NearMeRoute(type: "restaurant").go(context),
       ),
     ];

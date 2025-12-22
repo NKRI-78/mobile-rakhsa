@@ -1,17 +1,20 @@
-import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rakhsa/core/constants/assets.dart';
+import 'package:rakhsa/core/constants/colors.dart';
+import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/auth/provider/auth_provider.dart';
 import 'package:rakhsa/router/route_trees.dart';
 import 'package:rakhsa/service/sos/sos_coordinator.dart';
 import 'package:rakhsa/widgets/avatar.dart';
 
 import 'package:rakhsa/modules/app/provider/user_provider.dart';
+import 'package:rakhsa/widgets/components/app_button.dart';
 
-import 'package:rakhsa/widgets/components/custom.dart';
 import 'package:rakhsa/widgets/dialog/dialog.dart';
+import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer(this.parentContext, {super.key});
@@ -50,7 +53,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       await AppDialog.show(
         c: widget.parentContext,
         content: DialogContent(
-          assetIcon: "assets/images/logout-icon.png",
+          assetIcon: Assets.imagesDialogLogout,
           title: "Permintaan Keluar",
           message: "Apakah kamu yakin ingin keluar dari Marlinda?",
           // dc => dialog context
@@ -85,104 +88,88 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: const Color(0xFFC82927),
-      child: Container(
-        padding: const .all(8.0),
-        child: Column(
-          mainAxisAlignment: .spaceBetween,
-          mainAxisSize: .min,
-          children: [
-            Column(
-              crossAxisAlignment: .start,
-              mainAxisSize: .min,
-              children: [
-                Consumer<UserProvider>(
-                  builder: (context, p, child) {
-                    if (p.getUserState == .error) {
-                      return const SizedBox();
-                    }
-                    return Container(
-                      padding: const .all(16.0),
-                      decoration: const BoxDecoration(
-                        borderRadius: .all(.circular(10.0)),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        mainAxisSize: .min,
-                        children: [
-                          Row(
-                            mainAxisSize: .min,
-                            children: [
-                              Avatar(
-                                src: p.user?.avatar ?? "",
-                                initial: p.user?.username ?? "",
-                              ),
+    final topPadding = context.top + 16;
+    final bottomPadding = context.bottom + 16;
+    return StatusBarStyle.light(
+      child: Drawer(
+        backgroundColor: primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: .zero),
+        child: Container(
+          padding: .fromLTRB(16, topPadding, 16, bottomPadding),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              Consumer<UserProvider>(
+                builder: (context, p, child) {
+                  if (p.getUserState != .success) return SizedBox();
+                  return Container(
+                    padding: .all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: .circular(8),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      spacing: 16,
+                      mainAxisSize: .min,
+                      crossAxisAlignment: .stretch,
+                      children: [
+                        Row(
+                          spacing: 16,
+                          children: [
+                            Avatar(
+                              src: p.user?.avatar ?? "",
+                              initial: p.user?.username ?? "",
+                            ),
 
-                              const SizedBox(width: 15.0),
-
-                              Column(
-                                crossAxisAlignment: .start,
+                            Expanded(
+                              child: Column(
+                                spacing: 2,
                                 mainAxisSize: .min,
+                                crossAxisAlignment: .stretch,
                                 children: [
                                   Text(
-                                    "Nama",
+                                    p.user?.username ?? "-",
+                                    overflow: .ellipsis,
                                     style: TextStyle(
+                                      fontSize: 16,
                                       fontWeight: .bold,
-                                      fontSize: 12,
-                                      color: Color(0xff707070),
                                     ),
                                   ),
-
-                                  const SizedBox(height: 2.0),
-
-                                  SizedBox(
-                                    width: 150.0,
-                                    child: Text(
-                                      p.user?.username ?? "-",
-                                      overflow: .ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: .bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                  Text(
+                                    p.user?.contact ?? "-",
+                                    overflow: .ellipsis,
+                                    style: TextStyle(color: Colors.black54),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
 
-                          const SizedBox(height: 15.0),
-
-                          CustomButton(
-                            onTap: () => ProfileRoute().go(context),
-                            isBorder: true,
-                            isBorderRadius: true,
-                            height: 40.0,
-                            sizeBorderRadius: 8.0,
-                            btnBorderColor: Color(0xff707070),
-                            btnColor: Colors.white,
-                            btnTxt: "Profile",
-                            btnTextColor: const Color(0xFFC82927),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            Bounce(
-              onTap: _onUserLogout,
-              child: Image.asset(
-                "assets/images/logout.png",
-                width: 110.0,
-                height: 110.0,
+                        AppButton(
+                          label: "Profile",
+                          icon: Icons.person,
+                          type: .outlined,
+                          onPressed: () => ProfileRoute().go(context),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+
+              AppButton(
+                label: "Logout",
+                icon: Icons.logout,
+                style: AppButtonStyle(
+                  backgroundColor: Colors.white,
+                  foregroundColor: primaryColor,
+                ),
+                onPressed: _onUserLogout,
+              ),
+            ],
+          ),
         ),
       ),
     );

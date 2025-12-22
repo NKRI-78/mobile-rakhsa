@@ -6,7 +6,7 @@ import 'package:rakhsa/modules/app/provider/user_provider.dart';
 import 'package:rakhsa/modules/location/provider/location_provider.dart';
 import 'package:rakhsa/service/socket/socketio.dart';
 
-import 'package:rakhsa/modules/dashboard/presentation/widgets/ews/list.dart';
+import 'package:rakhsa/modules/dashboard/presentation/widgets/ews/ews_crousel_card.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/header/header_home.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/home_highlight_banner.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/sos_button.dart';

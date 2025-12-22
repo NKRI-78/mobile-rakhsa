@@ -33,7 +33,7 @@ class WeatherCard extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.asset(Assets.bgCardWeather, fit: .cover),
+                  child: Image.asset(Assets.imagesWeatherBg, fit: .cover),
                 ),
                 Positioned.fill(
                   child: Padding(

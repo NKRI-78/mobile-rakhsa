@@ -42,13 +42,13 @@ class HeaderSection extends StatelessWidget {
             // title marlinda
             Flexible(
               fit: .tight,
-              child: Image.asset(Assets.titleMarlinda, height: 38.0),
+              child: Image.asset(Assets.imagesLogoMarlindaLabel, height: 38.0),
             ),
 
             // logo marlinda
             Flexible(
               child: Image.asset(
-                Assets.logoMarlindaNoTitle,
+                Assets.imagesLogoMarlinda,
                 width: 45,
                 height: 45,
               ),

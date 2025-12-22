@@ -82,7 +82,7 @@ class AppDialog {
       canPop: canPop,
       dismissible: dismissible,
       content: DialogContent(
-        assetIcon: assetIcon ?? Assets.iconAlert,
+        assetIcon: assetIcon ?? Assets.imagesDialogAlert,
         title: title ?? "Terjadi Kesalahan",
         message: message,
         actionButtonDirection: actionButtonDirection,

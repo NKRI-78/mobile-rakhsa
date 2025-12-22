@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/repositories/referral/model/referral.dart';
-import 'package:rakhsa/widgets/overlays/status_bar_style.dart';
+import 'package:rakhsa/service/haptic/haptic_service.dart';
 
 class ReferralInfoContainer extends StatelessWidget {
   const ReferralInfoContainer({super.key, this.package});
@@ -125,7 +125,7 @@ class ReferralInfoContainer extends StatelessWidget {
   ) async {
     final bottomBasedOS = Platform.isIOS ? 8.0 : 24.0;
     final bottomPadding = context.bottom + bottomBasedOS;
-    await HapticFeedback.lightImpact();
+    await HapticService.instance.lightImpact();
     await showModalBottomSheet(
       // ignore: use_build_context_synchronously
       context: context,

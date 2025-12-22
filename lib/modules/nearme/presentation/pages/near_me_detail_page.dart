@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/modules/nearme/presentation/widgets/maps_mode_dialog.dart';
@@ -70,9 +71,7 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
   }
 
   void _loadMapStyle() async {
-    final style = await rootBundle.loadString(
-      "assets/json/google-maps-style.json",
-    );
+    final style = await rootBundle.loadString(Assets.jsonGoogleMapsStyle);
     if (mounted) {
       _mapStyle = style;
       setState(() {});
@@ -133,10 +132,10 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
   };
 
   String get _iconAsset => switch (widget.type) {
-    "police" => "assets/images/icons/police.png",
-    "mosque" => "assets/images/icons/mosque.png",
-    "restaurant" => "assets/images/icons/restaurant.png",
-    _ => "assets/images/icons/lodging.png",
+    "police" => Assets.imagesNearmeMapsPolice,
+    "mosque" => Assets.imagesNearmeMapsMosque,
+    "restaurant" => Assets.imagesNearmeMapsRestaurant,
+    _ => Assets.imagesNearmeMapsLodging,
   };
 
   @override
@@ -232,7 +231,7 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
         mainAxisAlignment: .center,
         children: [
           la.LottieAnimation(
-            "assets/animations/search-location.lottie",
+            Assets.animationsSearchLocation,
             width: size,
             height: size,
           ),
@@ -253,7 +252,7 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
       markerId: MarkerId('current_location'),
       position: LatLng(c.lat, c.lng),
       icon: AssetMapBitmap(
-        "assets/images/icons/current-location.png",
+        Assets.imagesNearmeMapsCurrentLocation,
         height: 50,
         width: 50,
       ),
@@ -272,7 +271,7 @@ class NearMeDetailPageState extends State<NearMeDetailPage> {
       final mid = MarkerId(place.placeId);
 
       void showLaunchModeDialog() async {
-        await HapticFeedback.lightImpact();
+        await HapticService.instance.lightImpact();
         if (!mounted) return;
 
         final mode = await MapsLaunchModeDialog.launch(

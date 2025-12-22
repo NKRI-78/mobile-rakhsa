@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 
 import 'package:rakhsa/modules/information/presentation/provider/information_provider.dart';
 
@@ -135,7 +136,7 @@ class _KBRICountryPageState extends State<KBRICountryPage> {
                                 image: const DecorationImage(
                                   fit: .fitWidth,
                                   image: AssetImage(
-                                    'assets/images/user-placeholder.webp',
+                                    Assets.imagesUserPlaceholder,
                                   ),
                                 ),
                               ),
@@ -162,7 +163,7 @@ class _KBRICountryPageState extends State<KBRICountryPage> {
                                 image: const DecorationImage(
                                   fit: .fitWidth,
                                   image: AssetImage(
-                                    'assets/images/user-placeholder.webp',
+                                    Assets.imagesUserPlaceholder,
                                   ),
                                 ),
                               ),

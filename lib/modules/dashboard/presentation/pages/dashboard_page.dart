@@ -9,6 +9,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rakhsa/build_config.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/modules/dashboard/presentation/widgets/welcome_dialog.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
@@ -180,7 +181,7 @@ class DashboardPageState extends State<DashboardPage>
   void _onPageChanged(int index) {
     _pageController.jumpToPage(index);
     _pageNotifyController.value = index;
-    HapticService.instance.mediumImpact();
+    HapticService.instance.lightImpact();
   }
 
   Future<void> getCurrentLocation() async {
@@ -199,7 +200,7 @@ class DashboardPageState extends State<DashboardPage>
         bool? openSetting = await AppDialog.show(
           c: context,
           content: DialogContent(
-            assetIcon: "assets/images/icons/current-location.png",
+            assetIcon: Assets.imagesDialogLocation,
             title: "GPS Tidak Aktif",
             message:
                 "Mohon aktifkan GPS agar aplikasi Marlinda dapat mendeteksi lokasi Anda dengan akurat dan memungkinkan Anda menggunakan layanan SOS.",
@@ -327,7 +328,7 @@ class DashboardPageState extends State<DashboardPage>
           key: _scaffoldKey,
 
           // PROFIlE DRAWER
-          endDrawer: SafeArea(child: HomeDrawer(context)),
+          endDrawer: HomeDrawer(context),
 
           // HOME PAGE
           body: ValueListenableBuilder(

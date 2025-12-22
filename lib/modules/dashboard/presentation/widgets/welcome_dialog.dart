@@ -28,7 +28,7 @@ class WelcomeDialog extends StatelessWidget {
     );
     return DialogCard(
       DialogContent(
-        assetIcon: Assets.iconWelcomeDialog,
+        assetIcon: Assets.imagesDialogWelcome,
         title: "Terimakasih ${StorageHelper.session?.user.name ?? "-"}",
         messageWidget: Consumer<UserProvider>(
           builder: (context, p, child) {

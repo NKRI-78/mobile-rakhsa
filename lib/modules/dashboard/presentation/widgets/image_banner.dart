@@ -21,7 +21,7 @@ class ImageBanner extends StatelessWidget {
         height: 190,
         fit: .fill,
         width: double.infinity,
-        errorWidget: (_, _, _) => Image.asset(Assets.iconDefaultImg),
+        errorWidget: (_, _, _) => Image.asset(Assets.imagesPlaceholder),
         placeholder: (_, _) => const Center(child: CircularProgressIndicator()),
       ),
     );

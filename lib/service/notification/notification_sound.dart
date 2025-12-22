@@ -1,4 +1,5 @@
 import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/debug/logger.dart';
 import 'package:rakhsa/service/haptic/haptic_service.dart';
 
@@ -26,12 +27,8 @@ class FCMSoundService {
 
     try {
       await _soloud.init();
-      _generalSource = await _soloud.loadAsset(
-        'assets/sound/notification-general.mp3',
-      );
-      _chatSource = await _soloud.loadAsset(
-        'assets/sound/notification-chat.mp3',
-      );
+      _generalSource = await _soloud.loadAsset(Assets.soundNotificationGeneral);
+      _chatSource = await _soloud.loadAsset(Assets.soundNotificationChat);
       await HapticService.instance.initialize();
 
       _inited = true;

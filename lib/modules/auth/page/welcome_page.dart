@@ -87,7 +87,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: Image.asset(Assets.loginOrnament),
+                child: Image.asset(Assets.imagesScaffoldPattern),
               ),
 
               // content
@@ -99,7 +99,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                   children: [
                     // logo
                     Image.asset(
-                      Assets.logoMarlinda,
+                      Assets.imagesLogoMarlinda,
                       width: 90.0,
                       fit: .scaleDown,
                     ),

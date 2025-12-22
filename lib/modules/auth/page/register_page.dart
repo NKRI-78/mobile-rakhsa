@@ -214,7 +214,7 @@ class RegisterPageState extends State<RegisterPage> {
       AppDialog.show(
         c: c,
         content: DialogContent(
-          assetIcon: 'assets/images/ic-alert.png',
+          assetIcon: Assets.imagesDialogAlert,
           title: err?.title ?? "Terjadi Kesalahan Form",
           message: err?.message ?? "Cek kembali data inputan Anda.",
           buildActions: (c) {
@@ -246,7 +246,7 @@ class RegisterPageState extends State<RegisterPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: .fill,
-                        image: AssetImage(Assets.loginOrnament),
+                        image: AssetImage(Assets.imagesScaffoldPattern),
                       ),
                     ),
                   ),

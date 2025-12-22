@@ -17,7 +17,7 @@ class OnBoardingPage extends StatelessWidget {
           children: [
             // bg
             Positioned.fill(
-              child: Image.asset(Assets.bgOnBoarding, fit: .fill),
+              child: Image.asset(Assets.imagesOnBoardingBg, fit: .fill),
             ),
 
             // content
@@ -45,17 +45,17 @@ class __OnBoardingContentViewState extends State<_OnBoardingContentView> {
     _OnBoardingData(
       message:
           'Keamanan di ujung jari Anda!. Gunakan fitur SOS di aplikasi kami untuk mendapatkan bantuan cepat saat darurat. Aktifkan sekarang dan tetap terlindungi di setiap peristiwa!',
-      asset: Assets.onBoarding1,
+      asset: Assets.imagesOnBoardingContent1,
     ),
     _OnBoardingData(
       message:
           'Rekam dan kirim video kejadian secara real-time! Bukti kuat untuk keamanan Anda—langsung terkirim dan tersimpan sebagai alat bukti resmi. Lindungi diri dengan teknologi cerdas!',
-      asset: Assets.onBoarding3,
+      asset: Assets.imagesOnBoardingContent2,
     ),
     _OnBoardingData(
       message:
           'Tanggap cepat melalui chat langsung! Kami siap membantu Anda dalam situasi darurat, kapan pun dan di mana pun!',
-      asset: Assets.onBoarding2,
+      asset: Assets.imagesOnBoardingContent3,
     ),
   ];
 

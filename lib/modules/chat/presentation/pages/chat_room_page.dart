@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_app_bar.dart';
 import 'package:rakhsa/modules/chat/presentation/widget/chat_bubble.dart';
@@ -439,7 +440,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
             Opacity(
               opacity: 0.7,
               child: LottieAnimation(
-                "assets/animations/chats.lottie",
+                Assets.animationsChats,
                 width: 170,
                 height: 170,
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rakhsa/core/constants/assets.dart';
 import 'package:rakhsa/core/constants/colors.dart';
 import 'package:rakhsa/core/extensions/extensions.dart';
 import 'package:rakhsa/modules/referral/provider/referral_provider.dart';
@@ -100,7 +101,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
                     color: Colors.green.withValues(alpha: 0.08),
                   ),
                   child: LottieAnimation(
-                    "assets/animations/checked.lottie",
+                    Assets.animationsChecked,
                     width: 190,
                     height: 190,
                   ),
@@ -129,7 +130,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
           child: AppButton(
             label: "Mulai",
             onPressed: () => DashboardRoute(fromRegister: true).go(context),
-            borderRadius: .circular(100),
+            style: AppButtonStyle(borderRadius: .circular(100)),
           ),
         ),
       ],
@@ -151,7 +152,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
                 shape: .circle,
                 color: primaryColor.withValues(alpha: 0.08),
               ),
-              child: LottieAnimation("assets/animations/referral.lottie"),
+              child: LottieAnimation(Assets.animationsReferral),
             ),
           ),
         ),
@@ -181,7 +182,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
           child: AppButton(
             label: "Tutup",
             onPressed: () => WelcomeRoute().go(context),
-            borderRadius: .circular(100),
+            style: AppButtonStyle(borderRadius: .circular(100)),
           ),
         ),
       ],
@@ -198,7 +199,7 @@ class _ActivateReferralPageState extends State<ActivateReferralPage> {
           SizedBox(
             width: 200,
             height: 200,
-            child: LottieAnimation("assets/animations/loading.lottie"),
+            child: LottieAnimation(Assets.animationsLoading),
           ),
 
           Text(

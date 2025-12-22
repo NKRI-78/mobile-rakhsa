@@ -155,7 +155,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       AppDialog.show(
         c: c,
         content: DialogContent(
-          assetIcon: 'assets/images/ic-alert.png',
+          assetIcon: Assets.imagesDialogAlert,
           title: err?.title ?? "Terjadi Kesalahan Form",
           message: err?.message ?? "Cek kembali data inputan Anda.",
           buildActions: (c) {
@@ -192,7 +192,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       decoration: const BoxDecoration(
                         image: DecorationImage(
                           fit: .fill,
-                          image: AssetImage(Assets.loginOrnament),
+                          image: AssetImage(Assets.imagesScaffoldPattern),
                         ),
                       ),
                     ),

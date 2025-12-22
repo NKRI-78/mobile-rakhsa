@@ -50,8 +50,7 @@ class DashboardNotifier with ChangeNotifier {
         setStateProvider(.error);
       },
       (r) {
-        _banners = [];
-        _banners.addAll(r.data);
+        _banners = r.data;
         setStateProvider(.loaded);
 
         if (news.isEmpty) {
